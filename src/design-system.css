@@ -1,0 +1,64 @@
+:root {
+  --smplfy-button-font-family: 'Inter', sans-serif;
+  --smplfy-button-font-size: 14px;
+  --smplfy-button-font-weight: 500;
+  --smplfy-button-line-height: 1.2;
+  --smplfy-button-radius: 6px;
+  --smplfy-button-height: 40px;
+  --smplfy-button-padding-icon-side: 12px;
+  --smplfy-button-padding-text-side: 16px;
+  --smplfy-button-padding-label-only-start: 12px;
+  --smplfy-button-padding-label-only-end: 16px;
+  --smplfy-button-icon-size: 18px;
+  --smplfy-button-gap: 8px;
+
+  --smplfy-primary-default-bg: #1379f0;
+  --smplfy-primary-default-hover-bg: #0e5fbb;
+  --smplfy-primary-default-focus-bg: #083c75;
+  --smplfy-primary-default-disabled-bg: #d1d5db;
+  --smplfy-primary-on-color: #ffffff;
+  --smplfy-primary-disabled-text: #6d737e;
+
+  --smplfy-primary-positive-bg: #4db04f;
+  --smplfy-primary-positive-hover-bg: #3f9443;
+  --smplfy-primary-positive-focus-bg: #327735;
+
+  --smplfy-primary-red-bg: #f44336;
+  --smplfy-primary-red-hover-bg: #d9382d;
+  --smplfy-primary-red-focus-bg: #b62e25;
+
+  --smplfy-primary-shadow-blue: 3px 2px 4px rgba(10, 70, 138, 0.08);
+  --smplfy-primary-shadow-blue-focus: 3px 2px 4px rgba(8, 60, 117, 0.12);
+  --smplfy-primary-shadow-green: 3px 2px 4px rgba(63, 148, 67, 0.08);
+  --smplfy-primary-shadow-green-focus: 3px 2px 4px rgba(50, 119, 53, 0.12);
+  --smplfy-primary-shadow-red: 3px 2px 4px rgba(217, 56, 45, 0.08);
+  --smplfy-primary-shadow-red-focus: 3px 2px 4px rgba(182, 46, 37, 0.12);
+
+  --smplfy-field-font-family: 'Inter', sans-serif;
+  --smplfy-field-height: 40px;
+  --smplfy-field-radius: 8px;
+  --smplfy-field-bg: #ffffff;
+  --smplfy-field-bg-disabled: #f3f5f7;
+  --smplfy-field-border-default: #cad3df;
+  --smplfy-field-border-hover: #94a3b8;
+  --smplfy-field-border-focused: #1379f0;
+  --smplfy-field-border-disabled: #d8dee7;
+  --smplfy-field-border-error: #f44336;
+  --smplfy-field-text: #1c2126;
+  --smplfy-field-text-disabled: #9aa4b2;
+  --smplfy-field-placeholder: #6d737e;
+  --smplfy-field-placeholder-disabled: #aab3be;
+  --smplfy-field-label-color: #4d5561;
+  --smplfy-field-helper-color: #6d737e;
+  --smplfy-field-warning-color: #d28c00;
+  --smplfy-field-error-color: #f44336;
+  --smplfy-field-required-color: #ff5d5d;
+  --smplfy-field-icon-color: #4d5561;
+  --smplfy-field-divider: #d8dee7;
+  --smplfy-field-shadow-focused: 0 0 0 3px rgba(19, 121, 240, 0.12);
+  --smplfy-field-shadow-error: 0 0 0 3px rgba(244, 67, 54, 0.12);
+
+  --smplfy-toast-success-bg: #0bb63b;
+  --smplfy-toast-success-text: #ffffff;
+  --smplfy-toast-shadow: 0 10px 24px rgba(11, 182, 59, 0.22);
+}
