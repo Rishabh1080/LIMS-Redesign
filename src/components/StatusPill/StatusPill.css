@@ -1,0 +1,97 @@
+.smplfy-status-pill {
+  min-height: 27px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 24px;
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.smplfy-status-pill__label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.smplfy-status-pill--gray.smplfy-status-pill--neutral {
+  background: #f5f6f7;
+  border-color: #e6e8eb;
+  color: #6d737e;
+}
+
+.smplfy-status-pill--blue.smplfy-status-pill--neutral {
+  background: #f1f8fe;
+  border-color: #94ccf9;
+  color: #0e5fbb;
+}
+
+.smplfy-status-pill--red.smplfy-status-pill--neutral {
+  background: #fef6f5;
+  border-color: #f5a8a1;
+  color: #d9382d;
+}
+
+.smplfy-status-pill--orange.smplfy-status-pill--neutral {
+  background: #fefcf5;
+  border-color: #f5dfad;
+  color: #c37538;
+}
+
+.smplfy-status-pill--green.smplfy-status-pill--neutral {
+  background: #e9f6ea;
+  border-color: #a9dca9;
+  color: #3f9443;
+}
+
+.smplfy-status-pill--yellow.smplfy-status-pill--neutral {
+  background: #fef9ec;
+  border-color: #ffe599;
+  color: #b38632;
+}
+
+.smplfy-status-pill--gray.smplfy-status-pill--strong {
+  background: #6d737e;
+  border-color: #e6e8eb;
+  color: #fff;
+}
+
+.smplfy-status-pill--blue.smplfy-status-pill--strong {
+  background: #0e5fbb;
+  border-color: #94ccf9;
+  color: #f1f8fe;
+}
+
+.smplfy-status-pill--red.smplfy-status-pill--strong {
+  background: #d9382d;
+  border-color: #f5a8a1;
+  color: #fff;
+}
+
+.smplfy-status-pill--orange.smplfy-status-pill--strong {
+  background: #c37538;
+  border-color: #f5dfad;
+  color: #fff;
+}
+
+.smplfy-status-pill--green.smplfy-status-pill--strong {
+  background: #3f9443;
+  border-color: #a9dca9;
+  color: #fff;
+}
+
+.smplfy-status-pill--yellow.smplfy-status-pill--strong {
+  background: #ebc357;
+  border-color: #ffe599;
+  color: #fff;
+}

@@ -11,6 +11,7 @@ export default function PrimaryButton({
   leftIcon,
   rightIcon,
   styleVariant = 'default',
+  size = 'default',
   disabled = false,
   className = '',
   type = 'button',
@@ -24,6 +25,7 @@ export default function PrimaryButton({
     styleVariant && styleVariant !== 'default'
       ? `smplfy-primary-button--${styleVariant.toLowerCase()}`
       : '';
+  const sizeClass = size && size !== 'default' ? `smplfy-primary-button--${size.toLowerCase()}` : '';
 
   return (
     <button
@@ -33,6 +35,7 @@ export default function PrimaryButton({
         'btn',
         'smplfy-primary-button',
         variantClass,
+        sizeClass,
         hasLeftIcon && 'smplfy-primary-button--has-left-icon',
         hasRightIcon && 'smplfy-primary-button--has-right-icon',
         !hasLabel && 'smplfy-primary-button--icon-only',

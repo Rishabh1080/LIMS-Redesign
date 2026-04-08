@@ -1,0 +1,56 @@
+.smplfy-checkbox {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6d737e;
+}
+
+.smplfy-checkbox__box {
+  width: 15px;
+  height: 15px;
+  border: 1.2px solid #6d737e;
+  border-radius: 4px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  transition:
+    background-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.smplfy-checkbox__tick {
+  opacity: 0;
+  transition: opacity 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.smplfy-checkbox__tick path {
+  stroke: #fff;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.smplfy-checkbox.is-checked .smplfy-checkbox__box {
+  background: #1379f0;
+  border-color: #1379f0;
+}
+
+.smplfy-checkbox.is-checked .smplfy-checkbox__tick {
+  opacity: 1;
+}
+
+.smplfy-checkbox:disabled {
+  opacity: 0.56;
+  cursor: not-allowed;
+}
+
+.smplfy-checkbox:focus-visible {
+  outline: none;
+}

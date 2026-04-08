@@ -7,16 +7,29 @@ function joinClasses(...values) {
 
 export default function ToastNotification({
   state = 'default',
+  tone = 'success',
   message = 'Sample Created.',
   className = '',
   onClose,
   ...props
 }) {
+  const iconName = tone === 'error' ? 'alert-circle' : 'checks';
+
   return (
-    <div className={joinClasses('smplfy-toast', state === 'gone' && 'smplfy-toast--gone', className)} {...props}>
+    <div
+      className={joinClasses(
+        'smplfy-toast',
+        tone !== 'success' && `smplfy-toast--${tone}`,
+        state === 'gone' && 'smplfy-toast--gone',
+        className,
+      )}
+      role="status"
+      aria-live="polite"
+      {...props}
+    >
       <div className="smplfy-toast__content">
         <span className="smplfy-toast__icon" aria-hidden="true">
-          <AppIcon name="checks" />
+          <AppIcon name={iconName} />
         </span>
         <span>{message}</span>
       </div>

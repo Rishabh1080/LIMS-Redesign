@@ -1,0 +1,162 @@
+.smplfy-secondary-button {
+  --secondary-button-height: 40px;
+  --secondary-button-padding-start: 16px;
+  --secondary-button-padding-end: 16px;
+  --secondary-button-icon-size: 18px;
+
+  min-height: var(--secondary-button-height);
+  border: 1px solid #9aa0a6;
+  border-radius: 6px;
+  background: #fff;
+  color: #4d5561;
+  padding: 10px var(--secondary-button-padding-end) 10px var(--secondary-button-padding-start);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--smplfy-button-font-family);
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  transition:
+    border-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    color 180ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 180ms cubic-bezier(0.2, 0, 0, 1),
+    transform 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.smplfy-secondary-button:hover {
+  border-color: #1379f0;
+  color: #1379f0;
+  background: #fff;
+}
+
+.smplfy-secondary-button:focus-visible,
+.smplfy-secondary-button.is-force-focus {
+  border-color: #1379f0;
+  color: #1379f0;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(19, 121, 240, 0.12);
+}
+
+.smplfy-secondary-button:active,
+.smplfy-secondary-button:active:hover {
+  border-color: #0e5fbb !important;
+  color: #0e5fbb;
+  background: #fff !important;
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
+.smplfy-secondary-button:disabled,
+.smplfy-secondary-button.is-disabled {
+  border-color: #e6e8eb;
+  color: #d1d5db;
+  background: #fff;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+.smplfy-secondary-button__label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.smplfy-secondary-button__icon {
+  width: var(--secondary-button-icon-size);
+  height: var(--secondary-button-icon-size);
+  flex: 0 0 var(--secondary-button-icon-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--secondary-button-icon-size);
+}
+
+.smplfy-secondary-button--large {
+  --secondary-button-height: 40px;
+  --secondary-button-padding-start: 16px;
+  --secondary-button-padding-end: 16px;
+  --secondary-button-icon-size: 18px;
+}
+
+.smplfy-secondary-button--medium {
+  --secondary-button-height: 32px;
+  --secondary-button-padding-start: 16px;
+  --secondary-button-padding-end: 16px;
+  --secondary-button-icon-size: 16px;
+  min-height: 32px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.smplfy-secondary-button--small {
+  --secondary-button-height: 24px;
+  --secondary-button-padding-start: 12px;
+  --secondary-button-padding-end: 12px;
+  --secondary-button-icon-size: 16px;
+  height: 24px;
+  min-height: 24px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.smplfy-secondary-button--has-left-icon {
+  padding-left: 12px;
+}
+
+.smplfy-secondary-button--has-right-icon {
+  padding-right: 12px;
+}
+
+.smplfy-secondary-button--small.smplfy-secondary-button--has-left-icon {
+  padding-left: 8px;
+  padding-right: 12px;
+}
+
+.smplfy-secondary-button--small.smplfy-secondary-button--has-right-icon {
+  padding-left: 12px;
+  padding-right: 8px;
+}
+
+.smplfy-secondary-button--medium.smplfy-secondary-button--has-left-icon {
+  padding-left: 12px;
+  padding-right: 16px;
+}
+
+.smplfy-secondary-button--medium.smplfy-secondary-button--has-right-icon {
+  padding-left: 16px;
+  padding-right: 12px;
+}
+
+.smplfy-secondary-button--icon-only {
+  padding: 0;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.smplfy-secondary-button--icon-only.smplfy-secondary-button--large {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+}
+
+.smplfy-secondary-button--icon-only.smplfy-secondary-button--medium {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+}
+
+.smplfy-secondary-button--icon-only.smplfy-secondary-button--small {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.btn.smplfy-secondary-button:active,
+.btn.smplfy-secondary-button:not(:disabled):not(.disabled):active {
+  background-image: none;
+}

@@ -1,0 +1,165 @@
+.tr-details-page-header {
+  height: 84px;
+  padding: 16px 24px;
+  background: #fff;
+  border-bottom: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tr-details-page-header__title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.tr-details-page-header__back {
+  width: 32px;
+  flex: 0 0 32px;
+  padding: 0;
+}
+
+.tr-details-page-header__title-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.tr-details-page-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tr-details-page-header h1 {
+  margin: 0;
+  color: #1c2126;
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.tr-details-page-header__timestamp {
+  margin-top: 8px;
+  display: inline-flex;
+  gap: 12px;
+  color: #6d737e;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+}
+
+.tr-details-page-header__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tr-details-page {
+  min-height: 100%;
+  padding: 24px;
+  background: #f5f6f7;
+  display: flex;
+}
+
+.tr-details-page__placeholder {
+  flex: 1 1 auto;
+  min-height: 100%;
+  background: #fff;
+  border: 1px solid #dfe4ea;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #6d737e;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  padding: 24px;
+}
+
+.remnant-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1150;
+  background: rgba(2, 21, 39, 0.48);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.remnant-modal__card {
+  width: min(100%, 464px);
+  border-radius: 16px;
+  border: 1px solid #e1e6ed;
+  background: #fff;
+  box-shadow: 0 20px 56px rgba(15, 23, 42, 0.22);
+  padding: 24px;
+}
+
+.remnant-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.remnant-modal__header h2 {
+  margin: 0;
+  color: #1c2126;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.remnant-modal__close {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6d737e;
+}
+
+.remnant-modal__copy {
+  margin: 16px 0 0;
+  color: #4d5561;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.remnant-modal__actions {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.remnant-modal__action {
+  width: 100%;
+}
+
+.tr-details-page__toast {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition:
+    opacity 260ms cubic-bezier(0.2, 0, 0, 1),
+    transform 260ms cubic-bezier(0.2, 0, 0, 1);
+  z-index: 1200;
+}
+
+.tr-details-page__toast.smplfy-toast--gone {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(calc(100% + 24px));
+}

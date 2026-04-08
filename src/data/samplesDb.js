@@ -9,6 +9,16 @@ export const sampleCategories = [
   { key: 'disposed', label: 'Disposed', group: 'right' },
 ];
 
+const parameterStatusByTone = {
+  slate: 'Not allocated',
+  sky: 'Under Testing',
+  amber: 'Under Approval',
+  coral: 'Rejected',
+  mint: 'Reviewed',
+  sage: 'Reviewed',
+  green: 'Approved',
+};
+
 const samplesByCategory = {
   'iqc-samples': [
     {
@@ -230,12 +240,26 @@ const samplesByCategory = {
   ],
 };
 
-export const allSamplesDb = Object.values(samplesByCategory).flat();
+function normalizeSample(sample) {
+  const resolvedParameters =
+    sample.status === 'Completed'
+      ? sample.parameters.map(() => 'Approved')
+      : sample.parameters.map((parameter) => parameterStatusByTone[parameter] ?? parameter);
+
+  return {
+    ...sample,
+    parameters: resolvedParameters,
+  };
+}
+
+export const allSamplesDb = Object.values(samplesByCategory)
+  .flat()
+  .map(normalizeSample);
 
 export function getSamplesByCategory(categoryKey) {
   if (categoryKey === 'all-samples') {
     return allSamplesDb;
   }
 
-  return samplesByCategory[categoryKey] ?? [];
+  return (samplesByCategory[categoryKey] ?? []).map(normalizeSample);
 }

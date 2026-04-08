@@ -2,6 +2,7 @@ import { useState } from 'react';
 import AppIcon from '../components/AppIcon';
 import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
+import SecondaryButton from '../components/SecondaryButton';
 import Stepper from '../components/Stepper/Stepper';
 import './new-sample-customer-details.css';
 
@@ -460,16 +461,16 @@ function AdditionalDetailsSection({ formValues, fieldErrors, onFieldChange }) {
   );
 }
 
-function WizardFooter({ currentStep, onPrev, onNext, onComplete }) {
+function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel }) {
   const prevLabel = currentStep > 0 ? wizardSteps[currentStep - 1] : 'Cancel';
   const isLast = currentStep === wizardSteps.length - 1;
+  const handlePrevClick = currentStep > 0 ? onPrev : onCancel;
 
   return (
     <div className="new-sample-card__footer">
-      <button className="new-sample-cancel btn" onClick={currentStep > 0 ? onPrev : undefined}>
-        <AppIcon name="chevron-left" />
-        <span>{prevLabel}</span>
-      </button>
+      <SecondaryButton className="new-sample-cancel" leftIcon="chevron-left" onClick={handlePrevClick}>
+        {prevLabel}
+      </SecondaryButton>
 
       {isLast ? (
         <PrimaryButton leftIcon="save" onClick={onComplete}>
@@ -484,7 +485,7 @@ function WizardFooter({ currentStep, onPrev, onNext, onComplete }) {
   );
 }
 
-function CustomerForm({ currentStep, formValues, fieldErrors, onFieldChange, onPrev, onNext, onComplete }) {
+function CustomerForm({ currentStep, formValues, fieldErrors, onFieldChange, onPrev, onNext, onComplete, onCancel }) {
   const sections = [
     <CustomerDetailsSection
       key="customer"
@@ -524,6 +525,7 @@ function CustomerForm({ currentStep, formValues, fieldErrors, onFieldChange, onP
             onPrev={onPrev}
             onNext={onNext}
             onComplete={onComplete}
+            onCancel={onCancel}
           />
         </div>
       </div>
@@ -604,6 +606,7 @@ export default function NewSampleCustomerDetailsPage({ onBackToWorkspace, onComp
           onPrev={() => setCurrentStep((step) => Math.max(0, step - 1))}
           onNext={handleNext}
           onComplete={handleComplete}
+          onCancel={onBackToWorkspace}
         />
       </main>
     </div>

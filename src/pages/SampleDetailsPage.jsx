@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import AppIcon from '../components/AppIcon';
 import AppChrome from '../components/AppChrome/AppChrome';
 import { FormElement, ToastNotification } from '../components/FormControls';
+import MoreActionButton from '../components/MoreActionButton';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
+import SecondaryButton from '../components/SecondaryButton';
 import companyLogo from '../../assets/logo-l.png';
 import './sample-details-page.css';
 
@@ -35,6 +37,14 @@ const auditRows = [
   ['Approved', 'TestRequest was Approved by Universal Admin', 'NA', '09/03/2026 12:45', '2 days'],
 ];
 
+const sampleHeaderActionItems = [
+  { key: 'create-amendment', label: 'Create Amendment', leftIcon: 'edit' },
+  { key: 'create-complaint', label: 'Create Complaint', leftIcon: 'alert-circle' },
+  { key: 'add-final-comments', label: 'Add final comments', leftIcon: 'file-text' },
+  { key: 'acknowledgement-receipt', label: 'Acknowledgement Receipt', leftIcon: 'file-text' },
+  { key: 'proforma-invoice', label: 'Proforma Invoice', leftIcon: 'file-text' },
+];
+
 function splitDateTime(createdOn) {
   const parts = String(createdOn ?? '')
     .split(',')
@@ -55,6 +65,7 @@ function DetailsHeader({
   onBack,
   onRequestReview,
   onOpenTestRequests,
+  onOpenCoaReport,
 }) {
   const isUnderAnalysis = sampleStatus === 'Under Analysis';
   const { date, time } = splitDateTime(createdOn);
@@ -79,13 +90,14 @@ function DetailsHeader({
 
       <div className="sample-details-page-header__row is-main">
         <div className="sample-details-page-header__title-block">
-          <button
-            className="sample-details-page-header__back btn"
+          <SecondaryButton
+            size="medium"
+            className="sample-details-page-header__back"
             aria-label="Go back"
             onClick={onBack}
           >
             <AppIcon name="chevron-left" />
-          </button>
+          </SecondaryButton>
 
           <div className="sample-details-page-header__title-copy">
             <div className="sample-details-page-header__title-row">
@@ -121,13 +133,15 @@ function DetailsHeader({
               Send for Review
             </PrimaryButton>
           )}
-          <button className="sample-details-page-header__secondary btn">
-            <AppIcon name="file-text" />
-            <span>COA Report</span>
-          </button>
-          <button className="sample-details-page-header__more btn" aria-label="More actions">
-            <AppIcon name="more" />
-          </button>
+          <SecondaryButton
+            leftIcon="file-text"
+            size="large"
+            className="sample-details-page-header__secondary"
+            onClick={onOpenCoaReport}
+          >
+            COA Report
+          </SecondaryButton>
+          <MoreActionButton className="sample-details-page-header__more" items={sampleHeaderActionItems} />
         </div>
       </div>
     </section>
@@ -196,8 +210,8 @@ function ReportCard({ withLogo, tableOnly }) {
 function SignatureStrip() {
   return (
     <section className="sample-signature-strip">
-      {signatureItems.map(([label, value]) => (
-        <div className="sample-signature-strip__item" key={label + value}>
+      {signatureItems.map(([label, value], index) => (
+        <div className="sample-signature-strip__item" key={`${label}-${value}-${index}`}>
           <div className="sample-signature-strip__label">{label}</div>
           <div className="sample-signature-strip__value">{value}</div>
         </div>
@@ -295,10 +309,9 @@ function ReviewRequestModal({ open, sendTo, comments, onSendToChange, onComments
         </div>
 
         <div className="review-request-modal__actions">
-          <button className="review-request-modal__cancel btn" onClick={onCancel}>
-            <AppIcon name="close" />
-            <span>Cancel</span>
-          </button>
+          <SecondaryButton leftIcon="close" size="large" className="review-request-modal__cancel" onClick={onCancel}>
+            Cancel
+          </SecondaryButton>
           <PrimaryButton leftIcon="send" onClick={onSubmit}>
             Send Request
           </PrimaryButton>
@@ -316,6 +329,7 @@ export default function SampleDetailsPage({
   createdOn = '06/03/2026, 10:13',
   onBack,
   onOpenTestRequests,
+  onOpenCoaReport,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -379,28 +393,33 @@ export default function SampleDetailsPage({
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
     >
-      <DetailsHeader
-        sampleId={sampleId}
-        sampleStatus={sampleStatus}
-        reviewRequested={reviewRequested}
-        createdOn={createdOn}
-        onBack={onBack}
-        onRequestReview={() => setReviewModalOpen(true)}
-        onOpenTestRequests={onOpenTestRequests}
-      />
-
-      <main className="sample-details-page__content">
-        <div className="sample-details-page__body">
-          <div className="sample-details-page__report-stack">
-            {reportCards.map((card) => (
-              <ReportCard key={card.key} withLogo={card.withLogo} tableOnly={card.tableOnly} />
-            ))}
-          </div>
-
-          <SignatureStrip />
-          <AuditTrail />
+      <div className="sticky-page-shell">
+        <div className="sticky-page-shell__header">
+          <DetailsHeader
+            sampleId={sampleId}
+            sampleStatus={sampleStatus}
+            reviewRequested={reviewRequested}
+            createdOn={createdOn}
+            onBack={onBack}
+            onRequestReview={() => setReviewModalOpen(true)}
+            onOpenTestRequests={onOpenTestRequests}
+            onOpenCoaReport={onOpenCoaReport}
+          />
         </div>
-      </main>
+
+        <main className="sample-details-page__content sticky-page-shell__body">
+          <div className="sample-details-page__body">
+            <div className="sample-details-page__report-stack">
+              {reportCards.map((card) => (
+                <ReportCard key={card.key} withLogo={card.withLogo} tableOnly={card.tableOnly} />
+              ))}
+            </div>
+
+            <SignatureStrip />
+            <AuditTrail />
+          </div>
+        </main>
+      </div>
 
       <ReviewRequestModal
         open={reviewModalOpen}

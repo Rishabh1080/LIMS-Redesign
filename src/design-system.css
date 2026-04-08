@@ -60,5 +60,10 @@
 
   --smplfy-toast-success-bg: #0bb63b;
   --smplfy-toast-success-text: #ffffff;
+  --smplfy-toast-success-border: #3f9443;
   --smplfy-toast-shadow: 0 10px 24px rgba(11, 182, 59, 0.22);
+  --smplfy-toast-error-bg: #ef7267;
+  --smplfy-toast-error-text: #ffffff;
+  --smplfy-toast-error-border: #d9382d;
+  --smplfy-toast-error-shadow: 0 10px 24px rgba(217, 56, 45, 0.22);
 }

@@ -1,0 +1,169 @@
+.coa-report-page-header {
+  height: 72px;
+  padding: 16px 24px;
+  background: #fff;
+  border-bottom: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.coa-report-page-header__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coa-report-page-header__back {
+  width: 32px;
+  padding: 0;
+}
+
+.coa-report-page-header h1 {
+  margin: 0;
+  color: #1c2126;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.coa-report-page-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coa-report-page {
+  padding: 24px;
+  background: #f5f6f7;
+}
+
+.coa-report-panel {
+  width: 1166px;
+  max-width: 100%;
+  min-height: 589px;
+  margin: 0 auto;
+  padding: 24px 24px 32px;
+  border: 1px solid #e6e8eb;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow:
+    0 18px 48px rgba(15, 23, 42, 0.06),
+    0 6px 16px rgba(15, 23, 42, 0.04);
+}
+
+.coa-report-panel__title {
+  color: #1c2126;
+  font-size: 18px;
+  line-height: 23px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.coa-report-panel__body {
+  margin-top: 79px;
+  display: grid;
+  grid-template-columns: 329px minmax(0, 661px);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.coa-report-panel__options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.coa-report-panel__templates {
+  height: 100%;
+  min-height: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  background: #fff;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.coa-report-panel__placeholder {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4d5561;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+}
+
+.coa-report-panel__placeholder-emphasis {
+  font-weight: 600;
+}
+
+.coa-report-panel__templates-title {
+  color: #4d5561;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+}
+
+.coa-report-panel__templates-list {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.coa-template-row {
+  display: grid;
+  grid-template-columns: 200px 344px;
+  gap: 19px;
+  align-items: center;
+}
+
+.coa-template-row__label {
+  color: #1c2126;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+}
+
+.coa-template-row__field {
+  width: 344px;
+}
+
+.coa-template-row__field .smplfy-input-field__shell {
+  min-height: 40px;
+}
+
+@media (max-width: 991.98px) {
+  .coa-report-page-header {
+    height: auto;
+    gap: 12px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .coa-report-page-header__actions {
+    justify-content: flex-end;
+  }
+
+  .coa-report-panel__body {
+    margin-top: 32px;
+    grid-template-columns: 1fr;
+  }
+
+  .coa-report-panel__options .smplfy-selectable-card {
+    width: 100%;
+  }
+
+  .coa-template-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .coa-template-row__field {
+    width: 100%;
+  }
+}

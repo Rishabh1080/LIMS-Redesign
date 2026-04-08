@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Samples Filters Drawer Reference</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./reference.css" />
+  </head>
+  <body>
+    <div class="reference-banner">
+      <h1 class="reference-banner__title">All Samples Filters Drawer Reference</h1>
+      <a class="reference-banner__back" href="./index.html">Back to index</a>
+    </div>
+
+    <div class="container-fluid lims-app px-0">
+      <div class="lims-main min-vh-100">
+        <section class="all-samples-search">
+          <div class="container-fluid px-4 h-100">
+            <div class="row h-100 align-items-center gx-3">
+              <div class="col-xl-5 col-lg-6">
+                <div class="all-samples-search__shell">
+                  <div class="all-samples-search__field">
+                    <span class="appicon" data-icon="search"></span>
+                    <input class="all-samples-search__input" type="text" value="" placeholder="Search in All Samples" />
+                  </div>
+                  <button class="btn all-samples-search__submit" aria-label="Search samples">
+                    <span class="appicon" data-icon="next"></span>
+                  </button>
+                </div>
+              </div>
+              <div class="col-auto">
+                <button class="btn all-samples-search__filters">
+                  <span class="appicon" data-icon="filter"></span>
+                  <span>All Filters</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="all-samples-filters-backdrop is-visible"></div>
+        <aside class="all-samples-filters-drawer is-open">
+          <div class="all-samples-filters-drawer__header">
+            <h2>All Filters</h2>
+            <a class="btn all-samples-filters-drawer__close" aria-label="Close filters" href="./all-samples-listing.html">
+              <span class="appicon" data-icon="close"></span>
+            </a>
+          </div>
+
+          <div class="all-samples-filters-drawer__body">
+            <div class="smplfy-form-element">
+              <div class="smplfy-form-element__label-row">
+                <label class="smplfy-form-element__label">Status</label>
+              </div>
+              <div class="smplfy-input-field smplfy-input-field--default smplfy-input-field--filled">
+                <div class="smplfy-input-field__shell">
+                  <select class="smplfy-input-field__control smplfy-input-field__control--select">
+                    <option>Select status</option>
+                    <option selected>Under Analysis</option>
+                  </select>
+                  <span class="smplfy-input-field__icon" data-icon="down"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="smplfy-form-element">
+              <div class="smplfy-form-element__label-row">
+                <label class="smplfy-form-element__label">Request Mode</label>
+              </div>
+              <div class="smplfy-input-field smplfy-input-field--default smplfy-input-field--filled">
+                <div class="smplfy-input-field__shell">
+                  <select class="smplfy-input-field__control smplfy-input-field__control--select">
+                    <option>Select request mode</option>
+                    <option selected>Online</option>
+                  </select>
+                  <span class="smplfy-input-field__icon" data-icon="down"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="smplfy-form-element">
+              <div class="smplfy-form-element__label-row">
+                <label class="smplfy-form-element__label">Customer Representative</label>
+              </div>
+              <div class="smplfy-input-field smplfy-input-field--default smplfy-input-field--filled">
+                <div class="smplfy-input-field__shell">
+                  <input class="smplfy-input-field__control" type="text" value="Aman" />
+                </div>
+              </div>
+            </div>
+
+            <div class="smplfy-form-element">
+              <div class="smplfy-form-element__label-row">
+                <label class="smplfy-form-element__label">Reference</label>
+              </div>
+              <div class="smplfy-input-field smplfy-input-field--default smplfy-input-field--filled">
+                <div class="smplfy-input-field__shell">
+                  <input class="smplfy-input-field__control" type="text" value="Boiler Water" />
+                </div>
+              </div>
+            </div>
+
+            <div class="smplfy-form-element">
+              <div class="smplfy-form-element__label-row">
+                <label class="smplfy-form-element__label">Created On</label>
+              </div>
+              <div class="smplfy-input-field smplfy-input-field--date-field smplfy-input-field--default smplfy-input-field--filled">
+                <div class="smplfy-input-field__shell smplfy-input-field__shell--date">
+                  <input class="smplfy-input-field__control smplfy-input-field__control--date-text" type="text" value="06/03/2026" />
+                  <button class="btn smplfy-input-field__action smplfy-input-field__action--date" type="button">
+                    <span class="smplfy-input-field__calendar" data-icon="calendar"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="smplfy-form-element">
+              <div class="smplfy-form-element__label-row">
+                <label class="smplfy-form-element__label">Reporting Date</label>
+              </div>
+              <div class="smplfy-input-field smplfy-input-field--date-field smplfy-input-field--default smplfy-input-field--filled">
+                <div class="smplfy-input-field__shell smplfy-input-field__shell--date">
+                  <input class="smplfy-input-field__control smplfy-input-field__control--date-text" type="text" value="31/03/2026" />
+                  <button class="btn smplfy-input-field__action smplfy-input-field__action--date" type="button">
+                    <span class="smplfy-input-field__calendar" data-icon="calendar"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="all-samples-filters-drawer__footer">
+            <a class="btn all-samples-filters-drawer__cancel" href="./all-samples-listing.html">Cancel</a>
+            <a class="btn all-samples-filters-drawer__apply" href="./all-samples-listing.html">Apply</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </body>
+  </html>

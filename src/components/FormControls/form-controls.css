@@ -244,12 +244,14 @@
 }
 
 .smplfy-toast {
-  min-width: 304px;
+  width: 304px;
+  max-width: 304px;
   min-height: 41px;
   padding: 12px;
+  border: 1px solid var(--smplfy-toast-success-border);
   border-radius: 6px;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   background: var(--smplfy-toast-success-bg);
   color: var(--smplfy-toast-success-text);
@@ -257,6 +259,13 @@
   transition:
     opacity 220ms cubic-bezier(0.2, 0, 0, 1),
     transform 220ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.smplfy-toast--error {
+  background: var(--smplfy-toast-error-bg);
+  color: var(--smplfy-toast-error-text);
+  border-color: var(--smplfy-toast-error-border);
+  box-shadow: var(--smplfy-toast-error-shadow);
 }
 
 .smplfy-toast--gone {
@@ -267,12 +276,19 @@
 
 .smplfy-toast__content {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
   font-family: var(--smplfy-field-font-family);
   font-size: 14px;
   line-height: 17px;
   font-weight: 500;
+}
+
+.smplfy-toast__content span:last-child {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .smplfy-toast__icon,
@@ -287,4 +303,6 @@
 
 .smplfy-toast__close {
   padding: 0;
+  margin-left: 12px;
+  flex: 0 0 16px;
 }

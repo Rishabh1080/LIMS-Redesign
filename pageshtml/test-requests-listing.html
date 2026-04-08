@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Requests Listing Reference</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./reference.css" />
+  </head>
+  <body>
+    <div class="reference-banner">
+      <h1 class="reference-banner__title">Test Requests Listing Reference</h1>
+      <a class="reference-banner__back" href="./index.html">Back to index</a>
+    </div>
+
+    <div class="container-fluid lims-app px-0">
+      <div class="lims-main min-vh-100">
+        <div class="lims-main-content">
+          <section class="tr-listing-page-header">
+            <div class="tr-listing-page-header__title-wrap">
+              <a class="tr-listing-page-header__back btn" aria-label="Go back" href="./sample-details-under-analysis.html">
+                <span class="appicon" data-icon="left"></span>
+              </a>
+              <h1>All Test Requests</h1>
+            </div>
+          </section>
+
+          <main class="tr-listing-page">
+            <section class="tr-card tr-card--requests">
+              <div class="tr-card__header">
+                <div class="tr-card__title">5 Test Requests</div>
+                <button class="btn smplfy-primary-button smplfy-primary-button--has-left-icon">
+                  <span class="smplfy-primary-button__icon" data-icon="plus"></span>
+                  <span class="smplfy-primary-button__label">Create Job</span>
+                </button>
+              </div>
+
+              <div class="tr-grid tr-grid--requests tr-grid--head">
+                <div>Test Request ID</div>
+                <div>Status</div>
+                <div>Parameter</div>
+                <div>Test Method</div>
+                <div>Product</div>
+                <div>Age</div>
+                <div>Target Reporting Date</div>
+                <div>Action</div>
+              </div>
+
+              <div class="tr-card__rows">
+                <div class="tr-grid tr-grid--requests tr-grid--row">
+                  <a class="tr-link" href="./sample-details-under-analysis.html">URLS/26/ULRS/O/2026/30/330</a>
+                  <div class="tr-request-status-cell"><span class="tr-pill tr-pill--neutral">Not allocated</span></div>
+                  <div class="tr-cell--truncate">Total Iron as Fe</div>
+                  <div class="tr-cell--truncate">IS:3025 (Part 53) 2024</div>
+                  <div>Boiler Water</div>
+                  <div>30 min ago</div>
+                  <div>31/03/2026 05:30</div>
+                  <div class="tr-request-actions">
+                    <button class="tr-primary-action btn"><span class="appicon" data-icon="workspace"></span><span>Allocate</span></button>
+                    <button class="tr-action-icon btn" aria-label="Open request"><span class="appicon" data-icon="more"></span></button>
+                  </div>
+                </div>
+                <div class="tr-grid tr-grid--requests tr-grid--row">
+                  <a class="tr-link" href="./sample-details-under-analysis.html">URLS/26/ULRS/O/2026/30/331</a>
+                  <div class="tr-request-status-cell"><span class="tr-pill tr-pill--neutral">Not allocated</span></div>
+                  <div class="tr-cell--truncate">Total Hardness as CaCO3</div>
+                  <div class="tr-cell--truncate">IS:3025 (Part 53) 2024</div>
+                  <div>Boiler Water</div>
+                  <div>30 min ago</div>
+                  <div>31/03/2026 05:30</div>
+                  <div class="tr-request-actions">
+                    <button class="tr-primary-action btn"><span class="appicon" data-icon="workspace"></span><span>Allocate</span></button>
+                    <button class="tr-action-icon btn" aria-label="Open request"><span class="appicon" data-icon="more"></span></button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="tr-card tr-card--jobs">
+              <div class="tr-card__header tr-card__header--simple">
+                <div class="tr-card__title">5 Jobs</div>
+              </div>
+
+              <div class="tr-grid tr-grid--jobs tr-grid--head">
+                <div>Test Request ID</div>
+                <div>Status</div>
+                <div>Product</div>
+                <div>Age</div>
+                <div>Target Reporting Date</div>
+                <div>Action</div>
+              </div>
+
+              <div class="tr-card__rows">
+                <div class="tr-grid tr-grid--jobs tr-grid--row">
+                  <a class="tr-link" href="./sample-details-under-analysis.html">URLS/O/26-27</a>
+                  <div class="tr-job-status-cell"><span class="tr-pill tr-pill--neutral">Datasheet Created/Not allocated</span></div>
+                  <div>Boiler Water</div>
+                  <div>30 minutes ago</div>
+                  <div>31/03/2026 05:30</div>
+                  <div class="tr-job-actions">
+                    <button class="tr-primary-action btn"><span class="appicon" data-icon="workspace"></span><span>Allocate</span></button>
+                    <button class="tr-secondary-action btn"><span class="appicon" data-icon="more"></span><span>View</span></button>
+                  </div>
+                </div>
+                <div class="tr-grid tr-grid--jobs tr-grid--row">
+                  <a class="tr-link" href="./sample-details-under-analysis.html">URLS/O/26-27</a>
+                  <div class="tr-job-status-cell"><span class="tr-pill tr-pill--info">Under Testing</span></div>
+                  <div>Boiler Water</div>
+                  <div>30 minutes ago</div>
+                  <div>31/03/2026 05:30</div>
+                  <div class="tr-job-actions">
+                    <button class="tr-secondary-action btn"><span class="appicon" data-icon="more"></span><span>View</span></button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>

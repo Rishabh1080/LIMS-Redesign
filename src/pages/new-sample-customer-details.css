@@ -417,18 +417,7 @@
 }
 
 .new-sample-cancel {
-  min-height: 40px;
-  padding: 0 16px;
-  border: 1px solid #cad3df;
-  border-radius: 6px;
-  background: #fff;
-  color: #4d5561;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
+  min-width: 88px;
 }
 
 .new-sample-card__footer .smplfy-primary-button {

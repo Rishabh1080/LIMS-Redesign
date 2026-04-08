@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import companyLogo from '../../../assets/logo-l.png';
 import AppIcon from '../AppIcon';
+import SecondaryButton from '../SecondaryButton';
 import '../../styles.css';
 
 const navigationSections = [
@@ -11,6 +12,8 @@ const navigationSections = [
   {
     title: 'LIMS',
     items: [
+      { label: 'Requests for me', icon: 'requests-for-me', key: 'requests-for-me' },
+      { label: 'Test Requests', icon: 'test-requests', key: 'test-requests-home' },
       { label: 'Samples Workspace', icon: 'workspace', key: 'samples-workspace' },
       { label: 'All Samples', icon: 'all-samples', key: 'all-samples' },
     ],
@@ -66,44 +69,48 @@ function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], on
       <div className="container-fluid h-100">
         <div className="row h-100 align-items-center justify-content-between gx-0">
           <div className="col-auto">
-            <div className="header-breadcrumb d-flex align-items-center">
-              <button
-                className="header-nav-toggle btn"
-                aria-label={mobileSidebarOpen ? 'Close navigation' : 'Toggle navigation'}
-                aria-expanded={mobileSidebarOpen}
-                onClick={onToggleSidebar}
-              >
-                <AppIcon name={mobileSidebarOpen ? 'close' : 'menu'} />
-              </button>
+            <div className="header-breadcrumb-shell d-flex align-items-center">
+              <div className="header-nav-toggle-wrap">
+                <button
+                  className="header-nav-toggle btn"
+                  aria-label={mobileSidebarOpen ? 'Close navigation' : 'Toggle navigation'}
+                  aria-expanded={mobileSidebarOpen}
+                  onClick={onToggleSidebar}
+                >
+                  <AppIcon name={mobileSidebarOpen ? 'close' : 'menu'} />
+                </button>
+              </div>
 
-              <button
-                className="header-home btn d-flex align-items-center"
-                aria-label="Go to Samples Workspace"
-                onClick={() => onNavigate?.('samples-workspace')}
-              >
-                <AppIcon name="home" />
-              </button>
+              <div className="header-breadcrumb d-flex align-items-center">
+                <button
+                  className="header-home btn d-flex align-items-center"
+                  aria-label="Go to Samples Workspace"
+                  onClick={() => onNavigate?.('samples-workspace')}
+                >
+                  <AppIcon name="home" />
+                </button>
 
-              {breadcrumbs.length ? <span className="header-breadcrumb__divider">{'>'}</span> : null}
+                {breadcrumbs.length ? <span className="header-breadcrumb__divider">{'>'}</span> : null}
 
-              {breadcrumbs.map((crumb, index) => (
-                <div className="header-breadcrumb__item" key={`${crumb.label}-${index}`}>
-                  {crumb.current ? (
-                    <span className="header-breadcrumb__text is-current">{crumb.label}</span>
-                  ) : (
-                    <button
-                      className="btn header-breadcrumb__text"
-                      onClick={() => onNavigate?.(crumb.key)}
-                    >
-                      {crumb.label}
-                    </button>
-                  )}
+                {breadcrumbs.map((crumb, index) => (
+                  <div className="header-breadcrumb__item" key={`${crumb.label}-${index}`}>
+                    {crumb.current ? (
+                      <span className="header-breadcrumb__text is-current">{crumb.label}</span>
+                    ) : (
+                      <button
+                        className="btn header-breadcrumb__text"
+                        onClick={() => onNavigate?.(crumb.key)}
+                      >
+                        {crumb.label}
+                      </button>
+                    )}
 
-                  {index < breadcrumbs.length - 1 ? (
-                    <span className="header-breadcrumb__divider">{'>'}</span>
-                  ) : null}
-                </div>
-              ))}
+                    {index < breadcrumbs.length - 1 ? (
+                      <span className="header-breadcrumb__divider">{'>'}</span>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -117,9 +124,9 @@ function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], on
                 <AppIcon name="phone" />
                 <span className="header-chip-label">+91-6358273804</span>
               </button>
-              <button className="header-icon btn" aria-label="Notifications">
+              <SecondaryButton size="large" className="header-icon" aria-label="Notifications">
                 <AppIcon name="bell" />
-              </button>
+              </SecondaryButton>
               <button className="header-avatar btn">DC</button>
             </div>
           </div>

@@ -2,18 +2,18 @@ import { useMemo, useState } from 'react';
 import AppIcon from '../components/AppIcon';
 import AppChrome from '../components/AppChrome/AppChrome';
 import { FormElement } from '../components/FormControls';
+import NavSelector from '../components/NavSelector';
+import ParameterCircles from '../components/ParameterCircles';
+import SecondaryButton from '../components/SecondaryButton';
+import StatusPill from '../components/StatusPill';
 import { getSamplesByCategory, sampleCategories } from '../data/samplesDb';
 import '../styles.css';
 import './all-samples-listing-page.css';
 
-const paletteClassMap = {
-  slate: 'dot-slate',
-  sky: 'dot-sky',
-  amber: 'dot-amber',
-  coral: 'dot-coral',
-  mint: 'dot-mint',
-  sage: 'dot-sage',
-  green: 'dot-green',
+const sampleStatusVariantMap = {
+  success: { color: 'green', styleType: 'strong' },
+  warning: { color: 'orange', styleType: 'neutral' },
+  pending: { color: 'blue', styleType: 'neutral' },
 };
 
 const filterConfig = [
@@ -68,13 +68,14 @@ function ListingTabs({ activeTab, onTabChange }) {
           <div className="col">
             <div className="all-samples-tabs__group">
               {leftTabs.map((tab) => (
-                <button
+                <NavSelector
                   key={tab.key}
-                  className={`all-samples-tabs__item btn ${activeTab === tab.key ? 'is-active' : ''}`}
+                  className="all-samples-tabs__item"
+                  active={activeTab === tab.key}
                   onClick={() => onTabChange(tab.key)}
                 >
                   {tab.label}
-                </button>
+                </NavSelector>
               ))}
             </div>
           </div>
@@ -82,13 +83,14 @@ function ListingTabs({ activeTab, onTabChange }) {
           <div className="col-auto ms-auto">
             <div className="all-samples-tabs__group is-right">
               {rightTabs.map((tab) => (
-                <button
+                <NavSelector
                   key={tab.key}
-                  className={`all-samples-tabs__item btn ${activeTab === tab.key ? 'is-active' : ''}`}
+                  className="all-samples-tabs__item"
+                  active={activeTab === tab.key}
                   onClick={() => onTabChange(tab.key)}
                 >
                   {tab.label}
-                </button>
+                </NavSelector>
               ))}
             </div>
           </div>
@@ -197,9 +199,9 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
         </div>
 
         <div className="all-samples-filters-drawer__footer">
-          <button className="btn all-samples-filters-drawer__cancel" onClick={onCancel}>
+          <SecondaryButton className="all-samples-filters-drawer__cancel" onClick={onCancel}>
             Cancel
-          </button>
+          </SecondaryButton>
           <button className="btn all-samples-filters-drawer__apply" onClick={onApply}>
             Apply
           </button>
@@ -235,28 +237,37 @@ function ListingCard({ sample, onOpenSample }) {
             ) : (
               <span className="all-samples-card__id">{sample.id}</span>
             )}
-            <div className={`status-badge status-${sample.statusTone}`}>{sample.status}</div>
+            <StatusPill
+              className="status-badge"
+              color={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).color}
+              styleType={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).styleType}
+            >
+              {sample.status}
+            </StatusPill>
           </div>
         </div>
 
         <div className="col-xl-3 col-lg-6">
           <div className="all-samples-card__col is-meta has-divider">
-            <div className="meta-block">
-              <div className="meta-label">Customer Representative</div>
-              <div className="meta-value">{sample.representative}</div>
-            </div>
-
-            <div className="all-samples-card__meta-row row g-0">
-              <div className="col-6 pe-3">
-                <div className="meta-block">
-                  <div className="meta-label">Reference</div>
-                  <div className="meta-value">{sample.reference}</div>
-                </div>
+            <div className="sample-details-stack">
+              <div className="meta-block">
+                <div className="meta-label">Customer Representative</div>
+                <div className="meta-value">{sample.representative}</div>
               </div>
-              <div className="col-6">
-                <div className="meta-block">
-                  <div className="meta-label">Request Mode</div>
-                  <div className="meta-value">{sample.requestMode}</div>
+
+              <div className="all-samples-card__meta-row row g-3 sample-details-row">
+                <div className="col-6">
+                  <div className="meta-block">
+                    <div className="meta-label">Reference</div>
+                    <div className="meta-value">{sample.reference}</div>
+                  </div>
+                </div>
+
+                <div className="col-6">
+                  <div className="meta-block">
+                    <div className="meta-label">Request Mode</div>
+                    <div className="meta-value">{sample.requestMode}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -265,13 +276,15 @@ function ListingCard({ sample, onOpenSample }) {
 
         <div className="col-xl-3 col-lg-6">
           <div className="all-samples-card__col is-dates has-divider">
-            <div className="meta-block">
-              <div className="meta-label">Created on</div>
-              <div className="meta-value">{sample.createdOn}</div>
-            </div>
-            <div className="meta-block">
-              <div className="meta-label">Reporting Date</div>
-              <div className="meta-value">{sample.reportingDate}</div>
+            <div className="sample-details-stack sample-dates-row">
+              <div className="meta-block">
+                <div className="meta-label">Created on</div>
+                <div className="meta-value">{sample.createdOn}</div>
+              </div>
+              <div className="meta-block">
+                <div className="meta-label">Reporting Date</div>
+                <div className="meta-value">{sample.reportingDate}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -279,14 +292,7 @@ function ListingCard({ sample, onOpenSample }) {
         <div className="col-xl-3 col-lg-6">
           <div className="all-samples-card__col is-parameters has-divider">
             <div className="meta-label">Parameters</div>
-            <div className="parameter-dots">
-              {sample.parameters.map((tone, index) => (
-                <span
-                  key={`${sample.id}-${index}`}
-                  className={`parameter-dot ${paletteClassMap[tone]}`}
-                />
-              ))}
-            </div>
+            <ParameterCircles parameters={sample.parameters} />
           </div>
         </div>
       </div>

@@ -1,0 +1,54 @@
+.datasheet-page-header {
+  height: 72px;
+  padding: 16px 24px;
+  background: #fff;
+  border-bottom: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.datasheet-page-header__title-wrap,
+.datasheet-page-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.datasheet-page-header__back {
+  width: 32px;
+  padding: 0;
+}
+
+.datasheet-page-header h1 {
+  margin: 0;
+  color: #1c2126;
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.datasheet-page {
+  min-height: 100%;
+  padding: 24px;
+  background: #f5f6f7;
+  display: flex;
+}
+
+.datasheet-page__placeholder {
+  flex: 1 1 auto;
+  min-height: 100%;
+  background: #fff;
+  border: 1px solid #dfe4ea;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #6d737e;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  padding: 24px;
+}

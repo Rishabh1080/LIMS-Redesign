@@ -179,6 +179,47 @@
   padding-right: 11px;
 }
 
+.smplfy-primary-button.smplfy-primary-button--small,
+.smplfy-primary-button--default.smplfy-primary-button--small,
+.smplfy-primary-button--positive.smplfy-primary-button--small,
+.smplfy-primary-button--destructive.smplfy-primary-button--small,
+.smplfy-primary-button--red.smplfy-primary-button--small {
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  width: fit-content;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.smplfy-primary-button.smplfy-primary-button--small.smplfy-primary-button--has-left-icon,
+.smplfy-primary-button--default.smplfy-primary-button--small.smplfy-primary-button--has-left-icon,
+.smplfy-primary-button--positive.smplfy-primary-button--small.smplfy-primary-button--has-left-icon,
+.smplfy-primary-button--destructive.smplfy-primary-button--small.smplfy-primary-button--has-left-icon,
+.smplfy-primary-button--red.smplfy-primary-button--small.smplfy-primary-button--has-left-icon {
+  padding-left: 8px;
+  padding-right: 12px;
+}
+
+.smplfy-primary-button.smplfy-primary-button--small.smplfy-primary-button--icon-only,
+.smplfy-primary-button--default.smplfy-primary-button--small.smplfy-primary-button--icon-only,
+.smplfy-primary-button--positive.smplfy-primary-button--small.smplfy-primary-button--icon-only,
+.smplfy-primary-button--destructive.smplfy-primary-button--small.smplfy-primary-button--icon-only,
+.smplfy-primary-button--red.smplfy-primary-button--small.smplfy-primary-button--icon-only {
+  min-width: 24px;
+}
+
+.smplfy-primary-button.smplfy-primary-button--small .smplfy-primary-button__icon,
+.smplfy-primary-button--default.smplfy-primary-button--small .smplfy-primary-button__icon,
+.smplfy-primary-button--positive.smplfy-primary-button--small .smplfy-primary-button__icon,
+.smplfy-primary-button--destructive.smplfy-primary-button--small .smplfy-primary-button__icon,
+.smplfy-primary-button--red.smplfy-primary-button--small .smplfy-primary-button__icon {
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  font-size: 16px;
+}
+
 .btn.smplfy-primary-button:active,
 .btn.smplfy-primary-button--default:active,
 .btn.smplfy-primary-button--positive:active,

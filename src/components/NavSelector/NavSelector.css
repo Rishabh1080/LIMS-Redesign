@@ -1,0 +1,110 @@
+.smplfy-nav-selector {
+  --nav-selector-height: 51px;
+  --nav-selector-padding-x: 12px;
+  --nav-selector-text-color: #4d5561;
+  --nav-selector-bg: transparent;
+  --nav-selector-border-color: transparent;
+  --nav-selector-badge-bg: #ff3131;
+  --nav-selector-badge-border: transparent;
+  --nav-selector-badge-color: #ffffff;
+
+  min-height: var(--nav-selector-height);
+  padding: 0 var(--nav-selector-padding-x);
+  border-radius: 0;
+  border: 0;
+  border-bottom: 3px solid var(--nav-selector-border-color);
+  background: var(--nav-selector-bg);
+  color: var(--nav-selector-text-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  transition:
+    background-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    color 180ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.smplfy-nav-selector:not(.is-active):hover {
+  --nav-selector-text-color: #1379f0;
+  --nav-selector-bg: #eef7ff;
+  --nav-selector-border-color: transparent;
+  background: var(--nav-selector-bg);
+  color: var(--nav-selector-text-color);
+  box-shadow: none;
+}
+
+.smplfy-nav-selector:not(.is-active):focus-visible,
+.smplfy-nav-selector.is-force-focus {
+  --nav-selector-text-color: #1379f0;
+  --nav-selector-bg: #eef7ff;
+  --nav-selector-border-color: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
+.smplfy-nav-selector.is-active,
+.smplfy-nav-selector.is-active:hover,
+.smplfy-nav-selector.is-active:active,
+.smplfy-nav-selector.is-active:focus-visible {
+  --nav-selector-text-color: #1379f0;
+  --nav-selector-bg: #eef7ff;
+  --nav-selector-border-color: #1379f0;
+  background: var(--nav-selector-bg);
+  color: var(--nav-selector-text-color);
+  box-shadow: none;
+  cursor: default;
+  pointer-events: none;
+}
+
+.smplfy-nav-selector:not(.is-active):active,
+.smplfy-nav-selector:not(.is-active):active:hover {
+  --nav-selector-text-color: #1379f0;
+  --nav-selector-bg: #eef7ff;
+  --nav-selector-border-color: #1379f0;
+  background: var(--nav-selector-bg);
+  color: var(--nav-selector-text-color);
+  box-shadow: none;
+}
+
+.smplfy-nav-selector__label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.smplfy-nav-selector__badge {
+  letter-spacing: -0.02em;
+}
+
+.smplfy-nav-selector--medium {
+  --nav-selector-height: 36px;
+}
+
+.smplfy-nav-selector--large {
+  --nav-selector-height: 51px;
+}
+
+.smplfy-nav-selector:not(.is-active):focus-visible,
+.smplfy-nav-selector:not(.is-active):hover,
+.smplfy-nav-selector:not(.is-active):active,
+.smplfy-nav-selector.is-active {
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-top-color: transparent;
+}
+
+.btn.smplfy-nav-selector:not(.is-active):active,
+.btn.smplfy-nav-selector:not(.is-active):not(:disabled):not(.disabled):active,
+.btn.smplfy-nav-selector:not(.is-active):hover,
+.btn.smplfy-nav-selector:not(.is-active):focus-visible,
+.btn.smplfy-nav-selector.is-active:focus-visible,
+.btn.smplfy-nav-selector.is-active:hover,
+.btn.smplfy-nav-selector.is-active:active {
+  background-image: none;
+  box-shadow: none;
+}

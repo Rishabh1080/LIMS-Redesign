@@ -1,0 +1,51 @@
+.smplfy-menu-action-item {
+  width: max-content;
+  min-width: 100%;
+  min-height: 32px;
+  padding: 4px 16px 4px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #1c2126;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  text-align: left;
+  transition:
+    background-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    transform 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.smplfy-menu-action-item--Default {
+  background: #fff;
+}
+
+.smplfy-menu-action-item--hover,
+.smplfy-menu-action-item:hover {
+  background: #f5f6f7;
+}
+
+.smplfy-menu-action-item--onPress,
+.smplfy-menu-action-item:active {
+  background: #e6e8eb;
+  transform: scale(0.99);
+}
+
+.smplfy-menu-action-item__icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.smplfy-menu-action-item__label {
+  color: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}

@@ -76,6 +76,13 @@ The purpose is:
 - Naming is implementation-oriented rather than semantic
 - Could be clearer if modeled as visibility or state semantics in Figma
 
+### Primary Button
+
+- The TR listing flow needs a true small-height primary button variant for `Allocate`
+- Code now supports this as the same primary button behavior with only the height reduced to `24px`
+- That size variant should be added to Figma instead of representing it as a separate bespoke button treatment
+- Hover, focus, active, disabled, icon spacing, and radii should stay inherited from the main primary button component
+
 ### Stepper
 
 - The current library only exposes the vertical stepper treatment

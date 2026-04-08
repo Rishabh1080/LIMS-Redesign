@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Samples Workspace Reference</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./reference.css" />
+  </head>
+  <body>
+    <div class="reference-shell">
+      <div class="reference-banner">
+        <h1 class="reference-banner__title">Samples Workspace Reference</h1>
+        <a class="reference-banner__back" href="./index.html">Back to index</a>
+      </div>
+
+      <div class="container-fluid lims-app px-0">
+        <div class="sidebar-shell sidebar-shell-desktop">
+          <aside class="lims-sidebar d-flex flex-column">
+            <div class="sidebar-brand d-flex align-items-center border-bottom">
+              <div class="brand-block d-flex align-items-center">
+                <img class="brand-mark" src="../assets/logo-l.png" alt="Deepak ChemTech logo" />
+                <div class="brand-copy">
+                  <div>Deepak ChemTech</div>
+                  <div>Pvt. Ltd.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sidebar-nav flex-grow-1">
+              <section class="sidebar-section">
+                <div class="sidebar-label"><span>HOME</span></div>
+                <div class="d-grid gap-1">
+                  <a class="sidebar-link btn text-start" href="./index.html" aria-label="Dashboard">
+                    <span class="appicon" data-icon="home"></span>
+                    <span class="sidebar-link-text">Dashboard</span>
+                  </a>
+                </div>
+              </section>
+
+              <section class="sidebar-section">
+                <div class="sidebar-label"><span>LIMS</span></div>
+                <div class="d-grid gap-1">
+                  <a class="sidebar-link btn text-start is-active" href="./samples-workspace.html">
+                    <span class="appicon" data-icon="workspace"></span>
+                    <span class="sidebar-link-text">Samples Workspace</span>
+                  </a>
+                  <a class="sidebar-link btn text-start" href="./all-samples-listing.html">
+                    <span class="appicon" data-icon="all"></span>
+                    <span class="sidebar-link-text">All Samples</span>
+                  </a>
+                </div>
+              </section>
+            </div>
+          </aside>
+        </div>
+
+        <div class="lims-main min-vh-100">
+          <header class="global-header">
+            <div class="container-fluid h-100">
+              <div class="row h-100 align-items-center justify-content-between gx-0">
+                <div class="col-auto">
+                  <div class="header-breadcrumb d-flex align-items-center">
+                    <button class="header-nav-toggle btn" aria-label="Toggle navigation">
+                      <span class="appicon" data-icon="menu"></span>
+                    </button>
+                    <a class="header-home btn d-flex align-items-center" href="./samples-workspace.html" aria-label="Go to Samples Workspace">
+                      <span class="appicon" data-icon="home"></span>
+                    </a>
+                    <span class="header-breadcrumb__divider">&gt;</span>
+                    <div class="header-breadcrumb__item">
+                      <span class="header-breadcrumb__text is-current">Samples Workspace</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-auto">
+                  <div class="header-actions d-flex align-items-center">
+                    <div class="status-pill">
+                      <span class="appicon" data-icon="activity"></span>
+                      <span class="status-pill-label">No Active Alerts</span>
+                    </div>
+                    <button class="header-chip btn">
+                      <span class="appicon" data-icon="phone"></span>
+                      <span class="header-chip-label">+91-6358273804</span>
+                    </button>
+                    <button class="header-icon btn" aria-label="Notifications">
+                      <span class="appicon" data-icon="bell"></span>
+                    </button>
+                    <button class="header-avatar btn">DC</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div class="lims-page-header-slot">
+            <div class="page-header">
+              <div class="container-fluid h-100">
+                <div class="row h-100 align-items-center justify-content-between gx-0">
+                  <div class="col-auto">
+                    <h1 class="page-title mb-0">Samples Workspace</h1>
+                  </div>
+                  <div class="col-auto">
+                    <a class="btn smplfy-primary-button smplfy-primary-button--has-left-icon" href="./new-sample-customer-details.html">
+                      <span class="smplfy-primary-button__icon" data-icon="plus"></span>
+                      <span class="smplfy-primary-button__label">New Sample</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lims-main-content">
+            <main class="page-body">
+              <section class="search-hero">
+                <div class="container-fluid px-4">
+                  <div class="row justify-content-center">
+                    <div class="col-12">
+                      <div class="row search-row justify-content-center align-items-center g-3">
+                        <div class="col-lg-6 col-xl-5">
+                          <div class="search-shell d-flex align-items-center">
+                            <div class="search-field d-flex align-items-center flex-grow-1">
+                              <span class="appicon" data-icon="search"></span>
+                              <span>Search Samples</span>
+                            </div>
+                            <button class="btn search-submit" aria-label="Search samples">
+                              <span class="appicon" data-icon="next"></span>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="col-auto">
+                          <button class="btn filter-trigger">
+                            <span class="appicon" data-icon="filter"></span>
+                            <span>All Filters</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="samples-panel">
+                <div class="container-fluid px-0">
+                  <div class="row align-items-center justify-content-between gx-0 panel-header">
+                    <div class="col-auto">
+                      <div class="panel-title">Recent samples</div>
+                    </div>
+                    <div class="col-auto">
+                      <button class="btn clear-link">Clear all</button>
+                    </div>
+                  </div>
+
+                  <div class="row g-3 mt-0">
+                    <div class="col-12">
+                      <article class="sample-card">
+                        <div class="row g-0 align-items-stretch">
+                          <div class="col-xl-3 col-lg-4">
+                            <div class="sample-column sample-primary h-100">
+                              <div class="sample-primary-header">
+                                <a class="sample-id" href="./sample-details-under-analysis.html">IICT/2025-2026/1101</a>
+                                <div class="status-badge status-info">Under Analysis</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-lg-4">
+                            <div class="sample-column sample-meta h-100 sample-divider">
+                              <div class="row g-0">
+                                <div class="col-12">
+                                  <div class="meta-block">
+                                    <div class="meta-label">Customer Representative</div>
+                                    <div class="meta-value">Aman Verma</div>
+                                  </div>
+                                </div>
+                                <div class="col-6 pe-3">
+                                  <div class="meta-block">
+                                    <div class="meta-label">Reference</div>
+                                    <div class="meta-value">Boiler Water</div>
+                                  </div>
+                                </div>
+                                <div class="col-6">
+                                  <div class="meta-block">
+                                    <div class="meta-label">Request Mode</div>
+                                    <div class="meta-value">Online</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-lg-4">
+                            <div class="sample-column sample-dates h-100 sample-divider">
+                              <div class="sample-dates-row">
+                                <div class="meta-block">
+                                  <div class="meta-label">Created on</div>
+                                  <div class="meta-value">06/03/2026, 10:13</div>
+                                </div>
+                                <div class="meta-block">
+                                  <div class="meta-label">Reporting Date</div>
+                                  <div class="meta-value">31/03/2026</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-12">
+                            <div class="sample-column sample-parameters h-100 sample-divider">
+                              <div class="meta-label">Parameters</div>
+                              <div class="parameter-dots">
+                                <span class="parameter-dot dot-slate"></span>
+                                <span class="parameter-dot dot-sky"></span>
+                                <span class="parameter-dot dot-amber"></span>
+                                <span class="parameter-dot dot-green"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+
+                    <div class="col-12">
+                      <article class="sample-card">
+                        <div class="row g-0 align-items-stretch">
+                          <div class="col-xl-3 col-lg-4">
+                            <div class="sample-column sample-primary h-100">
+                              <div class="sample-primary-header">
+                                <a class="sample-id" href="./sample-details-draft.html">IICT/2025-2026/1102</a>
+                                <div class="status-badge status-warning">Pending</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-lg-4">
+                            <div class="sample-column sample-meta h-100 sample-divider">
+                              <div class="row g-0">
+                                <div class="col-12">
+                                  <div class="meta-block">
+                                    <div class="meta-label">Customer Representative</div>
+                                    <div class="meta-value">Neha Kapoor</div>
+                                  </div>
+                                </div>
+                                <div class="col-6 pe-3">
+                                  <div class="meta-block">
+                                    <div class="meta-label">Reference</div>
+                                    <div class="meta-value">Textile Swatch</div>
+                                  </div>
+                                </div>
+                                <div class="col-6">
+                                  <div class="meta-block">
+                                    <div class="meta-label">Request Mode</div>
+                                    <div class="meta-value">Pickup</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-lg-4">
+                            <div class="sample-column sample-dates h-100 sample-divider">
+                              <div class="sample-dates-row">
+                                <div class="meta-block">
+                                  <div class="meta-label">Created on</div>
+                                  <div class="meta-value">06/03/2026, 10:31</div>
+                                </div>
+                                <div class="meta-block">
+                                  <div class="meta-label">Reporting Date</div>
+                                  <div class="meta-value">28/03/2026</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-12">
+                            <div class="sample-column sample-parameters h-100 sample-divider">
+                              <div class="meta-label">Parameters</div>
+                              <div class="parameter-dots">
+                                <span class="parameter-dot dot-mint"></span>
+                                <span class="parameter-dot dot-coral"></span>
+                                <span class="parameter-dot dot-sage"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>

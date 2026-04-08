@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sample Details Review Request Modal Reference</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./reference.css" />
+  </head>
+  <body>
+    <div class="reference-banner">
+      <h1 class="reference-banner__title">Sample Details: Review Request Modal</h1>
+      <a class="reference-banner__back" href="./index.html">Back to index</a>
+    </div>
+
+    <div class="review-request-modal" role="dialog" aria-modal="true" aria-labelledby="review-request-title">
+      <div class="review-request-modal__backdrop"></div>
+      <div class="review-request-modal__card">
+        <div class="review-request-modal__title-row">
+          <span class="appicon review-request-modal__title-icon" data-icon="user"></span>
+          <h2 id="review-request-title">Request Review</h2>
+        </div>
+
+        <div class="review-request-modal__body">
+          <div class="review-request-modal__grid">
+            <div class="review-request-modal__field">
+              <div class="smplfy-form-element">
+                <div class="smplfy-form-element__label-row"><label class="smplfy-form-element__label">Current state</label></div>
+                <div class="smplfy-input-field smplfy-input-field--disabled smplfy-input-field--filled">
+                  <div class="smplfy-input-field__shell">
+                    <select class="smplfy-input-field__control smplfy-input-field__control--select" disabled>
+                      <option>Pending</option>
+                    </select>
+                    <span class="smplfy-input-field__icon" data-icon="down"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="review-request-modal__field">
+              <div class="smplfy-form-element">
+                <div class="smplfy-form-element__label-row"><label class="smplfy-form-element__label">Send to</label></div>
+                <div class="smplfy-input-field smplfy-input-field--default smplfy-input-field--filled">
+                  <div class="smplfy-input-field__shell">
+                    <select class="smplfy-input-field__control smplfy-input-field__control--select">
+                      <option>Technical Manager</option>
+                    </select>
+                    <span class="smplfy-input-field__icon" data-icon="down"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-request-modal__field review-request-modal__field--full">
+            <div class="smplfy-form-element">
+              <div class="smplfy-form-element__label-row"><label class="smplfy-form-element__label">Comments</label></div>
+              <div class="smplfy-input-field smplfy-input-field--default smplfy-input-field--filled">
+                <div class="smplfy-input-field__shell">
+                  <input class="smplfy-input-field__control" type="text" value="Please validate before approval." />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-request-modal__actions">
+          <a class="review-request-modal__cancel btn" href="./sample-details-draft.html">
+            <span class="appicon" data-icon="close"></span>
+            <span>Cancel</span>
+          </a>
+          <a class="btn smplfy-primary-button smplfy-primary-button--has-left-icon" href="./sample-details-under-analysis.html">
+            <span class="smplfy-primary-button__icon" data-icon="send"></span>
+            <span class="smplfy-primary-button__label">Send Request</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>
