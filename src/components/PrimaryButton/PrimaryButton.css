@@ -155,18 +155,18 @@
 }
 
 .smplfy-primary-button--has-left-icon {
-  padding-left: var(--smplfy-button-padding-icon-side);
-  padding-right: var(--smplfy-button-padding-text-side);
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .smplfy-primary-button--has-right-icon {
-  padding-left: var(--smplfy-button-padding-text-side);
-  padding-right: var(--smplfy-button-padding-icon-side);
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .smplfy-primary-button--has-left-icon.smplfy-primary-button--has-right-icon {
-  padding-left: var(--smplfy-button-padding-icon-side);
-  padding-right: var(--smplfy-button-padding-icon-side);
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .smplfy-primary-button.smplfy-primary-button--icon-only,
@@ -174,9 +174,12 @@
 .smplfy-primary-button--positive.smplfy-primary-button--icon-only,
 .smplfy-primary-button--destructive.smplfy-primary-button--icon-only,
 .smplfy-primary-button--red.smplfy-primary-button--icon-only {
+  width: var(--smplfy-button-height);
   min-width: var(--smplfy-button-height);
-  padding-left: 11px;
-  padding-right: 11px;
+  height: var(--smplfy-button-height);
+  min-height: var(--smplfy-button-height);
+  padding: 0;
+  gap: 0;
 }
 
 .smplfy-primary-button.smplfy-primary-button--small,
@@ -206,7 +209,13 @@
 .smplfy-primary-button--positive.smplfy-primary-button--small.smplfy-primary-button--icon-only,
 .smplfy-primary-button--destructive.smplfy-primary-button--small.smplfy-primary-button--icon-only,
 .smplfy-primary-button--red.smplfy-primary-button--small.smplfy-primary-button--icon-only {
+  width: 24px;
   min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  padding: 0;
+  gap: 0;
 }
 
 .smplfy-primary-button.smplfy-primary-button--small .smplfy-primary-button__icon,

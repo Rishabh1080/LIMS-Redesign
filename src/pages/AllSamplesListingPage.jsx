@@ -16,6 +16,67 @@ const sampleStatusVariantMap = {
   pending: { color: 'blue', styleType: 'neutral' },
 };
 
+const extraMetaFieldSets = [
+  [
+    { label: 'Sample Category', value: 'IQC Sample' },
+    { label: 'Priority', value: 'High' },
+  ],
+  [
+    { label: 'Sample Category', value: 'ILC Sample' },
+    { label: 'Priority', value: 'Medium' },
+  ],
+  [
+    { label: 'Sample Category', value: 'PT Sample' },
+    { label: 'Priority', value: 'Urgent' },
+  ],
+  [
+    { label: 'Sample Category', value: 'Amendment Sample' },
+    { label: 'Priority', value: 'Low' },
+  ],
+];
+
+const extraDateFieldSets = [
+  [
+    { label: 'Collection Date', value: '22/02/2026, 06:15' },
+    { label: 'Turnaround', value: '5 Days' },
+  ],
+  [
+    { label: 'Collection Date', value: '22/02/2026, 07:10' },
+    { label: 'Turnaround', value: '4 Days' },
+  ],
+  [
+    { label: 'Collection Date', value: '23/02/2026, 08:25' },
+    { label: 'Turnaround', value: '3 Days' },
+  ],
+  [
+    { label: 'Collection Date', value: '24/02/2026, 09:05' },
+    { label: 'Turnaround', value: '6 Days' },
+  ],
+];
+
+function getSeedValue(sample) {
+  return `${sample.id}|${sample.reference}|${sample.status}|${sample.createdOn}`;
+}
+
+function getDeterministicIndex(seed, length) {
+  let hash = 0;
+
+  for (let index = 0; index < seed.length; index += 1) {
+    hash = (hash * 31 + seed.charCodeAt(index)) >>> 0;
+  }
+
+  return length ? hash % length : 0;
+}
+
+function getSampleDisplayExtras(sample) {
+  const seed = getSeedValue(sample);
+
+  return {
+    extraMetaFields: extraMetaFieldSets[getDeterministicIndex(seed, extraMetaFieldSets.length)],
+    extraDateFields: extraDateFieldSets[getDeterministicIndex(`${seed}:dates`, extraDateFieldSets.length)],
+  };
+}
+
 const filterConfig = [
   {
     key: 'status',
@@ -213,84 +274,102 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
 
 function ListingCard({ sample, onOpenSample }) {
   const isOpenable = sample.status === 'Under Analysis' || sample.status === 'Pending';
+  const { extraMetaFields, extraDateFields } = getSampleDisplayExtras(sample);
+  const metaRows = [
+    [
+      { label: 'Reference', value: sample.reference },
+      { label: 'Request Mode', value: sample.requestMode },
+    ],
+    ...(extraMetaFields?.length ? [extraMetaFields] : []),
+  ];
+  const dateRows = [
+    [{ label: 'Reporting Date', value: sample.reportingDate }],
+    ...(extraDateFields?.length ? [extraDateFields] : []),
+  ];
 
   return (
-    <article className="all-samples-card">
+    <article className="sample-card">
       <div className="row g-0 align-items-stretch">
-        <div className="col-xl-3 col-lg-6">
-          <div className="all-samples-card__col is-primary">
-            {isOpenable ? (
-              <a
-                href="/"
-                onClick={(event) => {
-                  event.preventDefault();
-                  onOpenSample?.(sample.id, {
-                    sourcePage: 'all-samples',
-                    sampleStatus: sample.status,
-                    createdOn: sample.createdOn,
-                  });
-                }}
-                className="all-samples-card__id"
+        <div className="col-xl-3 col-lg-4">
+          <div className="sample-column sample-primary h-100">
+            <div className="sample-primary-header">
+              {isOpenable ? (
+                <a
+                  href="/"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onOpenSample?.(sample.id, {
+                      sourcePage: 'all-samples',
+                      sampleStatus: sample.status,
+                      createdOn: sample.createdOn,
+                    });
+                  }}
+                  className="sample-id"
+                >
+                  {sample.id}
+                </a>
+              ) : (
+                <span className="sample-id">{sample.id}</span>
+              )}
+              <StatusPill
+                className="status-badge"
+                color={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).color}
+                styleType={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).styleType}
               >
-                {sample.id}
-              </a>
-            ) : (
-              <span className="all-samples-card__id">{sample.id}</span>
-            )}
-            <StatusPill
-              className="status-badge"
-              color={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).color}
-              styleType={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).styleType}
-            >
-              {sample.status}
-            </StatusPill>
+                {sample.status}
+              </StatusPill>
+            </div>
           </div>
         </div>
 
-        <div className="col-xl-3 col-lg-6">
-          <div className="all-samples-card__col is-meta has-divider">
+        <div className="col-xl-3 col-lg-4">
+          <div className="sample-column sample-meta h-100 sample-divider">
             <div className="sample-details-stack">
               <div className="meta-block">
                 <div className="meta-label">Customer Representative</div>
                 <div className="meta-value">{sample.representative}</div>
               </div>
-
-              <div className="all-samples-card__meta-row row g-3 sample-details-row">
-                <div className="col-6">
-                  <div className="meta-block">
-                    <div className="meta-label">Reference</div>
-                    <div className="meta-value">{sample.reference}</div>
-                  </div>
+              {metaRows.map((row, rowIndex) => (
+                <div className="sample-details-row" key={`meta-row-${sample.id}-${rowIndex}`}>
+                  {row.map((item) => (
+                    <div className={row.length === 1 ? 'sample-details-cell is-full' : 'sample-details-cell'} key={item.label}>
+                      <div className="meta-block">
+                        <div className="meta-label">{item.label}</div>
+                        <div className="meta-value">{item.value}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-
-                <div className="col-6">
-                  <div className="meta-block">
-                    <div className="meta-label">Request Mode</div>
-                    <div className="meta-value">{sample.requestMode}</div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="col-xl-3 col-lg-6">
-          <div className="all-samples-card__col is-dates has-divider">
-            <div className="sample-details-stack sample-dates-row">
+        <div className="col-xl-3 col-lg-4">
+          <div className="sample-column sample-dates h-100 sample-divider">
+            <div className="sample-details-stack">
               <div className="meta-block">
                 <div className="meta-label">Created on</div>
                 <div className="meta-value">{sample.createdOn}</div>
               </div>
-              <div className="meta-block">
-                <div className="meta-label">Reporting Date</div>
-                <div className="meta-value">{sample.reportingDate}</div>
-              </div>
+              {dateRows.map((row, rowIndex) => (
+                <div className="sample-details-row" key={`date-row-${sample.id}-${rowIndex}`}>
+                  {row.map((item) => (
+                    <div className={row.length === 1 ? 'sample-details-cell is-full' : 'sample-details-cell'} key={item.label}>
+                      <div className="meta-block">
+                        <div className="meta-label">{item.label}</div>
+                        <div className="meta-value">{item.value}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="col-xl-3 col-lg-6">
-          <div className="all-samples-card__col is-parameters has-divider">
+        <div className="col-xl-3 col-12">
+          <div className="sample-column sample-parameters h-100 sample-divider">
             <div className="meta-label">Parameters</div>
             <ParameterCircles parameters={sample.parameters} />
           </div>
@@ -305,19 +384,19 @@ function ListingBody({ samples, onOpenSample }) {
     <main className="all-samples-page">
       <div className="container-fluid px-4">
         <div className="all-samples-page__content">
-        <div className="all-samples-page__header">
-          <span>{samples.length} Total Samples</span>
-        </div>
+          <div className="all-samples-page__header">
+            <span>{samples.length} Total Samples</span>
+          </div>
 
-        <div className="all-samples-page__list">
-          {samples.length ? (
-            samples.map((sample, index) => (
-              <ListingCard sample={sample} onOpenSample={onOpenSample} key={`${sample.id}-${index}`} />
-            ))
-          ) : (
-            <div className="all-samples-page__empty">No samples found for this view.</div>
-          )}
-        </div>
+          <div className="all-samples-page__list">
+            {samples.length ? (
+              samples.map((sample, index) => (
+                <ListingCard sample={sample} onOpenSample={onOpenSample} key={`${sample.id}-${index}`} />
+              ))
+            ) : (
+              <div className="all-samples-page__empty">No samples found for this view.</div>
+            )}
+          </div>
         </div>
       </div>
     </main>

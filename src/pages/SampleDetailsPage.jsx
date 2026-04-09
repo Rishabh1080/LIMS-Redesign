@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import AppIcon from '../components/AppIcon';
 import AppChrome from '../components/AppChrome/AppChrome';
+import Modal from '../components/Modal/Modal';
 import { FormElement, ToastNotification } from '../components/FormControls';
 import MoreActionButton from '../components/MoreActionButton';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
@@ -254,70 +255,66 @@ function AuditTrail() {
 }
 
 function ReviewRequestModal({ open, sendTo, comments, onSendToChange, onCommentsChange, onCancel, onSubmit }) {
-  if (!open) {
-    return null;
-  }
-
   return (
-    <div className="review-request-modal" role="dialog" aria-modal="true" aria-labelledby="review-request-title">
-      <div className="review-request-modal__backdrop" onClick={onCancel} />
-      <div className="review-request-modal__card">
-        <div className="review-request-modal__title-row">
-          <AppIcon name="user" size={24} className="review-request-modal__title-icon" />
-          <h2 id="review-request-title">Request Review</h2>
-        </div>
-
-        <div className="review-request-modal__body">
-          <div className="review-request-modal__grid">
-            <div className="review-request-modal__field">
-              <FormElement
-                type="dropdown"
-                label="Current state"
-                inputProps={{
-                  state: 'disabled',
-                  value: 'Pending',
-                  options: ['Pending'],
-                }}
-              />
-            </div>
-
-            <div className="review-request-modal__field">
-              <FormElement
-                type="dropdown"
-                label="Send to"
-                inputProps={{
-                  value: sendTo,
-                  placeholder: 'Select state',
-                  options: ['Technical Manager', 'Quality Team', 'Review Board'],
-                  onChange: (event) => onSendToChange(event.target.value),
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="review-request-modal__field review-request-modal__field--full">
-            <FormElement
-              type="text"
-              label="Comments"
-              inputProps={{
-                value: comments,
-                placeholder: 'eg.',
-                onChange: (event) => onCommentsChange(event.target.value),
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="review-request-modal__actions">
+    <Modal
+      open={open}
+      title="Request Review"
+      titleId="review-request-title"
+      titleIcon="user"
+      onClose={onCancel}
+      size="md"
+      bodyClassName="review-request-modal__body"
+      actionsClassName="review-request-modal__actions"
+      actions={
+        <>
           <SecondaryButton leftIcon="close" size="large" className="review-request-modal__cancel" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton leftIcon="send" onClick={onSubmit}>
             Send Request
           </PrimaryButton>
+        </>
+      }
+    >
+      <div className="review-request-modal__grid">
+        <div className="review-request-modal__field">
+          <FormElement
+            type="dropdown"
+            label="Current state"
+            inputProps={{
+              state: 'disabled',
+              value: 'Pending',
+              options: ['Pending'],
+            }}
+          />
+        </div>
+
+        <div className="review-request-modal__field">
+          <FormElement
+            type="dropdown"
+            label="Send to"
+            inputProps={{
+              value: sendTo,
+              placeholder: 'Select state',
+              options: ['Technical Manager', 'Quality Team', 'Review Board'],
+              onChange: (event) => onSendToChange(event.target.value),
+            }}
+          />
         </div>
       </div>
-    </div>
+
+      <div className="review-request-modal__field review-request-modal__field--full">
+        <FormElement
+          type="text"
+          label="Comments"
+          inputProps={{
+            value: comments,
+            placeholder: 'eg.',
+            onChange: (event) => onCommentsChange(event.target.value),
+          }}
+        />
+      </div>
+    </Modal>
   );
 }
 

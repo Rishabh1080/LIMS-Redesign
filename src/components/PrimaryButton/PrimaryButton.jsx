@@ -21,16 +21,27 @@ export default function PrimaryButton({
   const hasLabel = Boolean(resolvedLabel);
   const hasLeftIcon = Boolean(leftIcon);
   const hasRightIcon = Boolean(rightIcon);
+  const iconOnly = !hasLabel;
   const variantClass =
     styleVariant && styleVariant !== 'default'
       ? `smplfy-primary-button--${styleVariant.toLowerCase()}`
       : '';
   const sizeClass = size && size !== 'default' ? `smplfy-primary-button--${size.toLowerCase()}` : '';
+  const buttonStyle = hasLabel
+    ? hasLeftIcon && hasRightIcon
+      ? { padding: '10px 12px' }
+      : hasLeftIcon
+        ? { padding: '10px 16px 10px 12px' }
+        : hasRightIcon
+          ? { padding: '10px 12px 10px 16px' }
+          : { padding: '10px 16px' }
+    : undefined;
 
   return (
     <button
       type={type}
       disabled={disabled}
+      style={buttonStyle}
       className={joinClasses(
         'btn',
         'smplfy-primary-button',
@@ -38,7 +49,7 @@ export default function PrimaryButton({
         sizeClass,
         hasLeftIcon && 'smplfy-primary-button--has-left-icon',
         hasRightIcon && 'smplfy-primary-button--has-right-icon',
-        !hasLabel && 'smplfy-primary-button--icon-only',
+        iconOnly && 'smplfy-primary-button--icon-only',
         className,
       )}
       {...props}

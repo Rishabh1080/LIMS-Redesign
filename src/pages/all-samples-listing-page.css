@@ -264,76 +264,6 @@
   color: #fff;
 }
 
-.all-samples-card {
-  min-height: 124px;
-  border: 1px solid #e6e8eb;
-  border-radius: 12px;
-  background: #fff;
-  padding: 16px 8px;
-}
-
-.all-samples-card__col {
-  min-width: 0;
-  padding: 0 12px;
-  height: 100%;
-}
-
-.all-samples-card__col.has-divider {
-  border-left: 1px solid #e6e8eb;
-}
-
-.all-samples-card__col.is-primary {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-}
-
-.all-samples-card__id {
-  color: #1379f0;
-  font-size: 16px;
-  line-height: 1.25;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.all-samples-card__id:hover {
-  color: #1379f0;
-}
-
-.all-samples-card__col.is-primary .status-badge {
-  margin-top: 16px;
-}
-
-.all-samples-card__col.is-dates,
-.all-samples-card__col.is-meta {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.all-samples-card__meta-row {
-  margin-top: auto;
-}
-
-.all-samples-card .meta-block {
-  gap: 2px;
-}
-
-.all-samples-card__col.is-parameters .meta-label {
-  margin-bottom: 12px;
-}
-
-.all-samples-card__col.is-parameters .parameter-circles {
-  max-width: 190px;
-}
-
-@media (max-width: 1200px) {
-  .all-samples-card__col.is-dates {
-    border-left: 0;
-  }
-}
-
 @media (max-width: 991.98px) {
   .all-samples-tabs {
     height: auto;
@@ -350,13 +280,5 @@
 
   .all-samples-search .row {
     row-gap: 12px;
-  }
-}
-
-@media (max-width: 767.98px) {
-  .all-samples-card__col.has-divider {
-    border-left: 0;
-    border-top: 1px solid #e6e8eb;
-    padding-top: 16px;
   }
 }

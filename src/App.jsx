@@ -3,6 +3,7 @@ import { useState } from 'react';
 import NewSampleCustomerDetailsPage from './pages/NewSampleCustomerDetailsPage';
 import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
 import DatasheetPage from './pages/DatasheetPage';
+import EnvironmentDataPage from './pages/EnvironmentDataPage';
 import FinalisedReportPage from './pages/FinalisedReportPage';
 import RequestsForMePage from './pages/RequestsForMePage';
 import SampleDetailsPage from './pages/SampleDetailsPage';
@@ -163,6 +164,11 @@ export default function App() {
 
     if (nextPage === 'test-requests-home') {
       setActivePage('test-requests-home');
+      return;
+    }
+
+    if (nextPage === 'environment-data') {
+      setActivePage('environment-data');
       return;
     }
 
@@ -351,6 +357,16 @@ export default function App() {
       <TestRequestsHomePage
         onNavigate={handleNavigate}
         onOpenTrDetails={openTrDetails}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+      />
+    );
+  }
+
+  if (activePage === 'environment-data') {
+    return (
+      <EnvironmentDataPage
+        onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
       />

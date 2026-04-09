@@ -566,11 +566,14 @@ button.header-breadcrumb__text:active {
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0px;
+  gap: 12px;
 }
 
 .sample-details-row {
   margin-top: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 .sample-details-row .meta-block {
@@ -583,10 +586,6 @@ button.header-breadcrumb__text:active {
   text-overflow: ellipsis;
 }
 
-.sample-dates-row {
-  row-gap: 0;
-}
-
 .meta-block {
   display: flex;
   flex-direction: column;
@@ -594,7 +593,7 @@ button.header-breadcrumb__text:active {
 }
 
 .sample-card .meta-block {
-  gap: 2px;
+  gap: 0px;
 }
 
 .meta-label {
@@ -859,17 +858,6 @@ button.header-breadcrumb__text:active {
 
   .sample-details-stack {
     height: auto;
-  }
-
-  .sample-dates-row {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-  }
-
-  .sample-dates-row .meta-block {
-    flex: 1 1 0;
-    margin-top: 0;
   }
 
   .sample-id {

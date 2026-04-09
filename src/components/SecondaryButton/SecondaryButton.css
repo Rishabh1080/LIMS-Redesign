@@ -135,6 +135,7 @@
   padding: 0;
   padding-left: 0 !important;
   padding-right: 0 !important;
+  gap: 0;
 }
 
 .smplfy-secondary-button--icon-only.smplfy-secondary-button--large {

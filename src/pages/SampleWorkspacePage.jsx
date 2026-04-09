@@ -256,9 +256,9 @@ function SampleCard({ sample, onOpenSample }) {
               </div>
 
               {metaRows.map((row, rowIndex) => (
-                <div className="row g-3 sample-details-row" key={`meta-row-${sample.id}-${rowIndex}`}>
+                <div className="sample-details-row" key={`meta-row-${sample.id}-${rowIndex}`}>
                   {row.map((item) => (
-                    <div className={row.length === 1 ? 'col-12' : 'col-6'} key={item.label}>
+                    <div className={row.length === 1 ? 'sample-details-cell is-full' : 'sample-details-cell'} key={item.label}>
                       <div className="meta-block">
                         <div className="meta-label">{item.label}</div>
                         <div className="meta-value">{item.value}</div>
@@ -273,15 +273,15 @@ function SampleCard({ sample, onOpenSample }) {
 
         <div className="col-xl-3 col-lg-4">
           <div className="sample-column sample-dates h-100 sample-divider">
-            <div className="sample-details-stack sample-dates-row">
+            <div className="sample-details-stack">
               <div className="meta-block">
                 <div className="meta-label">Created on</div>
                 <div className="meta-value">{sample.createdOn}</div>
               </div>
               {dateRows.map((row, rowIndex) => (
-                <div className="row g-3 sample-details-row" key={`date-row-${sample.id}-${rowIndex}`}>
+                <div className="sample-details-row" key={`date-row-${sample.id}-${rowIndex}`}>
                   {row.map((item) => (
-                    <div className={row.length === 1 ? 'col-12' : 'col-6'} key={item.label}>
+                    <div className={row.length === 1 ? 'sample-details-cell is-full' : 'sample-details-cell'} key={item.label}>
                       <div className="meta-block">
                         <div className="meta-label">{item.label}</div>
                         <div className="meta-value">{item.value}</div>

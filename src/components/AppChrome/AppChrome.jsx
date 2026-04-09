@@ -16,6 +16,7 @@ const navigationSections = [
       { label: 'Test Requests', icon: 'test-requests', key: 'test-requests-home' },
       { label: 'Samples Workspace', icon: 'workspace', key: 'samples-workspace' },
       { label: 'All Samples', icon: 'all-samples', key: 'all-samples' },
+      { label: 'Environment Data', icon: 'cloud-data', key: 'environment-data' },
     ],
   },
 ];
