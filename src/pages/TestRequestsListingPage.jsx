@@ -183,6 +183,33 @@ const allocationTableByTab = {
 
 const allocationTemplate = 'Worksheet & Raw Data Register- NABL(Total Alkalinity as CaCO3 mg/l)';
 
+function buildRequestRows(viewMode) {
+  if (viewMode === 'approved') {
+    return initialRequestRows.map((row) => ({
+      ...row,
+      status: 'Approved',
+      pillColor: 'green',
+      pillStyle: 'strong',
+      allocated: true,
+    }));
+  }
+
+  return initialRequestRows;
+}
+
+function buildJobRows(viewMode) {
+  if (viewMode === 'approved') {
+    return initialJobRows.map((row) => ({
+      ...row,
+      status: 'Result Approved',
+      tone: 'success',
+      action: 'view',
+    }));
+  }
+
+  return initialJobRows;
+}
+
 function PageHeader({ onBack }) {
   return (
     <section className="tr-listing-page-header">
@@ -456,42 +483,49 @@ function RequestsCardSelection({
   reviewerError,
   onAssigneeChange,
   onReviewerChange,
+  readOnly = false,
 }) {
   return (
     <section className="tr-card tr-card--requests tr-card--selection">
       <div className="tr-card__selection-header">
         <div className="tr-card__selection-controls">
-          <InlineSelect
-            label="Assignee:"
-            placeholder="Select assignee"
-            value={assignee}
-            onChange={onAssigneeChange}
-            options={['Universal Admin', 'Technical Manager', 'Quality Team']}
-            error={assigneeError}
-          />
-          <InlineSelect
-            label="Reviewer:"
-            placeholder="Select reviewer"
-            value={reviewer}
-            onChange={onReviewerChange}
-            options={['Universal Admin', 'Technical Manager', 'Quality Team']}
-            error={reviewerError}
-          />
+          {readOnly ? null : (
+            <>
+              <InlineSelect
+                label="Assignee:"
+                placeholder="Select assignee"
+                value={assignee}
+                onChange={onAssigneeChange}
+                options={['Universal Admin', 'Technical Manager', 'Quality Team']}
+                error={assigneeError}
+              />
+              <InlineSelect
+                label="Reviewer:"
+                placeholder="Select reviewer"
+                value={reviewer}
+                onChange={onReviewerChange}
+                options={['Universal Admin', 'Technical Manager', 'Quality Team']}
+                error={reviewerError}
+              />
+            </>
+          )}
         </div>
 
-        <div className="tr-card__selection-actions">
-          <SecondaryButton
-            leftIcon="close"
-            size="large"
-            className="tr-selection-cancel"
-            onClick={() => onCreateJobModeChange(false)}
-          >
-            Cancel
-          </SecondaryButton>
-          <PrimaryButton leftIcon="plus" onClick={onCreateJob}>
-            Create Job
-          </PrimaryButton>
-        </div>
+        {readOnly ? null : (
+          <div className="tr-card__selection-actions">
+            <SecondaryButton
+              leftIcon="close"
+              size="large"
+              className="tr-selection-cancel"
+              onClick={() => onCreateJobModeChange(false)}
+            >
+              Cancel
+            </SecondaryButton>
+            <PrimaryButton leftIcon="plus" onClick={onCreateJob}>
+              Create Job
+            </PrimaryButton>
+          </div>
+        )}
       </div>
 
       <div className="tr-grid tr-grid--selection tr-grid--head">
@@ -552,7 +586,7 @@ function RequestsCardSelection({
   );
 }
 
-function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreateJob, onAllocate, onOpenTrDetails }) {
+function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreateJob, onAllocate, onOpenTrDetails, readOnly = false }) {
   const [selectedRequestIds, setSelectedRequestIds] = useState([]);
   const [assignee, setAssignee] = useState('');
   const [reviewer, setReviewer] = useState('');
@@ -622,6 +656,7 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
             setReviewerError(false);
           }
         }}
+        readOnly={readOnly}
       />
     );
   }
@@ -630,9 +665,11 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
     <section className="tr-card tr-card--requests">
       <div className="tr-card__header">
         <div className="tr-card__title">{requests.length} Test Requests</div>
-        <PrimaryButton leftIcon="plus" onClick={() => onCreateJobModeChange(true)}>
-          Create Job
-        </PrimaryButton>
+        {readOnly ? null : (
+          <PrimaryButton leftIcon="plus" onClick={() => onCreateJobModeChange(true)}>
+            Create Job
+          </PrimaryButton>
+        )}
       </div>
 
       <div className="row gx-0 flex-nowrap tr-table-row tr-table-row--head">
@@ -677,7 +714,7 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
             <div className="col tr-table-cell tr-table-cell--truncate">{getDateOnly(row.reportingDate)}</div>
             <div className="col-auto tr-table-cell tr-table-cell--actions">
               <div className="tr-actions-shell tr-request-actions">
-                {!row.allocated ? <AllocateTestRequestButton onClick={() => onAllocate(row)} /> : null}
+                {!readOnly && !row.allocated ? <AllocateTestRequestButton onClick={() => onAllocate(row)} /> : null}
                 <ViewTestRequestButton iconOnly={!row.allocated} />
               </div>
             </div>
@@ -688,7 +725,7 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
   );
 }
 
-function JobsCard({ jobs, onAllocate, onOpenTrDetails }) {
+function JobsCard({ jobs, onAllocate, onOpenTrDetails, readOnly = false }) {
   return (
     <section className="tr-card tr-card--jobs">
       <div className="tr-card__header tr-card__header--simple">
@@ -746,7 +783,7 @@ function JobsCard({ jobs, onAllocate, onOpenTrDetails }) {
             <div className="col tr-table-cell tr-table-cell--truncate">{getDateOnly(row.reportingDate)}</div>
             <div className="col-auto tr-table-cell tr-table-cell--actions">
               <div className="tr-actions-shell tr-job-actions">
-                {row.action === 'allocate' ? <AllocateTestRequestButton onClick={() => onAllocate(row)} /> : null}
+                {!readOnly && row.action === 'allocate' ? <AllocateTestRequestButton onClick={() => onAllocate(row)} /> : null}
                 <ViewTestRequestButton />
               </div>
             </div>
@@ -760,14 +797,15 @@ function JobsCard({ jobs, onAllocate, onOpenTrDetails }) {
 export default function TestRequestsListingPage({
   sampleId = 'IICT/2025-2026/1101',
   sourcePage = 'all-samples',
+  viewMode = 'standard',
   onBack,
   onOpenTrDetails,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
 }) {
-  const [requests, setRequests] = useState(initialRequestRows);
-  const [jobs, setJobs] = useState(initialJobRows);
+  const [requests, setRequests] = useState(() => buildRequestRows(viewMode));
+  const [jobs, setJobs] = useState(() => buildJobRows(viewMode));
   const [createJobMode, setCreateJobMode] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastTone, setToastTone] = useState('success');
@@ -788,6 +826,7 @@ export default function TestRequestsListingPage({
   const [jobAllocationTargetId, setJobAllocationTargetId] = useState(null);
   const [jobAllocateTo, setJobAllocateTo] = useState('');
   const [jobReviewer, setJobReviewer] = useState('');
+  const readOnly = viewMode === 'approved';
 
   const showToast = (message, tone = 'success') => {
     window.clearTimeout(toastTimerRef.current);
@@ -804,6 +843,10 @@ export default function TestRequestsListingPage({
   }, []);
 
   const handleCreateJob = (selectedRequestIds) => {
+    if (readOnly) {
+      return;
+    }
+
     if (selectedRequestIds.length === 0) {
       showToast('Select test request to create job', 'error');
       return;
@@ -827,6 +870,10 @@ export default function TestRequestsListingPage({
   };
 
   const handleOpenAllocation = (row) => {
+    if (readOnly) {
+      return;
+    }
+
     setAllocationTargetId(row.id);
     setAllocationDetails({
       parameter:
@@ -842,6 +889,10 @@ export default function TestRequestsListingPage({
   };
 
   const handleOpenJobAllocation = (row) => {
+    if (readOnly) {
+      return;
+    }
+
     setJobAllocationTargetId(row.id);
     setJobAllocateTo('');
     setJobReviewer('');
@@ -849,6 +900,11 @@ export default function TestRequestsListingPage({
   };
 
   const handleSubmitAllocation = () => {
+    if (readOnly) {
+      setAllocationModalOpen(false);
+      return;
+    }
+
     if (!allocationTargetId) {
       setAllocationModalOpen(false);
       return;
@@ -871,6 +927,11 @@ export default function TestRequestsListingPage({
   };
 
   const handleSubmitJobAllocation = () => {
+    if (readOnly) {
+      setJobAllocationModalOpen(false);
+      return;
+    }
+
     if (!jobAllocationTargetId) {
       setJobAllocationModalOpen(false);
       return;
@@ -906,26 +967,22 @@ export default function TestRequestsListingPage({
       ]}
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
+      pageHeader={<PageHeader onBack={onBack} />}
     >
-      <div className="sticky-page-shell">
-        <div className="sticky-page-shell__header">
-          <PageHeader onBack={onBack} />
-        </div>
-
-        <main className="tr-listing-page sticky-page-shell__body">
-          {requests.length > 0 ? (
-            <RequestsCard
-              requests={requests}
-              createJobMode={createJobMode}
-              onCreateJobModeChange={setCreateJobMode}
-              onCreateJob={handleCreateJob}
-              onAllocate={handleOpenAllocation}
-              onOpenTrDetails={onOpenTrDetails}
-            />
-          ) : null}
-          {jobs.length > 0 ? <JobsCard jobs={jobs} onAllocate={handleOpenJobAllocation} onOpenTrDetails={onOpenTrDetails} /> : null}
-        </main>
-      </div>
+      <main className="tr-listing-page">
+        {requests.length > 0 ? (
+        <RequestsCard
+          requests={requests}
+          createJobMode={createJobMode}
+          onCreateJobModeChange={setCreateJobMode}
+          onCreateJob={handleCreateJob}
+          onAllocate={handleOpenAllocation}
+          onOpenTrDetails={onOpenTrDetails}
+          readOnly={readOnly}
+        />
+      ) : null}
+        {jobs.length > 0 ? <JobsCard jobs={jobs} onAllocate={handleOpenJobAllocation} onOpenTrDetails={onOpenTrDetails} readOnly={readOnly} /> : null}
+      </main>
 
       <ToastNotification
         key={`${toastTone}-${toastMessage}`}

@@ -199,7 +199,8 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
 }
 
 function SampleCard({ sample, onOpenSample }) {
-  const isOpenable = sample.status === 'Under Analysis' || sample.status === 'Pending';
+  const isOpenable =
+    sample.status === 'Under Analysis' || sample.status === 'Pending' || sample.status === 'Completed';
   const metaRows = [
     [
       { label: 'Reference', value: sample.reference },

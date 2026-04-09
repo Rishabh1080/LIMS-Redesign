@@ -121,69 +121,66 @@ export default function FinalisedReportPage({
       ]}
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
+      pageHeader={
+        <PageHeader
+          reportId={reportId}
+          version={selectedVersion}
+          loading={loadingVersion}
+          onBack={onBack}
+          onVersionChange={handleVersionChange}
+        />
+      }
     >
-      <div className="sticky-page-shell">
-        <div className="sticky-page-shell__header">
-          <PageHeader
-            reportId={reportId}
-            version={selectedVersion}
-            loading={loadingVersion}
-            onBack={onBack}
-            onVersionChange={handleVersionChange}
-          />
-        </div>
+      <main className="finalised-report-page">
+        {loadingVersion ? (
+          <LoadingAnimation title="Refreshing report version" />
+        ) : (
+          <>
+            <aside className="finalised-report-sidebar">
+              {reportGroups.map((group) => (
+                <section className={`finalised-report-group ${group.id === expandedGroupId ? 'is-expanded' : ''}`} key={group.id}>
+                  <button
+                    type="button"
+                    className="finalised-report-group__header btn"
+                    onClick={() => {
+                      setExpandedGroupId(group.id);
+                      setSelectedReportId(group.rows[0]?.id ?? '');
+                    }}
+                    aria-expanded={group.id === expandedGroupId}
+                  >
+                    <div>
+                      <div className="finalised-report-group__title">{group.title}</div>
+                      <div className="finalised-report-group__subtitle">Select a report to view</div>
+                    </div>
+                    <AppIcon name={group.id === expandedGroupId ? 'chevron-up' : 'chevron-down'} />
+                  </button>
 
-        <main className="finalised-report-page sticky-page-shell__body">
-          {loadingVersion ? (
-            <LoadingAnimation title="Refreshing report version" />
-          ) : (
-            <>
-              <aside className="finalised-report-sidebar">
-                {reportGroups.map((group) => (
-                  <section className={`finalised-report-group ${group.id === expandedGroupId ? 'is-expanded' : ''}`} key={group.id}>
-                    <button
-                      type="button"
-                      className="finalised-report-group__header btn"
-                      onClick={() => {
-                        setExpandedGroupId(group.id);
-                        setSelectedReportId(group.rows[0]?.id ?? '');
-                      }}
-                      aria-expanded={group.id === expandedGroupId}
-                    >
-                      <div>
-                        <div className="finalised-report-group__title">{group.title}</div>
-                        <div className="finalised-report-group__subtitle">Select a report to view</div>
-                      </div>
-                      <AppIcon name={group.id === expandedGroupId ? 'chevron-up' : 'chevron-down'} />
-                    </button>
+                  {group.id === expandedGroupId ? (
+                    <div className="finalised-report-group__rows">
+                      {group.rows.map((row) => (
+                        <ReportSelector
+                          key={row.id}
+                          label={row.label}
+                          state={row.id === selectedReportId ? 'active' : 'default'}
+                          hasNabl={row.hasNabl}
+                          onClick={() => setSelectedReportId(row.id)}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                </section>
+              ))}
+            </aside>
 
-                    {group.id === expandedGroupId ? (
-                      <div className="finalised-report-group__rows">
-                        {group.rows.map((row) => (
-                          <ReportSelector
-                            key={row.id}
-                            label={row.label}
-                            state={row.id === selectedReportId ? 'active' : 'default'}
-                            hasNabl={row.hasNabl}
-                            onClick={() => setSelectedReportId(row.id)}
-                          />
-                        ))}
-                      </div>
-                    ) : null}
-                  </section>
-                ))}
-              </aside>
-
-              <section className="finalised-report-preview">
-                <div className="finalised-report-preview__placeholder">
-                  Template content for {selectedReport?.label ?? 'the selected report'} in {selectedVersionLabel} shows
-                  up in this container
-                </div>
-              </section>
-            </>
-          )}
-        </main>
-      </div>
+            <section className="finalised-report-preview">
+              <div className="finalised-report-preview__placeholder">
+                Template content for {selectedReport?.label ?? 'the selected report'} in {selectedVersionLabel} shows
+                up in this container
+              </div>
+            </section>
+          </>
+        )}
+      </main>
     </AppChrome>
   );
 }

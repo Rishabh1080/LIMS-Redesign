@@ -131,74 +131,74 @@ export default function TempReportPage({
       ]}
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
+      pageHeader={
+        <PageHeader
+          reportId={reportId}
+          version={selectedVersion}
+          loading={loadingVersion || loadingFinalize}
+          onBack={onBack}
+          onFinalize={handleFinalizeTransition}
+          onVersionChange={handleVersionChange}
+        />
+      }
     >
-      <div className="sticky-page-shell">
-        <div className="sticky-page-shell__header">
-          <PageHeader
-            reportId={reportId}
-            version={selectedVersion}
-            loading={loadingVersion || loadingFinalize}
-            onBack={onBack}
-            onFinalize={handleFinalizeTransition}
-            onVersionChange={handleVersionChange}
+      <main className="temp-report-page">
+        {loadingVersion || loadingFinalize ? (
+          <LoadingAnimation
+            title={loadingFinalize ? 'Finalising report' : 'Refreshing report version'}
           />
-        </div>
+        ) : (
+          <>
+            <aside className="temp-report-sidebar">
+              {reportGroups.map((group) => (
+                <section className={`temp-report-group ${group.id === expandedGroupId ? 'is-expanded' : ''}`} key={group.id}>
+                  <button
+                    type="button"
+                    className="temp-report-group__header"
+                    onClick={() => {
+                      setExpandedGroupId(group.id);
+                      setSelectedReportId(group.rows[0]?.id ?? '');
+                    }}
+                    aria-expanded={group.id === expandedGroupId}
+                  >
+                    <div className="temp-report-group__header-copy">
+                      <div className="temp-report-group__title">{group.title}</div>
+                      {group.id === expandedGroupId ? (
+                        <div className="temp-report-group__subtitle">Select a report to view</div>
+                      ) : null}
+                    </div>
+                    <AppIcon
+                      name="chevron-down"
+                      className="temp-report-group__chevron"
+                    />
+                  </button>
 
-        <main className="temp-report-page sticky-page-shell__body">
-          {loadingVersion || loadingFinalize ? (
-            <LoadingAnimation
-              title={loadingFinalize ? 'Finalising report' : 'Refreshing report version'}
-            />
-          ) : (
-            <>
-              <aside className="temp-report-sidebar">
-                {reportGroups.map((group) => (
-                  <section className={`temp-report-group ${group.id === expandedGroupId ? 'is-expanded' : ''}`} key={group.id}>
-                    <button
-                      type="button"
-                      className="temp-report-group__header btn"
-                      onClick={() => {
-                        setExpandedGroupId(group.id);
-                        setSelectedReportId(group.rows[0]?.id ?? '');
-                      }}
-                      aria-expanded={group.id === expandedGroupId}
-                    >
-                      <div className="temp-report-group__header-copy">
-                        <div className="temp-report-group__title">{group.title}</div>
-                        {group.id === expandedGroupId ? (
-                          <div className="temp-report-group__subtitle">Select a report to view</div>
-                        ) : null}
-                      </div>
-                      <AppIcon name={group.id === expandedGroupId ? 'chevron-up' : 'chevron-down'} />
-                    </button>
+                  {group.id === expandedGroupId ? (
+                    <div className="temp-report-group__rows">
+                      {group.rows.map((row) => (
+                        <ReportSelector
+                          key={row.id}
+                          label={row.label}
+                          state={row.id === selectedReportId ? 'active' : 'default'}
+                          hasNabl={row.hasNabl}
+                          onClick={() => setSelectedReportId(row.id)}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                </section>
+              ))}
+            </aside>
 
-                    {group.id === expandedGroupId ? (
-                      <div className="temp-report-group__rows">
-                        {group.rows.map((row) => (
-                          <ReportSelector
-                            key={row.id}
-                            label={row.label}
-                            state={row.id === selectedReportId ? 'active' : 'default'}
-                            hasNabl={row.hasNabl}
-                            onClick={() => setSelectedReportId(row.id)}
-                          />
-                        ))}
-                      </div>
-                    ) : null}
-                  </section>
-                ))}
-              </aside>
-
-              <section className="temp-report-preview">
-                <div className="temp-report-preview__placeholder">
-                  Template content for {selectedReport?.label ?? 'the selected report'} in {selectedVersionLabel} shows
-                  up in this container
-                </div>
-              </section>
-            </>
-          )}
-        </main>
-      </div>
+            <section className="temp-report-preview">
+              <div className="temp-report-preview__placeholder">
+                Template content for {selectedReport?.label ?? 'the selected report'} in {selectedVersionLabel} shows
+                up in this container
+              </div>
+            </section>
+          </>
+        )}
+      </main>
     </AppChrome>
   );
 }

@@ -26,6 +26,7 @@ export default function App() {
   const [testRequestsState, setTestRequestsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
+    viewMode: 'standard',
   });
   const [coaReportState, setCoaReportState] = useState({
     sampleId: 'IICT/2025-2026/1101',
@@ -41,6 +42,7 @@ export default function App() {
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'samples-workspace',
     reportId: 'URLS/2026/64',
+    origin: 'temp-report',
   });
   const [trDetailsState, setTrDetailsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
@@ -75,11 +77,12 @@ export default function App() {
   };
 
   const openTestRequests = (sampleId, options = {}) => {
-    const { sourcePage = 'all-samples' } = options;
+    const { sourcePage = 'all-samples', viewMode = 'standard' } = options;
 
     setTestRequestsState({
       sampleId,
       sourcePage,
+      viewMode,
     });
     setActivePage('test-requests');
   };
@@ -108,9 +111,9 @@ export default function App() {
   };
 
   const openFinalisedReport = (sampleId, options = {}) => {
-    const { sourcePage = 'samples-workspace', reportId = 'URLS/2026/64' } = options;
+    const { sourcePage = 'samples-workspace', reportId = 'URLS/2026/64', origin = 'temp-report' } = options;
     setSidebarCollapsed(true);
-    setFinalisedReportState({ sampleId, sourcePage, reportId });
+    setFinalisedReportState({ sampleId, sourcePage, reportId, origin });
     setActivePage('finalised-report');
   };
 
@@ -178,6 +181,8 @@ export default function App() {
   };
 
   if (activePage === 'sample-details') {
+    const isCompletedSample = sampleDetailsState.sampleStatus === 'Completed';
+
     return (
       <SampleDetailsPage
         sampleId={sampleDetailsState.sampleId}
@@ -191,12 +196,18 @@ export default function App() {
         onOpenTestRequests={() =>
           openTestRequests(sampleDetailsState.sampleId, {
             sourcePage: sampleDetailsState.sourcePage,
+            viewMode: isCompletedSample ? 'approved' : 'standard',
           })
         }
         onOpenCoaReport={() =>
-          openCoaReport(sampleDetailsState.sampleId, {
-            sourcePage: sampleDetailsState.sourcePage,
-          })
+          isCompletedSample
+            ? openFinalisedReport(sampleDetailsState.sampleId, {
+                sourcePage: sampleDetailsState.sourcePage,
+                origin: 'sample-details',
+              })
+            : openCoaReport(sampleDetailsState.sampleId, {
+                sourcePage: sampleDetailsState.sourcePage,
+              })
         }
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
@@ -210,6 +221,7 @@ export default function App() {
       <TestRequestsListingPage
         sampleId={testRequestsState.sampleId}
         sourcePage={testRequestsState.sourcePage}
+        viewMode={testRequestsState.viewMode}
         onBack={() => setActivePage('sample-details')}
         onOpenTrDetails={(requestId) =>
           openTrDetails(testRequestsState.sampleId, {
@@ -323,7 +335,9 @@ export default function App() {
         sampleId={finalisedReportState.sampleId}
         sourcePage={finalisedReportState.sourcePage}
         reportId={finalisedReportState.reportId}
-        onBack={() => setActivePage('temp-report')}
+        onBack={() =>
+          setActivePage(finalisedReportState.origin === 'sample-details' ? 'sample-details' : 'temp-report')
+        }
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}

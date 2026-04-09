@@ -163,24 +163,21 @@ export default function TrDetailsPage({
       ]}
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
+      pageHeader={
+        <PageHeader
+          requestId={requestId}
+          workflowStage={workflowStage}
+          onBack={onBack}
+          onOpenDatasheet={onOpenDatasheet}
+          onOpenRemnantModal={() => setRemnantModalOpen(true)}
+        />
+      }
     >
-      <div className="sticky-page-shell">
-        <div className="sticky-page-shell__header">
-          <PageHeader
-            requestId={requestId}
-            workflowStage={workflowStage}
-            onBack={onBack}
-            onOpenDatasheet={onOpenDatasheet}
-            onOpenRemnantModal={() => setRemnantModalOpen(true)}
-          />
+      <main className="tr-details-page">
+        <div className="tr-details-page__placeholder">
+          Template content will be added here
         </div>
-
-        <main className="tr-details-page sticky-page-shell__body">
-          <div className="tr-details-page__placeholder">
-            Template content will be added here
-          </div>
-        </main>
-      </div>
+      </main>
 
       <RemnantModal
         open={remnantModalOpen}

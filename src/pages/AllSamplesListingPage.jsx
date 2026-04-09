@@ -273,7 +273,8 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
 }
 
 function ListingCard({ sample, onOpenSample }) {
-  const isOpenable = sample.status === 'Under Analysis' || sample.status === 'Pending';
+  const isOpenable =
+    sample.status === 'Under Analysis' || sample.status === 'Pending' || sample.status === 'Completed';
   const { extraMetaFields, extraDateFields } = getSampleDisplayExtras(sample);
   const metaRows = [
     [

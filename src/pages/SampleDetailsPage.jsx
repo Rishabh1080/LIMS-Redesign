@@ -6,7 +6,7 @@ import { FormElement, ToastNotification } from '../components/FormControls';
 import MoreActionButton from '../components/MoreActionButton';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import companyLogo from '../../assets/logo-l.png';
+import StatusPill from '../components/StatusPill';
 import './sample-details-page.css';
 
 const toastMessageByKey = {
@@ -14,28 +14,51 @@ const toastMessageByKey = {
   'review-request-success': 'Review Request sent successfully.',
 };
 
-const reportCards = [
-  { key: 'card-1', withLogo: true, tableOnly: false },
-  { key: 'card-2', withLogo: false, tableOnly: true },
-  { key: 'card-3', withLogo: false, tableOnly: false },
-  { key: 'card-4', withLogo: false, tableOnly: true },
-  { key: 'card-5', withLogo: false, tableOnly: true },
+const barcodePattern = [
+  2, 1, 1, 3, 1, 2, 1, 1, 2, 1, 3, 1, 1, 2, 1, 2, 1, 1, 3, 1, 2, 1, 1, 2, 1, 3, 1, 1, 2, 1, 2, 1, 1, 3, 1, 2, 1, 1, 2, 1,
+  3, 1, 1, 2, 1, 2, 1, 1, 3, 1, 2, 1,
 ];
 
-const signatureItems = [
-  ['Analysed by', 'Person’s Name'],
-  ['Format Approved by', 'QA'],
-  ['Format Approved by', 'QA'],
-  ['Format Approved by', 'QA'],
-  ['Date', '13/03/2026'],
+const productSections = [
+  {
+    product: 'Yarns & Chords',
+    sampleQty: '1',
+    sampleSize: '200',
+    quality: 'Yarn',
+    description: 'Lot - 2',
+    identification: 'White',
+    condition: 'ok',
+  },
+  {
+    product: 'Yarns & Chords',
+    sampleQty: '1',
+    sampleSize: '200',
+    quality: 'Yarn',
+    description: 'Lot - 3',
+    identification: 'White',
+    condition: 'OK',
+  },
 ];
 
-const auditRows = [
-  ['Job Created', 'Universal Admin created job for product.', '“Auto comment for approval.”', '09/03/2026 12:45', 'NA'],
-  ['Allocated', 'TestRequest allocated to Universal Admin for testing by Universal Admin.', 'NA', '09/03/2026 12:45', '2 days'],
-  ['Submitted', 'TestRequest is submitted for approval by Universal Admin', 'NA', '09/03/2026 12:45', '2 days'],
-  ['Reviewed', 'TestRequest was Reviewed by Technical Manager and sent for approval of Universal Admin.', 'NA', '09/03/2026 12:45', '2 days'],
-  ['Approved', 'TestRequest was Approved by Universal Admin', 'NA', '09/03/2026 12:45', '2 days'],
+const imageSummaryRows = ['Yarns & Chords', 'Yarns & Chords'];
+
+const parameterRows = [
+  {
+    product: 'Yarns & Chords',
+    parameter: 'Quantitative chemical analysis of mixtures',
+    testMethod: 'IS 2006:1988',
+    size: '',
+    charges: '800',
+    estTime: '4',
+  },
+  {
+    product: 'Yarns & Chords',
+    parameter: 'Quantitative chemical analysis of mixtures',
+    testMethod: 'IS 2006:1988',
+    size: '',
+    charges: '800',
+    estTime: '0',
+  },
 ];
 
 const sampleHeaderActionItems = [
@@ -69,13 +92,22 @@ function DetailsHeader({
   onOpenCoaReport,
 }) {
   const isUnderAnalysis = sampleStatus === 'Under Analysis';
+  const isCompleted = sampleStatus === 'Completed';
   const { date, time } = splitDateTime(createdOn);
   const badgeClass = isUnderAnalysis
     ? 'sample-details-page-header__badge--analysis'
+    : isCompleted
+      ? 'sample-details-page-header__badge--review'
     : reviewRequested
       ? 'sample-details-page-header__badge--review'
       : 'sample-details-page-header__badge--draft';
-  const badgeLabel = isUnderAnalysis ? 'Under Analysis' : reviewRequested ? 'Sent for review' : 'Draft';
+  const badgeLabel = isUnderAnalysis
+    ? 'Under Analysis'
+    : isCompleted
+      ? 'Completed'
+      : reviewRequested
+        ? 'Sent for review'
+        : 'Draft';
 
   return (
     <section className="sample-details-page-header">
@@ -103,11 +135,13 @@ function DetailsHeader({
           <div className="sample-details-page-header__title-copy">
             <div className="sample-details-page-header__title-row">
               <h1>{sampleId}</h1>
-              <span
-                className={`sample-details-page-header__badge ${badgeClass}`}
-              >
-                {badgeLabel}
-              </span>
+              {isCompleted ? (
+                <StatusPill color="green" styleType="strong">
+                  {badgeLabel}
+                </StatusPill>
+              ) : (
+                <span className={`sample-details-page-header__badge ${badgeClass}`}>{badgeLabel}</span>
+              )}
             </div>
             <div className="sample-details-page-header__timestamp">
               <span>{date}</span>
@@ -117,7 +151,25 @@ function DetailsHeader({
         </div>
 
         <div className="sample-details-page-header__cta-group">
-          {isUnderAnalysis ? (
+          {isCompleted ? (
+            <>
+              <PrimaryButton
+                leftIcon="file-text"
+                className="sample-details-page-header__primary"
+                onClick={onOpenCoaReport}
+              >
+                COA Report
+              </PrimaryButton>
+              <SecondaryButton
+                leftIcon="clipboard-text"
+                size="large"
+                className="sample-details-page-header__secondary"
+                onClick={onOpenTestRequests}
+              >
+                Test Requests
+              </SecondaryButton>
+            </>
+          ) : isUnderAnalysis ? (
             <PrimaryButton
               leftIcon="workspace"
               className="sample-details-page-header__primary"
@@ -134,14 +186,6 @@ function DetailsHeader({
               Send for Review
             </PrimaryButton>
           )}
-          <SecondaryButton
-            leftIcon="file-text"
-            size="large"
-            className="sample-details-page-header__secondary"
-            onClick={onOpenCoaReport}
-          >
-            COA Report
-          </SecondaryButton>
           <MoreActionButton className="sample-details-page-header__more" items={sampleHeaderActionItems} />
         </div>
       </div>
@@ -149,105 +193,186 @@ function DetailsHeader({
   );
 }
 
-function ReportHead({ withLogo }) {
+function BarcodeBlock() {
+  let x = 0;
+
   return (
-    <div className="sample-report-card__head">
-      <div className="sample-report-card__logo-cell">
-        {withLogo ? (
-          <img className="sample-report-card__logo" src={companyLogo} alt="Deepak Cybit logo" />
-        ) : null}
-      </div>
+    <div className="sample-report-card__barcode-block" aria-hidden="true">
+      <svg className="sample-report-card__barcode" viewBox="0 0 320 52" role="img" focusable="false">
+        <rect x="0" y="0" width="320" height="52" fill="#fff" />
+        {barcodePattern.map((width, index) => {
+          const isBar = index % 2 === 0;
+          const currentX = x;
+          x += width + 1;
 
-      <div className="sample-report-card__title-cell">
-        <div className="sample-report-card__title-band">
-          universal research laboratory services, lucknow
-        </div>
-        <div className="sample-report-card__title-band">Summary of test results</div>
-      </div>
+          if (!isBar) {
+            return null;
+          }
 
-      <div className="sample-report-card__meta-cell">
-        {[
-          ['Doc. No.', 'URLS/QP/143/F-06'],
-          ['Issue No./Date', '01/08-01/2023'],
-          ['Rev. No.', '01'],
-          ['Rev. Date', '10-10-2024'],
-          ['Page No.', '1 of 1'],
-        ].map(([label, value]) => (
-          <div className="sample-report-card__meta-row" key={label}>
-            <span>{label}</span>
-            <span>{value}</span>
-          </div>
-        ))}
-      </div>
+          return <rect key={`${index}-${width}`} x={currentX} y="4" width={width} height="40" rx="0.5" fill="#1c2126" />;
+        })}
+      </svg>
+      <div className="sample-report-card__barcode-code">a3642e1ecc4c4ec4d5272292</div>
     </div>
   );
 }
 
-function ReportTable() {
+function ProductSectionRows({ section }) {
   return (
-    <div className="sample-report-card__table">
-      {[1, 2, 3, 4].map((row) => (
-        <div key={row} className="sample-report-card__table-row">
-          <div className="sample-report-card__table-index">{row}</div>
-          <div className="sample-report-card__table-label">Sample name</div>
-          <div className="sample-report-card__table-value">
-            universal research laboratory services, lucknow
-          </div>
-        </div>
-      ))}
-    </div>
+    <>
+      <tr className="sample-report-card__product-row">
+        <td className="sample-report-card__product-cell" rowSpan={4}>
+          {section.product}
+        </td>
+        <td rowSpan={4}>{section.sampleQty}</td>
+        <td rowSpan={4}>{section.sampleSize}</td>
+        <td rowSpan={4}>{section.quality}</td>
+        <td className="sample-report-card__image-cell" rowSpan={4}>
+          <button
+            className="sample-report-card__image-button"
+            type="button"
+            aria-label={`Download image for ${section.product}`}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M12 4v8m0 0 3-3m-3 3-3-3M5 16.5V19h14v-2.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.9"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Description</th>
+        <td colSpan={3}>{section.description}</td>
+      </tr>
+      <tr>
+        <th scope="row">Identification</th>
+        <td colSpan={3}>{section.identification}</td>
+      </tr>
+      <tr>
+        <th scope="row">Condition</th>
+        <td colSpan={3}>{section.condition}</td>
+      </tr>
+    </>
   );
 }
 
-function ReportCard({ withLogo, tableOnly }) {
+function SampleReportCard() {
   return (
-    <section className={`sample-report-card ${tableOnly ? 'is-table-only' : ''}`}>
-      {!tableOnly ? <ReportHead withLogo={withLogo} /> : null}
-      <ReportTable />
-    </section>
-  );
-}
+    <section className="sample-report-card">
+      <BarcodeBlock />
 
-function SignatureStrip() {
-  return (
-    <section className="sample-signature-strip">
-      {signatureItems.map(([label, value], index) => (
-        <div className="sample-signature-strip__item" key={`${label}-${value}-${index}`}>
-          <div className="sample-signature-strip__label">{label}</div>
-          <div className="sample-signature-strip__value">{value}</div>
+      <div className="sample-report-card__section">
+        <h2 className="sample-report-card__section-title">Product Data</h2>
+
+        <div className="sample-report-card__table-wrap">
+          <table className="sample-report-card__table sample-report-card__table--product">
+            <colgroup>
+              <col className="sample-report-card__col sample-report-card__col--product" />
+              <col className="sample-report-card__col sample-report-card__col--qty" />
+              <col className="sample-report-card__col sample-report-card__col--size" />
+              <col className="sample-report-card__col sample-report-card__col--quality" />
+              <col className="sample-report-card__col sample-report-card__col--image" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Sample Qty.</th>
+                <th>Sample Size</th>
+                <th>Quality</th>
+                <th>Image</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productSections.map((section) => (
+                <ProductSectionRows key={`${section.product}-${section.description}`} section={section} />
+              ))}
+            </tbody>
+          </table>
         </div>
-      ))}
-    </section>
-  );
-}
 
-function AuditTrail() {
-  return (
-    <section className="sample-audit">
-      <div className="sample-audit__header">Audit Trail</div>
-
-      <div className="sample-audit__body">
-        <div className="sample-audit__timeline">
-          <div className="sample-audit__timeline-line" />
-          {auditRows.map((row) => (
-            <div className="sample-audit__timeline-node" key={row[0]} />
-          ))}
+        <div className="sample-report-card__table-wrap sample-report-card__table-wrap--compact">
+          <table className="sample-report-card__table sample-report-card__table--summary">
+            <colgroup>
+              <col className="sample-report-card__col sample-report-card__col--summary-product" />
+              <col className="sample-report-card__col sample-report-card__col--summary-image" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Image</th>
+              </tr>
+            </thead>
+            <tbody>
+              {imageSummaryRows.map((product, index) => (
+                <tr key={`${product}-${index}`}>
+                  <td>{product}</td>
+                  <td className="sample-report-card__summary-image-cell">
+                    <button
+                      className="sample-report-card__image-button"
+                      type="button"
+                      aria-label={`Download image for ${product}`}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path
+                          d="M12 4v8m0 0 3-3m-3 3-3-3M5 16.5V19h14v-2.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.9"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div className="sample-audit__rows">
-          {auditRows.map(([status, message, note, timestamp, duration]) => (
-            <div className="sample-audit__row" key={status}>
-              <div className="sample-audit__status">{status}</div>
-              <div className="sample-audit__message">
-                <div className="sample-audit__message-line">{message}</div>
-                <div className="sample-audit__note">{note}</div>
-              </div>
-              <div className="sample-audit__meta">
-                <div className="sample-audit__timestamp">{timestamp}</div>
-                <div className="sample-audit__duration">{duration}</div>
-              </div>
-            </div>
-          ))}
+      <div className="sample-report-card__section sample-report-card__section--parameter">
+        <h2 className="sample-report-card__section-title">Parameter Data</h2>
+
+        <div className="sample-report-card__table-wrap">
+          <table className="sample-report-card__table sample-report-card__table--parameter">
+            <colgroup>
+              <col className="sample-report-card__col sample-report-card__col--parameter-product" />
+              <col className="sample-report-card__col sample-report-card__col--parameter-name" />
+              <col className="sample-report-card__col sample-report-card__col--parameter-method" />
+              <col className="sample-report-card__col sample-report-card__col--parameter-size" />
+              <col className="sample-report-card__col sample-report-card__col--parameter-charges" />
+              <col className="sample-report-card__col sample-report-card__col--parameter-time" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Parameter</th>
+                <th>Test Method</th>
+                <th>Size</th>
+                <th>Charges</th>
+                <th>Est. Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {parameterRows.map((row) => (
+                <tr key={`${row.product}-${row.estTime}`}>
+                  <td>{row.product}</td>
+                  <td>{row.parameter}</td>
+                  <td>{row.testMethod}</td>
+                  <td>{row.size}</td>
+                  <td>{row.charges}</td>
+                  <td>{row.estTime}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -389,34 +514,26 @@ export default function SampleDetailsPage({
       breadcrumbs={breadcrumbs}
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
+      pageHeader={
+        <DetailsHeader
+          sampleId={sampleId}
+          sampleStatus={sampleStatus}
+          reviewRequested={reviewRequested}
+          createdOn={createdOn}
+          onBack={onBack}
+          onRequestReview={() => setReviewModalOpen(true)}
+          onOpenTestRequests={onOpenTestRequests}
+          onOpenCoaReport={onOpenCoaReport}
+        />
+      }
     >
-      <div className="sticky-page-shell">
-        <div className="sticky-page-shell__header">
-          <DetailsHeader
-            sampleId={sampleId}
-            sampleStatus={sampleStatus}
-            reviewRequested={reviewRequested}
-            createdOn={createdOn}
-            onBack={onBack}
-            onRequestReview={() => setReviewModalOpen(true)}
-            onOpenTestRequests={onOpenTestRequests}
-            onOpenCoaReport={onOpenCoaReport}
-          />
-        </div>
-
-        <main className="sample-details-page__content sticky-page-shell__body">
-          <div className="sample-details-page__body">
-            <div className="sample-details-page__report-stack">
-              {reportCards.map((card) => (
-                <ReportCard key={card.key} withLogo={card.withLogo} tableOnly={card.tableOnly} />
-              ))}
-            </div>
-
-            <SignatureStrip />
-            <AuditTrail />
+      <main className="sample-details-page__content">
+        <div className="sample-details-page__body">
+          <div className="sample-details-page__report-stack">
+            <SampleReportCard />
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
 
       <ReviewRequestModal
         open={reviewModalOpen}

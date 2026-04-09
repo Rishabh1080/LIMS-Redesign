@@ -10,9 +10,13 @@
     <div class="app-shell">
       <aside class="sidebar" aria-label="Primary">
         <div class="sidebar__brand">
-          <img class="sidebar__brand-mark" src="./logo-l.png" alt="Deepak ChemTech logo" />
+          <img
+            class="sidebar__brand-mark"
+            src="./logo-l.png"
+            alt="Deepak ChemTech logo"
+          />
           <div class="sidebar__brand-copy">
-            <div class="sidebar__brand-name">Deepak Chemtach</div>
+            <div class="sidebar__brand-name">Deepak Chemtech</div>
             <div class="sidebar__brand-sub">Pvt. Ltd.</div>
           </div>
         </div>
@@ -20,7 +24,11 @@
         <div class="sidebar__section">
           <div class="sidebar__section-label">HOME</div>
           <a class="sidebar__item" href="#">
-            <span class="sidebar__item-icon" aria-hidden="true" data-tabler-icon="home-2"></span>
+            <span
+              class="sidebar__item-icon"
+              aria-hidden="true"
+              data-tabler-icon="home-2"
+            ></span>
             <span>Dashboard</span>
           </a>
         </div>
@@ -28,23 +36,43 @@
         <div class="sidebar__section">
           <div class="sidebar__section-label">LIMS</div>
           <a class="sidebar__item" href="#">
-            <span class="sidebar__item-icon" aria-hidden="true" data-tabler-icon="clipboard-list"></span>
+            <span
+              class="sidebar__item-icon"
+              aria-hidden="true"
+              data-tabler-icon="clipboard-list"
+            ></span>
             <span>Requests for me</span>
           </a>
           <a class="sidebar__item" href="#">
-            <span class="sidebar__item-icon" aria-hidden="true" data-tabler-icon="clipboard-text"></span>
+            <span
+              class="sidebar__item-icon"
+              aria-hidden="true"
+              data-tabler-icon="clipboard-text"
+            ></span>
             <span>Test Requests</span>
           </a>
           <a class="sidebar__item" href="#">
-            <span class="sidebar__item-icon" aria-hidden="true" data-tabler-icon="flask"></span>
+            <span
+              class="sidebar__item-icon"
+              aria-hidden="true"
+              data-tabler-icon="flask"
+            ></span>
             <span>Samples Workspace</span>
           </a>
           <a class="sidebar__item" href="#">
-            <span class="sidebar__item-icon" aria-hidden="true" data-tabler-icon="layout-grid"></span>
+            <span
+              class="sidebar__item-icon"
+              aria-hidden="true"
+              data-tabler-icon="layout-grid"
+            ></span>
             <span>All Samples</span>
           </a>
           <a class="sidebar__item is-active" href="#">
-            <span class="sidebar__item-icon" aria-hidden="true" data-tabler-icon="cloud-data-connection"></span>
+            <span
+              class="sidebar__item-icon"
+              aria-hidden="true"
+              data-tabler-icon="cloud-data-connection"
+            ></span>
             <span>Environment Data</span>
           </a>
         </div>
@@ -53,10 +81,18 @@
       <div class="content-shell">
         <header class="app-topbar">
           <div class="app-topbar__breadcrumbs">
-            <button class="topbar-icon-btn topbar-icon-btn--ghost" type="button" aria-label="Toggle navigation">
+            <button
+              class="topbar-icon-btn topbar-icon-btn--ghost"
+              type="button"
+              aria-label="Toggle navigation"
+            >
               <span aria-hidden="true" data-tabler-icon="menu-2"></span>
             </button>
-            <button class="topbar-icon-btn topbar-icon-btn--ghost" type="button" aria-label="Go home">
+            <button
+              class="topbar-icon-btn topbar-icon-btn--ghost"
+              type="button"
+              aria-label="Go home"
+            >
               <span aria-hidden="true" data-tabler-icon="home-2"></span>
             </button>
             <span class="app-topbar__crumb-sep">›</span>
@@ -65,11 +101,19 @@
 
           <div class="app-topbar__actions">
             <div class="status-pill is-success">
-              <span class="status-pill__dot" aria-hidden="true" data-tabler-icon="activity"></span>
+              <span
+                class="status-pill__dot"
+                aria-hidden="true"
+                data-tabler-icon="activity"
+              ></span>
               No Active Alerts
             </div>
             <div class="topbar-chip">+91-6358273804</div>
-            <button class="topbar-icon-btn" type="button" aria-label="Notifications">
+            <button
+              class="topbar-icon-btn"
+              type="button"
+              aria-label="Notifications"
+            >
               <span aria-hidden="true" data-tabler-icon="bell"></span>
             </button>
             <div class="topbar-avatar">DC</div>
@@ -80,7 +124,11 @@
           <section class="page-header">
             <h1>Environment Data</h1>
             <button class="button button-primary" id="open-modal" type="button">
-              <span class="button__icon" aria-hidden="true" data-tabler-icon="plus"></span>
+              <span
+                class="button__icon"
+                aria-hidden="true"
+                data-tabler-icon="plus"
+              ></span>
               <span>Add Data Log</span>
             </button>
           </section>
@@ -110,35 +158,83 @@
 
     <div class="modal" id="log-modal" aria-hidden="true">
       <div class="modal__backdrop" data-close-modal></div>
-      <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div
+        class="modal__card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
         <div class="modal__header">
           <div class="modal__title-row">
-            <span class="modal__title-icon" aria-hidden="true" data-tabler-icon="cloud-data-connection"></span>
+            <span
+              class="modal__title-icon"
+              aria-hidden="true"
+              data-tabler-icon="cloud-data-connection"
+            ></span>
             <h2 id="modal-title">Add Data Log</h2>
           </div>
-          <button class="icon-btn" type="button" aria-label="Close modal" data-close-modal>
+          <button
+            class="icon-btn"
+            type="button"
+            aria-label="Close modal"
+            data-close-modal
+          >
             <span aria-hidden="true" data-tabler-icon="x"></span>
           </button>
         </div>
 
         <form class="modal__body" id="log-form">
           <div class="field field--full">
-            <label class="field__label" for="recordingDateTime">Recording date and time <span class="field__required">*</span></label>
-            <input class="input" id="recordingDateTime" name="recordingDateTime" type="text" placeholder="06/03/2026, 10:13" autocomplete="off" />
-            <div class="field__message" data-error-for="recordingDateTime"></div>
+            <label class="field__label" for="recordingDateTime"
+              >Recording date and time
+              <span class="field__required">*</span></label
+            >
+            <input
+              class="input"
+              id="recordingDateTime"
+              name="recordingDateTime"
+              type="text"
+              placeholder="06/03/2026, 10:13"
+              autocomplete="off"
+            />
+            <div
+              class="field__message"
+              data-error-for="recordingDateTime"
+            ></div>
           </div>
 
           <div class="field-grid">
             <div class="field">
               <label class="field__label" for="temperature">Temperature</label>
-              <input class="input" id="temperature" name="temperature" type="text" placeholder="24.3" autocomplete="off" inputmode="decimal" />
+              <input
+                class="input"
+                id="temperature"
+                name="temperature"
+                type="text"
+                placeholder="24.3"
+                autocomplete="off"
+                inputmode="decimal"
+              />
               <div class="field__message" data-error-for="temperature"></div>
             </div>
 
             <div class="field">
-              <label class="field__label" for="relativeHumidity">Relative humidity</label>
-              <input class="input" id="relativeHumidity" name="relativeHumidity" type="text" placeholder="48%" autocomplete="off" inputmode="decimal" />
-              <div class="field__message" data-error-for="relativeHumidity"></div>
+              <label class="field__label" for="relativeHumidity"
+                >Relative humidity</label
+              >
+              <input
+                class="input"
+                id="relativeHumidity"
+                name="relativeHumidity"
+                type="text"
+                placeholder="48%"
+                autocomplete="off"
+                inputmode="decimal"
+              />
+              <div
+                class="field__message"
+                data-error-for="relativeHumidity"
+              ></div>
             </div>
           </div>
 
@@ -159,12 +255,24 @@
         </form>
 
         <div class="modal__actions">
-          <button class="button button-secondary" type="button" data-close-modal>
-            <span class="button__icon" aria-hidden="true" data-tabler-icon="x"></span>
+          <button
+            class="button button-secondary"
+            type="button"
+            data-close-modal
+          >
+            <span
+              class="button__icon"
+              aria-hidden="true"
+              data-tabler-icon="x"
+            ></span>
             <span>Cancel</span>
           </button>
           <button class="button button-primary" type="submit" form="log-form">
-            <span class="button__icon" aria-hidden="true" data-tabler-icon="device-floppy"></span>
+            <span
+              class="button__icon"
+              aria-hidden="true"
+              data-tabler-icon="device-floppy"
+            ></span>
             <span>Submit</span>
           </button>
         </div>

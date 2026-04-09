@@ -128,77 +128,74 @@ export default function CoaReportSelectionPage({
       ]}
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
+      pageHeader={
+        <PageHeader
+          reportId={reportId}
+          canSubmit={canSubmit}
+          onBack={onBack}
+          onGenerate={() => startTransition('generate')}
+          onFinalize={() => startTransition('finalize')}
+        />
+      }
     >
-      <div className="sticky-page-shell">
-        <div className="sticky-page-shell__header">
-          <PageHeader
-            reportId={reportId}
-            canSubmit={canSubmit}
-            onBack={onBack}
-            onGenerate={() => startTransition('generate')}
-            onFinalize={() => startTransition('finalize')}
+      <main className="coa-report-page">
+        {loadingAction ? (
+          <LoadingAnimation
+            title={loadingAction === 'generate' ? 'Generating report' : 'Finalising report'}
           />
-        </div>
+        ) : (
+          <section className="coa-report-panel">
+            <div className="coa-report-panel__title">Select Report Type</div>
 
-        <main className="coa-report-page sticky-page-shell__body">
-          {loadingAction ? (
-            <LoadingAnimation
-              title={loadingAction === 'generate' ? 'Generating report' : 'Finalising report'}
-            />
-          ) : (
-            <section className="coa-report-panel">
-              <div className="coa-report-panel__title">Select Report Type</div>
-
-              <div className="coa-report-panel__body">
-                <div className="coa-report-panel__options">
-                  {reportTypeOptions.map((option) => (
-                    <CardSelector
-                      key={option.key}
-                      title={option.title}
-                      description={option.description}
-                      selected={selectedReportType === option.key}
-                      onClick={() => {
-                        setSelectedReportType(option.key);
-                        setTemplateSelections({
-                          'cooling-water-tower': '',
-                          'etp-feed-water': 'Test Report Universal (Main_template)',
-                        });
-                      }}
-                    />
-                  ))}
-                </div>
-
-                <div className="coa-report-panel__templates">
-                  {showTemplates ? (
-                    <>
-                      <div className="coa-report-panel__templates-title">Select Templates</div>
-                      <div className="coa-report-panel__templates-list">
-                        {templateRows.map((row) => (
-                          <TemplateRow
-                            key={row.key}
-                            label={row.label}
-                            value={templateSelections[row.key]}
-                            onChange={(event) =>
-                              setTemplateSelections((current) => ({
-                                ...current,
-                                [row.key]: event.target.value,
-                              }))
-                            }
-                          />
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="coa-report-panel__placeholder">
-                      Select a <span className="coa-report-panel__placeholder-emphasis">Report type</span> to continue
-                    </div>
-                  )}
-                </div>
+            <div className="coa-report-panel__body">
+              <div className="coa-report-panel__options">
+                {reportTypeOptions.map((option) => (
+                  <CardSelector
+                    key={option.key}
+                    title={option.title}
+                    description={option.description}
+                    selected={selectedReportType === option.key}
+                    onClick={() => {
+                      setSelectedReportType(option.key);
+                      setTemplateSelections({
+                        'cooling-water-tower': '',
+                        'etp-feed-water': 'Test Report Universal (Main_template)',
+                      });
+                    }}
+                  />
+                ))}
               </div>
-            </section>
-          )}
-        </main>
-      </div>
+
+              <div className="coa-report-panel__templates">
+                {showTemplates ? (
+                  <>
+                    <div className="coa-report-panel__templates-title">Select Templates</div>
+                    <div className="coa-report-panel__templates-list">
+                      {templateRows.map((row) => (
+                        <TemplateRow
+                          key={row.key}
+                          label={row.label}
+                          value={templateSelections[row.key]}
+                          onChange={(event) =>
+                            setTemplateSelections((current) => ({
+                              ...current,
+                              [row.key]: event.target.value,
+                            }))
+                          }
+                        />
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="coa-report-panel__placeholder">
+                    Select a <span className="coa-report-panel__placeholder-emphasis">Report type</span> to continue
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
     </AppChrome>
   );
 }

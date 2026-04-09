@@ -77,26 +77,23 @@ export default function DatasheetPage({
       ]}
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
+      pageHeader={
+        <PageHeader
+          datasheetId={datasheetId}
+          loading={loadingRefresh}
+          onBack={onBack}
+          onRefresh={handleRefresh}
+          onSave={onSave}
+        />
+      }
     >
-      <div className="sticky-page-shell">
-        <div className="sticky-page-shell__header">
-          <PageHeader
-            datasheetId={datasheetId}
-            loading={loadingRefresh}
-            onBack={onBack}
-            onRefresh={handleRefresh}
-            onSave={onSave}
-          />
-        </div>
-
-        <main className="datasheet-page sticky-page-shell__body">
-          {loadingRefresh ? (
-            <LoadingAnimation title="Refreshing datasheet" />
-          ) : (
-            <div className="datasheet-page__placeholder">Template content will be added here</div>
-          )}
-        </main>
-      </div>
+      <main className="datasheet-page">
+        {loadingRefresh ? (
+          <LoadingAnimation title="Refreshing datasheet" />
+        ) : (
+          <div className="datasheet-page__placeholder">Template content will be added here</div>
+        )}
+      </main>
     </AppChrome>
   );
 }
