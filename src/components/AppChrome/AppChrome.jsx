@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import companyLogo from '../../../assets/logo-l.png';
+import Badge from '../Badge';
 import AppIcon from '../AppIcon';
 import SecondaryButton from '../SecondaryButton';
+import { requestSections } from '../../data/requestsForMeData';
+import { allTestRequestBuckets } from '../../data/testRequestsHomeData';
 import '../../styles.css';
 
 const navigationSections = [
@@ -12,8 +15,8 @@ const navigationSections = [
   {
     title: 'LIMS',
     items: [
-      { label: 'Requests for me', icon: 'requests-for-me', key: 'requests-for-me' },
-      { label: 'Test Requests', icon: 'test-requests', key: 'test-requests-home' },
+      { label: 'Requests for me', icon: 'requests-for-me', key: 'requests-for-me', badgeKey: 'requests-for-me' },
+      { label: 'Test Requests', icon: 'test-requests', key: 'test-requests-home', badgeKey: 'test-requests-home' },
       { label: 'Samples Workspace', icon: 'workspace', key: 'samples-workspace' },
       { label: 'All Samples', icon: 'all-samples', key: 'all-samples' },
       { label: 'Environment Data', icon: 'cloud-data', key: 'environment-data' },
@@ -21,7 +24,7 @@ const navigationSections = [
   },
 ];
 
-function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate }) {
+function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeCounts = {} }) {
   return (
     <aside className={`lims-sidebar d-flex flex-column ${collapsed ? 'is-collapsed' : ''}`}>
       <div className="sidebar-brand d-flex align-items-center border-bottom">
@@ -44,7 +47,9 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate }) {
               {section.items.map((item) => (
                 <button
                   key={item.key}
-                  className={`sidebar-link btn text-start ${item.key === activeNav ? 'is-active' : ''}`}
+                  className={`sidebar-link btn text-start ${
+                    item.key === activeNav ? 'is-active' : ''
+                  } ${badgeCounts[item.badgeKey] ? 'sidebar-link--with-badge' : ''}`}
                   title={collapsed ? item.label : undefined}
                   aria-label={item.label}
                   onClick={() => {
@@ -54,6 +59,11 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate }) {
                 >
                   <AppIcon name={item.icon} />
                   <span className="sidebar-link-text">{item.label}</span>
+                  {badgeCounts[item.badgeKey] ? (
+                    <Badge className="sidebar-link__badge" tone="danger" size="small" shape="circle">
+                      {badgeCounts[item.badgeKey]}
+                    </Badge>
+                  ) : null}
                 </button>
               ))}
             </div>
@@ -145,8 +155,19 @@ export default function AppChrome({
   breadcrumbs = [],
   sidebarCollapsed = false,
   onSidebarCollapsedChange,
+  sidebarBadgeCounts = {},
 }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const requestsForMeSidebarBadgeCount = requestSections.reduce(
+    (sum, section) => sum + (section.count ?? 0),
+    0,
+  );
+  const testRequestsSidebarBadgeCount = allTestRequestBuckets.length;
+  const resolvedSidebarBadgeCounts = {
+    'requests-for-me': requestsForMeSidebarBadgeCount,
+    'test-requests-home': testRequestsSidebarBadgeCount,
+    ...sidebarBadgeCounts,
+  };
 
   const handleToggleSidebar = () => {
     if (window.innerWidth < 992) {
@@ -169,13 +190,19 @@ export default function AppChrome({
           activeNav={activeNav}
           onNavigate={onNavigate}
           onItemClick={() => setMobileSidebarOpen(false)}
+          badgeCounts={resolvedSidebarBadgeCounts}
         />
       </div>
 
       <div
         className={`sidebar-shell sidebar-shell-desktop ${sidebarCollapsed ? 'is-collapsed' : ''}`}
       >
-        <Sidebar activeNav={activeNav} collapsed={sidebarCollapsed} onNavigate={onNavigate} />
+        <Sidebar
+          activeNav={activeNav}
+          collapsed={sidebarCollapsed}
+          onNavigate={onNavigate}
+          badgeCounts={resolvedSidebarBadgeCounts}
+        />
       </div>
 
       <div className="lims-main min-vh-100">

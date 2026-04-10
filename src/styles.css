@@ -1,16 +1,16 @@
 :root {
-  --page-bg: #f5f6f7;
-  --surface: #ffffff;
-  --surface-alt: #fdfefe;
-  --sidebar-bg: #021527;
-  --sidebar-border: #1c2126;
-  --text-primary: #1c2126;
-  --text-secondary: #4d5561;
-  --text-tertiary: #6d737e;
-  --border-soft: #d1d5db;
-  --border-card: #e6e8eb;
-  --brand-blue: #1379f0;
-  --brand-blue-strong: #0e5fbb;
+  --page-bg: var(--smplfy-primitive-neutral-200);
+  --surface: var(--smplfy-primitive-neutral-100);
+  --surface-alt: var(--smplfy-primitive-neutral-100);
+  --sidebar-bg: var(--smplfy-primitive-blue-800);
+  --sidebar-border: var(--smplfy-primitive-neutral-800);
+  --text-primary: var(--smplfy-primitive-neutral-800);
+  --text-secondary: var(--smplfy-primitive-neutral-700);
+  --text-tertiary: var(--smplfy-primitive-neutral-600);
+  --border-soft: var(--smplfy-primitive-neutral-400);
+  --border-card: var(--smplfy-primitive-neutral-300);
+  --brand-blue: var(--smplfy-primitive-blue-500);
+  --brand-blue-strong: var(--smplfy-primitive-blue-600);
   --hero-top: #eef8fe;
   --hero-bottom: #ddeffa;
   --alert-border: #a9dca9;
@@ -186,6 +186,10 @@ button {
   transition: background-color 180ms cubic-bezier(0.2, 0, 0, 1), color 180ms cubic-bezier(0.2, 0, 0, 1);
 }
 
+.sidebar-link--with-badge {
+  gap: 8px;
+}
+
 .sidebar-link:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.05);
@@ -198,6 +202,11 @@ button {
 
 .sidebar-link-text {
   white-space: nowrap;
+}
+
+.sidebar-link__badge {
+  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .lims-main {
@@ -494,7 +503,7 @@ button.header-breadcrumb__text:active {
 .samples-panel {
   min-height: 580px;
   padding: 24px;
-  background: var(--surface);
+  background: var(--page-bg);
 }
 
 .panel-header {
@@ -520,6 +529,21 @@ button.header-breadcrumb__text:active {
   border: 1px solid var(--border-card);
   background: var(--surface-alt);
   padding: 16px 8px;
+  transition:
+    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sample-card:hover,
+.sample-card:focus-within {
+  border-color: var(--smplfy-primitive-neutral-400);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sample-card {
+    transition: none;
+  }
 }
 
 .sample-column {

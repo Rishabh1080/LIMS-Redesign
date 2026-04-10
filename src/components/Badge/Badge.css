@@ -11,6 +11,7 @@
 
 .smplfy-badge--circle {
   border-radius: 999px;
+  transform: translateY(1px);
 }
 
 .smplfy-badge--small {

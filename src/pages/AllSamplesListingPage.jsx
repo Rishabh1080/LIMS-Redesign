@@ -3,18 +3,11 @@ import AppIcon from '../components/AppIcon';
 import AppChrome from '../components/AppChrome/AppChrome';
 import { FormElement } from '../components/FormControls';
 import NavSelector from '../components/NavSelector';
-import ParameterCircles from '../components/ParameterCircles';
 import SecondaryButton from '../components/SecondaryButton';
-import StatusPill from '../components/StatusPill';
+import SampleCard, { SampleCardViewToggle } from '../components/SampleCard/SampleCard';
 import { getSamplesByCategory, sampleCategories } from '../data/samplesDb';
 import '../styles.css';
 import './all-samples-listing-page.css';
-
-const sampleStatusVariantMap = {
-  success: { color: 'green', styleType: 'strong' },
-  warning: { color: 'orange', styleType: 'neutral' },
-  pending: { color: 'blue', styleType: 'neutral' },
-};
 
 const extraMetaFieldSets = [
   [
@@ -272,128 +265,33 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
   );
 }
 
-function ListingCard({ sample, onOpenSample }) {
-  const isOpenable =
-    sample.status === 'Under Analysis' || sample.status === 'Pending' || sample.status === 'Completed';
-  const { extraMetaFields, extraDateFields } = getSampleDisplayExtras(sample);
-  const metaRows = [
-    [
-      { label: 'Reference', value: sample.reference },
-      { label: 'Request Mode', value: sample.requestMode },
-    ],
-    ...(extraMetaFields?.length ? [extraMetaFields] : []),
-  ];
-  const dateRows = [
-    [{ label: 'Reporting Date', value: sample.reportingDate }],
-    ...(extraDateFields?.length ? [extraDateFields] : []),
-  ];
-
-  return (
-    <article className="sample-card">
-      <div className="row g-0 align-items-stretch">
-        <div className="col-xl-3 col-lg-4">
-          <div className="sample-column sample-primary h-100">
-            <div className="sample-primary-header">
-              {isOpenable ? (
-                <a
-                  href="/"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    onOpenSample?.(sample.id, {
-                      sourcePage: 'all-samples',
-                      sampleStatus: sample.status,
-                      createdOn: sample.createdOn,
-                    });
-                  }}
-                  className="sample-id"
-                >
-                  {sample.id}
-                </a>
-              ) : (
-                <span className="sample-id">{sample.id}</span>
-              )}
-              <StatusPill
-                className="status-badge"
-                color={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).color}
-                styleType={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).styleType}
-              >
-                {sample.status}
-              </StatusPill>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-xl-3 col-lg-4">
-          <div className="sample-column sample-meta h-100 sample-divider">
-            <div className="sample-details-stack">
-              <div className="meta-block">
-                <div className="meta-label">Customer Representative</div>
-                <div className="meta-value">{sample.representative}</div>
-              </div>
-              {metaRows.map((row, rowIndex) => (
-                <div className="sample-details-row" key={`meta-row-${sample.id}-${rowIndex}`}>
-                  {row.map((item) => (
-                    <div className={row.length === 1 ? 'sample-details-cell is-full' : 'sample-details-cell'} key={item.label}>
-                      <div className="meta-block">
-                        <div className="meta-label">{item.label}</div>
-                        <div className="meta-value">{item.value}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="col-xl-3 col-lg-4">
-          <div className="sample-column sample-dates h-100 sample-divider">
-            <div className="sample-details-stack">
-              <div className="meta-block">
-                <div className="meta-label">Created on</div>
-                <div className="meta-value">{sample.createdOn}</div>
-              </div>
-              {dateRows.map((row, rowIndex) => (
-                <div className="sample-details-row" key={`date-row-${sample.id}-${rowIndex}`}>
-                  {row.map((item) => (
-                    <div className={row.length === 1 ? 'sample-details-cell is-full' : 'sample-details-cell'} key={item.label}>
-                      <div className="meta-block">
-                        <div className="meta-label">{item.label}</div>
-                        <div className="meta-value">{item.value}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="col-xl-3 col-12">
-          <div className="sample-column sample-parameters h-100 sample-divider">
-            <div className="meta-label">Parameters</div>
-            <ParameterCircles parameters={sample.parameters} />
-          </div>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function ListingBody({ samples, onOpenSample }) {
+function ListingBody({ samples, onOpenSample, viewMode, onViewModeChange }) {
   return (
     <main className="all-samples-page">
       <div className="container-fluid px-4">
         <div className="all-samples-page__content">
           <div className="all-samples-page__header">
             <span>{samples.length} Total Samples</span>
+            <SampleCardViewToggle value={viewMode} onChange={onViewModeChange} />
           </div>
 
           <div className="all-samples-page__list">
             {samples.length ? (
-              samples.map((sample, index) => (
-                <ListingCard sample={sample} onOpenSample={onOpenSample} key={`${sample.id}-${index}`} />
-              ))
+              samples.map((sample, index) => {
+                const { extraMetaFields, extraDateFields } = getSampleDisplayExtras(sample);
+
+                return (
+                  <SampleCard
+                    sample={sample}
+                    onOpenSample={onOpenSample}
+                    sourcePage="all-samples"
+                    viewMode={viewMode}
+                    extraMetaFields={extraMetaFields}
+                    extraDateFields={extraDateFields}
+                    key={`${sample.id}-${index}`}
+                  />
+                );
+              })
             ) : (
               <div className="all-samples-page__empty">No samples found for this view.</div>
             )}
@@ -409,6 +307,8 @@ export default function AllSamplesListingPage({
   onOpenSample,
   sidebarCollapsed,
   onSidebarCollapsedChange,
+  sampleCardViewMode,
+  onSampleCardViewModeChange,
 }) {
   const [activeTab, setActiveTab] = useState('all-samples');
   const [searchValue, setSearchValue] = useState('');
@@ -507,6 +407,8 @@ export default function AllSamplesListingPage({
       <ListingBody
         samples={visibleSamples}
         onOpenSample={onOpenSample}
+        viewMode={sampleCardViewMode}
+        onViewModeChange={onSampleCardViewModeChange}
       />
       <FiltersDrawer
         open={filtersOpen}

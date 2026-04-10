@@ -144,6 +144,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
   color: #4d5561;
   font-size: 14px;
   font-weight: 500;
@@ -154,6 +156,16 @@
   color: #6d737e;
   font-size: 14px;
   text-decoration: underline;
+}
+
+.all-samples-page__header .sample-card-view-toggle {
+  margin-left: auto;
+}
+
+@media (max-width: 767.98px) {
+  .all-samples-page__header .sample-card-view-toggle {
+    margin-left: 0;
+  }
 }
 
 .all-samples-page__list {

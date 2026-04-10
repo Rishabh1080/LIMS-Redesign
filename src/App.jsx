@@ -12,10 +12,16 @@ import TempReportPage from './pages/TempReportPage';
 import TestRequestsHomePage from './pages/TestRequestsHomePage';
 import TestRequestsListingPage from './pages/TestRequestsListingPage';
 import TrDetailsPage from './pages/TrDetailsPage';
+import { requestSections } from './data/requestsForMeData';
 
 export default function App() {
   const [activePage, setActivePage] = useState('workspace');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sampleCardViewMode, setSampleCardViewMode] = useState('modern');
+  const requestsForMeSidebarBadgeCount = requestSections.reduce(
+    (sum, section) => sum + (section.count ?? 0),
+    0,
+  );
   const [sampleDetailsState, setSampleDetailsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     initialToast: null,
@@ -212,6 +218,7 @@ export default function App() {
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
       />
     );
   }
@@ -232,6 +239,7 @@ export default function App() {
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
       />
     );
   }
@@ -264,6 +272,7 @@ export default function App() {
           onNavigate={handleNavigate}
           sidebarCollapsed={sidebarCollapsed}
           onSidebarCollapsedChange={setSidebarCollapsed}
+          sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
         />
     );
   }
@@ -279,6 +288,7 @@ export default function App() {
           onNavigate={handleNavigate}
           sidebarCollapsed={sidebarCollapsed}
           onSidebarCollapsedChange={setSidebarCollapsed}
+          sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
         />
     );
   }
@@ -305,6 +315,7 @@ export default function App() {
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
       />
     );
   }
@@ -325,6 +336,7 @@ export default function App() {
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
       />
     );
   }
@@ -341,6 +353,7 @@ export default function App() {
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
       />
     );
   }
@@ -352,6 +365,9 @@ export default function App() {
         onOpenSample={openSampleDetails}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+        sampleCardViewMode={sampleCardViewMode}
+        onSampleCardViewModeChange={setSampleCardViewMode}
       />
     );
   }
@@ -362,6 +378,7 @@ export default function App() {
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
       />
     );
   }
@@ -373,6 +390,7 @@ export default function App() {
         onOpenTrDetails={openTrDetails}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
       />
     );
   }
@@ -383,6 +401,7 @@ export default function App() {
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
       />
     );
   }
@@ -404,12 +423,15 @@ export default function App() {
   }
 
   return (
-    <SampleWorkspacePage
-      onNewSample={() => setActivePage('new-sample-customer-details')}
-      onOpenSample={openSampleDetails}
-      onNavigate={handleNavigate}
-      sidebarCollapsed={sidebarCollapsed}
-      onSidebarCollapsedChange={setSidebarCollapsed}
-    />
+      <SampleWorkspacePage
+        onNewSample={() => setActivePage('new-sample-customer-details')}
+        onOpenSample={openSampleDetails}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+        sampleCardViewMode={sampleCardViewMode}
+        onSampleCardViewModeChange={setSampleCardViewMode}
+      />
   );
 }

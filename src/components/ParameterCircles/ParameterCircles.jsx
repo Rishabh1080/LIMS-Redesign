@@ -9,6 +9,15 @@ import {
 } from '@tabler/icons-react';
 import './ParameterCircles.css';
 
+export const PARAMETER_STATUS_ORDER = [
+  'Not allocated',
+  'Under Testing',
+  'Under Approval',
+  'Rejected',
+  'Reviewed',
+  'Approved',
+];
+
 const STATUS_VISUALS = {
   'Not allocated': {
     circleColor: '#D1D5DB',
@@ -77,14 +86,45 @@ function normalizeParameter(parameter, index) {
   };
 }
 
-export default function ParameterCircles({ parameters = [] }) {
+export function sortParametersByStatus(parameters = []) {
+  return parameters
+    .map((parameter, index) => ({
+      parameter: normalizeParameter(parameter, index),
+      index,
+    }))
+    .sort((left, right) => {
+      const leftRank = PARAMETER_STATUS_ORDER.indexOf(left.parameter.status);
+      const rightRank = PARAMETER_STATUS_ORDER.indexOf(right.parameter.status);
+
+      if (leftRank !== rightRank) {
+        return (leftRank === -1 ? PARAMETER_STATUS_ORDER.length : leftRank)
+          - (rightRank === -1 ? PARAMETER_STATUS_ORDER.length : rightRank);
+      }
+
+      return left.index - right.index;
+    })
+    .map(({ parameter }) => parameter);
+}
+
+export function getParameterSummary(parameters = []) {
+  const sortedParameters = sortParametersByStatus(parameters);
+  const approvedCount = sortedParameters.filter((parameter) => parameter.status === 'Approved').length;
+
+  return {
+    approvedCount,
+    totalCount: sortedParameters.length,
+    sortedParameters,
+  };
+}
+
+export default function ParameterCircles({ parameters = [], className = '' }) {
   const tooltipId = useId();
   const [activeIndex, setActiveIndex] = useState(null);
+  const sortedParameters = sortParametersByStatus(parameters);
 
   return (
-    <div className="parameter-circles">
-      {parameters.map((parameter, index) => {
-        const item = normalizeParameter(parameter, index);
+    <div className={`parameter-circles ${className}`.trim()}>
+      {sortedParameters.map((item, index) => {
         const visual = STATUS_VISUALS[item.status] ?? STATUS_VISUALS['Not allocated'];
         const Icon = visual.icon;
         const isActive = activeIndex === index;
