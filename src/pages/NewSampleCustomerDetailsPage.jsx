@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppIcon from '../components/AppIcon';
+import Checkbox from '../components/Checkbox/Checkbox';
 import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
@@ -32,9 +33,27 @@ const additionalDetailsRows = [
 ];
 
 const parameterRows = [
-  ['Bursting Strength', 'IS 1963', '12 g', '250', '5 days'],
-  ['Colour Fastness', 'AATCC 61', '10 g', '300', '3 days'],
-  ['Abrasion Resistance', 'ISO 12947', '14 g', '450', '7 days'],
+  {
+    parameter: 'Bursting Strength',
+    method: 'IS 1963',
+    size: '12 g',
+    charges: '250',
+    time: '5 days',
+  },
+  {
+    parameter: 'Colour Fastness',
+    method: 'AATCC 61',
+    size: '10 g',
+    charges: '300',
+    time: '3 days',
+  },
+  {
+    parameter: 'Abrasion Resistance',
+    method: 'ISO 12947',
+    size: '14 g',
+    charges: '450',
+    time: '7 days',
+  },
 ];
 
 const stepFields = [
@@ -118,6 +137,78 @@ const initialFormValues = {
   'additional-3': '',
 };
 
+function getSampleDisplayName(sample) {
+  return sample?.id || 'New Sample';
+}
+
+function getSampleType(sample) {
+  if (sample?.extraMetaFields?.[0]?.value) {
+    return sample.extraMetaFields[0].value;
+  }
+
+  switch (sample?.category) {
+    case 'iqc-samples':
+      return 'IQC Sample';
+    case 'ilc-samples':
+      return 'ILC Sample';
+    case 'pt-samples':
+      return 'PT Sample';
+    case 'amendment-samples':
+      return 'Amendment Sample';
+    case 'complaint':
+      return 'Complaint Sample';
+    default:
+      return 'Consumer Sample';
+  }
+}
+
+function buildEditFormValues(sample) {
+  if (!sample) {
+    return initialFormValues;
+  }
+
+  const receivingDate = String(sample.createdOn ?? '').split(',')[0]?.trim() || initialFormValues.receivingDate;
+  const reportingDate = String(sample.reportingDate ?? '').split(',')[0]?.trim() || '28/02/2026';
+
+  return {
+    ...initialFormValues,
+    sampleType: getSampleType(sample),
+    receivingDate,
+    customer: sample.representative ?? 'Anita Desai',
+    customerAddress: `${sample.representative ?? 'Customer'} Address`,
+    category: getSampleType(sample),
+    product: sample.reference ?? sample.id ?? 'Sample Product',
+    description: `Sample ${sample.id ?? ''}`.trim(),
+    quantity: '1',
+    sampleSize: { value: '200', unit: 'g' },
+    quality: 'Standard',
+    identificationMark: sample.id ?? '',
+    condition: 'Good',
+    imageUpload: 'sample-image.jpg',
+    'basic-0': 'Standard Sampling Plan',
+    'basic-1': sample.createdOn ?? '11:23 AM 19 March 2026',
+    'basic-2': sample.representative ?? 'Consumer Sample',
+    'basic-3': 'Yes',
+    'basic-4': sample.requestMode ?? 'Online',
+    'basic-5': 'Routine',
+    'basic-6': sample.reference ?? 'Brand A',
+    'basic-7': 'Good',
+    'additional-0': sample.requestMode ?? 'Online',
+    'additional-1': reportingDate,
+    'additional-2': '2500',
+    'additional-3': 'Front Desk',
+  };
+}
+
+function buildParameterFormRows(mode) {
+  const checked = mode === 'edit';
+
+  return parameterRows.map((row) => ({
+    ...row,
+    checked,
+  }));
+}
+
 function isFilledValue(type, value) {
   if (type === 'split') {
     return Boolean(value?.value?.toString().trim()) && Boolean(value?.unit?.toString().trim());
@@ -161,39 +252,45 @@ function getFieldInputProps(field, formValues, onFieldChange, hasError) {
   };
 }
 
-function StepRail({ currentStep }) {
+function StepRail({ currentStep, title, mode, onStepChange }) {
   const items = wizardSteps.map((label, index) => ({
     label,
-    state: index < currentStep ? 'completed' : index === currentStep ? 'active' : 'default',
+    state: mode === 'edit'
+      ? 'completed'
+      : index < currentStep
+        ? 'completed'
+        : index === currentStep
+          ? 'active'
+          : 'default',
   }));
 
   return (
-    <aside className="new-sample-rail">
-      <div className="new-sample-rail__heading">
-        <h1 className="new-sample-rail__title">New Sample</h1>
+    <aside className={`new-sample-rail ${mode === 'edit' ? 'new-sample-rail--edit' : ''}`.trim()}>
+      <div className={`new-sample-rail__heading ${mode === 'edit' ? 'new-sample-rail__heading--edit' : ''}`.trim()}>
+        <h1 className="new-sample-rail__title">{title}</h1>
       </div>
-      <Stepper items={items} />
+      <Stepper items={items} onItemClick={onStepChange} />
     </aside>
   );
 }
 
-function TopBar({ onBackToWorkspace }) {
+function TopBar({ parentLabel, currentLabel, onBack }) {
   return (
     <header className="new-sample-topbar">
       <div className="new-sample-topbar__breadcrumbs">
         <button
           className="new-sample-topbar__crumb new-sample-topbar__crumb-button is-home"
-          aria-label="Go to Samples Workspace"
-          onClick={onBackToWorkspace}
+          aria-label={`Go to ${parentLabel}`}
+          onClick={onBack}
         >
           <AppIcon name="home" />
         </button>
         <AppIcon name="chevron-right" />
-        <button className="new-sample-topbar__crumb new-sample-topbar__crumb-button" onClick={onBackToWorkspace}>
-          Samples Workspace
+        <button className="new-sample-topbar__crumb new-sample-topbar__crumb-button" onClick={onBack}>
+          {parentLabel}
         </button>
         <AppIcon name="chevron-right" />
-        <span className="new-sample-topbar__crumb is-current">New Sample</span>
+        <span className="new-sample-topbar__crumb is-current">{currentLabel}</span>
       </div>
 
       <div className="new-sample-topbar__actions">
@@ -201,14 +298,14 @@ function TopBar({ onBackToWorkspace }) {
           <AppIcon name="activity" />
           <span>No Active Alerts</span>
         </div>
-        <button className="new-sample-topbar__chip btn">
+        <button className="new-sample-topbar__chip btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral smplfy-secondary-button--has-left-icon">
           <AppIcon name="phone" />
           <span>+91-6358273804</span>
         </button>
-        <button className="new-sample-topbar__icon btn" aria-label="Notifications">
+        <button className="new-sample-topbar__icon btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral smplfy-secondary-button--icon-only" aria-label="Notifications">
           <AppIcon name="bell" />
         </button>
-        <button className="new-sample-topbar__avatar btn">DC</button>
+        <button className="new-sample-topbar__avatar btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral">DC</button>
       </div>
     </header>
   );
@@ -292,7 +389,7 @@ function BasicDetailsSection({ formValues, fieldErrors, onFieldChange }) {
   );
 }
 
-function ProductDetailsSection({ formValues, fieldErrors, onFieldChange }) {
+function ProductDetailsSection({ formValues, fieldErrors, onFieldChange, parameterFormRows, onParameterRowChange }) {
   return (
     <div className="container-fluid new-sample-form__content new-sample-form__content--product">
       <div className="new-sample-product-head">
@@ -399,7 +496,17 @@ function ProductDetailsSection({ formValues, fieldErrors, onFieldChange }) {
 
       <div className="new-sample-parameter-table">
         <div className="new-sample-parameter-table__header">
-          <div className="new-sample-checkbox" />
+          <div className="new-sample-parameter-checkbox-cell">
+            <Checkbox
+              checked={parameterFormRows.length > 0 && parameterFormRows.every((row) => row.checked)}
+              ariaLabel="Select all parameters"
+              onChange={(nextChecked) => {
+                parameterFormRows.forEach((_, index) => {
+                  onParameterRowChange(index, 'checked', nextChecked);
+                });
+              }}
+            />
+          </div>
           <div>Parameter</div>
           <div>Test Method</div>
           <div>Req. Size</div>
@@ -410,15 +517,41 @@ function ProductDetailsSection({ formValues, fieldErrors, onFieldChange }) {
           </button>
         </div>
 
-        {parameterRows.map(([parameter, method, size, charges, time]) => (
-          <div className="new-sample-parameter-table__row" key={parameter}>
-            <div className="new-sample-checkbox" />
-            <div className="new-sample-parameter-input is-placeholder">{parameter}</div>
-            <div className="new-sample-parameter-input is-placeholder">{method}</div>
-            <div className="new-sample-parameter-input is-placeholder">{size}</div>
-            <div className="new-sample-parameter-input is-placeholder">{charges}</div>
-            <div className="new-sample-parameter-input is-placeholder">{time}</div>
-            <button className="new-sample-product-head__delete btn" aria-label={`Delete ${parameter}`}>
+        {parameterFormRows.map((row, index) => (
+          <div className="new-sample-parameter-table__row" key={`${row.parameter}-${index}`}>
+            <div className="new-sample-parameter-checkbox-cell">
+              <Checkbox
+                checked={row.checked}
+                ariaLabel={`Select ${row.parameter}`}
+                onChange={(nextChecked) => onParameterRowChange(index, 'checked', nextChecked)}
+              />
+            </div>
+            <input
+              className="new-sample-parameter-input"
+              value={row.parameter}
+              onChange={(event) => onParameterRowChange(index, 'parameter', event.target.value)}
+            />
+            <input
+              className="new-sample-parameter-input"
+              value={row.method}
+              onChange={(event) => onParameterRowChange(index, 'method', event.target.value)}
+            />
+            <input
+              className="new-sample-parameter-input"
+              value={row.size}
+              onChange={(event) => onParameterRowChange(index, 'size', event.target.value)}
+            />
+            <input
+              className="new-sample-parameter-input"
+              value={row.charges}
+              onChange={(event) => onParameterRowChange(index, 'charges', event.target.value)}
+            />
+            <input
+              className="new-sample-parameter-input"
+              value={row.time}
+              onChange={(event) => onParameterRowChange(index, 'time', event.target.value)}
+            />
+            <button className="new-sample-product-head__delete btn" aria-label={`Delete ${row.parameter}`}>
               <AppIcon name="trash" />
             </button>
           </div>
@@ -461,10 +594,23 @@ function AdditionalDetailsSection({ formValues, fieldErrors, onFieldChange }) {
   );
 }
 
-function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel }) {
+function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel, mode }) {
   const prevLabel = currentStep > 0 ? wizardSteps[currentStep - 1] : 'Cancel';
   const isLast = currentStep === wizardSteps.length - 1;
   const handlePrevClick = currentStep > 0 ? onPrev : onCancel;
+
+  if (mode === 'edit') {
+    return (
+      <div className="new-sample-card__footer">
+        <SecondaryButton className="new-sample-cancel" leftIcon="close" onClick={onCancel}>
+          Cancel
+        </SecondaryButton>
+        <PrimaryButton leftIcon="save" onClick={onComplete}>
+          Save Changes
+        </PrimaryButton>
+      </div>
+    );
+  }
 
   return (
     <div className="new-sample-card__footer">
@@ -485,7 +631,21 @@ function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel }) {
   );
 }
 
-function CustomerForm({ currentStep, formValues, fieldErrors, onFieldChange, onPrev, onNext, onComplete, onCancel }) {
+function CustomerForm({
+  currentStep,
+  formValues,
+  fieldErrors,
+  onFieldChange,
+  onPrev,
+  onNext,
+  onComplete,
+  onCancel,
+  mode,
+  sampleTitle,
+  onStepChange,
+  parameterFormRows,
+  onParameterRowChange,
+}) {
   const sections = [
     <CustomerDetailsSection
       key="customer"
@@ -504,6 +664,8 @@ function CustomerForm({ currentStep, formValues, fieldErrors, onFieldChange, onP
       formValues={formValues}
       fieldErrors={fieldErrors}
       onFieldChange={onFieldChange}
+      parameterFormRows={parameterFormRows}
+      onParameterRowChange={onParameterRowChange}
     />,
     <AdditionalDetailsSection
       key="additional"
@@ -516,7 +678,12 @@ function CustomerForm({ currentStep, formValues, fieldErrors, onFieldChange, onP
   return (
     <section className="new-sample-card">
       <div className="new-sample-card__body">
-        <StepRail currentStep={currentStep} />
+        <StepRail
+          currentStep={currentStep}
+          title={sampleTitle}
+          mode={mode}
+          onStepChange={mode === 'edit' ? onStepChange : undefined}
+        />
 
         <div className="new-sample-form">
           <div className="new-sample-form__stage">{sections[currentStep]}</div>
@@ -526,6 +693,7 @@ function CustomerForm({ currentStep, formValues, fieldErrors, onFieldChange, onP
             onNext={onNext}
             onComplete={onComplete}
             onCancel={onCancel}
+            mode={mode}
           />
         </div>
       </div>
@@ -533,10 +701,26 @@ function CustomerForm({ currentStep, formValues, fieldErrors, onFieldChange, onP
   );
 }
 
-export default function NewSampleCustomerDetailsPage({ onBackToWorkspace, onComplete }) {
+export default function NewSampleCustomerDetailsPage({
+  mode = 'create',
+  sample = null,
+  parentLabel = 'Samples Workspace',
+  onBackToWorkspace,
+  onComplete,
+}) {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formValues, setFormValues] = useState(initialFormValues);
+  const [formValues, setFormValues] = useState(mode === 'edit' ? buildEditFormValues(sample) : initialFormValues);
+  const [parameterFormRows, setParameterFormRows] = useState(buildParameterFormRows(mode));
   const [fieldErrors, setFieldErrors] = useState({});
+  const sampleTitle = mode === 'edit' ? getSampleDisplayName(sample) : 'New Sample';
+  const currentCrumbLabel = mode === 'edit' ? `Edit ${sampleTitle}` : 'New Sample';
+
+  useEffect(() => {
+    setCurrentStep(0);
+    setFormValues(mode === 'edit' ? buildEditFormValues(sample) : initialFormValues);
+    setParameterFormRows(buildParameterFormRows(mode));
+    setFieldErrors({});
+  }, [mode, sample]);
 
   const handleFieldChange = (key, value) => {
     setFormValues((current) => ({
@@ -594,9 +778,19 @@ export default function NewSampleCustomerDetailsPage({ onBackToWorkspace, onComp
     onComplete?.();
   };
 
+  const handleParameterRowChange = (rowIndex, field, value) => {
+    setParameterFormRows((current) =>
+      current.map((row, index) => (
+        index === rowIndex
+          ? { ...row, [field]: value }
+          : row
+      )),
+    );
+  };
+
   return (
     <div className="new-sample-page">
-      <TopBar onBackToWorkspace={onBackToWorkspace} />
+      <TopBar parentLabel={parentLabel} currentLabel={currentCrumbLabel} onBack={onBackToWorkspace} />
       <main className="new-sample-page__content">
         <CustomerForm
           currentStep={currentStep}
@@ -607,6 +801,11 @@ export default function NewSampleCustomerDetailsPage({ onBackToWorkspace, onComp
           onNext={handleNext}
           onComplete={handleComplete}
           onCancel={onBackToWorkspace}
+          mode={mode}
+          sampleTitle={sampleTitle}
+          onStepChange={(stepIndex) => setCurrentStep(stepIndex)}
+          parameterFormRows={parameterFormRows}
+          onParameterRowChange={handleParameterRowChange}
         />
       </main>
     </div>

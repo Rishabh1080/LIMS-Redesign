@@ -1,0 +1,258 @@
+{
+  "$schemaNote": "This file is the canonical local import of primitive color tokens from Figma.",
+  "status": "imported_from_figma",
+  "source": {
+    "tool": "Figma variables",
+    "importedAt": "2026-04-15",
+    "file": "LIMS Redesign",
+    "fileKey": "Bfnc9sa26Dfy4GOQoD6OUo",
+    "collection": "Primitives + Semantic",
+    "collectionId": "VariableCollectionId:19:794",
+    "modes": [
+      "Light",
+      "Dark"
+    ],
+    "notes": [
+      "Imported through the local Figma Desktop Bridge plugin.",
+      "This Figma collection currently mixes primitive and semantic variables.",
+      "Only primitive color values were imported into this repo.",
+      "Existing semantic variables in Figma are intentionally ignored for now.",
+      "Primitive colors are currently mode-aware in Figma, which is not ideal for a long-term 3-tier token architecture.",
+      "Long-term recommendation: move primitives into their own single-mode collection and keep light/dark behavior in semantic tokens."
+    ]
+  },
+  "palettes": {
+    "Blue": {
+      "100": {
+        "Light": "#F1F8FE",
+        "Dark": "#1379F0"
+      },
+      "200": {
+        "Light": "#D1E9FC",
+        "Dark": "#1379F0"
+      },
+      "300": {
+        "Light": "#94CCF9",
+        "Dark": "#1379F0"
+      },
+      "400": {
+        "Light": "#5FB3F6",
+        "Dark": "#1379F0"
+      },
+      "500": {
+        "Light": "#1379F0",
+        "Dark": "#1379F0"
+      },
+      "600": {
+        "Light": "#0E5FBB",
+        "Dark": "#0E5FBB"
+      },
+      "700": {
+        "Light": "#083C75",
+        "Dark": "#0E5FBB"
+      },
+      "800": {
+        "Light": "#021527",
+        "Dark": "#021527"
+      },
+      "900": {
+        "Light": "#020A12",
+        "Dark": "#020A12"
+      }
+    },
+    "Green": {
+      "100": {
+        "Light": "#E9F6EA",
+        "Dark": "#FFFFFF"
+      },
+      "200": {
+        "Light": "#CFEBD1",
+        "Dark": "#FFFFFF"
+      },
+      "300": {
+        "Light": "#A9DCA9",
+        "Dark": "#FFFFFF"
+      },
+      "400": {
+        "Light": "#7CC87D",
+        "Dark": "#FFFFFF"
+      },
+      "500": {
+        "Light": "#4DAF51",
+        "Dark": "#FFFFFF"
+      },
+      "600": {
+        "Light": "#3F9443",
+        "Dark": "#FFFFFF"
+      },
+      "700": {
+        "Light": "#327735",
+        "Dark": "#FFFFFF"
+      },
+      "800": {
+        "Light": "#245A28",
+        "Dark": "#FFFFFF"
+      },
+      "900": {
+        "Light": "#163F1B",
+        "Dark": "#FFFFFF"
+      }
+    },
+    "Neutrals": {
+      "100": {
+        "Light": "#FFFFFF",
+        "Dark": "#FFFFFF"
+      },
+      "200": {
+        "Light": "#F5F6F7",
+        "Dark": "#F5F6F7"
+      },
+      "300": {
+        "Light": "#E6E8EB",
+        "Dark": "#E6E8EB"
+      },
+      "400": {
+        "Light": "#D1D5DB",
+        "Dark": "#D1D5DB"
+      },
+      "500": {
+        "Light": "#9AA0A6",
+        "Dark": "#9AA0A6"
+      },
+      "600": {
+        "Light": "#6D737E",
+        "Dark": "#6D737E"
+      },
+      "700": {
+        "Light": "#4D5561",
+        "Dark": "#4D5561"
+      },
+      "800": {
+        "Light": "#1C2126",
+        "Dark": "#1C2126"
+      },
+      "900": {
+        "Light": "#0B1218",
+        "Dark": "#0B1218"
+      }
+    },
+    "Orange": {
+      "100": {
+        "Light": "#FEFCF5",
+        "Dark": "#020A12"
+      },
+      "200": {
+        "Light": "#FBF3DB",
+        "Dark": "#020A12"
+      },
+      "300": {
+        "Light": "#F5DFAD",
+        "Dark": "#020A12"
+      },
+      "400": {
+        "Light": "#EFC685",
+        "Dark": "#020A12"
+      },
+      "500": {
+        "Light": "#E8914B",
+        "Dark": "#020A12"
+      },
+      "600": {
+        "Light": "#C37638",
+        "Dark": "#020A12"
+      },
+      "700": {
+        "Light": "#AB6832",
+        "Dark": "#020A12"
+      },
+      "800": {
+        "Light": "#7A471E",
+        "Dark": "#020A12"
+      },
+      "900": {
+        "Light": "#4D2B0F",
+        "Dark": "#020A12"
+      }
+    },
+    "Red": {
+      "50": {
+        "Light": "#FFF6F5",
+        "Dark": "#FFFFFF"
+      },
+      "100": {
+        "Light": "#FDECEA",
+        "Dark": "#FFFFFF"
+      },
+      "200": {
+        "Light": "#F9D1CD",
+        "Dark": "#FFFFFF"
+      },
+      "300": {
+        "Light": "#F5A8A1",
+        "Dark": "#FFFFFF"
+      },
+      "400": {
+        "Light": "#EF7267",
+        "Dark": "#FFFFFF"
+      },
+      "500": {
+        "Light": "#F44336",
+        "Dark": "#FFFFFF"
+      },
+      "600": {
+        "Light": "#D9382D",
+        "Dark": "#FFFFFF"
+      },
+      "700": {
+        "Light": "#B62E25",
+        "Dark": "#FFFFFF"
+      },
+      "800": {
+        "Light": "#8F231D",
+        "Dark": "#FFFFFF"
+      },
+      "900": {
+        "Light": "#681815",
+        "Dark": "#FFFFFF"
+      }
+    },
+    "Yellow": {
+      "100": {
+        "Light": "#FEF9EC",
+        "Dark": "#FFFFFF"
+      },
+      "200": {
+        "Light": "#FEEFC4",
+        "Dark": "#FFFFFF"
+      },
+      "300": {
+        "Light": "#FFE599",
+        "Dark": "#FFFFFF"
+      },
+      "400": {
+        "Light": "#FFDE7E",
+        "Dark": "#FFFFFF"
+      },
+      "500": {
+        "Light": "#FAD465",
+        "Dark": "#FFFFFF"
+      },
+      "600": {
+        "Light": "#EBC356",
+        "Dark": "#FFFFFF"
+      },
+      "700": {
+        "Light": "#D2A844",
+        "Dark": "#FFFFFF"
+      },
+      "800": {
+        "Light": "#B38932",
+        "Dark": "#FFFFFF"
+      },
+      "900": {
+        "Light": "#8A5F1E",
+        "Dark": "#FFFFFF"
+      }
+    }
+  }
+}

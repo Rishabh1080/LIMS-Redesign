@@ -17,7 +17,13 @@ import { requestSections } from './data/requestsForMeData';
 export default function App() {
   const [activePage, setActivePage] = useState('workspace');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [sampleCardViewMode, setSampleCardViewMode] = useState('modern');
+  const [sampleCardViewMode, setSampleCardViewMode] = useState('grid');
+  const [sampleEditorState, setSampleEditorState] = useState({
+    mode: 'create',
+    sample: null,
+    sourcePage: 'samples-workspace',
+    parentLabel: 'Samples Workspace',
+  });
   const requestsForMeSidebarBadgeCount = requestSections.reduce(
     (sum, section) => sum + (section.count ?? 0),
     0,
@@ -26,8 +32,9 @@ export default function App() {
     sampleId: 'IICT/2025-2026/1101',
     initialToast: null,
     sourcePage: 'samples-workspace',
-    sampleStatus: 'Draft',
+    sampleStatus: 'Pending',
     createdOn: '06/03/2026, 10:13',
+    sample: null,
   });
   const [testRequestsState, setTestRequestsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
@@ -68,8 +75,9 @@ export default function App() {
     const {
       initialToast = null,
       sourcePage = 'samples-workspace',
-      sampleStatus = 'Draft',
+      sampleStatus = 'Pending',
       createdOn = '06/03/2026, 10:13',
+      sample = null,
     } = options;
 
     setSampleDetailsState({
@@ -78,6 +86,7 @@ export default function App() {
       sourcePage,
       sampleStatus,
       createdOn,
+      sample,
     });
     setActivePage('sample-details');
   };
@@ -142,6 +151,36 @@ export default function App() {
     setActivePage('datasheet');
   };
 
+  const openNewSample = (options = {}) => {
+    const { sourcePage = 'samples-workspace' } = options;
+    const parentLabel = sourcePage === 'all-samples' ? 'All Samples' : 'Samples Workspace';
+
+    setSampleEditorState({
+      mode: 'create',
+      sample: null,
+      sourcePage,
+      parentLabel,
+    });
+    setActivePage('new-sample-customer-details');
+  };
+
+  const openEditSample = (sample, options = {}) => {
+    if (!sample) {
+      return;
+    }
+
+    const { sourcePage = 'samples-workspace' } = options;
+    const parentLabel = sourcePage === 'all-samples' ? 'All Samples' : 'Samples Workspace';
+
+    setSampleEditorState({
+      mode: 'edit',
+      sample,
+      sourcePage,
+      parentLabel,
+    });
+    setActivePage('new-sample-customer-details');
+  };
+
   const handleDatasheetSave = () => {
     setTrDetailsState((current) => ({
       ...current,
@@ -196,8 +235,19 @@ export default function App() {
         sourcePage={sampleDetailsState.sourcePage}
         sampleStatus={sampleDetailsState.sampleStatus}
         createdOn={sampleDetailsState.createdOn}
+        sample={sampleDetailsState.sample}
         onBack={() =>
           setActivePage(sampleDetailsState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
+        }
+        onEditSample={() =>
+          openEditSample(
+            sampleDetailsState.sample ?? {
+              id: sampleDetailsState.sampleId,
+              status: sampleDetailsState.sampleStatus,
+              createdOn: sampleDetailsState.createdOn,
+            },
+            { sourcePage: sampleDetailsState.sourcePage },
+          )
         }
         onOpenTestRequests={() =>
           openTestRequests(sampleDetailsState.sampleId, {
@@ -363,6 +413,7 @@ export default function App() {
       <AllSamplesListingPage
         onNavigate={handleNavigate}
         onOpenSample={openSampleDetails}
+        onEditSample={openEditSample}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
@@ -409,22 +460,38 @@ export default function App() {
   if (activePage === 'new-sample-customer-details') {
     return (
       <NewSampleCustomerDetailsPage
-        onBackToWorkspace={() => setActivePage('workspace')}
-        onComplete={() =>
+        mode={sampleEditorState.mode}
+        sample={sampleEditorState.sample}
+        parentLabel={sampleEditorState.parentLabel}
+        onBackToWorkspace={() =>
+          setActivePage(sampleEditorState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
+        }
+        onComplete={() => {
+          if (sampleEditorState.mode === 'edit' && sampleEditorState.sample) {
+            openSampleDetails(sampleEditorState.sample.id, {
+              initialToast: 'Sample Updated.',
+              sourcePage: sampleEditorState.sourcePage,
+              sampleStatus: sampleEditorState.sample.status ?? 'Pending',
+              createdOn: sampleEditorState.sample.createdOn ?? '06/03/2026, 10:13',
+            });
+            return;
+          }
+
           openSampleDetails('IICT/2025-2026/1101', {
             initialToast: 'sample-created',
-            sourcePage: 'samples-workspace',
-            sampleStatus: 'Draft',
+            sourcePage: sampleEditorState.sourcePage,
+            sampleStatus: 'Pending',
             createdOn: '06/03/2026, 10:13',
-          })
-        }
+          });
+        }}
       />
     );
   }
 
   return (
       <SampleWorkspacePage
-        onNewSample={() => setActivePage('new-sample-customer-details')}
+        onNewSample={() => openNewSample({ sourcePage: 'samples-workspace' })}
+        onEditSample={openEditSample}
         onOpenSample={openSampleDetails}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}

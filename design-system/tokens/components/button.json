@@ -1,0 +1,154 @@
+{
+  "$schemaNote": "Component tokens map exact button properties to semantic tokens.",
+  "status": "draft_v1",
+  "component": "PrimaryButton",
+  "variants": {
+    "button.color.background.primary.default": {
+      "value": "{color.background.primary}"
+    },
+    "button.color.text.primary.default": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.primary.default": {
+      "value": "{color.border.transparent}"
+    },
+    "button.color.background.primary.hover": {
+      "value": "{color.background.primary.hover}"
+    },
+    "button.color.text.primary.hover": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.primary.hover": {
+      "value": "{color.border.transparent}"
+    },
+    "button.color.background.primary.pressed": {
+      "value": "{color.background.primary.pressed}"
+    },
+    "button.color.text.primary.pressed": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.primary.pressed": {
+      "value": "{color.border.transparent}"
+    },
+    "button.color.background.primary.disabled": {
+      "value": "{color.background.disabled}"
+    },
+    "button.color.text.primary.disabled": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.primary.disabled": {
+      "value": "{color.border.transparent}"
+    },
+    "button.color.background.positive.default": {
+      "value": "{color.background.feedback.success}"
+    },
+    "button.color.text.positive.default": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.positive.default": {
+      "value": "{color.border.transparent}"
+    },
+    "button.color.background.positive.hover": {
+      "value": "{color.background.feedback.success.hover}"
+    },
+    "button.color.text.positive.hover": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.positive.hover": {
+      "value": "{color.border.transparent}"
+    },
+    "button.color.background.positive.pressed": {
+      "value": "{color.background.feedback.success.pressed}"
+    },
+    "button.color.text.positive.pressed": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.positive.pressed": {
+      "value": "{color.border.transparent}"
+    },
+    "button.color.background.destructive.default": {
+      "value": "{color.background.feedback.danger}"
+    },
+    "button.color.text.destructive.default": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.destructive.default": {
+      "value": "{color.border.transparent}"
+    },
+    "button.color.background.destructive.hover": {
+      "value": "{color.background.feedback.danger.hover}"
+    },
+    "button.color.text.destructive.hover": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.destructive.hover": {
+      "value": "{color.border.transparent}"
+    },
+    "button.color.background.destructive.pressed": {
+      "value": "{color.background.feedback.danger.pressed}"
+    },
+    "button.color.text.destructive.pressed": {
+      "value": "{color.text.on-primary}"
+    },
+    "button.color.border.destructive.pressed": {
+      "value": "{color.border.transparent}"
+    },
+    "button.typography.font-family": {
+      "value": "{typography.control.font-family}"
+    },
+    "button.typography.font-size": {
+      "value": "{typography.control.font-size}"
+    },
+    "button.typography.font-weight": {
+      "value": "{typography.control.font-weight}"
+    },
+    "button.typography.line-height": {
+      "value": "{typography.control.line-height}"
+    },
+    "button.radius.default": {
+      "value": "{radius.control.default}"
+    },
+    "button.size.height.default": {
+      "value": "{size.control.height.default}"
+    },
+    "button.size.height.small": {
+      "value": "{size.control.height.small}"
+    },
+    "button.size.icon.default": {
+      "value": "{size.icon.default}"
+    },
+    "button.size.icon.small": {
+      "value": "{size.icon.small}"
+    },
+    "button.space.gap.default": {
+      "value": "{space.control.gap.default}"
+    },
+    "button.space.padding.block.default": {
+      "value": "{space.control.padding.block.default}"
+    },
+    "button.space.padding.inline.label-only": {
+      "value": "{space.control.padding.inline.default}"
+    },
+    "button.space.padding.inline.leading-icon.start": {
+      "value": "{space.control.padding.inline.compact}"
+    },
+    "button.space.padding.inline.leading-icon.end": {
+      "value": "{space.control.padding.inline.default}"
+    },
+    "button.space.padding.inline.trailing-icon.start": {
+      "value": "{space.control.padding.inline.default}"
+    },
+    "button.space.padding.inline.trailing-icon.end": {
+      "value": "{space.control.padding.inline.compact}"
+    },
+    "button.space.padding.inline.both-icons": {
+      "value": "{space.control.padding.inline.compact}"
+    },
+    "button.space.padding.inline.small.leading-icon.start": {
+      "value": "{space.control.padding.inline.small.start}"
+    },
+    "button.space.padding.inline.small.leading-icon.end": {
+      "value": "{space.control.padding.inline.small.end}"
+    }
+  }
+}

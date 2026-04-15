@@ -45,7 +45,7 @@ export default function MoreActionButton({ className = '', items, ...props }) {
     <div ref={rootRef} className={joinClasses('smplfy-more-action-items', open && 'is-open', className)}>
       <button
         type="button"
-        className="smplfy-more-action-button btn"
+        className="smplfy-more-action-button btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral smplfy-secondary-button--icon-only"
         aria-label="More actions"
         aria-haspopup="menu"
         aria-expanded={open}

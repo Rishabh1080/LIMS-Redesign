@@ -1,4 +1,5 @@
 .smplfy-checkbox {
+  position: relative;
   width: 28px;
   height: 28px;
   padding: 0;
@@ -8,14 +9,29 @@
   align-items: center;
   justify-content: center;
   color: #6d737e;
+  cursor: pointer;
+}
+
+.smplfy-checkbox::before {
+  content: '';
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 25px;
+  height: 25px;
+  border-radius: 999px;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  transition: background-color 180ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .smplfy-checkbox__box {
+  position: relative;
+  z-index: 1;
   width: 15px;
   height: 15px;
   border: 1.2px solid #6d737e;
   border-radius: 4px;
-  background: #fff;
+  background: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -42,6 +58,14 @@
   border-color: #1379f0;
 }
 
+.smplfy-checkbox:hover:not(:disabled)::before {
+  background: #f1f8fe;
+}
+
+.smplfy-checkbox.is-checked:hover:not(:disabled)::before {
+  background: #f1f8fe;
+}
+
 .smplfy-checkbox.is-checked .smplfy-checkbox__tick {
   opacity: 1;
 }
@@ -53,4 +77,9 @@
 
 .smplfy-checkbox:focus-visible {
   outline: none;
+}
+
+.smplfy-checkbox:active::before,
+.smplfy-checkbox:active:hover::before {
+  background: #d1d5db;
 }

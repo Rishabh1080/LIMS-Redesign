@@ -7,6 +7,7 @@ import MoreActionButton from '../components/MoreActionButton';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
+import { getStatusPresentation } from '../status/statusRegistry';
 import './sample-details-page.css';
 
 const toastMessageByKey = {
@@ -87,27 +88,16 @@ function DetailsHeader({
   reviewRequested,
   createdOn,
   onBack,
+  onEditSample,
   onRequestReview,
   onOpenTestRequests,
   onOpenCoaReport,
 }) {
+  const isPending = sampleStatus === 'Pending';
   const isUnderAnalysis = sampleStatus === 'Under Analysis';
   const isCompleted = sampleStatus === 'Completed';
   const { date, time } = splitDateTime(createdOn);
-  const badgeClass = isUnderAnalysis
-    ? 'sample-details-page-header__badge--analysis'
-    : isCompleted
-      ? 'sample-details-page-header__badge--review'
-    : reviewRequested
-      ? 'sample-details-page-header__badge--review'
-      : 'sample-details-page-header__badge--draft';
-  const badgeLabel = isUnderAnalysis
-    ? 'Under Analysis'
-    : isCompleted
-      ? 'Completed'
-      : reviewRequested
-        ? 'Sent for review'
-        : 'Draft';
+  const statusPresentation = getStatusPresentation('sample', sampleStatus);
 
   return (
     <section className="sample-details-page-header">
@@ -135,13 +125,9 @@ function DetailsHeader({
           <div className="sample-details-page-header__title-copy">
             <div className="sample-details-page-header__title-row">
               <h1>{sampleId}</h1>
-              {isCompleted ? (
-                <StatusPill color="green" styleType="strong">
-                  {badgeLabel}
-                </StatusPill>
-              ) : (
-                <span className={`sample-details-page-header__badge ${badgeClass}`}>{badgeLabel}</span>
-              )}
+              <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
+                {statusPresentation.label}
+              </StatusPill>
             </div>
             <div className="sample-details-page-header__timestamp">
               <span>{date}</span>
@@ -178,13 +164,25 @@ function DetailsHeader({
               Test Requests
             </PrimaryButton>
           ) : reviewRequested ? null : (
-            <PrimaryButton
-              leftIcon="check"
-              className="sample-details-page-header__primary"
-              onClick={onRequestReview}
-            >
-              Send for Review
-            </PrimaryButton>
+            <>
+              <PrimaryButton
+                leftIcon="check"
+                className="sample-details-page-header__primary"
+                onClick={onRequestReview}
+              >
+                Send for Review
+              </PrimaryButton>
+              {isPending ? (
+                <SecondaryButton
+                  leftIcon="edit"
+                  size="large"
+                  className="sample-details-page-header__secondary"
+                  onClick={onEditSample}
+                >
+                  Edit
+                </SecondaryButton>
+              ) : null}
+            </>
           )}
           <MoreActionButton className="sample-details-page-header__more" items={sampleHeaderActionItems} />
         </div>
@@ -447,9 +445,11 @@ export default function SampleDetailsPage({
   sampleId = 'IICT/2025-2026/1101',
   initialToast = null,
   sourcePage = 'samples-workspace',
-  sampleStatus = 'Draft',
+  sampleStatus = 'Pending',
   createdOn = '06/03/2026, 10:13',
+  sample = null,
   onBack,
+  onEditSample,
   onOpenTestRequests,
   onOpenCoaReport,
   onNavigate,
@@ -521,6 +521,7 @@ export default function SampleDetailsPage({
           reviewRequested={reviewRequested}
           createdOn={createdOn}
           onBack={onBack}
+          onEditSample={onEditSample}
           onRequestReview={() => setReviewModalOpen(true)}
           onOpenTestRequests={onOpenTestRequests}
           onOpenCoaReport={onOpenCoaReport}

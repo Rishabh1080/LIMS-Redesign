@@ -29,12 +29,24 @@ export default function PrimaryButton({
   const sizeClass = size && size !== 'default' ? `smplfy-primary-button--${size.toLowerCase()}` : '';
   const buttonStyle = hasLabel
     ? hasLeftIcon && hasRightIcon
-      ? { padding: '10px 12px' }
+      ? {
+          padding:
+            'var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-both-icons)',
+        }
       : hasLeftIcon
-        ? { padding: '10px 16px 10px 12px' }
+        ? {
+            padding:
+              'var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-leading-icon-end) var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-leading-icon-start)',
+          }
         : hasRightIcon
-          ? { padding: '10px 12px 10px 16px' }
-          : { padding: '10px 16px' }
+          ? {
+              padding:
+                'var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-trailing-icon-end) var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-trailing-icon-start)',
+            }
+          : {
+              padding:
+                'var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-label-only)',
+            }
     : undefined;
 
   return (

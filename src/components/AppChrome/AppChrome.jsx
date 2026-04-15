@@ -49,7 +49,9 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
                   key={item.key}
                   className={`sidebar-link btn text-start ${
                     item.key === activeNav ? 'is-active' : ''
-                  } ${badgeCounts[item.badgeKey] ? 'sidebar-link--with-badge' : ''}`}
+                  } ${badgeCounts[item.badgeKey] ? 'sidebar-link--with-badge' : ''} ${
+                    collapsed && badgeCounts[item.badgeKey] ? 'sidebar-link--with-dot' : ''
+                  }`}
                   title={collapsed ? item.label : undefined}
                   aria-label={item.label}
                   onClick={() => {
@@ -57,9 +59,12 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
                     onItemClick?.();
                   }}
                 >
-                  <AppIcon name={item.icon} />
+                  <span className="sidebar-link__icon-wrap">
+                    <AppIcon name={item.icon} size={20} />
+                    {collapsed && badgeCounts[item.badgeKey] ? <span className="sidebar-link__dot" /> : null}
+                  </span>
                   <span className="sidebar-link-text">{item.label}</span>
-                  {badgeCounts[item.badgeKey] ? (
+                  {badgeCounts[item.badgeKey] && !collapsed ? (
                     <Badge className="sidebar-link__badge" tone="danger" size="small" shape="circle">
                       {badgeCounts[item.badgeKey]}
                     </Badge>
@@ -131,14 +136,20 @@ function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], on
                 <AppIcon name="activity" />
                 <span className="status-pill-label">No Active Alerts</span>
               </div>
-              <button className="header-chip btn">
-                <AppIcon name="phone" />
+              <SecondaryButton
+                size="large"
+                tone="neutral"
+                leftIcon="phone"
+                className="header-chip"
+              >
                 <span className="header-chip-label">+91-6358273804</span>
-              </button>
+              </SecondaryButton>
               <SecondaryButton size="large" className="header-icon" aria-label="Notifications">
                 <AppIcon name="bell" />
               </SecondaryButton>
-              <button className="header-avatar btn">DC</button>
+              <SecondaryButton size="large" tone="neutral" className="header-avatar">
+                DC
+              </SecondaryButton>
             </div>
           </div>
         </div>

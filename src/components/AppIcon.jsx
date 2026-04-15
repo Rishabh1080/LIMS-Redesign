@@ -1,6 +1,7 @@
 import {
   IconAlertCircle,
   IconActivity,
+  IconArrowUpRight,
   IconBell,
   IconCalendar,
   IconCheck,
@@ -42,6 +43,7 @@ import {
 const iconMap = {
   'alert-circle': IconAlertCircle,
   activity: IconActivity,
+  'arrow-up-right': IconArrowUpRight,
   bell: IconBell,
   calendar: IconCalendar,
   check: IconCheck,

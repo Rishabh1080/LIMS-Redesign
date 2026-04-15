@@ -73,20 +73,107 @@
   --smplfy-button-icon-size: 18px;
   --smplfy-button-gap: 8px;
 
-  --smplfy-primary-default-bg: var(--smplfy-primitive-blue-500);
-  --smplfy-primary-default-hover-bg: var(--smplfy-primitive-blue-600);
-  --smplfy-primary-default-focus-bg: var(--smplfy-primitive-blue-700);
-  --smplfy-primary-default-disabled-bg: var(--smplfy-primitive-neutral-400);
-  --smplfy-primary-on-color: var(--smplfy-primitive-neutral-100);
-  --smplfy-primary-disabled-text: var(--smplfy-primitive-neutral-600);
+  /* Semantic tokens: reusable meaning shared across components. */
+  --smplfy-semantic-color-text-default: var(--smplfy-primitive-neutral-800);
+  --smplfy-semantic-color-text-muted: var(--smplfy-primitive-neutral-600);
+  --smplfy-semantic-color-text-disabled: var(--smplfy-primitive-neutral-500);
+  --smplfy-semantic-color-text-on-primary: var(--smplfy-primitive-neutral-100);
+  --smplfy-semantic-color-background-primary: var(--smplfy-primitive-blue-500);
+  --smplfy-semantic-color-background-primary-hover: var(--smplfy-primitive-blue-600);
+  --smplfy-semantic-color-background-primary-pressed: var(--smplfy-primitive-blue-700);
+  --smplfy-semantic-color-background-disabled: var(--smplfy-primitive-neutral-400);
+  --smplfy-semantic-color-border-transparent: transparent;
+  --smplfy-semantic-color-background-feedback-success: var(--smplfy-primitive-green-500);
+  --smplfy-semantic-color-background-feedback-success-hover: var(--smplfy-primitive-green-600);
+  --smplfy-semantic-color-background-feedback-success-pressed: var(--smplfy-primitive-green-700);
+  --smplfy-semantic-color-background-feedback-danger: var(--smplfy-primitive-red-500);
+  --smplfy-semantic-color-background-feedback-danger-hover: var(--smplfy-primitive-red-600);
+  --smplfy-semantic-color-background-feedback-danger-pressed: var(--smplfy-primitive-red-700);
+  --smplfy-semantic-typography-control-font-family: var(--smplfy-button-font-family);
+  --smplfy-semantic-typography-control-font-size: var(--smplfy-button-font-size);
+  --smplfy-semantic-typography-control-font-weight: var(--smplfy-button-font-weight);
+  --smplfy-semantic-typography-control-line-height: var(--smplfy-button-line-height);
+  --smplfy-semantic-radius-control-default: var(--smplfy-button-radius);
+  --smplfy-semantic-size-control-height-default: var(--smplfy-button-height);
+  --smplfy-semantic-size-control-height-small: 24px;
+  --smplfy-semantic-size-icon-default: var(--smplfy-button-icon-size);
+  --smplfy-semantic-size-icon-small: 16px;
+  --smplfy-semantic-space-control-gap-default: var(--smplfy-button-gap);
+  --smplfy-semantic-space-control-padding-block-default: 10px;
+  --smplfy-semantic-space-control-padding-inline-default: 16px;
+  --smplfy-semantic-space-control-padding-inline-compact: 12px;
+  --smplfy-semantic-space-control-padding-inline-small-start: 8px;
+  --smplfy-semantic-space-control-padding-inline-small-end: 12px;
 
-  --smplfy-primary-positive-bg: var(--smplfy-primitive-green-500);
-  --smplfy-primary-positive-hover-bg: var(--smplfy-primitive-green-600);
-  --smplfy-primary-positive-focus-bg: var(--smplfy-primitive-green-700);
+  /* Component tokens: explicit mapping for PrimaryButton consumption. */
+  --smplfy-component-button-typography-font-family: var(--smplfy-semantic-typography-control-font-family);
+  --smplfy-component-button-typography-font-size: var(--smplfy-semantic-typography-control-font-size);
+  --smplfy-component-button-typography-font-weight: var(--smplfy-semantic-typography-control-font-weight);
+  --smplfy-component-button-typography-line-height: var(--smplfy-semantic-typography-control-line-height);
+  --smplfy-component-button-radius-default: var(--smplfy-semantic-radius-control-default);
+  --smplfy-component-button-size-height-default: var(--smplfy-semantic-size-control-height-default);
+  --smplfy-component-button-size-height-small: var(--smplfy-semantic-size-control-height-small);
+  --smplfy-component-button-size-icon-default: var(--smplfy-semantic-size-icon-default);
+  --smplfy-component-button-size-icon-small: var(--smplfy-semantic-size-icon-small);
+  --smplfy-component-button-space-gap-default: var(--smplfy-semantic-space-control-gap-default);
+  --smplfy-component-button-space-padding-block-default: var(--smplfy-semantic-space-control-padding-block-default);
+  --smplfy-component-button-space-padding-inline-label-only: var(--smplfy-semantic-space-control-padding-inline-default);
+  --smplfy-component-button-space-padding-inline-leading-icon-start: var(--smplfy-semantic-space-control-padding-inline-compact);
+  --smplfy-component-button-space-padding-inline-leading-icon-end: var(--smplfy-semantic-space-control-padding-inline-default);
+  --smplfy-component-button-space-padding-inline-trailing-icon-start: var(--smplfy-semantic-space-control-padding-inline-default);
+  --smplfy-component-button-space-padding-inline-trailing-icon-end: var(--smplfy-semantic-space-control-padding-inline-compact);
+  --smplfy-component-button-space-padding-inline-both-icons: var(--smplfy-semantic-space-control-padding-inline-compact);
+  --smplfy-component-button-space-padding-inline-small-leading-icon-start: var(--smplfy-semantic-space-control-padding-inline-small-start);
+  --smplfy-component-button-space-padding-inline-small-leading-icon-end: var(--smplfy-semantic-space-control-padding-inline-small-end);
 
-  --smplfy-primary-red-bg: var(--smplfy-primitive-red-500);
-  --smplfy-primary-red-hover-bg: var(--smplfy-primitive-red-600);
-  --smplfy-primary-red-focus-bg: var(--smplfy-primitive-red-700);
+  --smplfy-component-button-color-background-primary-default: var(--smplfy-semantic-color-background-primary);
+  --smplfy-component-button-color-text-primary-default: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-primary-default: var(--smplfy-semantic-color-border-transparent);
+  --smplfy-component-button-color-background-primary-hover: var(--smplfy-semantic-color-background-primary-hover);
+  --smplfy-component-button-color-text-primary-hover: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-primary-hover: var(--smplfy-semantic-color-border-transparent);
+  --smplfy-component-button-color-background-primary-pressed: var(--smplfy-semantic-color-background-primary-pressed);
+  --smplfy-component-button-color-text-primary-pressed: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-primary-pressed: var(--smplfy-semantic-color-border-transparent);
+  --smplfy-component-button-color-background-primary-disabled: var(--smplfy-semantic-color-background-disabled);
+  --smplfy-component-button-color-text-primary-disabled: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-primary-disabled: var(--smplfy-semantic-color-border-transparent);
+
+  --smplfy-component-button-color-background-positive-default: var(--smplfy-semantic-color-background-feedback-success);
+  --smplfy-component-button-color-text-positive-default: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-positive-default: var(--smplfy-semantic-color-border-transparent);
+  --smplfy-component-button-color-background-positive-hover: var(--smplfy-semantic-color-background-feedback-success-hover);
+  --smplfy-component-button-color-text-positive-hover: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-positive-hover: var(--smplfy-semantic-color-border-transparent);
+  --smplfy-component-button-color-background-positive-pressed: var(--smplfy-semantic-color-background-feedback-success-pressed);
+  --smplfy-component-button-color-text-positive-pressed: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-positive-pressed: var(--smplfy-semantic-color-border-transparent);
+
+  --smplfy-component-button-color-background-destructive-default: var(--smplfy-semantic-color-background-feedback-danger);
+  --smplfy-component-button-color-text-destructive-default: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-destructive-default: var(--smplfy-semantic-color-border-transparent);
+  --smplfy-component-button-color-background-destructive-hover: var(--smplfy-semantic-color-background-feedback-danger-hover);
+  --smplfy-component-button-color-text-destructive-hover: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-destructive-hover: var(--smplfy-semantic-color-border-transparent);
+  --smplfy-component-button-color-background-destructive-pressed: var(--smplfy-semantic-color-background-feedback-danger-pressed);
+  --smplfy-component-button-color-text-destructive-pressed: var(--smplfy-semantic-color-text-on-primary);
+  --smplfy-component-button-color-border-destructive-pressed: var(--smplfy-semantic-color-border-transparent);
+
+  /* Legacy aliases kept temporarily while other surfaces migrate. */
+  --smplfy-primary-default-bg: var(--smplfy-component-button-color-background-primary-default);
+  --smplfy-primary-default-hover-bg: var(--smplfy-component-button-color-background-primary-hover);
+  --smplfy-primary-default-focus-bg: var(--smplfy-component-button-color-background-primary-pressed);
+  --smplfy-primary-default-disabled-bg: var(--smplfy-component-button-color-background-primary-disabled);
+  --smplfy-primary-on-color: var(--smplfy-component-button-color-text-primary-default);
+  --smplfy-primary-disabled-text: var(--smplfy-semantic-color-text-disabled);
+
+  --smplfy-primary-positive-bg: var(--smplfy-component-button-color-background-positive-default);
+  --smplfy-primary-positive-hover-bg: var(--smplfy-component-button-color-background-positive-hover);
+  --smplfy-primary-positive-focus-bg: var(--smplfy-component-button-color-background-positive-pressed);
+
+  --smplfy-primary-red-bg: var(--smplfy-component-button-color-background-destructive-default);
+  --smplfy-primary-red-hover-bg: var(--smplfy-component-button-color-background-destructive-hover);
+  --smplfy-primary-red-focus-bg: var(--smplfy-component-button-color-background-destructive-pressed);
 
   --smplfy-primary-shadow-blue: 3px 2px 4px rgba(10, 70, 138, 0.08);
   --smplfy-primary-shadow-blue-focus: 3px 2px 4px rgba(8, 60, 117, 0.12);

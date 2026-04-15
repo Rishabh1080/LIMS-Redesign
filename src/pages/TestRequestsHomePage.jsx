@@ -3,6 +3,7 @@ import AppChrome from '../components/AppChrome/AppChrome';
 import NavSelector from '../components/NavSelector';
 import StatusPill from '../components/StatusPill';
 import { AllocateTestRequestButton, ViewTestRequestButton } from '../components/TestRequestActions';
+import { getStatusPresentation } from '../status/statusRegistry';
 import {
   allTestRequestBuckets,
   getTestRequestsForTab,
@@ -38,6 +39,8 @@ function TestRequestsHomeHeader({ activeTab, countsByTab, onTabChange }) {
 }
 
 function TestRequestHomeCard({ row, showStatus, onAllocate, onView }) {
+  const statusPresentation = getStatusPresentation('testRequest', row.status);
+
   return (
     <article className={`test-requests-home-card ${showStatus ? 'has-status' : 'no-status'}`}>
       <div className="test-requests-home-card__cell is-id">
@@ -49,8 +52,8 @@ function TestRequestHomeCard({ row, showStatus, onAllocate, onView }) {
       {showStatus ? (
         <div className="test-requests-home-card__cell is-status">
           <div className="tr-request-status-cell">
-            <StatusPill color={row.pillColor} styleType={row.pillStyle}>
-              {row.status}
+            <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
+              {statusPresentation.label}
             </StatusPill>
           </div>
         </div>
@@ -132,8 +135,6 @@ export default function TestRequestsHomePage({
               ...item,
               bucket: 'allocated-to-me',
               status: 'Result Under Testing',
-              pillColor: 'blue',
-              pillStyle: 'neutral',
               age: 'Just now',
               action: 'view',
             }

@@ -1,13 +1,9 @@
 import { IconColumns2, IconLayoutBottombar, IconLayoutGrid } from '@tabler/icons-react';
 import ParameterCircles, { getParameterSummary } from '../ParameterCircles/ParameterCircles';
+import SecondaryButton from '../SecondaryButton';
 import StatusPill from '../StatusPill';
+import { getStatusPresentation } from '../../status/statusRegistry';
 import './SampleCard.css';
-
-const sampleStatusVariantMap = {
-  success: { color: 'green', styleType: 'strong' },
-  warning: { color: 'orange', styleType: 'neutral' },
-  pending: { color: 'blue', styleType: 'neutral' },
-};
 
 function renderFieldList(fields = []) {
   return fields.length
@@ -78,6 +74,7 @@ export function SampleCardViewToggle({ value, onChange, className = '' }) {
 function SampleCardLegacy({ sample, onOpenSample, sourcePage, extraMetaFields = [], extraDateFields = [] }) {
   const isOpenable =
     sample.status === 'Under Analysis' || sample.status === 'Pending' || sample.status === 'Completed';
+  const statusPresentation = getStatusPresentation('sample', sample.status);
   const metaRows = [
     [
       { label: 'Reference', value: sample.reference },
@@ -105,6 +102,7 @@ function SampleCardLegacy({ sample, onOpenSample, sourcePage, extraMetaFields = 
                       sourcePage,
                       sampleStatus: sample.status,
                       createdOn: sample.createdOn,
+                      sample,
                     });
                   }}
                   className="sample-id"
@@ -116,10 +114,10 @@ function SampleCardLegacy({ sample, onOpenSample, sourcePage, extraMetaFields = 
               )}
               <StatusPill
                 className="status-badge"
-                color={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).color}
-                styleType={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).styleType}
+                color={statusPresentation.color}
+                styleType={statusPresentation.styleType}
               >
-                {sample.status}
+                {statusPresentation.label}
               </StatusPill>
             </div>
           </div>
@@ -193,6 +191,7 @@ function SampleCardModern({ sample, onOpenSample, sourcePage, extraMetaFields = 
     sample.status === 'Under Analysis' || sample.status === 'Pending' || sample.status === 'Completed';
   const { approvedCount, totalCount, sortedParameters } = getParameterSummary(sample.parameters);
   const customFields = [...(extraMetaFields ?? []), ...(extraDateFields ?? [])];
+  const statusPresentation = getStatusPresentation('sample', sample.status);
 
   return (
     <article className="sample-card sample-card--modern">
@@ -203,11 +202,12 @@ function SampleCardModern({ sample, onOpenSample, sourcePage, extraMetaFields = 
               href="/"
               onClick={(event) => {
                 event.preventDefault();
-                onOpenSample?.(sample.id, {
-                  sourcePage,
-                  sampleStatus: sample.status,
-                  createdOn: sample.createdOn,
-                });
+                    onOpenSample?.(sample.id, {
+                      sourcePage,
+                      sampleStatus: sample.status,
+                      createdOn: sample.createdOn,
+                      sample,
+                    });
               }}
               className="sample-id"
             >
@@ -218,10 +218,10 @@ function SampleCardModern({ sample, onOpenSample, sourcePage, extraMetaFields = 
           )}
           <StatusPill
             className="status-badge"
-            color={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).color}
-            styleType={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).styleType}
+            color={statusPresentation.color}
+            styleType={statusPresentation.styleType}
           >
-            {sample.status}
+            {statusPresentation.label}
           </StatusPill>
         </div>
 
@@ -278,12 +278,21 @@ function SampleCardModern({ sample, onOpenSample, sourcePage, extraMetaFields = 
   );
 }
 
-function SampleCardGrid({ sample, onOpenSample, sourcePage, extraMetaFields = [], extraDateFields = [] }) {
+function SampleCardGrid({
+  sample,
+  onOpenSample,
+  onEditSample,
+  sourcePage,
+  extraMetaFields = [],
+  extraDateFields = [],
+}) {
   const isOpenable =
     sample.status === 'Under Analysis' || sample.status === 'Pending' || sample.status === 'Completed';
+  const isEditable = sample.status === 'Pending' && typeof onEditSample === 'function';
   const { approvedCount, totalCount, sortedParameters } = getParameterSummary(sample.parameters);
   const dataItems = buildDataItems(sample, extraMetaFields, extraDateFields);
   const dataGridClass = getRowColsClass(dataItems.length);
+  const statusPresentation = getStatusPresentation('sample', sample.status);
 
   return (
     <article className="sample-card sample-card--grid">
@@ -297,6 +306,7 @@ function SampleCardGrid({ sample, onOpenSample, sourcePage, extraMetaFields = []
                 sourcePage,
                 sampleStatus: sample.status,
                 createdOn: sample.createdOn,
+                sample,
               });
             }}
             className="sample-id"
@@ -308,11 +318,20 @@ function SampleCardGrid({ sample, onOpenSample, sourcePage, extraMetaFields = []
         )}
         <StatusPill
           className="status-badge"
-          color={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).color}
-          styleType={(sampleStatusVariantMap[sample.statusTone] ?? sampleStatusVariantMap.pending).styleType}
+          color={statusPresentation.color}
+          styleType={statusPresentation.styleType}
         >
-          {sample.status}
+          {statusPresentation.label}
         </StatusPill>
+        {isEditable ? (
+          <SecondaryButton
+            size="medium"
+            className="sample-card__grid-edit-button"
+            onClick={() => onEditSample(sample, { sourcePage })}
+          >
+            Edit
+          </SecondaryButton>
+        ) : null}
       </div>
 
       <div className={`sample-card__grid-body row gx-2 ${dataGridClass}`.trim()}>
@@ -343,6 +362,7 @@ function SampleCardGrid({ sample, onOpenSample, sourcePage, extraMetaFields = []
 export default function SampleCard({
   sample,
   onOpenSample,
+  onEditSample,
   sourcePage,
   viewMode = 'modern',
   extraMetaFields = [],
@@ -365,6 +385,7 @@ export default function SampleCard({
       <SampleCardGrid
         sample={sample}
         onOpenSample={onOpenSample}
+        onEditSample={onEditSample}
         sourcePage={sourcePage}
         extraMetaFields={extraMetaFields}
         extraDateFields={extraDateFields}

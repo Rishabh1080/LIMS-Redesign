@@ -85,6 +85,10 @@
   border-bottom: 1px solid var(--border-card);
 }
 
+.sample-card__grid-edit-button {
+  margin-left: auto;
+}
+
 .sample-card__grid-body {
   padding: 12px;
   margin: 0;

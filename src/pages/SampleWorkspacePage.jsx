@@ -195,6 +195,7 @@ function SamplesPanel({
   samples,
   hasActiveQuery,
   onOpenSample,
+  onEditSample,
   onResetSearch,
   viewMode,
   onViewModeChange,
@@ -222,6 +223,7 @@ function SamplesPanel({
               <SampleCard
                 sample={sample}
                 onOpenSample={onOpenSample}
+                onEditSample={onEditSample}
                 sourcePage="samples-workspace"
                 viewMode={viewMode}
                 extraMetaFields={sample.extraMetaFields}
@@ -238,6 +240,7 @@ function SamplesPanel({
 export default function SampleWorkspacePage({
   onNewSample,
   onOpenSample,
+  onEditSample,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -321,6 +324,7 @@ export default function SampleWorkspacePage({
           samples={filteredSamples}
           hasActiveQuery={hasActiveQuery}
           onOpenSample={onOpenSample}
+          onEditSample={onEditSample}
           viewMode={sampleCardViewMode}
           onViewModeChange={onSampleCardViewModeChange}
           onResetSearch={() => {

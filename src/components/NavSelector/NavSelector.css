@@ -3,16 +3,17 @@
   --nav-selector-padding-x: 12px;
   --nav-selector-text-color: #4d5561;
   --nav-selector-bg: transparent;
-  --nav-selector-border-color: transparent;
+  --nav-selector-border-color: #d1d5db;
+  --nav-selector-border-width: 1px;
   --nav-selector-badge-bg: #ff3131;
   --nav-selector-badge-border: transparent;
   --nav-selector-badge-color: #ffffff;
 
+  position: relative;
   min-height: var(--nav-selector-height);
   padding: 0 var(--nav-selector-padding-x);
   border-radius: 0;
   border: 0;
-  border-bottom: 3px solid var(--nav-selector-border-color);
   background: var(--nav-selector-bg);
   color: var(--nav-selector-text-color);
   display: inline-flex;
@@ -30,10 +31,25 @@
     border-color 180ms cubic-bezier(0.2, 0, 0, 1);
 }
 
+.smplfy-nav-selector::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--nav-selector-border-width);
+  background: var(--nav-selector-border-color);
+  pointer-events: none;
+  transition:
+    background-color 180ms cubic-bezier(0.2, 0, 0, 1),
+    height 180ms cubic-bezier(0.2, 0, 0, 1);
+}
+
 .smplfy-nav-selector:not(.is-active):hover {
-  --nav-selector-text-color: #1379f0;
-  --nav-selector-bg: #eef7ff;
-  --nav-selector-border-color: transparent;
+  --nav-selector-text-color: #4d5561;
+  --nav-selector-bg: #f5f6f7;
+  --nav-selector-border-color: #d1d5db;
+  --nav-selector-border-width: 1px;
   background: var(--nav-selector-bg);
   color: var(--nav-selector-text-color);
   box-shadow: none;
@@ -55,6 +71,7 @@
   --nav-selector-text-color: #1379f0;
   --nav-selector-bg: #eef7ff;
   --nav-selector-border-color: #1379f0;
+  --nav-selector-border-width: 3px;
   background: var(--nav-selector-bg);
   color: var(--nav-selector-text-color);
   box-shadow: none;
@@ -64,9 +81,10 @@
 
 .smplfy-nav-selector:not(.is-active):active,
 .smplfy-nav-selector:not(.is-active):active:hover {
-  --nav-selector-text-color: #1379f0;
-  --nav-selector-bg: #eef7ff;
-  --nav-selector-border-color: #1379f0;
+  --nav-selector-text-color: #4d5561;
+  --nav-selector-bg: #e6e8eb;
+  --nav-selector-border-color: #d1d5db;
+  --nav-selector-border-width: 1px;
   background: var(--nav-selector-bg);
   color: var(--nav-selector-text-color);
   box-shadow: none;

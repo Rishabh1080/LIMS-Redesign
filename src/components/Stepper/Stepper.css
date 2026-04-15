@@ -12,11 +12,30 @@
   height: 41px;
   padding-left: 37px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   color: #ffffff;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.4375;
+}
+
+.smplfy-stepper-item__button {
+  position: static;
+  width: 100%;
+  min-height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.smplfy-stepper-item--interactive {
+  cursor: pointer;
+}
+
+.smplfy-stepper-item--interactive .smplfy-stepper-item__button:focus-visible {
+  outline: none;
 }
 
 .smplfy-stepper-item__indicator {
@@ -78,7 +97,7 @@
   display: inline-flex;
   align-items: center;
   min-height: 17px;
-  padding-top: 9px;
+  padding-top: 0;
   white-space: nowrap;
 }
 

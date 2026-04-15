@@ -11,6 +11,7 @@ export default function SecondaryButton({
   leftIcon,
   rightIcon,
   size = 'large',
+  tone = 'neutral',
   disabled = false,
   className = '',
   type = 'button',
@@ -21,6 +22,7 @@ export default function SecondaryButton({
   const hasLeftIcon = Boolean(leftIcon);
   const hasRightIcon = Boolean(rightIcon);
   const sizeClass = size ? `smplfy-secondary-button--${size.toLowerCase()}` : '';
+  const toneClass = tone ? `smplfy-secondary-button--tone-${tone.toLowerCase()}` : '';
 
   return (
     <button
@@ -30,6 +32,7 @@ export default function SecondaryButton({
         'btn',
         'smplfy-secondary-button',
         sizeClass,
+        toneClass,
         hasLeftIcon && 'smplfy-secondary-button--has-left-icon',
         hasRightIcon && 'smplfy-secondary-button--has-right-icon',
         !hasLabel && 'smplfy-secondary-button--icon-only',

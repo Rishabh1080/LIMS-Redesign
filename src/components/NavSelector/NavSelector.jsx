@@ -16,7 +16,13 @@ export default function NavSelector({
   ...props
 }) {
   const resolvedLabel = children ?? label;
-  const hasBadge = count !== undefined && count !== null && count !== '';
+  const normalizedCount = typeof count === 'string' ? count.trim() : count;
+  const hasBadge =
+    normalizedCount !== undefined &&
+    normalizedCount !== null &&
+    normalizedCount !== '' &&
+    normalizedCount !== 0 &&
+    normalizedCount !== '0';
 
   return (
     <button
@@ -34,7 +40,7 @@ export default function NavSelector({
       <span className="smplfy-nav-selector__label">{resolvedLabel}</span>
       {hasBadge ? (
         <Badge className="smplfy-nav-selector__badge" tone="danger" size="small" shape="circle">
-          {count}
+          {normalizedCount}
         </Badge>
       ) : null}
     </button>

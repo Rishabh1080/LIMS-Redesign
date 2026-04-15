@@ -8,6 +8,7 @@ import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
 import { AllocateTestRequestButton, ViewTestRequestButton } from '../components/TestRequestActions';
+import { getStatusPresentation } from '../status/statusRegistry';
 import './test-requests-listing-page.css';
 
 const targetReportingDate = '31/03/2026';
@@ -29,8 +30,6 @@ const initialRequestRows = [
   {
     id: 'URLS/26/ULRS/O/2026/30/330',
     status: 'Not allocated',
-    pillColor: 'gray',
-    pillStyle: 'neutral',
     allocated: false,
     parameter: 'Total Iron as Fe',
     testMethod: 'IS:3025 (Part 53) 2024',
@@ -41,8 +40,6 @@ const initialRequestRows = [
   {
     id: 'URLS/26/ULRS/O/2026/30/331',
     status: 'Not allocated',
-    pillColor: 'gray',
-    pillStyle: 'neutral',
     allocated: false,
     parameter: 'Total Hardness as CaCO3',
     testMethod: 'IS:3025 (Part 53) 2024',
@@ -53,8 +50,6 @@ const initialRequestRows = [
   {
     id: 'URLS/26/ULRS/O/2026/30/332',
     status: 'Not allocated',
-    pillColor: 'gray',
-    pillStyle: 'neutral',
     allocated: false,
     parameter: 'Total Dissolved Solids',
     testMethod: 'IS:3025 (Part 53) 2024',
@@ -65,8 +60,6 @@ const initialRequestRows = [
   {
     id: 'URLS/26/ULRS/O/2026/30/333',
     status: 'Not allocated',
-    pillColor: 'gray',
-    pillStyle: 'neutral',
     allocated: false,
     parameter: 'Total Alkalinity as CaCO3',
     testMethod: 'IS:3025 (Part 53) 2024',
@@ -77,8 +70,6 @@ const initialRequestRows = [
   {
     id: 'URLS/26/ULRS/O/2026/30/334',
     status: 'Not allocated',
-    pillColor: 'gray',
-    pillStyle: 'neutral',
     allocated: false,
     parameter: 'Dissolved Oxygen',
     testMethod: 'IS:3025 (Part 53) 2024',
@@ -92,7 +83,6 @@ const initialJobRows = [
   {
     id: 'URLS/O/26-27',
     status: 'Not allocated',
-    tone: 'neutral',
     product: 'Boiler Water',
     age: '30 minutes ago',
     reportingDate: targetReportingDate,
@@ -101,7 +91,6 @@ const initialJobRows = [
   {
     id: 'URLS/O/26-27',
     status: 'Result Under Testing',
-    tone: 'info',
     product: 'Boiler Water',
     age: '30 minutes ago',
     reportingDate: targetReportingDate,
@@ -110,7 +99,6 @@ const initialJobRows = [
   {
     id: 'URLS/O/26-27',
     status: 'Result Under Approval',
-    tone: 'warning',
     product: 'Boiler Water',
     age: '30 minutes ago',
     reportingDate: targetReportingDate,
@@ -118,8 +106,7 @@ const initialJobRows = [
   },
   {
     id: 'URLS/O/26-27',
-    status: 'Result Rejected',
-    tone: 'danger',
+    status: 'Rejected',
     product: 'Boiler Water',
     age: '30 minutes ago',
     reportingDate: targetReportingDate,
@@ -127,8 +114,7 @@ const initialJobRows = [
   },
   {
     id: 'URLS/O/26-27',
-    status: 'Result Approved',
-    tone: 'success',
+    status: 'Approved',
     product: 'Boiler Water',
     age: '30 minutes ago',
     reportingDate: targetReportingDate,
@@ -188,8 +174,6 @@ function buildRequestRows(viewMode) {
     return initialRequestRows.map((row) => ({
       ...row,
       status: 'Approved',
-      pillColor: 'green',
-      pillStyle: 'strong',
       allocated: true,
     }));
   }
@@ -201,8 +185,7 @@ function buildJobRows(viewMode) {
   if (viewMode === 'approved') {
     return initialJobRows.map((row) => ({
       ...row,
-      status: 'Result Approved',
-      tone: 'success',
+      status: 'Approved',
       action: 'view',
     }));
   }
@@ -702,8 +685,11 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
             </div>
             <div className="col-auto tr-table-cell tr-table-cell--status">
               <div className="tr-request-status-cell">
-                <StatusPill color={row.pillColor} styleType={row.pillStyle}>
-                  {row.status}
+                <StatusPill
+                  color={getStatusPresentation('testRequest', row.status).color}
+                  styleType={getStatusPresentation('testRequest', row.status).styleType}
+                >
+                  {getStatusPresentation('testRequest', row.status).label}
                 </StatusPill>
               </div>
             </div>
@@ -761,20 +747,10 @@ function JobsCard({ jobs, onAllocate, onOpenTrDetails, readOnly = false }) {
             <div className="col-auto tr-table-cell tr-table-cell--status">
               <div className="tr-job-status-cell">
                 <StatusPill
-                  color={
-                    row.tone === 'info'
-                      ? 'blue'
-                      : row.tone === 'warning'
-                        ? 'yellow'
-                        : row.tone === 'danger'
-                          ? 'red'
-                          : row.tone === 'success'
-                            ? 'green'
-                            : 'gray'
-                  }
-                  styleType={row.tone === 'success' ? 'strong' : 'neutral'}
+                  color={getStatusPresentation('testRequest', row.status).color}
+                  styleType={getStatusPresentation('testRequest', row.status).styleType}
                 >
-                  {row.status}
+                  {getStatusPresentation('testRequest', row.status).label}
                 </StatusPill>
               </div>
             </div>
@@ -917,8 +893,6 @@ export default function TestRequestsListingPage({
               ...row,
               allocated: true,
               status: 'Result Under Testing',
-              pillColor: 'blue',
-              pillStyle: 'neutral',
             }
           : row,
       ),
@@ -943,7 +917,6 @@ export default function TestRequestsListingPage({
           ? {
               ...row,
               status: 'Result Under Testing',
-              tone: 'info',
               action: 'view',
             }
           : row,

@@ -4,15 +4,9 @@ function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
 }
 
-function StepperItem({ label, state, position }) {
-  return (
-    <li
-      className={joinClasses(
-        'smplfy-stepper-item',
-        `smplfy-stepper-item--${state}`,
-        `smplfy-stepper-item--${position}`,
-      )}
-    >
+function StepperItem({ label, state, position, onClick }) {
+  const content = (
+    <>
       {position !== 'first' ? (
         <span className="smplfy-stepper-item__connector smplfy-stepper-item__connector--before" />
       ) : null}
@@ -21,11 +15,30 @@ function StepperItem({ label, state, position }) {
       ) : null}
       <span className="smplfy-stepper-item__indicator" />
       <span className="smplfy-stepper-item__label">{label}</span>
+    </>
+  );
+
+  return (
+    <li
+      className={joinClasses(
+        'smplfy-stepper-item',
+        `smplfy-stepper-item--${state}`,
+        `smplfy-stepper-item--${position}`,
+        onClick && 'smplfy-stepper-item--interactive',
+      )}
+    >
+      {onClick ? (
+        <button type="button" className="btn smplfy-stepper-item__button" onClick={onClick}>
+          {content}
+        </button>
+      ) : (
+        content
+      )}
     </li>
   );
 }
 
-export default function Stepper({ items }) {
+export default function Stepper({ items, onItemClick }) {
   return (
     <ol className="smplfy-stepper">
       {items.map((item, index) => {
@@ -39,6 +52,7 @@ export default function Stepper({ items }) {
             label={item.label}
             state={item.state}
             position={position}
+            onClick={onItemClick ? () => onItemClick(index) : undefined}
           />
         );
       })}

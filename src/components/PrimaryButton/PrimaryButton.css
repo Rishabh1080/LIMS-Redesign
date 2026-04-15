@@ -3,44 +3,48 @@
 .smplfy-primary-button--positive,
 .smplfy-primary-button--destructive,
 .smplfy-primary-button--red {
-  --bs-btn-color: var(--smplfy-primary-on-color);
-  --bs-btn-bg: var(--smplfy-primary-default-bg);
-  --bs-btn-border-color: transparent;
-  --bs-btn-hover-color: var(--smplfy-primary-on-color);
-  --bs-btn-hover-bg: var(--smplfy-primary-default-hover-bg);
-  --bs-btn-hover-border-color: transparent;
+  --bs-btn-color: var(--smplfy-component-button-color-text-primary-default);
+  --bs-btn-bg: var(--smplfy-component-button-color-background-primary-default);
+  --bs-btn-border-color: var(--smplfy-component-button-color-border-primary-default);
+  --bs-btn-hover-color: var(--smplfy-component-button-color-text-primary-hover);
+  --bs-btn-hover-bg: var(--smplfy-component-button-color-background-primary-hover);
+  --bs-btn-hover-border-color: var(--smplfy-component-button-color-border-primary-hover);
   --bs-btn-focus-shadow-rgb: 0, 0, 0;
-  --bs-btn-active-color: var(--smplfy-primary-on-color);
-  --bs-btn-active-bg: var(--smplfy-primary-default-focus-bg);
-  --bs-btn-active-border-color: transparent;
-  --bs-btn-disabled-color: var(--smplfy-primary-on-color);
-  --bs-btn-disabled-bg: var(--smplfy-primary-default-disabled-bg);
-  --bs-btn-disabled-border-color: transparent;
-  --button-bg: var(--smplfy-primary-default-bg);
-  --button-bg-hover: var(--smplfy-primary-default-hover-bg);
-  --button-bg-focus: var(--smplfy-primary-default-focus-bg);
+  --bs-btn-active-color: var(--smplfy-component-button-color-text-primary-pressed);
+  --bs-btn-active-bg: var(--smplfy-component-button-color-background-primary-pressed);
+  --bs-btn-active-border-color: var(--smplfy-component-button-color-border-primary-pressed);
+  --bs-btn-disabled-color: var(--smplfy-component-button-color-text-primary-disabled);
+  --bs-btn-disabled-bg: var(--smplfy-component-button-color-background-primary-disabled);
+  --bs-btn-disabled-border-color: var(--smplfy-component-button-color-border-primary-disabled);
+  --button-bg: var(--smplfy-component-button-color-background-primary-default);
+  --button-bg-hover: var(--smplfy-component-button-color-background-primary-hover);
+  --button-bg-focus: var(--smplfy-component-button-color-background-primary-pressed);
   --button-shadow-hover: var(--smplfy-primary-shadow-blue);
   --button-shadow-focus: var(--smplfy-primary-shadow-blue-focus);
-  --button-text: var(--smplfy-primary-on-color);
+  --button-text: var(--smplfy-component-button-color-text-primary-default);
+  --button-border: var(--smplfy-component-button-color-border-primary-default);
+  --button-border-hover: var(--smplfy-component-button-color-border-primary-hover);
+  --button-border-focus: var(--smplfy-component-button-color-border-primary-pressed);
 
-  min-height: var(--smplfy-button-height);
+  min-height: var(--smplfy-component-button-size-height-default);
   padding:
-    10px
-    var(--smplfy-button-padding-label-only-end)
-    10px
-    var(--smplfy-button-padding-label-only-start);
+    var(--smplfy-component-button-space-padding-block-default)
+    var(--smplfy-component-button-space-padding-inline-leading-icon-end)
+    var(--smplfy-component-button-space-padding-block-default)
+    var(--smplfy-component-button-space-padding-inline-leading-icon-start);
   border: 0;
-  border-radius: var(--smplfy-button-radius);
+  border-radius: var(--smplfy-component-button-radius-default);
   background: var(--button-bg);
+  border-color: var(--button-border);
   color: var(--button-text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--smplfy-button-gap);
-  font-family: var(--smplfy-button-font-family);
-  font-size: var(--smplfy-button-font-size);
-  font-weight: var(--smplfy-button-font-weight);
-  line-height: var(--smplfy-button-line-height);
+  gap: var(--smplfy-component-button-space-gap-default);
+  font-family: var(--smplfy-component-button-typography-font-family);
+  font-size: var(--smplfy-component-button-typography-font-size);
+  font-weight: var(--smplfy-component-button-typography-font-weight);
+  line-height: var(--smplfy-component-button-typography-line-height);
   letter-spacing: -0.03em;
   background-image: none;
   white-space: nowrap;
@@ -56,6 +60,7 @@
 .smplfy-primary-button--destructive:hover,
 .smplfy-primary-button--red:hover {
   background: var(--button-bg-hover);
+  border-color: var(--button-border-hover);
   color: var(--button-text);
   box-shadow: var(--button-shadow-hover);
 }
@@ -71,6 +76,7 @@
 .smplfy-primary-button--red:focus-visible,
 .smplfy-primary-button--red.is-force-focus {
   background: var(--button-bg-focus);
+  border-color: var(--button-border-focus);
   color: var(--button-text);
   box-shadow: var(--button-shadow-focus);
   outline: none;
@@ -87,7 +93,7 @@
 .smplfy-primary-button--destructive:active:hover,
 .smplfy-primary-button--red:active:hover {
   background-color: var(--button-bg-focus) !important;
-  border-color: transparent !important;
+  border-color: var(--button-border-focus) !important;
   color: var(--button-text);
   box-shadow: var(--button-shadow-focus);
   transform: scale(0.96);
@@ -103,20 +109,25 @@
 .smplfy-primary-button--destructive.is-disabled,
 .smplfy-primary-button--red:disabled,
 .smplfy-primary-button--red.is-disabled {
-  background: var(--smplfy-primary-default-disabled-bg);
-  color: var(--smplfy-primary-on-color);
+  background: var(--smplfy-component-button-color-background-primary-disabled);
+  border-color: var(--smplfy-component-button-color-border-primary-disabled);
+  color: var(--smplfy-component-button-color-text-primary-disabled);
   box-shadow: none;
   pointer-events: none;
 }
 
 .smplfy-primary-button.smplfy-primary-button--positive,
 .smplfy-primary-button--positive {
-  --bs-btn-bg: var(--smplfy-primary-positive-bg);
-  --bs-btn-hover-bg: var(--smplfy-primary-positive-hover-bg);
-  --bs-btn-active-bg: var(--smplfy-primary-positive-focus-bg);
-  --button-bg: var(--smplfy-primary-positive-bg);
-  --button-bg-hover: var(--smplfy-primary-positive-hover-bg);
-  --button-bg-focus: var(--smplfy-primary-positive-focus-bg);
+  --bs-btn-bg: var(--smplfy-component-button-color-background-positive-default);
+  --bs-btn-hover-bg: var(--smplfy-component-button-color-background-positive-hover);
+  --bs-btn-active-bg: var(--smplfy-component-button-color-background-positive-pressed);
+  --button-bg: var(--smplfy-component-button-color-background-positive-default);
+  --button-bg-hover: var(--smplfy-component-button-color-background-positive-hover);
+  --button-bg-focus: var(--smplfy-component-button-color-background-positive-pressed);
+  --button-text: var(--smplfy-component-button-color-text-positive-default);
+  --button-border: var(--smplfy-component-button-color-border-positive-default);
+  --button-border-hover: var(--smplfy-component-button-color-border-positive-hover);
+  --button-border-focus: var(--smplfy-component-button-color-border-positive-pressed);
   --button-shadow-hover: var(--smplfy-primary-shadow-green);
   --button-shadow-focus: var(--smplfy-primary-shadow-green-focus);
 }
@@ -125,12 +136,16 @@
 .smplfy-primary-button.smplfy-primary-button--red,
 .smplfy-primary-button--destructive,
 .smplfy-primary-button--red {
-  --bs-btn-bg: var(--smplfy-primary-red-bg);
-  --bs-btn-hover-bg: var(--smplfy-primary-red-hover-bg);
-  --bs-btn-active-bg: var(--smplfy-primary-red-focus-bg);
-  --button-bg: var(--smplfy-primary-red-bg);
-  --button-bg-hover: var(--smplfy-primary-red-hover-bg);
-  --button-bg-focus: var(--smplfy-primary-red-focus-bg);
+  --bs-btn-bg: var(--smplfy-component-button-color-background-destructive-default);
+  --bs-btn-hover-bg: var(--smplfy-component-button-color-background-destructive-hover);
+  --bs-btn-active-bg: var(--smplfy-component-button-color-background-destructive-pressed);
+  --button-bg: var(--smplfy-component-button-color-background-destructive-default);
+  --button-bg-hover: var(--smplfy-component-button-color-background-destructive-hover);
+  --button-bg-focus: var(--smplfy-component-button-color-background-destructive-pressed);
+  --button-text: var(--smplfy-component-button-color-text-destructive-default);
+  --button-border: var(--smplfy-component-button-color-border-destructive-default);
+  --button-border-hover: var(--smplfy-component-button-color-border-destructive-hover);
+  --button-border-focus: var(--smplfy-component-button-color-border-destructive-pressed);
   --button-shadow-hover: var(--smplfy-primary-shadow-red);
   --button-shadow-focus: var(--smplfy-primary-shadow-red-focus);
 }
@@ -141,13 +156,13 @@
 }
 
 .smplfy-primary-button__icon {
-  width: var(--smplfy-button-icon-size);
-  height: var(--smplfy-button-icon-size);
+  width: var(--smplfy-component-button-size-icon-default);
+  height: var(--smplfy-component-button-size-icon-default);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 var(--smplfy-button-icon-size);
-  font-size: var(--smplfy-button-icon-size);
+  flex: 0 0 var(--smplfy-component-button-size-icon-default);
+  font-size: var(--smplfy-component-button-size-icon-default);
 }
 
 .smplfy-primary-button__label:empty {
@@ -174,10 +189,10 @@
 .smplfy-primary-button--positive.smplfy-primary-button--icon-only,
 .smplfy-primary-button--destructive.smplfy-primary-button--icon-only,
 .smplfy-primary-button--red.smplfy-primary-button--icon-only {
-  width: var(--smplfy-button-height);
-  min-width: var(--smplfy-button-height);
-  height: var(--smplfy-button-height);
-  min-height: var(--smplfy-button-height);
+  width: var(--smplfy-component-button-size-height-default);
+  min-width: var(--smplfy-component-button-size-height-default);
+  height: var(--smplfy-component-button-size-height-default);
+  min-height: var(--smplfy-component-button-size-height-default);
   padding: 0;
   gap: 0;
 }
@@ -187,9 +202,9 @@
 .smplfy-primary-button--positive.smplfy-primary-button--small,
 .smplfy-primary-button--destructive.smplfy-primary-button--small,
 .smplfy-primary-button--red.smplfy-primary-button--small {
-  height: 24px;
-  min-height: 24px;
-  max-height: 24px;
+  height: var(--smplfy-component-button-size-height-small);
+  min-height: var(--smplfy-component-button-size-height-small);
+  max-height: var(--smplfy-component-button-size-height-small);
   width: fit-content;
   padding-top: 0;
   padding-bottom: 0;
@@ -200,8 +215,8 @@
 .smplfy-primary-button--positive.smplfy-primary-button--small.smplfy-primary-button--has-left-icon,
 .smplfy-primary-button--destructive.smplfy-primary-button--small.smplfy-primary-button--has-left-icon,
 .smplfy-primary-button--red.smplfy-primary-button--small.smplfy-primary-button--has-left-icon {
-  padding-left: 8px;
-  padding-right: 12px;
+  padding-left: var(--smplfy-component-button-space-padding-inline-small-leading-icon-start);
+  padding-right: var(--smplfy-component-button-space-padding-inline-small-leading-icon-end);
 }
 
 .smplfy-primary-button.smplfy-primary-button--small.smplfy-primary-button--icon-only,
@@ -209,11 +224,11 @@
 .smplfy-primary-button--positive.smplfy-primary-button--small.smplfy-primary-button--icon-only,
 .smplfy-primary-button--destructive.smplfy-primary-button--small.smplfy-primary-button--icon-only,
 .smplfy-primary-button--red.smplfy-primary-button--small.smplfy-primary-button--icon-only {
-  width: 24px;
-  min-width: 24px;
-  height: 24px;
-  min-height: 24px;
-  max-height: 24px;
+  width: var(--smplfy-component-button-size-height-small);
+  min-width: var(--smplfy-component-button-size-height-small);
+  height: var(--smplfy-component-button-size-height-small);
+  min-height: var(--smplfy-component-button-size-height-small);
+  max-height: var(--smplfy-component-button-size-height-small);
   padding: 0;
   gap: 0;
 }
@@ -223,10 +238,10 @@
 .smplfy-primary-button--positive.smplfy-primary-button--small .smplfy-primary-button__icon,
 .smplfy-primary-button--destructive.smplfy-primary-button--small .smplfy-primary-button__icon,
 .smplfy-primary-button--red.smplfy-primary-button--small .smplfy-primary-button__icon {
-  width: 16px;
-  height: 16px;
-  flex-basis: 16px;
-  font-size: 16px;
+  width: var(--smplfy-component-button-size-icon-small);
+  height: var(--smplfy-component-button-size-icon-small);
+  flex-basis: var(--smplfy-component-button-size-icon-small);
+  font-size: var(--smplfy-component-button-size-icon-small);
 }
 
 .btn.smplfy-primary-button:active,

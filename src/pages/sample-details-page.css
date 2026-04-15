@@ -113,10 +113,6 @@
   gap: 12px;
 }
 
-.sample-details-page-header__secondary {
-  min-width: 127px;
-}
-
 .sample-details-page-header__more {
   flex: 0 0 auto;
 }

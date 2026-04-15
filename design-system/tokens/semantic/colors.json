@@ -1,0 +1,132 @@
+{
+  "$schemaNote": "Semantic color tokens are defined in code first and alias primitive colors.",
+  "status": "draft_v1",
+  "principles": [
+    "Semantic tokens describe role, not component.",
+    "Semantic tokens should be reusable across multiple components.",
+    "Semantic tokens should alias primitives, never duplicate raw hex values.",
+    "Component tokens should consume semantic tokens rather than primitives."
+  ],
+  "tokens": {
+    "color.text.default": {
+      "value": "{color.neutrals.800}",
+      "comment": "Default text on light surfaces."
+    },
+    "color.text.muted": {
+      "value": "{color.neutrals.600}",
+      "comment": "Secondary or supporting text on light surfaces."
+    },
+    "color.text.disabled": {
+      "value": "{color.neutrals.500}",
+      "comment": "Disabled text on light surfaces."
+    },
+    "color.text.on-primary": {
+      "value": "{color.neutrals.100}",
+      "comment": "Text or icons shown on primary brand surfaces."
+    },
+    "color.background.primary": {
+      "value": "{color.blue.500}",
+      "comment": "Primary brand-filled surface."
+    },
+    "color.background.primary.hover": {
+      "value": "{color.blue.600}",
+      "comment": "Hover state for primary brand-filled surface."
+    },
+    "color.background.primary.pressed": {
+      "value": "{color.blue.700}",
+      "comment": "Pressed or active state for primary brand-filled surface."
+    },
+    "color.background.disabled": {
+      "value": "{color.neutrals.400}",
+      "comment": "Disabled filled surface."
+    },
+    "color.border.transparent": {
+      "value": "transparent",
+      "comment": "Used where border presence should not visually appear."
+    },
+    "color.background.feedback.success": {
+      "value": "{color.green.500}",
+      "comment": "Success-colored filled surface."
+    },
+    "color.background.feedback.success.hover": {
+      "value": "{color.green.600}",
+      "comment": "Hover state for success-filled surface."
+    },
+    "color.background.feedback.success.pressed": {
+      "value": "{color.green.700}",
+      "comment": "Pressed state for success-filled surface."
+    },
+    "color.background.feedback.danger": {
+      "value": "{color.red.500}",
+      "comment": "Danger or destructive filled surface."
+    },
+    "color.background.feedback.danger.hover": {
+      "value": "{color.red.600}",
+      "comment": "Hover state for danger-filled surface."
+    },
+    "color.background.feedback.danger.pressed": {
+      "value": "{color.red.700}",
+      "comment": "Pressed state for danger-filled surface."
+    },
+    "typography.control.font-family": {
+      "value": "Inter, sans-serif",
+      "comment": "Shared typography family for control labels."
+    },
+    "typography.control.font-size": {
+      "value": "14px",
+      "comment": "Shared font size for control labels."
+    },
+    "typography.control.font-weight": {
+      "value": "500",
+      "comment": "Shared font weight for control labels."
+    },
+    "typography.control.line-height": {
+      "value": "1.2",
+      "comment": "Shared line height for control labels."
+    },
+    "radius.control.default": {
+      "value": "6px",
+      "comment": "Default corner radius for interactive controls."
+    },
+    "size.control.height.default": {
+      "value": "40px",
+      "comment": "Default control height."
+    },
+    "size.control.height.small": {
+      "value": "24px",
+      "comment": "Compact control height."
+    },
+    "size.icon.default": {
+      "value": "18px",
+      "comment": "Default icon size inside controls."
+    },
+    "size.icon.small": {
+      "value": "16px",
+      "comment": "Compact icon size inside small controls."
+    },
+    "space.control.gap.default": {
+      "value": "8px",
+      "comment": "Default internal gap for control content."
+    },
+    "space.control.padding.block.default": {
+      "value": "10px",
+      "comment": "Default block padding for control content."
+    },
+    "space.control.padding.inline.default": {
+      "value": "16px",
+      "comment": "Default inline padding for control content."
+    },
+    "space.control.padding.inline.compact": {
+      "value": "12px",
+      "comment": "Compact inline padding, useful when an icon is present."
+    },
+    "space.control.padding.inline.small.start": {
+      "value": "8px",
+      "comment": "Small leading inline padding."
+    },
+    "space.control.padding.inline.small.end": {
+      "value": "12px",
+      "comment": "Small trailing inline padding."
+    }
+  }
+}
