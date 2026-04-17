@@ -46,8 +46,7 @@
 }
 
 .app-modal__header {
-  min-height: 82px;
-  padding: 24px;
+  padding: 20px 24px;
   border-bottom: 1px solid #e6e8eb;
   display: flex;
   align-items: center;
@@ -62,6 +61,7 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
+  flex: 1 1 auto;
 }
 
 .app-modal__title-row h2 {

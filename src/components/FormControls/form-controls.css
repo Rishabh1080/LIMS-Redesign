@@ -135,8 +135,34 @@
   align-items: stretch;
 }
 
+.smplfy-input-field__shell--file {
+  width: 100%;
+  padding: 0 15px;
+}
+
 .smplfy-input-field__control--date-text {
   padding: 0 16px;
+}
+
+.smplfy-input-field__control--file-display {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--field-text-color);
+  font-family: var(--smplfy-field-font-family);
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 400;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.smplfy-input-field__control--file-placeholder {
+  color: var(--field-placeholder-color);
 }
 
 .smplfy-input-field__action--date {
@@ -241,6 +267,14 @@
   pointer-events: none;
   border: 0;
   margin: 0;
+}
+
+.smplfy-input-field__native-file {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .smplfy-toast {

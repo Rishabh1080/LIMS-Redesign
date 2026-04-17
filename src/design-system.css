@@ -95,8 +95,10 @@
   --smplfy-semantic-typography-control-line-height: var(--smplfy-button-line-height);
   --smplfy-semantic-radius-control-default: var(--smplfy-button-radius);
   --smplfy-semantic-size-control-height-default: var(--smplfy-button-height);
+  --smplfy-semantic-size-control-height-medium: 32px;
   --smplfy-semantic-size-control-height-small: 24px;
   --smplfy-semantic-size-icon-default: var(--smplfy-button-icon-size);
+  --smplfy-semantic-size-icon-medium: 16px;
   --smplfy-semantic-size-icon-small: 16px;
   --smplfy-semantic-space-control-gap-default: var(--smplfy-button-gap);
   --smplfy-semantic-space-control-padding-block-default: 10px;
@@ -112,8 +114,10 @@
   --smplfy-component-button-typography-line-height: var(--smplfy-semantic-typography-control-line-height);
   --smplfy-component-button-radius-default: var(--smplfy-semantic-radius-control-default);
   --smplfy-component-button-size-height-default: var(--smplfy-semantic-size-control-height-default);
+  --smplfy-component-button-size-height-medium: var(--smplfy-semantic-size-control-height-medium);
   --smplfy-component-button-size-height-small: var(--smplfy-semantic-size-control-height-small);
   --smplfy-component-button-size-icon-default: var(--smplfy-semantic-size-icon-default);
+  --smplfy-component-button-size-icon-medium: var(--smplfy-semantic-size-icon-medium);
   --smplfy-component-button-size-icon-small: var(--smplfy-semantic-size-icon-small);
   --smplfy-component-button-space-gap-default: var(--smplfy-semantic-space-control-gap-default);
   --smplfy-component-button-space-padding-block-default: var(--smplfy-semantic-space-control-padding-block-default);
@@ -199,7 +203,7 @@
   --smplfy-field-label-color: var(--smplfy-primitive-neutral-700);
   --smplfy-field-helper-color: var(--smplfy-primitive-neutral-600);
   --smplfy-field-warning-color: var(--smplfy-primitive-orange-600);
-  --smplfy-field-error-color: var(--smplfy-primitive-red-500);
+  --smplfy-field-error-color: var(--smplfy-primitive-red-600);
   --smplfy-field-required-color: var(--smplfy-primitive-red-400);
   --smplfy-field-icon-color: var(--smplfy-primitive-neutral-700);
   --smplfy-field-divider: var(--smplfy-primitive-neutral-300);

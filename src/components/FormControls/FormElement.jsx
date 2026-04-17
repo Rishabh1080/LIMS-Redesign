@@ -1,5 +1,6 @@
 import InputFieldDate from './InputFieldDate';
 import InputFieldDropdown from './InputFieldDropdown';
+import InputFieldFile from './InputFieldFile';
 import InputFieldSplitSelector from './InputFieldSplitSelector';
 import InputFieldText from './InputFieldText';
 import './form-controls.css';
@@ -8,6 +9,7 @@ const inputByType = {
   text: InputFieldText,
   dropdown: InputFieldDropdown,
   date: InputFieldDate,
+  file: InputFieldFile,
   split: InputFieldSplitSelector,
 };
 

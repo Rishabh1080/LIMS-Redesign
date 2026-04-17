@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import { FormElement } from '../components/FormControls';
@@ -150,11 +150,33 @@ function RequestCard({ request, onOpenDetails }) {
 }
 
 function RequestDetailsModal({ request, onClose }) {
+  const [comment, setComment] = useState('');
+  const [commentError, setCommentError] = useState('');
+
+  useEffect(() => {
+    if (!request) {
+      setComment('');
+      setCommentError('');
+    }
+  }, [request]);
+
+  const handleAction = () => {
+    if (!comment.trim()) {
+      setCommentError('Please add a comment to respond.');
+      return;
+    }
+    setCommentError('');
+    onClose();
+  };
+
   if (!request) {
     return null;
   }
 
   const title = normalizeRetentionLabel(request.title);
+
+  const sourceState = getStatusPresentation(request.entityType, request.sourceState);
+  const targetState = getStatusPresentation(request.entityType, request.targetState);
 
   return (
     <Modal
@@ -165,27 +187,19 @@ function RequestDetailsModal({ request, onClose }) {
       onClose={onClose}
       cardClassName="requests-for-me-request-modal__card"
       bodyClassName="requests-for-me-request-modal__body"
-      actionsClassName="requests-for-me-request-modal__actions"
-      actions={
-        <>
-          <PrimaryButton
-            styleVariant="red"
-            size="small"
-            className="requests-for-me-request-modal__action is-reject"
-          >
-            Reject
-          </PrimaryButton>
-          <PrimaryButton
-            styleVariant="positive"
-            size="small"
-            className="requests-for-me-request-modal__action is-accept"
-          >
-            Accept
-          </PrimaryButton>
-        </>
+      titleExtra={
+        <div className="requests-for-me-request-card__transition">
+          <StatusPill color={sourceState.color} styleType={sourceState.styleType}>
+            {sourceState.label}
+          </StatusPill>
+          <span className="requests-for-me-request-card__state-arrow">→</span>
+          <StatusPill color={targetState.color} styleType={targetState.styleType}>
+            {targetState.label}
+          </StatusPill>
+        </div>
       }
     >
-      <div className="requests-for-me-request-modal__content">
+      <div className="requests-for-me-request-modal__main">
         <div className="requests-for-me-request-modal__summary">
           <div className="requests-for-me-request-modal__summary-row">
             <div className="requests-for-me-request-modal__summary-label">Request by</div>
@@ -204,52 +218,65 @@ function RequestDetailsModal({ request, onClose }) {
         </div>
 
         <div className="requests-for-me-request-modal__body-grid">
-          <div className="requests-for-me-request-modal__main">
-            <div className="requests-for-me-request-modal__section-head">
-              <div className="requests-for-me-request-modal__tab">Everyone Needs to approve</div>
-              <div className="requests-for-me-request-modal__responded">6/12 Responded</div>
-              <SecondaryButton size="small" className="requests-for-me-request-modal__remind">
-                Remind All
-              </SecondaryButton>
-            </div>
-
-            <div className="requests-for-me-request-modal__table-wrap">
-              <div className="requests-for-me-request-modal__table-head">
-                <span>Sr.</span>
-                <span>Approver Name</span>
-                <span>Status</span>
-                <span>Days taken</span>
-                <span>Decision on</span>
-                <span>Comments</span>
-              </div>
-
-              <div className="requests-for-me-request-modal__table-body">
-                {requestApprovalRows.map((row) => (
-                  <div key={`${request.id}-${row.sr}`} className="requests-for-me-request-modal__table-row">
-                    <span>{row.sr}</span>
-                    <span>{row.approverName}</span>
-                    <span>{row.status}</span>
-                    <span>{row.daysTaken}</span>
-                    <span>{row.decisionOn}</span>
-                    <span>{row.comments}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="requests-for-me-request-modal__section-head">
+            <div className="requests-for-me-request-modal__tab">Everyone Needs to approve</div>
+            <div className="requests-for-me-request-modal__responded">6/12 Responded</div>
+            <SecondaryButton size="small" className="requests-for-me-request-modal__remind">
+              Remind All
+            </SecondaryButton>
           </div>
 
-          <div className="requests-for-me-request-modal__sidebar">
-            <FormElement
-              type="text"
-              mandatory
-              label="Comment"
-              inputProps={{
-                value: normalizeRetentionLabel(request.comments),
-                placeholder: 'eg.',
-                onChange: () => {},
-              }}
-            />
+          <div className="requests-for-me-request-modal__table-wrap">
+            <div className="requests-for-me-request-modal__table-head">
+              <span>Sr.</span>
+              <span>Approver Name</span>
+              <span>Status</span>
+              <span>Days taken</span>
+              <span>Decision on</span>
+              <span>Comments</span>
+            </div>
+
+            <div className="requests-for-me-request-modal__table-body">
+              {requestApprovalRows.map((row) => (
+                <div key={`${request.id}-${row.sr}`} className="requests-for-me-request-modal__table-row">
+                  <span>{row.sr}</span>
+                  <span>{row.approverName}</span>
+                  <span>{row.status}</span>
+                  <span>{row.daysTaken}</span>
+                  <span>{row.decisionOn}</span>
+                  <span>{row.comments}</span>
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+      </div>
+
+      <div className="requests-for-me-request-modal__sidebar">
+        <div className="requests-for-me-request-modal__sidebar-form">
+          <FormElement
+            type="text"
+            mandatory
+            label="Comment"
+            message={commentError}
+            messageTone="error"
+            inputProps={{
+              value: comment,
+              placeholder: 'Add a comment to respond',
+              onChange: (e) => {
+                setComment(e.target.value);
+                if (e.target.value.trim()) setCommentError('');
+              },
+            }}
+          />
+        </div>
+        <div className="requests-for-me-request-modal__actions">
+          <PrimaryButton styleVariant="destructive" size="large" className="requests-for-me-request-modal__action" onClick={handleAction} leftIcon="close">
+            Reject
+          </PrimaryButton>
+          <PrimaryButton styleVariant="positive" size="large" className="requests-for-me-request-modal__action" onClick={handleAction} leftIcon="check">
+            Approve
+          </PrimaryButton>
         </div>
       </div>
     </Modal>

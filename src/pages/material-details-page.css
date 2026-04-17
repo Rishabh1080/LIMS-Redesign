@@ -1,0 +1,327 @@
+.material-details-page-header {
+  height: 72px;
+  padding: 16px 24px;
+  background: #fff;
+  border-bottom: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+}
+
+.material-details-page-header__title {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.material-details-back {
+  width: 36px;
+  min-width: 36px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.material-details-page {
+  min-height: 100%;
+  padding: 24px;
+  background: var(--page-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Summary row */
+.material-details-summary {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.material-details-info-card {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 16px 12px;
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.material-details-info-card__content {
+  flex: 0 0 50%;
+  min-width: 0;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.material-details-info-card__title {
+  margin: 0;
+  font-size: 32px;
+  line-height: 39px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.material-details-info-card__key-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.material-details-info-card__description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: #4b5662;
+}
+
+.material-details-meta-label {
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: #4b5662;
+}
+
+.material-details-meta-value {
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #4b5662;
+}
+
+.material-details-info-card__stats {
+  flex: 0 0 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 60px;
+  gap: 12px;
+}
+
+/* Stat block */
+.material-details-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.material-details-stat__value-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.material-details-stat__value {
+  font-size: 48px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+}
+
+.material-details-stat__unit {
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #6c737f;
+  padding-bottom: 6px;
+}
+
+.material-details-stat__label {
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: -0.03em;
+  color: #6c737f;
+}
+
+/* QR card */
+.material-details-qr-card {
+  flex: 0 0 304px;
+  padding: 16px 80px;
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Records card */
+.material-details-records-card {
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.material-details-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 51px;
+  border-bottom: 1px solid var(--border-card);
+  padding: 0 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.material-details-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.material-details-records-header {
+  padding: 16px 24px 8px;
+}
+
+.material-details-records-count {
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+/* Table */
+.material-details-table-wrapper {
+  padding: 0 24px 24px;
+  padding-top: 16px;
+}
+
+.material-details-table {
+  border: 1px solid #e6e8eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.material-details-table__head,
+.material-details-table__row {
+  display: grid;
+  grid-template-columns: 48px 160px 100px 160px 140px 120px 100px 120px;
+}
+
+.material-details-table__head {
+  min-height: 36px;
+  background: #f5f7fa;
+  color: #6d737e;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  border-bottom: 1px solid #e6e8eb;
+}
+
+.material-details-table__head span,
+.material-details-table__row span {
+  min-height: 36px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid #e6e8eb;
+  font-size: 14px;
+  line-height: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.material-details-table__head span {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #6d737e;
+}
+
+.material-details-table__head span:last-child,
+.material-details-table__row span:last-child {
+  border-right: 0;
+}
+
+.material-details-table__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.material-details-table__row {
+  min-height: 44px;
+  background: #fff;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.material-details-table__row + .material-details-table__row {
+  border-top: 1px solid #e6e8eb;
+}
+
+/* Toast */
+.material-created-toast {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition:
+    opacity 260ms cubic-bezier(0.2, 0, 0, 1),
+    transform 260ms cubic-bezier(0.2, 0, 0, 1);
+  z-index: 1200;
+}
+
+.material-created-toast.smplfy-toast--gone {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(calc(100% + 24px));
+}
+
+@media (max-width: 1199.98px) {
+  .material-details-qr-card {
+    flex: 0 0 220px;
+    padding: 16px 40px;
+  }
+
+  .material-details-info-card__stats {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .material-details-summary {
+    flex-direction: column;
+  }
+
+  .material-details-info-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .material-details-info-card__content,
+  .material-details-info-card__stats {
+    flex: 0 0 auto;
+    width: 100%;
+    padding: 0;
+  }
+
+  .material-details-qr-card {
+    flex: 0 0 auto;
+    padding: 24px;
+  }
+
+  .material-details-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .material-details-table {
+    min-width: 900px;
+  }
+}

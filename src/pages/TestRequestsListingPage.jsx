@@ -258,21 +258,22 @@ function AllocationModal({
               </div>
             </div>
 
-            <div className="tr-allocation-modal__tabs">
-              {allocationTabs.map((tab) => (
-                <NavSelector
-                  key={tab.key}
-                  size="medium"
-                  className="tr-allocation-modal__tab"
-                  active={activeTab === tab.key}
-                  onClick={() => onTabChange(tab.key)}
-                >
-                  {tab.label}
-                </NavSelector>
-              ))}
-            </div>
+            <div className="tr-allocation-modal__tabs-section">
+              <div className="tr-allocation-modal__tabs">
+                {allocationTabs.map((tab) => (
+                  <NavSelector
+                    key={tab.key}
+                    size="medium"
+                    className="tr-allocation-modal__tab"
+                    active={activeTab === tab.key}
+                    onClick={() => onTabChange(tab.key)}
+                  >
+                    {tab.label}
+                  </NavSelector>
+                ))}
+              </div>
 
-            <div className="tr-allocation-modal__table-wrap">
+              <div className="tr-allocation-modal__table-wrap">
               <div className={`${gridClass} tr-allocation-table__head`}>
                 {table.columns.map((column) => (
                   <div key={column}>{column}</div>
@@ -292,6 +293,7 @@ function AllocationModal({
                   </div>
                 ))}
               </div>
+            </div>
             </div>
           </div>
 

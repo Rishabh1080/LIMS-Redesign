@@ -20,12 +20,15 @@
   --secondary-button-disabled-bg: #fff;
   --secondary-button-disabled-text: #d1d5db;
 
+  box-sizing: border-box;
+  height: var(--secondary-button-height);
   min-height: var(--secondary-button-height);
+  max-height: var(--secondary-button-height);
   border: 1px solid var(--secondary-button-border);
   border-radius: 6px;
   background: var(--secondary-button-bg);
   color: var(--secondary-button-text);
-  padding: 10px var(--secondary-button-padding-end) 10px var(--secondary-button-padding-start);
+  padding: 0 var(--secondary-button-padding-end) 0 var(--secondary-button-padding-start);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -182,9 +185,6 @@
   --secondary-button-padding-start: 16px;
   --secondary-button-padding-end: 16px;
   --secondary-button-icon-size: 16px;
-  min-height: 32px;
-  padding-top: 7px;
-  padding-bottom: 7px;
 }
 
 .smplfy-secondary-button--small {
@@ -192,10 +192,6 @@
   --secondary-button-padding-start: 12px;
   --secondary-button-padding-end: 12px;
   --secondary-button-icon-size: 16px;
-  height: 24px;
-  min-height: 24px;
-  padding-top: 3px;
-  padding-bottom: 3px;
 }
 
 .smplfy-secondary-button--has-left-icon {

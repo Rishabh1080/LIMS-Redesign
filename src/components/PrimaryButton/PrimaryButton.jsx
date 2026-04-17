@@ -22,6 +22,8 @@ export default function PrimaryButton({
   const hasLeftIcon = Boolean(leftIcon);
   const hasRightIcon = Boolean(rightIcon);
   const iconOnly = !hasLabel;
+  const resolvedSize = String(size || 'default').toLowerCase();
+  const isSmall = resolvedSize === 'small';
   const variantClass =
     styleVariant && styleVariant !== 'default'
       ? `smplfy-primary-button--${styleVariant.toLowerCase()}`
@@ -30,22 +32,36 @@ export default function PrimaryButton({
   const buttonStyle = hasLabel
     ? hasLeftIcon && hasRightIcon
       ? {
-          padding:
-            'var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-both-icons)',
+          '--primary-button-padding-inline-start': isSmall
+            ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-start)'
+            : 'var(--smplfy-component-button-space-padding-inline-both-icons)',
+          '--primary-button-padding-inline-end': isSmall
+            ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-start)'
+            : 'var(--smplfy-component-button-space-padding-inline-both-icons)',
         }
       : hasLeftIcon
         ? {
-            padding:
-              'var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-leading-icon-end) var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-leading-icon-start)',
+            '--primary-button-padding-inline-start': isSmall
+              ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-start)'
+              : 'var(--smplfy-component-button-space-padding-inline-leading-icon-start)',
+            '--primary-button-padding-inline-end': isSmall
+              ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-end)'
+              : 'var(--smplfy-component-button-space-padding-inline-leading-icon-end)',
           }
         : hasRightIcon
           ? {
-              padding:
-                'var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-trailing-icon-end) var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-trailing-icon-start)',
+              '--primary-button-padding-inline-start': isSmall
+                ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-end)'
+                : 'var(--smplfy-component-button-space-padding-inline-trailing-icon-start)',
+              '--primary-button-padding-inline-end': isSmall
+                ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-start)'
+                : 'var(--smplfy-component-button-space-padding-inline-trailing-icon-end)',
             }
           : {
-              padding:
-                'var(--smplfy-component-button-space-padding-block-default) var(--smplfy-component-button-space-padding-inline-label-only)',
+              '--primary-button-padding-inline-start':
+                'var(--smplfy-component-button-space-padding-inline-label-only)',
+              '--primary-button-padding-inline-end':
+                'var(--smplfy-component-button-space-padding-inline-label-only)',
             }
     : undefined;
 

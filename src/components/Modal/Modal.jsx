@@ -10,6 +10,7 @@ export default function Modal({
   title,
   titleId,
   titleIcon,
+  titleExtra,
   onClose,
   children,
   actions,
@@ -33,6 +34,7 @@ export default function Modal({
           <div className="app-modal__title-row">
             {titleIcon ? <AppIcon name={titleIcon} size={24} className="app-modal__title-icon" /> : null}
             <h2 id={titleId}>{title}</h2>
+            {titleExtra ? <div className="app-modal__title-extra">{titleExtra}</div> : null}
           </div>
 
           {showCloseButton ? (

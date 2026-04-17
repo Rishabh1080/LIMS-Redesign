@@ -1,0 +1,206 @@
+.new-instrument-page {
+  height: 100vh;
+  background: #f5f6f7;
+  display: flex;
+  flex-direction: column;
+}
+
+.new-instrument-topbar {
+  height: 64px;
+  padding: 0 24px;
+  background: #fff;
+  border-bottom: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.new-instrument-topbar__breadcrumbs {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #6d737e;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.new-instrument-topbar__crumb {
+  color: #6d737e;
+}
+
+.new-instrument-topbar__crumb-button {
+  padding: 0;
+  background: transparent;
+}
+
+.new-instrument-topbar__crumb-button.is-home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-instrument-topbar__crumb.is-current {
+  color: #1c2126;
+  font-weight: 600;
+}
+
+.new-instrument-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.new-instrument-topbar__pill,
+.new-instrument-topbar__chip,
+.new-instrument-topbar__icon,
+.new-instrument-topbar__avatar {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.new-instrument-topbar__pill {
+  padding: 0 14px;
+  border-color: #a9dca9;
+  color: #0ca443;
+  font-weight: 600;
+}
+
+.new-instrument-topbar__avatar {
+  min-width: 40px;
+  padding: 0 16px;
+}
+
+.new-instrument-page__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: calc(100vh - 64px);
+  padding: 32px 24px;
+  display: flex;
+}
+
+.new-instrument-card {
+  width: min(1230px, 100%);
+  height: 100%;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 9px 28px 8px rgba(0, 0, 0, 0.05),
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.new-instrument-card__body {
+  display: grid;
+  grid-template-columns: 242px minmax(0, 1fr);
+  height: 100%;
+}
+
+.new-instrument-rail {
+  background: #021527;
+  color: #fff;
+  padding: 32px 16px;
+}
+
+.new-instrument-rail__heading {
+  width: 153px;
+  min-height: 35px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.new-instrument-rail__title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 29px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.new-instrument-form {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.new-instrument-form__stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.new-instrument-form__content {
+  padding: 40px 40px 24px;
+}
+
+.new-instrument-card__footer {
+  flex: 0 0 88px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e6e8eb;
+  background: #fff;
+}
+
+.new-instrument-cancel {
+  min-width: 88px;
+}
+
+.new-instrument-card__footer .smplfy-primary-button {
+  min-width: 85px;
+}
+
+@media (max-width: 991.98px) {
+  .new-instrument-card__body {
+    grid-template-columns: 1fr;
+  }
+
+  .new-instrument-rail {
+    padding: 24px 24px 16px;
+  }
+
+  .new-instrument-rail__heading {
+    width: auto;
+    padding: 0;
+    margin-bottom: 16px;
+  }
+
+  .new-instrument-form__stage {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .new-instrument-page__content {
+    padding: 16px;
+    height: auto;
+    min-height: calc(100vh - 64px);
+  }
+
+  .new-instrument-form__content {
+    padding: 24px 20px;
+  }
+
+  .new-instrument-card__footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 12px;
+    min-height: 88px;
+  }
+
+  .new-instrument-cancel,
+  .new-instrument-card__footer .smplfy-primary-button {
+    width: 100%;
+  }
+}

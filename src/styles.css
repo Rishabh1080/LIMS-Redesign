@@ -407,17 +407,16 @@ button.header-breadcrumb__text:active {
   font-weight: 600;
 }
 
-.header-chip {
-  padding: 0;
-}
-
 .header-icon {
   width: 40px;
 }
 
 .header-avatar {
+  width: 40px;
   min-width: 40px;
-  padding: 0 16px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
 }
 
 .lims-page-header-slot {

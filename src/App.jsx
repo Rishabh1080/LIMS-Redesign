@@ -5,6 +5,12 @@ import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
 import DatasheetPage from './pages/DatasheetPage';
 import EnvironmentDataPage from './pages/EnvironmentDataPage';
 import FinalisedReportPage from './pages/FinalisedReportPage';
+import LeaveRecordsPage from './pages/LeaveRecordsPage';
+import MaterialsPage from './pages/MaterialsPage';
+import MaterialDetailsPage from './pages/MaterialDetailsPage';
+import InstrumentsPage from './pages/InstrumentsPage';
+import InstrumentDetailsPage from './pages/InstrumentDetailsPage';
+import NewInstrumentPage from './pages/NewInstrumentPage';
 import RequestsForMePage from './pages/RequestsForMePage';
 import SampleDetailsPage from './pages/SampleDetailsPage';
 import SampleWorkspacePage from './pages/SampleWorkspacePage';
@@ -57,6 +63,9 @@ export default function App() {
     reportId: 'URLS/2026/64',
     origin: 'temp-report',
   });
+  const [instrumentToast, setInstrumentToast] = useState(null);
+  const [instrumentDetailsState, setInstrumentDetailsState] = useState({ id: null, name: '', initialToast: null });
+  const [materialDetailsState, setMaterialDetailsState] = useState({ id: null, name: '', initialToast: null });
   const [trDetailsState, setTrDetailsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
@@ -89,6 +98,28 @@ export default function App() {
       sample,
     });
     setActivePage('sample-details');
+  };
+
+  const openInstrumentDetails = (instrumentId, instrumentName, options = {}) => {
+    const { initialToast = null } = options;
+
+    setInstrumentDetailsState({
+      id: instrumentId,
+      name: instrumentName,
+      initialToast,
+    });
+    setActivePage('instrument-details');
+  };
+
+  const openMaterialDetails = (materialId, materialName, options = {}) => {
+    const { initialToast = null } = options;
+
+    setMaterialDetailsState({
+      id: materialId,
+      name: materialName,
+      initialToast,
+    });
+    setActivePage('material-details');
   };
 
   const openTestRequests = (sampleId, options = {}) => {
@@ -217,6 +248,26 @@ export default function App() {
 
     if (nextPage === 'environment-data') {
       setActivePage('environment-data');
+      return;
+    }
+
+    if (nextPage === 'leave-records') {
+      setActivePage('leave-records');
+      return;
+    }
+
+    if (nextPage === 'materials') {
+      setActivePage('materials');
+      return;
+    }
+
+    if (nextPage === 'instruments') {
+      setActivePage('instruments');
+      return;
+    }
+
+    if (nextPage === 'new-instrument') {
+      setActivePage('new-instrument');
       return;
     }
 
@@ -453,6 +504,89 @@ export default function App() {
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'leave-records') {
+    return (
+      <LeaveRecordsPage
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'materials') {
+    return (
+      <MaterialsPage
+        onNavigate={handleNavigate}
+        onOpenMaterial={(id, name) => openMaterialDetails(id, name)}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'material-details') {
+    return (
+      <MaterialDetailsPage
+        key={`${materialDetailsState.id}-${materialDetailsState.initialToast}`}
+        materialId={materialDetailsState.id}
+        materialName={materialDetailsState.name}
+        initialToast={materialDetailsState.initialToast}
+        onBack={() => setActivePage('materials')}
+        onTransactionComplete={() => openMaterialDetails(materialDetailsState.id, materialDetailsState.name, { initialToast: 'Transaction added successfully.' })}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'instruments') {
+    return (
+      <InstrumentsPage
+        onNavigate={handleNavigate}
+        onNewInstrument={() => setActivePage('new-instrument')}
+        onOpenInstrument={(id, name) => openInstrumentDetails(id, name)}
+        initialToast={instrumentToast}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'instrument-details') {
+    return (
+      <InstrumentDetailsPage
+        key={`${instrumentDetailsState.id}-${instrumentDetailsState.initialToast}`}
+        instrumentId={instrumentDetailsState.id}
+        instrumentName={instrumentDetailsState.name}
+        initialToast={instrumentDetailsState.initialToast}
+        onBack={() => setActivePage('instruments')}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'new-instrument') {
+    return (
+      <NewInstrumentPage
+        onBack={() => setActivePage('instruments')}
+        onComplete={(instrumentData) => {
+          openInstrumentDetails('INST-2026-001', instrumentData?.name || 'New Instrument', {
+            initialToast: 'Instrument Created Successfully.',
+          });
+        }}
       />
     );
   }

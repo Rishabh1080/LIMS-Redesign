@@ -389,11 +389,12 @@
 
 .tr-allocation-modal__header {
   min-height: 82px;
-  padding: 24px 28px 24px 26px;
+  padding: 20px 24px;
   border-bottom: 1px solid #e6e8eb;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
 }
 
 .tr-allocation-modal__title-row {
@@ -459,7 +460,8 @@
   color: #4d5561;
   font-size: 14px;
   line-height: 17px;
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: -0.03em;
 }
 
 .tr-allocation-modal__detail-value {
@@ -469,11 +471,21 @@
   font-weight: 500;
 }
 
+.tr-allocation-modal__tabs-section {
+  border-top: 1px solid #e6e8eb;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .tr-allocation-modal__tabs {
   padding: 0 31px;
   border-bottom: 1px solid #e6e8eb;
   display: flex;
   align-items: flex-end;
+  flex: 0 0 auto;
 }
 
 .tr-allocation-modal__tab {
@@ -675,7 +687,8 @@
   color: #6d737e;
   font-size: 14px;
   line-height: 17px;
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: -0.03em;
 }
 
 .tr-job-allocation-modal__job-value {
