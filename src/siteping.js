@@ -12,7 +12,8 @@ export function initSitepingFeedbackWidget() {
   }
 
   const enabled =
-    sitepingFrontendVisible && import.meta.env.VITE_SITEPING_ENABLED !== 'false';
+    import.meta.env.DEV ||
+    (sitepingFrontendVisible && import.meta.env.VITE_SITEPING_ENABLED !== 'false');
 
   if (!enabled) {
     return null;
