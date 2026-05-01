@@ -1,19 +1,16 @@
-import { LocalStorageStore } from '@siteping/adapter-localstorage';
-import { initSiteping } from '@siteping/widget';
-
 const defaultProjectName = 'lims-v3';
 const defaultEndpoint = '/api/siteping';
 const defaultStorageKey = 'lims-v3-siteping-feedback';
 
 let sitepingInstance = null;
+let sitepingInitPromise = null;
 
 export function initSitepingFeedbackWidget() {
-  if (sitepingInstance || typeof window === 'undefined') {
-    return sitepingInstance;
+  if (sitepingInstance || sitepingInitPromise || typeof window === 'undefined') {
+    return sitepingInstance ?? sitepingInitPromise;
   }
 
-  const enabled =
-    import.meta.env.DEV || import.meta.env.VITE_SITEPING_ENABLED === 'true';
+  const enabled = import.meta.env.VITE_SITEPING_ENABLED !== 'false';
 
   if (!enabled) {
     return null;
@@ -28,21 +25,36 @@ export function initSitepingFeedbackWidget() {
   const useLocalStorage =
     import.meta.env.VITE_SITEPING_STORAGE === 'local';
 
-  sitepingInstance = initSiteping({
-    ...(useLocalStorage
-      ? { store: new LocalStorageStore({ key: storageKey }) }
-      : { endpoint }),
-    projectName,
-    position: 'bottom-right',
-    accentColor: '#2563eb',
-    theme: 'light',
-    locale: 'en',
-    forceShow: true,
-    debug: import.meta.env.VITE_SITEPING_DEBUG === 'true',
-    onError: (error) => {
-      console.warn('[siteping] Feedback widget error:', error);
-    },
-  });
+  sitepingInitPromise = Promise.all([
+    import('@siteping/widget'),
+    useLocalStorage
+      ? import('@siteping/adapter-localstorage')
+      : Promise.resolve(null),
+  ])
+    .then(([{ initSiteping }, localStorageModule]) => {
+      sitepingInstance = initSiteping({
+        ...(useLocalStorage
+          ? { store: new localStorageModule.LocalStorageStore({ key: storageKey }) }
+          : { endpoint }),
+        projectName,
+        position: 'bottom-right',
+        accentColor: '#2563eb',
+        theme: 'light',
+        locale: 'en',
+        forceShow: true,
+        debug: import.meta.env.VITE_SITEPING_DEBUG === 'true',
+        onError: (error) => {
+          console.warn('[siteping] Feedback widget error:', error);
+        },
+      });
 
-  return sitepingInstance;
+      return sitepingInstance;
+    })
+    .catch((error) => {
+      sitepingInitPromise = null;
+      console.warn('[siteping] Failed to load feedback widget:', error);
+      return null;
+    });
+
+  return sitepingInitPromise;
 }

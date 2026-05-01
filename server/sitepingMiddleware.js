@@ -22,13 +22,20 @@ export function sitepingApiPlugin(options = {}) {
 
 export function createSitepingMiddleware(options = {}) {
   const dataFile = options.dataFile || defaultDataFile;
+  return createSitepingHandler({
+    loadFeedbacks: () => loadFeedbacksFromFile(dataFile),
+    saveFeedbacks: (feedbacks) => saveFeedbacksToFile(dataFile, feedbacks),
+  });
+}
+
+export function createSitepingHandler({ loadFeedbacks, saveFeedbacks }) {
   let writeQueue = Promise.resolve();
 
   const withStore = (mutator) => {
     const run = writeQueue.then(async () => {
-      const feedbacks = await loadFeedbacks(dataFile);
+      const feedbacks = await loadFeedbacks();
       const result = await mutator(feedbacks);
-      await saveFeedbacks(dataFile, feedbacks);
+      await saveFeedbacks(feedbacks);
       return result;
     });
 
@@ -48,7 +55,7 @@ export function createSitepingMiddleware(options = {}) {
     try {
       if (req.method === 'GET') {
         const requestUrl = new URL(req.url || '/', 'http://siteping.local');
-        const feedbacks = await loadFeedbacks(dataFile);
+        const feedbacks = await loadFeedbacks();
         sendJson(res, 200, queryFeedbacks(feedbacks, requestUrl.searchParams));
         return;
       }
@@ -106,7 +113,7 @@ export function createSitepingMiddleware(options = {}) {
   };
 }
 
-async function loadFeedbacks(dataFile) {
+async function loadFeedbacksFromFile(dataFile) {
   try {
     const raw = await fs.readFile(dataFile, 'utf8');
     const data = JSON.parse(raw);
@@ -121,7 +128,7 @@ async function loadFeedbacks(dataFile) {
   }
 }
 
-async function saveFeedbacks(dataFile, feedbacks) {
+async function saveFeedbacksToFile(dataFile, feedbacks) {
   await fs.mkdir(path.dirname(dataFile), { recursive: true });
   await fs.writeFile(dataFile, `${JSON.stringify(feedbacks, null, 2)}\n`);
 }
