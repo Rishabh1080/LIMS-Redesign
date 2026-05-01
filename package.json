@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@siteping/adapter-localstorage": "^0.4.3",
+    "@siteping/widget": "^0.9.5",
     "@tabler/icons-react": "^3.41.1",
     "bootstrap": "^5.3.3",
     "react": "^18.3.1",
