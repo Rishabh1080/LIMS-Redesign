@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
+import MoreActionButton from '../components/MoreActionButton';
 import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
@@ -12,7 +13,7 @@ import './instrument-details-page.css';
 const serviceTypeOptions = ['Calibration', 'Breakdown', 'Maintenance', 'Service'];
 
 const initialServiceDraft = {
-  serviceType: '',
+  serviceType: serviceTypeOptions[0],
   vendor: '',
   nextServiceOn: '',
   attachment: null,
@@ -30,7 +31,6 @@ function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
 
   const handleSubmit = () => {
     const nextErrors = {};
-    if (!draft.serviceType) nextErrors.serviceType = 'Type of service is required.';
     if (!draft.nextServiceOn) nextErrors.nextServiceOn = 'Next service date is required.';
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) return;
@@ -67,22 +67,34 @@ function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
         onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
       >
         <div className="new-service-modal__grid">
-          <div>
-            <FormElement
-              type="dropdown"
-              mandatory
-              label="Type of Service"
-              message={errors.serviceType}
-              messageTone="error"
-              inputProps={{
-                value: draft.serviceType,
-                placeholder: 'Select a service type',
-                options: serviceTypeOptions,
-                onChange: (e) => update('serviceType', e.target.value),
-              }}
-            />
+          <div className="new-service-modal__field new-service-modal__field--full">
+            <div className="new-service-modal__label-row">
+              <span className="new-service-modal__label">Type of Service</span>
+              <span className="new-service-modal__required">*</span>
+            </div>
+
+            <div className="new-service-modal__type-selector" role="tablist" aria-label="Type of Service">
+              {serviceTypeOptions.map((option) => {
+                const isActive = draft.serviceType === option;
+
+                return (
+                  <NavSelector
+                    key={option}
+                    type="button"
+                    size="medium"
+                    active={isActive}
+                    className="new-service-modal__type-option"
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => update('serviceType', option)}
+                  >
+                    {option}
+                  </NavSelector>
+                );
+              })}
+            </div>
           </div>
-          <div>
+          <div className="new-service-modal__field">
             <FormElement
               type="text"
               label="Vendor"
@@ -93,7 +105,7 @@ function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
               }}
             />
           </div>
-          <div>
+          <div className="new-service-modal__field">
             <FormElement
               type="date"
               mandatory
@@ -107,7 +119,7 @@ function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
               }}
             />
           </div>
-          <div>
+          <div className="new-service-modal__field">
             <FormElement
               type="file"
               label="Attachments"
@@ -141,7 +153,16 @@ const mockRecords = [
   { id: 3, type: 'OUT- Damaged', quantity: '19', supplierBatch: '01-04-2026', transactionDate: '01-04-2026', expiryDate: '-', cost: '-', by: 'Deepak Cyblt' },
 ];
 
-function InstrumentDetailsHeader({ instrumentName, onBack, onNewService }) {
+function InstrumentDetailsHeader({ instrumentName, onBack, onEditInstrument, onNewService }) {
+  const moreActionItems = [
+    {
+      key: 'edit',
+      label: 'Edit',
+      leftIcon: 'edit',
+      onClick: onEditInstrument,
+    },
+  ];
+
   return (
     <section className="instrument-details-page-header">
       <div className="container-fluid h-100 px-0">
@@ -155,10 +176,14 @@ function InstrumentDetailsHeader({ instrumentName, onBack, onNewService }) {
             />
             <h1 className="instrument-details-page-header__title">{instrumentName}</h1>
           </div>
-          <div className="col-auto">
+          <div className="col-auto d-flex align-items-center gap-3">
             <PrimaryButton leftIcon="plus" onClick={onNewService}>
               New Service
             </PrimaryButton>
+            <SecondaryButton leftIcon="printer">
+              Print QR
+            </SecondaryButton>
+            <MoreActionButton items={moreActionItems} />
           </div>
         </div>
       </div>
@@ -176,6 +201,7 @@ export default function InstrumentDetailsPage({
   serialNo = 'Y8k08',
   records = mockRecords,
   initialToast = null,
+  onEditInstrument,
   onBack,
   onNewService,
   onNavigate,
@@ -229,6 +255,7 @@ export default function InstrumentDetailsPage({
         <InstrumentDetailsHeader
           instrumentName={instrumentName}
           onBack={onBack}
+          onEditInstrument={onEditInstrument}
           onNewService={() => setServiceModalOpen(true)}
         />
       }

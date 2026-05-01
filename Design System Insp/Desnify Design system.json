@@ -1,0 +1,4847 @@
+[
+  {
+    "Color": {
+      "modes": {
+        "Light": {
+          "Background": {
+            "--ds-color-bg": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-bg-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-100}"
+            },
+            "--ds-color-bg-surface-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-bg-surface-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-bg-surface-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-050}"
+            },
+            "--ds-color-bg-surface-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-100}"
+            },
+            "--ds-color-bg-surface-quaternary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-200}"
+            },
+            "--ds-color-bg-surface-brand": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Standout fill color against surface, for key components like tinted buttons, active button groups, checkboxes, alerts, etc.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-050}"
+            },
+            "--ds-color-bg-surface-brand-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Standout fill color against surface, for key components like tinted buttons, active button groups, checkboxes, alerts, etc.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-050}"
+            },
+            "--ds-color-bg-surface-error": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-050}"
+            },
+            "--ds-color-bg-surface-warning": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-050}"
+            },
+            "--ds-color-bg-surface-success": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-050}"
+            },
+            "--ds-color-bg-surface-inverse": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.black}"
+            },
+            "--ds-color-bg-surface-transparent": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-0}"
+            },
+            "--ds-color-bg-surface-overlay": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-40}"
+            }
+          },
+          "Foreground": {
+            "--ds-color-fg-white": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-fg-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-100}"
+            },
+            "--ds-color-fg-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-200}"
+            },
+            "--ds-color-fg-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-500}"
+            },
+            "--ds-color-fg-quarternary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-600}"
+            },
+            "--ds-color-fg-quinary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-950}"
+            },
+            "--ds-color-fg-solid": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-950}"
+            },
+            "--ds-color-fg-brand-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "High-emphasis fills, texts, and icons against surface",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-600}"
+            },
+            "--ds-color-fg-brand-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "High-emphasis fills, texts, and icons against surface",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-600}"
+            },
+            "--ds-color-fg-brand-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Standout fill color against surface where primary-container is not suitable, for components like toasts, etc.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-100}"
+            },
+            "--ds-color-fg-error-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-600}"
+            },
+            "--ds-color-fg-error-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-100}"
+            },
+            "--ds-color-fg-warning-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-600}"
+            },
+            "--ds-color-fg-warning-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-100}"
+            },
+            "--ds-color-fg-success-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-600}"
+            },
+            "--ds-color-fg-success-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-100}"
+            }
+          },
+          "Content": {
+            "--ds-color-content-white": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Text and icons against primary",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-content-black": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Text and icons against primary",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.black}"
+            },
+            "--ds-color-content-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-950}"
+            },
+            "--ds-color-content-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-600}"
+            },
+            "--ds-color-content-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-500}"
+            },
+            "--ds-color-content-inverse-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-content-inverse-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-80}"
+            },
+            "--ds-color-content-inverse-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-60}"
+            },
+            "--ds-color-content-inverse-brand": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-500}"
+            },
+            "--ds-color-content-placeholder": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-400}"
+            },
+            "--ds-color-content-brand-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Alternative for subtext  against primary container",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-600}"
+            },
+            "--ds-color-content-brand-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Alternative for subtext  against primary container",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-600}"
+            },
+            "--ds-color-content-brand-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Text and icons against primary container",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-800}"
+            },
+            "--ds-color-content-error-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-600}"
+            },
+            "--ds-color-content-error-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-600}"
+            },
+            "--ds-color-content-error-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-800}"
+            },
+            "--ds-color-content-warning-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-600}"
+            },
+            "--ds-color-content-warning-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-800}"
+            },
+            "--ds-color-content-success-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-600}"
+            },
+            "--ds-color-content-success-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-800}"
+            }
+          },
+          "Border": {
+            "--ds-color-border-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-300}"
+            },
+            "--ds-color-border-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-200}"
+            },
+            "--ds-color-border-brand-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-600}"
+            },
+            "--ds-color-border-brand-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-600}"
+            },
+            "--ds-color-border-error-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-600}"
+            },
+            "--ds-color-border-warning-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-600}"
+            },
+            "--ds-color-border-success-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-600}"
+            }
+          },
+          "States": {
+            "--ds-color-bg-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-04}"
+            },
+            "--ds-color-bg-active": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-100}"
+            },
+            "--ds-color-fg-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-04}"
+            },
+            "--ds-color-fg-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-12}"
+            },
+            "--ds-color-fg-inverse-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-08}"
+            },
+            "--ds-color-secondary-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-0}"
+            },
+            "--ds-color-brand-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Brand.brand-08}"
+            },
+            "--ds-color-brand-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Brand.brand-16}"
+            },
+            "--ds-color-error-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Error.error-08}"
+            },
+            "--ds-color-error-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Error.error-16}"
+            },
+            "--ds-color-warning-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Warning.warning-08}"
+            },
+            "--ds-color-warning-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Warning.warning-16}"
+            },
+            "--ds-color-success-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Success.success-08}"
+            },
+            "--ds-color-success-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Success.success-16}"
+            },
+            "--ds-color-bg-disabled": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-04}"
+            },
+            "--ds-color-fg-disabled": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-04}"
+            },
+            "--ds-color-border-disabled": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-12}"
+            },
+            "--ds-color-content-disabled": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-24}"
+            }
+          },
+          "Secondary": {
+            "--ds-color-rose-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.rose.rose-600}"
+            },
+            "--ds-color-rose-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.rose.rose-100}"
+            },
+            "--ds-color-rose-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.rose.rose-200}"
+            },
+            "--ds-color-content-rose": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.rose.rose-800}"
+            },
+            "--ds-color-pink-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.pink.pink-600}"
+            },
+            "--ds-color-pink-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.pink.pink-100}"
+            },
+            "--ds-color-pink-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.pink.pink-200}"
+            },
+            "--ds-color-content-pink": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.pink.pink-800}"
+            },
+            "--ds-color-indigo-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.indigo.indigo-600}"
+            },
+            "--ds-color-indigo-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.indigo.indigo-100}"
+            },
+            "--ds-color-indigo-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.indigo.indigo-200}"
+            },
+            "--ds-color-content-indigo": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.indigo.indigo-800}"
+            },
+            "--ds-color-purple-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.purple.purple-600}"
+            },
+            "--ds-color-purple-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.purple.purple-100}"
+            },
+            "--ds-color-purple-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.purple.purple-200}"
+            },
+            "--ds-color-content-purple": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.purple.purple-800}"
+            },
+            "--ds-color-blugary-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue gray.blue-gray-600}"
+            },
+            "--ds-color-blugary-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue gray.blue-gray-100}"
+            },
+            "--ds-color-blugary-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue gray.blue-gray-200}"
+            },
+            "--ds-color-content-blugray": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue gray.blue-gray-800}"
+            },
+            "--ds-color-blue-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue.blue-600}"
+            },
+            "--ds-color-blue-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue.blue-100}"
+            },
+            "--ds-color-blue-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue.blue-200}"
+            },
+            "--ds-color-content-blue": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue.blue-800}"
+            },
+            "--ds-color-aqua-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.aqua.aqua-600}"
+            },
+            "--ds-color-aqua-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.aqua.aqua-100}"
+            },
+            "--ds-color-aqua-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.aqua.aqua-200}"
+            },
+            "--ds-color-content-aqua": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.aqua.aqua-800}"
+            },
+            "--ds-color-green-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.green.green-600}"
+            },
+            "--ds-color-green-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.green.green-100}"
+            },
+            "--ds-color-green-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.green.green-200}"
+            },
+            "--ds-color-content-green": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.green.green-800}"
+            },
+            "--ds-color-cooper-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.cooper.copper-600}"
+            },
+            "--ds-color-cooper-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.cooper.copper-100}"
+            },
+            "--ds-color-cooper-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.cooper.copper-200}"
+            },
+            "--ds-color-content-cooper": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.cooper.copper-800}"
+            },
+            "--ds-color-orange-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.orange.orange-600}"
+            },
+            "--ds-color-orange-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.orange.orange-100}"
+            },
+            "--ds-color-orange-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.orange.orange-200}"
+            },
+            "--ds-color-content-orange": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.orange.orange-800}"
+            }
+          }
+        },
+        "Dark": {
+          "Background": {
+            "--ds-color-bg": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.black}"
+            },
+            "--ds-color-bg-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-900}"
+            },
+            "--ds-color-bg-surface-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-950}"
+            },
+            "--ds-color-bg-surface-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-900}"
+            },
+            "--ds-color-bg-surface-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-900}"
+            },
+            "--ds-color-bg-surface-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-800}"
+            },
+            "--ds-color-bg-surface-quaternary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-700}"
+            },
+            "--ds-color-bg-surface-brand": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Standout fill color against surface, for key components like tinted buttons, active button groups, checkboxes, alerts, etc.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-950}"
+            },
+            "--ds-color-bg-surface-brand-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Standout fill color against surface, for key components like tinted buttons, active button groups, checkboxes, alerts, etc.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-900}"
+            },
+            "--ds-color-bg-surface-error": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-950}"
+            },
+            "--ds-color-bg-surface-warning": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-950}"
+            },
+            "--ds-color-bg-surface-success": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-950}"
+            },
+            "--ds-color-bg-surface-inverse": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-bg-surface-transparent": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-0}"
+            },
+            "--ds-color-bg-surface-overlay": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-60}"
+            }
+          },
+          "Foreground": {
+            "--ds-color-fg-white": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-fg-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-800}"
+            },
+            "--ds-color-fg-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-700}"
+            },
+            "--ds-color-fg-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-300}"
+            },
+            "--ds-color-fg-quarternary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-200}"
+            },
+            "--ds-color-fg-quinary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-fg-solid": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-900}"
+            },
+            "--ds-color-fg-brand-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "High-emphasis fills, texts, and icons against surface",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-500}"
+            },
+            "--ds-color-fg-brand-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "High-emphasis fills, texts, and icons against surface",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-100}"
+            },
+            "--ds-color-fg-brand-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Standout fill color against surface where primary-container is not suitable, for components like toasts, etc.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-900}"
+            },
+            "--ds-color-fg-error-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-500}"
+            },
+            "--ds-color-fg-error-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-900}"
+            },
+            "--ds-color-fg-warning-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-500}"
+            },
+            "--ds-color-fg-warning-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-900}"
+            },
+            "--ds-color-fg-success-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-500}"
+            },
+            "--ds-color-fg-success-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-900}"
+            }
+          },
+          "Content": {
+            "--ds-color-content-white": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Text and icons against primary",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-content-black": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Text and icons against primary",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.black}"
+            },
+            "--ds-color-content-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-content-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-80}"
+            },
+            "--ds-color-content-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-60}"
+            },
+            "--ds-color-content-inverse-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-950}"
+            },
+            "--ds-color-content-inverse-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-600}"
+            },
+            "--ds-color-content-inverse-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-500}"
+            },
+            "--ds-color-content-inverse-brand": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-600}"
+            },
+            "--ds-color-content-placeholder": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-500}"
+            },
+            "--ds-color-content-brand-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Alternative for subtext  against primary container",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-500}"
+            },
+            "--ds-color-content-brand-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Alternative for subtext  against primary container",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-content-brand-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Text and icons against primary container",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-content-error-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-500}"
+            },
+            "--ds-color-content-error-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-050}"
+            },
+            "--ds-color-content-error-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-content-warning-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-500}"
+            },
+            "--ds-color-content-warning-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-content-success-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-500}"
+            },
+            "--ds-color-content-success-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            }
+          },
+          "Border": {
+            "--ds-color-border-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-600}"
+            },
+            "--ds-color-border-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-800}"
+            },
+            "--ds-color-border-brand-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.primary.primary-500}"
+            },
+            "--ds-color-border-brand-primary-alt": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-600}"
+            },
+            "--ds-color-border-error-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.error.error-500}"
+            },
+            "--ds-color-border-warning-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.warning.warning-500}"
+            },
+            "--ds-color-border-success-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.success.success-500}"
+            }
+          },
+          "States": {
+            "--ds-color-bg-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-08}"
+            },
+            "--ds-color-bg-active": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.neutral.neutral-800}"
+            },
+            "--ds-color-fg-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-08}"
+            },
+            "--ds-color-fg-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-12}"
+            },
+            "--ds-color-fg-inverse-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-04}"
+            },
+            "--ds-color-secondary-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-08}"
+            },
+            "--ds-color-brand-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Brand.brand-12}"
+            },
+            "--ds-color-brand-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Brand.brand-16}"
+            },
+            "--ds-color-error-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Error.error-12}"
+            },
+            "--ds-color-error-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Error.error-16}"
+            },
+            "--ds-color-warning-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Warning.warning-12}"
+            },
+            "--ds-color-warning-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Warning.warning-16}"
+            },
+            "--ds-color-success-hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Success.success-12}"
+            },
+            "--ds-color-success-focus": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Success.success-16}"
+            },
+            "--ds-color-bg-disabled": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.Black.black-08}"
+            },
+            "--ds-color-fg-disabled": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-08}"
+            },
+            "--ds-color-border-disabled": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-12}"
+            },
+            "--ds-color-content-disabled": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Alpha Colors.White.white-24}"
+            }
+          },
+          "Secondary": {
+            "--ds-color-rose-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.rose.rose-500}"
+            },
+            "--ds-color-rose-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.rose.rose-900}"
+            },
+            "--ds-color-rose-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.rose.rose-700}"
+            },
+            "--ds-color-content-rose": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-pink-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.pink.pink-500}"
+            },
+            "--ds-color-pink-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.pink.pink-900}"
+            },
+            "--ds-color-pink-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.pink.pink-700}"
+            },
+            "--ds-color-content-pink": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-indigo-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.pink.pink-500}"
+            },
+            "--ds-color-indigo-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.indigo.indigo-900}"
+            },
+            "--ds-color-indigo-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.indigo.indigo-700}"
+            },
+            "--ds-color-content-indigo": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-purple-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.purple.purple-500}"
+            },
+            "--ds-color-purple-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.purple.purple-900}"
+            },
+            "--ds-color-purple-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.purple.purple-700}"
+            },
+            "--ds-color-content-purple": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-blugary-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue gray.blue-gray-500}"
+            },
+            "--ds-color-blugary-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue gray.blue-gray-900}"
+            },
+            "--ds-color-blugary-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue gray.blue-gray-700}"
+            },
+            "--ds-color-content-blugray": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-blue-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue.blue-500}"
+            },
+            "--ds-color-blue-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue.blue-900}"
+            },
+            "--ds-color-blue-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.blue.blue-700}"
+            },
+            "--ds-color-content-blue": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-aqua-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.aqua.aqua-500}"
+            },
+            "--ds-color-aqua-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.aqua.aqua-900}"
+            },
+            "--ds-color-aqua-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.aqua.aqua-700}"
+            },
+            "--ds-color-content-aqua": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-green-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.green.green-500}"
+            },
+            "--ds-color-green-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.green.green-900}"
+            },
+            "--ds-color-green-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.green.green-700}"
+            },
+            "--ds-color-content-green": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-cooper-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.cooper.copper-500}"
+            },
+            "--ds-color-cooper-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.cooper.copper-900}"
+            },
+            "--ds-color-cooper-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.cooper.copper-700}"
+            },
+            "--ds-color-content-cooper": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            },
+            "--ds-color-orange-primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.orange.orange-500}"
+            },
+            "--ds-color-orange-secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.orange.orange-900}"
+            },
+            "--ds-color-orange-tertiary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.orange.orange-700}"
+            },
+            "--ds-color-content-orange": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Colors.base.white}"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "Corner Radius": {
+      "modes": {
+        "Mode 1": {
+          "--ds-corner-radius-0": {
+            "$scopes": [
+              "CORNER_RADIUS",
+              "FONT_VARIATIONS"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Radius.radii-0}"
+          },
+          "--ds-corner-radius-4": {
+            "$scopes": [
+              "CORNER_RADIUS"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Radius.radii-4}"
+          },
+          "--ds-corner-radius-8": {
+            "$scopes": [
+              "CORNER_RADIUS"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Radius.radii-8}"
+          },
+          "--ds-corner-radius-12": {
+            "$scopes": [
+              "CORNER_RADIUS"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Radius.radii-12}"
+          },
+          "--ds-corner-radius-16": {
+            "$scopes": [
+              "CORNER_RADIUS"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Radius.radii-16}"
+          },
+          "--ds-corner-radius-32": {
+            "$scopes": [
+              "CORNER_RADIUS"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Radius.radii-32}"
+          },
+          "--ds-corner-radius-9999": {
+            "$scopes": [
+              "CORNER_RADIUS"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Radius.radii-9999}"
+          }
+        }
+      }
+    }
+  },
+  {
+    "Foundations": {
+      "modes": {
+        "Value": {
+          "Colors": {
+            "base": {
+              "white": {
+                "$type": "color",
+                "$value": "#ffffff"
+              },
+              "black": {
+                "$type": "color",
+                "$value": "#0a0d14"
+              }
+            },
+            "neutral": {
+              "neutral-050": {
+                "$type": "color",
+                "$value": "#f8fafc"
+              },
+              "neutral-100": {
+                "$type": "color",
+                "$value": "#f1f5f9"
+              },
+              "neutral-200": {
+                "$type": "color",
+                "$value": "#e0e6ef"
+              },
+              "neutral-300": {
+                "$type": "color",
+                "$value": "#c4cedc"
+              },
+              "neutral-400": {
+                "$type": "color",
+                "$value": "#92a0b5"
+              },
+              "neutral-500": {
+                "$type": "color",
+                "$value": "#647287"
+              },
+              "neutral-600": {
+                "$type": "color",
+                "$value": "#454f5e"
+              },
+              "neutral-700": {
+                "$type": "color",
+                "$value": "#303842"
+              },
+              "neutral-800": {
+                "$type": "color",
+                "$value": "#22282f"
+              },
+              "neutral-900": {
+                "$type": "color",
+                "$value": "#161922"
+              },
+              "neutral-950": {
+                "$type": "color",
+                "$value": "#0a0d14"
+              }
+            },
+            "primary": {
+              "primary-050": {
+                "$type": "color",
+                "$value": "#f0f3fd"
+              },
+              "primary-100": {
+                "$type": "color",
+                "$value": "#e3e8fc"
+              },
+              "primary-200": {
+                "$type": "color",
+                "$value": "#ccd4f9"
+              },
+              "primary-300": {
+                "$type": "color",
+                "$value": "#adb8f4"
+              },
+              "primary-400": {
+                "$type": "color",
+                "$value": "#8d93ec"
+              },
+              "primary-500": {
+                "$type": "color",
+                "$value": "#7271e3"
+              },
+              "primary-600": {
+                "$type": "color",
+                "$value": "#655bd7"
+              },
+              "primary-700": {
+                "$type": "color",
+                "$value": "#5246bc"
+              },
+              "primary-800": {
+                "$type": "color",
+                "$value": "#433b98"
+              },
+              "primary-900": {
+                "$type": "color",
+                "$value": "#3a3679"
+              },
+              "primary-950": {
+                "$type": "color",
+                "$value": "#232046"
+              }
+            },
+            "error": {
+              "error-050": {
+                "$type": "color",
+                "$value": "#fef2f2"
+              },
+              "error-100": {
+                "$type": "color",
+                "$value": "#fde7e6"
+              },
+              "error-200": {
+                "$type": "color",
+                "$value": "#fbd0d1"
+              },
+              "error-300": {
+                "$type": "color",
+                "$value": "#f8a9ab"
+              },
+              "error-400": {
+                "$type": "color",
+                "$value": "#f3797e"
+              },
+              "error-500": {
+                "$type": "color",
+                "$value": "#e94a55"
+              },
+              "error-600": {
+                "$type": "color",
+                "$value": "#d5293d"
+              },
+              "error-700": {
+                "$type": "color",
+                "$value": "#b31d32"
+              },
+              "error-800": {
+                "$type": "color",
+                "$value": "#961b30"
+              },
+              "error-900": {
+                "$type": "color",
+                "$value": "#811a2f"
+              },
+              "error-950": {
+                "$type": "color",
+                "$value": "#480915"
+              }
+            },
+            "warning": {
+              "warning-050": {
+                "$type": "color",
+                "$value": "#fff8ed"
+              },
+              "warning-100": {
+                "$type": "color",
+                "$value": "#fff0d5"
+              },
+              "warning-200": {
+                "$type": "color",
+                "$value": "#fedcaa"
+              },
+              "warning-300": {
+                "$type": "color",
+                "$value": "#fdc274"
+              },
+              "warning-400": {
+                "$type": "color",
+                "$value": "#fb9d3c"
+              },
+              "warning-500": {
+                "$type": "color",
+                "$value": "#f98824"
+              },
+              "warning-600": {
+                "$type": "color",
+                "$value": "#ec7004"
+              },
+              "warning-700": {
+                "$type": "color",
+                "$value": "#c85606"
+              },
+              "warning-800": {
+                "$type": "color",
+                "$value": "#9f440d"
+              },
+              "warning-900": {
+                "$type": "color",
+                "$value": "#80390e"
+              },
+              "warning-950": {
+                "$type": "color",
+                "$value": "#451b05"
+              }
+            },
+            "success": {
+              "success-050": {
+                "$type": "color",
+                "$value": "#edfcf5"
+              },
+              "success-100": {
+                "$type": "color",
+                "$value": "#d4f7e4"
+              },
+              "success-200": {
+                "$type": "color",
+                "$value": "#aceece"
+              },
+              "success-300": {
+                "$type": "color",
+                "$value": "#77deb2"
+              },
+              "success-400": {
+                "$type": "color",
+                "$value": "#3fc893"
+              },
+              "success-500": {
+                "$type": "color",
+                "$value": "#1cad79"
+              },
+              "success-600": {
+                "$type": "color",
+                "$value": "#109367"
+              },
+              "success-700": {
+                "$type": "color",
+                "$value": "#0c7050"
+              },
+              "success-800": {
+                "$type": "color",
+                "$value": "#0c5941"
+              },
+              "success-900": {
+                "$type": "color",
+                "$value": "#0b4937"
+              },
+              "success-950": {
+                "$type": "color",
+                "$value": "#05291f"
+              }
+            },
+            "rose": {
+              "rose-050": {
+                "$type": "color",
+                "$value": "#fef2f7"
+              },
+              "rose-100": {
+                "$type": "color",
+                "$value": "#fbe4eb"
+              },
+              "rose-200": {
+                "$type": "color",
+                "$value": "#f8ced9"
+              },
+              "rose-300": {
+                "$type": "color",
+                "$value": "#f2adbf"
+              },
+              "rose-400": {
+                "$type": "color",
+                "$value": "#ec8aa2"
+              },
+              "rose-500": {
+                "$type": "color",
+                "$value": "#e6607f"
+              },
+              "rose-600": {
+                "$type": "color",
+                "$value": "#e24468"
+              },
+              "rose-700": {
+                "$type": "color",
+                "$value": "#b7274a"
+              },
+              "rose-800": {
+                "$type": "color",
+                "$value": "#941636"
+              },
+              "rose-900": {
+                "$type": "color",
+                "$value": "#77102e"
+              },
+              "rose-950": {
+                "$type": "color",
+                "$value": "#570b24"
+              }
+            },
+            "pink": {
+              "pink-050": {
+                "$type": "color",
+                "$value": "#fff8fd"
+              },
+              "pink-100": {
+                "$type": "color",
+                "$value": "#ffe7f7"
+              },
+              "pink-200": {
+                "$type": "color",
+                "$value": "#ffd1ef"
+              },
+              "pink-300": {
+                "$type": "color",
+                "$value": "#ffb7e6"
+              },
+              "pink-400": {
+                "$type": "color",
+                "$value": "#ff9adc"
+              },
+              "pink-500": {
+                "$type": "color",
+                "$value": "#ff79d0"
+              },
+              "pink-600": {
+                "$type": "color",
+                "$value": "#f733b2"
+              },
+              "pink-700": {
+                "$type": "color",
+                "$value": "#cc0085"
+              },
+              "pink-800": {
+                "$type": "color",
+                "$value": "#9b0065"
+              },
+              "pink-900": {
+                "$type": "color",
+                "$value": "#6e0048"
+              },
+              "pink-950": {
+                "$type": "color",
+                "$value": "#46002d"
+              }
+            },
+            "indigo": {
+              "indigo-050": {
+                "$type": "color",
+                "$value": "#fdf8ff"
+              },
+              "indigo-100": {
+                "$type": "color",
+                "$value": "#f7e8fe"
+              },
+              "indigo-200": {
+                "$type": "color",
+                "$value": "#f1d3fd"
+              },
+              "indigo-300": {
+                "$type": "color",
+                "$value": "#e9bbfc"
+              },
+              "indigo-400": {
+                "$type": "color",
+                "$value": "#e09ffa"
+              },
+              "indigo-500": {
+                "$type": "color",
+                "$value": "#d67ff8"
+              },
+              "indigo-600": {
+                "$type": "color",
+                "$value": "#bb3ded"
+              },
+              "indigo-700": {
+                "$type": "color",
+                "$value": "#8e0ac2"
+              },
+              "indigo-800": {
+                "$type": "color",
+                "$value": "#71089b"
+              },
+              "indigo-900": {
+                "$type": "color",
+                "$value": "#550674"
+              },
+              "indigo-950": {
+                "$type": "color",
+                "$value": "#39044e"
+              }
+            },
+            "purple": {
+              "purple-050": {
+                "$type": "color",
+                "$value": "#f7f3fa"
+              },
+              "purple-100": {
+                "$type": "color",
+                "$value": "#eee7f4"
+              },
+              "purple-200": {
+                "$type": "color",
+                "$value": "#e2d9ec"
+              },
+              "purple-300": {
+                "$type": "color",
+                "$value": "#cebedf"
+              },
+              "purple-400": {
+                "$type": "color",
+                "$value": "#b9a3d1"
+              },
+              "purple-500": {
+                "$type": "color",
+                "$value": "#9e83c0"
+              },
+              "purple-600": {
+                "$type": "color",
+                "$value": "#7d5ba7"
+              },
+              "purple-700": {
+                "$type": "color",
+                "$value": "#634289"
+              },
+              "purple-800": {
+                "$type": "color",
+                "$value": "#50376f"
+              },
+              "purple-900": {
+                "$type": "color",
+                "$value": "#402759"
+              },
+              "purple-950": {
+                "$type": "color",
+                "$value": "#2f1b41"
+              }
+            },
+            "blue gray": {
+              "blue-gray-050": {
+                "$type": "color",
+                "$value": "#f5f6f9"
+              },
+              "blue-gray-100": {
+                "$type": "color",
+                "$value": "#ebedf3"
+              },
+              "blue-gray-200": {
+                "$type": "color",
+                "$value": "#dde1ec"
+              },
+              "blue-gray-300": {
+                "$type": "color",
+                "$value": "#cdd4e4"
+              },
+              "blue-gray-400": {
+                "$type": "color",
+                "$value": "#bbc5da"
+              },
+              "blue-gray-500": {
+                "$type": "color",
+                "$value": "#9fadcb"
+              },
+              "blue-gray-600": {
+                "$type": "color",
+                "$value": "#7083ae"
+              },
+              "blue-gray-700": {
+                "$type": "color",
+                "$value": "#53658d"
+              },
+              "blue-gray-800": {
+                "$type": "color",
+                "$value": "#3d4c6e"
+              },
+              "blue-gray-900": {
+                "$type": "color",
+                "$value": "#2f3b55"
+              },
+              "blue-gray-950": {
+                "$type": "color",
+                "$value": "#222a3b"
+              }
+            },
+            "blue": {
+              "blue-050": {
+                "$type": "color",
+                "$value": "#f5fbff"
+              },
+              "blue-100": {
+                "$type": "color",
+                "$value": "#e7f4ff"
+              },
+              "blue-200": {
+                "$type": "color",
+                "$value": "#d1e9ff"
+              },
+              "blue-300": {
+                "$type": "color",
+                "$value": "#b7deff"
+              },
+              "blue-400": {
+                "$type": "color",
+                "$value": "#9ad0ff"
+              },
+              "blue-500": {
+                "$type": "color",
+                "$value": "#79c0ff"
+              },
+              "blue-600": {
+                "$type": "color",
+                "$value": "#339cf7"
+              },
+              "blue-700": {
+                "$type": "color",
+                "$value": "#006dcc"
+              },
+              "blue-800": {
+                "$type": "color",
+                "$value": "#00539b"
+              },
+              "blue-900": {
+                "$type": "color",
+                "$value": "#003a6e"
+              },
+              "blue-950": {
+                "$type": "color",
+                "$value": "#002546"
+              }
+            },
+            "aqua": {
+              "aqua-050": {
+                "$type": "color",
+                "$value": "#f4feff"
+              },
+              "aqua-100": {
+                "$type": "color",
+                "$value": "#dafdff"
+              },
+              "aqua-200": {
+                "$type": "color",
+                "$value": "#bdfcff"
+              },
+              "aqua-300": {
+                "$type": "color",
+                "$value": "#9bfaff"
+              },
+              "aqua-400": {
+                "$type": "color",
+                "$value": "#6cf8ff"
+              },
+              "aqua-500": {
+                "$type": "color",
+                "$value": "#35f5ff"
+              },
+              "aqua-600": {
+                "$type": "color",
+                "$value": "#00dde9"
+              },
+              "aqua-700": {
+                "$type": "color",
+                "$value": "#00b5be"
+              },
+              "aqua-800": {
+                "$type": "color",
+                "$value": "#00868d"
+              },
+              "aqua-900": {
+                "$type": "color",
+                "$value": "#00575c"
+              },
+              "aqua-950": {
+                "$type": "color",
+                "$value": "#003a3d"
+              }
+            },
+            "green": {
+              "green-050": {
+                "$type": "color",
+                "$value": "#f5fbfb"
+              },
+              "green-100": {
+                "$type": "color",
+                "$value": "#e6f4f4"
+              },
+              "green-200": {
+                "$type": "color",
+                "$value": "#d6edeb"
+              },
+              "green-300": {
+                "$type": "color",
+                "$value": "#b8e1de"
+              },
+              "green-400": {
+                "$type": "color",
+                "$value": "#9dd5cf"
+              },
+              "green-500": {
+                "$type": "color",
+                "$value": "#7bc6bc"
+              },
+              "green-600": {
+                "$type": "color",
+                "$value": "#50afa4"
+              },
+              "green-700": {
+                "$type": "color",
+                "$value": "#388f85"
+              },
+              "green-800": {
+                "$type": "color",
+                "$value": "#2c746e"
+              },
+              "green-900": {
+                "$type": "color",
+                "$value": "#205a5c"
+              },
+              "green-950": {
+                "$type": "color",
+                "$value": "#164145"
+              }
+            },
+            "cooper": {
+              "copper-050": {
+                "$type": "color",
+                "$value": "#fdf9f6"
+              },
+              "copper-100": {
+                "$type": "color",
+                "$value": "#faf1e9"
+              },
+              "copper-200": {
+                "$type": "color",
+                "$value": "#f5e5d6"
+              },
+              "copper-300": {
+                "$type": "color",
+                "$value": "#eed3ba"
+              },
+              "copper-400": {
+                "$type": "color",
+                "$value": "#e8c29f"
+              },
+              "copper-500": {
+                "$type": "color",
+                "$value": "#dea977"
+              },
+              "copper-600": {
+                "$type": "color",
+                "$value": "#ce8c4f"
+              },
+              "copper-700": {
+                "$type": "color",
+                "$value": "#a96c33"
+              },
+              "copper-800": {
+                "$type": "color",
+                "$value": "#835020"
+              },
+              "copper-900": {
+                "$type": "color",
+                "$value": "#633c18"
+              },
+              "copper-950": {
+                "$type": "color",
+                "$value": "#422810"
+              }
+            },
+            "orange": {
+              "orange-050": {
+                "$type": "color",
+                "$value": "#fef7f4"
+              },
+              "orange-100": {
+                "$type": "color",
+                "$value": "#feece5"
+              },
+              "orange-200": {
+                "$type": "color",
+                "$value": "#fddbcf"
+              },
+              "orange-300": {
+                "$type": "color",
+                "$value": "#fbc2ad"
+              },
+              "orange-400": {
+                "$type": "color",
+                "$value": "#f9aa8e"
+              },
+              "orange-500": {
+                "$type": "color",
+                "$value": "#f7906a"
+              },
+              "orange-600": {
+                "$type": "color",
+                "$value": "#ec6330"
+              },
+              "orange-700": {
+                "$type": "color",
+                "$value": "#c54516"
+              },
+              "orange-800": {
+                "$type": "color",
+                "$value": "#9b2f08"
+              },
+              "orange-900": {
+                "$type": "color",
+                "$value": "#742306"
+              },
+              "orange-950": {
+                "$type": "color",
+                "$value": "#4e1804"
+              }
+            }
+          },
+          "Alpha Colors": {
+            "White": {
+              "white-0": {
+                "$type": "color",
+                "$value": "rgba(255, 255, 255, 0)"
+              },
+              "white-04": {
+                "$type": "color",
+                "$value": "rgba(255, 255, 255, 0.04)"
+              },
+              "white-08": {
+                "$type": "color",
+                "$value": "rgba(255, 255, 255, 0.08)"
+              },
+              "white-12": {
+                "$type": "color",
+                "$value": "rgba(255, 255, 255, 0.12)"
+              },
+              "white-16": {
+                "$type": "color",
+                "$value": "rgba(255, 255, 255, 0.16)"
+              },
+              "white-24": {
+                "$type": "color",
+                "$value": "rgba(255, 255, 255, 0.24)"
+              },
+              "white-40": {
+                "$type": "color",
+                "$value": "rgba(255, 255, 255, 0.4)"
+              },
+              "white-60": {
+                "$type": "color",
+                "$value": "rgba(255, 255, 255, 0.6)"
+              },
+              "white-80": {
+                "$type": "color",
+                "$value": "rgba(255, 255, 255, 0.8)"
+              }
+            },
+            "Black": {
+              "black-0": {
+                "$type": "color",
+                "$value": "rgba(10, 13, 20, 0)"
+              },
+              "black-04": {
+                "$type": "color",
+                "$value": "rgba(10, 13, 20, 0.04)"
+              },
+              "black-08": {
+                "$type": "color",
+                "$value": "rgba(10, 13, 20, 0.08)"
+              },
+              "black-12": {
+                "$type": "color",
+                "$value": "rgba(10, 13, 20, 0.12)"
+              },
+              "black-16": {
+                "$type": "color",
+                "$value": "rgba(10, 13, 20, 0.16)"
+              },
+              "black-24": {
+                "$type": "color",
+                "$value": "rgba(10, 13, 20, 0.24)"
+              },
+              "black-40": {
+                "$type": "color",
+                "$value": "rgba(10, 13, 20, 0.4)"
+              },
+              "black-60": {
+                "$type": "color",
+                "$value": "rgba(10, 13, 20, 0.6)"
+              },
+              "black-80": {
+                "$type": "color",
+                "$value": "rgba(10, 13, 20, 0.8)"
+              }
+            },
+            "Brand": {
+              "brand-08": {
+                "$type": "color",
+                "$value": "rgba(101, 91, 215, 0.08)"
+              },
+              "brand-12": {
+                "$type": "color",
+                "$value": "rgba(101, 91, 215, 0.12)"
+              },
+              "brand-16": {
+                "$type": "color",
+                "$value": "rgba(101, 91, 215, 0.16)"
+              }
+            },
+            "Error": {
+              "error-08": {
+                "$type": "color",
+                "$value": "rgba(213, 41, 61, 0.08)"
+              },
+              "error-12": {
+                "$type": "color",
+                "$value": "rgba(213, 41, 61, 0.12)"
+              },
+              "error-16": {
+                "$type": "color",
+                "$value": "rgba(213, 41, 61, 0.16)"
+              }
+            },
+            "Warning": {
+              "warning-08": {
+                "$type": "color",
+                "$value": "rgba(236, 112, 4, 0.08)"
+              },
+              "warning-12": {
+                "$type": "color",
+                "$value": "rgba(236, 112, 4, 0.12)"
+              },
+              "warning-16": {
+                "$type": "color",
+                "$value": "rgba(236, 112, 4, 0.16)"
+              }
+            },
+            "Success": {
+              "success-08": {
+                "$type": "color",
+                "$value": "rgba(16, 147, 103, 0.08)"
+              },
+              "success-12": {
+                "$type": "color",
+                "$value": "rgba(16, 147, 103, 0.12)"
+              },
+              "success-16": {
+                "$type": "color",
+                "$value": "rgba(16, 147, 103, 0.16)"
+              }
+            }
+          },
+          "Typography": {
+            "Family": {
+              "font-family-base": {
+                "$type": "string",
+                "$value": "inter"
+              }
+            },
+            "Weight": {
+              "font-weight-400": {
+                "$type": "float",
+                "$value": 400
+              },
+              "font-weight-500": {
+                "$type": "float",
+                "$value": 500
+              },
+              "font-weight-700": {
+                "$type": "float",
+                "$value": 700
+              }
+            },
+            "Font Size": {
+              "font-size-10": {
+                "$type": "float",
+                "$value": 10
+              },
+              "font-size-12": {
+                "$type": "float",
+                "$value": 12
+              },
+              "font-size-14": {
+                "$type": "float",
+                "$value": 14
+              },
+              "font-size-16": {
+                "$type": "float",
+                "$value": 16
+              },
+              "font-size-18": {
+                "$type": "float",
+                "$value": 18
+              },
+              "font-size-20": {
+                "$type": "float",
+                "$value": 20
+              },
+              "font-size-24": {
+                "$type": "float",
+                "$value": 24
+              },
+              "font-size-28": {
+                "$type": "float",
+                "$value": 28
+              },
+              "font-size-32": {
+                "$type": "float",
+                "$value": 32
+              },
+              "font-size-36": {
+                "$type": "float",
+                "$value": 36
+              },
+              "font-size-40": {
+                "$type": "float",
+                "$value": 40
+              },
+              "font-size-44": {
+                "$type": "float",
+                "$value": 44
+              },
+              "font-size-52": {
+                "$type": "float",
+                "$value": 52
+              },
+              "font-size-64": {
+                "$type": "float",
+                "$value": 64
+              },
+              "font-size-96": {
+                "$type": "float",
+                "$value": 96
+              }
+            },
+            "Line Height": {
+              "line-height-16": {
+                "$type": "float",
+                "$value": 16
+              },
+              "line-height-20": {
+                "$type": "float",
+                "$value": 20
+              },
+              "line-height-24": {
+                "$type": "float",
+                "$value": 24
+              },
+              "line-height-28": {
+                "$type": "float",
+                "$value": 28
+              },
+              "line-height-32": {
+                "$type": "float",
+                "$value": 32
+              },
+              "line-height-36": {
+                "$type": "float",
+                "$value": 36
+              },
+              "line-height-40": {
+                "$type": "float",
+                "$value": 40
+              },
+              "line-height-44": {
+                "$type": "float",
+                "$value": 44
+              },
+              "line-height-48": {
+                "$type": "float",
+                "$value": 48
+              },
+              "line-height-52": {
+                "$type": "float",
+                "$value": 52
+              },
+              "line-height-60": {
+                "$type": "float",
+                "$value": 60
+              },
+              "line-height-72": {
+                "$type": "float",
+                "$value": 72
+              },
+              "line-height-112": {
+                "$type": "float",
+                "$value": 112
+              }
+            },
+            "Letter Spacing": {
+              "letter-spacing-0": {
+                "$type": "float",
+                "$value": 0
+              },
+              "letter-spacing-005": {
+                "$type": "float",
+                "$value": -0.05000000074505806
+              },
+              "letter-spacing-075": {
+                "$type": "float",
+                "$value": -0.75
+              }
+            }
+          },
+          "Spacing": {
+            "space-0": {
+              "$type": "float",
+              "$value": 0
+            },
+            "space-2": {
+              "$type": "float",
+              "$value": 2
+            },
+            "space-4": {
+              "$type": "float",
+              "$value": 4
+            },
+            "space-8": {
+              "$type": "float",
+              "$value": 8
+            },
+            "space-12": {
+              "$type": "float",
+              "$value": 12
+            },
+            "space-16": {
+              "$type": "float",
+              "$value": 16
+            },
+            "space-20": {
+              "$type": "float",
+              "$value": 20
+            },
+            "space-24": {
+              "$type": "float",
+              "$value": 24
+            },
+            "space-32": {
+              "$type": "float",
+              "$value": 32
+            },
+            "space-36": {
+              "$type": "float",
+              "$value": 36
+            },
+            "space-40": {
+              "$type": "float",
+              "$value": 40
+            },
+            "space-48": {
+              "$type": "float",
+              "$value": 48
+            },
+            "space-64": {
+              "$type": "float",
+              "$value": 64
+            },
+            "space-80": {
+              "$type": "float",
+              "$value": 80
+            },
+            "space-96": {
+              "$type": "float",
+              "$value": 96
+            },
+            "space-112": {
+              "$type": "float",
+              "$value": 112
+            },
+            "space-128": {
+              "$type": "float",
+              "$value": 128
+            },
+            "space-160": {
+              "$type": "float",
+              "$value": 160
+            }
+          },
+          "Sizes": {
+            "size-0": {
+              "$type": "float",
+              "$value": 0
+            },
+            "size-2": {
+              "$type": "float",
+              "$value": 2
+            },
+            "size-4": {
+              "$type": "float",
+              "$value": 4
+            },
+            "size-8": {
+              "$type": "float",
+              "$value": 8
+            },
+            "size-12": {
+              "$type": "float",
+              "$value": 12
+            },
+            "size-16": {
+              "$type": "float",
+              "$value": 16
+            },
+            "size-20": {
+              "$type": "float",
+              "$value": 20
+            },
+            "size-24": {
+              "$type": "float",
+              "$value": 24
+            },
+            "size-32": {
+              "$type": "float",
+              "$value": 32
+            },
+            "size-36": {
+              "$type": "float",
+              "$value": 36
+            },
+            "size-40": {
+              "$type": "float",
+              "$value": 40
+            },
+            "size-48": {
+              "$type": "float",
+              "$value": 48
+            },
+            "size-64": {
+              "$type": "float",
+              "$value": 64
+            },
+            "size-80": {
+              "$type": "float",
+              "$value": 80
+            },
+            "size-96": {
+              "$type": "float",
+              "$value": 96
+            },
+            "size-112": {
+              "$type": "float",
+              "$value": 112
+            },
+            "size-128": {
+              "$type": "float",
+              "$value": 128
+            },
+            "size-160": {
+              "$type": "float",
+              "$value": 160
+            }
+          },
+          "Radius": {
+            "radii-0": {
+              "$type": "float",
+              "$value": 0
+            },
+            "radii-4": {
+              "$type": "float",
+              "$value": 4
+            },
+            "radii-8": {
+              "$type": "float",
+              "$value": 8
+            },
+            "radii-12": {
+              "$type": "float",
+              "$value": 12
+            },
+            "radii-16": {
+              "$type": "float",
+              "$value": 16
+            },
+            "radii-32": {
+              "$type": "float",
+              "$value": 32
+            },
+            "radii-9999": {
+              "$type": "float",
+              "$value": 9999
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "Height": {
+      "modes": {
+        "Mode 1": {
+          "--ds-height-0": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-0}"
+          },
+          "--ds-height-2": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-2}"
+          },
+          "--ds-height-4": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-4}"
+          },
+          "--ds-height-8": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-8}"
+          },
+          "--ds-height-12": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-12}"
+          },
+          "--ds-height-16": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-16}"
+          },
+          "--ds-height-20": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-20}"
+          },
+          "--ds-height-24": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-24}"
+          },
+          "--ds-height-32": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-32}"
+          },
+          "--ds-height-36": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-36}"
+          },
+          "--ds-height-40": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-40}"
+          },
+          "--ds-height-48": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-48}"
+          },
+          "--ds-height-64": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-64}"
+          },
+          "--ds-height-80": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-80}"
+          },
+          "--ds-height-96": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-96}"
+          },
+          "--ds-height-112": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-112}"
+          },
+          "--ds-height-128": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-128}"
+          },
+          "--ds-height-160": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-160}"
+          }
+        }
+      }
+    }
+  },
+  {
+    "Spacing": {
+      "modes": {
+        "Mode 1": {
+          "--ds-spacing-0": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-0}"
+          },
+          "--ds-spacing-2": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-2}"
+          },
+          "--ds-spacing-4": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-4}"
+          },
+          "--ds-spacing-8": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-8}"
+          },
+          "--ds-spacing-12": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-12}"
+          },
+          "--ds-spacing-16": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-16}"
+          },
+          "--ds-spacing-20": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-20}"
+          },
+          "--ds-spacing-24": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-24}"
+          },
+          "--ds-spacing-32": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-32}"
+          },
+          "--ds-spacing-36": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-36}"
+          },
+          "--ds-spacing-40": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-40}"
+          },
+          "--ds-spacing-48": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-48}"
+          },
+          "--ds-spacing-64": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-64}"
+          },
+          "--ds-spacing-80": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-80}"
+          },
+          "--ds-spacing-96": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-96}"
+          },
+          "--ds-spacing-112": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-112}"
+          },
+          "--ds-spacing-128": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-128}"
+          },
+          "--ds-spacing-160": {
+            "$scopes": [
+              "GAP"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Spacing.space-160}"
+          }
+        }
+      }
+    }
+  },
+  {
+    "Typography": {
+      "modes": {
+        "Mode 1": {
+          "Display": {
+            "--ds-typography-display-xlarge": {
+              "$type": "string",
+              "$value": "display-xlarge"
+            },
+            "--ds-typography-display-xlarge-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-display-xlarge-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-96}"
+            },
+            "--ds-typography-display-xlarge-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-display-xlarge-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-112}"
+            },
+            "--ds-typography-display-xlarge-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            },
+            "--ds-typography-display-large": {
+              "$type": "string",
+              "$value": "display-large"
+            },
+            "--ds-typography-display-large-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-display-large-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-64}"
+            },
+            "--ds-typography-display-large-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-display-large-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-72}"
+            },
+            "--ds-typography-display-large-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            },
+            "--ds-typography-display-medium": {
+              "$type": "string",
+              "$value": "display-medium"
+            },
+            "--ds-typography-display-medium-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-display-medium-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-52}"
+            },
+            "--ds-typography-display-medium-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-display-medium-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-60}"
+            },
+            "--ds-typography-display-medium-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            },
+            "--ds-typography-display-small": {
+              "$type": "string",
+              "$value": "display-small"
+            },
+            "--ds-typography-display-small-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-display-small-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-44}"
+            },
+            "--ds-typography-display-small-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-display-small-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-52}"
+            },
+            "--ds-typography-display-small-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            }
+          },
+          "Heading": {
+            "--ds-typography-heading-xxlarge": {
+              "$type": "string",
+              "$value": "heading-xxlarge"
+            },
+            "--ds-typography-heading-xxlarge-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-heading-xxlarge-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-40}"
+            },
+            "--ds-typography-heading-xxlarge-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-heading-xxlarge-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-48}"
+            },
+            "--ds-typography-heading-xxlarge-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            },
+            "--ds-typography-heading-xlarge": {
+              "$type": "string",
+              "$value": "heading-xlarge"
+            },
+            "--ds-typography-heading-xlarge-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-heading-xlarge-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-36}"
+            },
+            "--ds-typography-heading-xlarge-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-heading-xlarge-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-44}"
+            },
+            "--ds-typography-heading-xlarge-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            },
+            "--ds-typography-heading-large": {
+              "$type": "string",
+              "$value": "heading-large"
+            },
+            "--ds-typography-heading-large-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-heading-large-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-32}"
+            },
+            "--ds-typography-heading-large-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-heading-large-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-40}"
+            },
+            "--ds-typography-heading-large-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            },
+            "--ds-typography-heading-medium": {
+              "$type": "string",
+              "$value": "heading-medium"
+            },
+            "--ds-typography-heading-medium-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-heading-medium-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-28}"
+            },
+            "--ds-typography-heading-medium-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-heading-medium-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-36}"
+            },
+            "--ds-typography-heading-medium-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            },
+            "--ds-typography-heading-small": {
+              "$type": "string",
+              "$value": "heading-small"
+            },
+            "--ds-typography-heading-small-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-heading-small-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-24}"
+            },
+            "--ds-typography-heading-small-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-heading-small-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-32}"
+            },
+            "--ds-typography-heading-small-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            },
+            "--ds-typography-heading-xsmall": {
+              "$type": "string",
+              "$value": "heading-xsmall"
+            },
+            "--ds-typography-heading-xsmall-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-heading-xsmall-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-20}"
+            },
+            "--ds-typography-heading-xsmall-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-700}"
+            },
+            "--ds-typography-heading-xsmall-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-28}"
+            },
+            "--ds-typography-heading-xsmall-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-075}"
+            }
+          },
+          "Label": {
+            "--ds-typography-label-large": {
+              "$type": "string",
+              "$value": "label-large"
+            },
+            "--ds-typography-label-large-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-label-large-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-18}"
+            },
+            "--ds-typography-label-large-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-500}"
+            },
+            "--ds-typography-label-large-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-24}"
+            },
+            "--ds-typography-label-large-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-005}"
+            },
+            "--ds-typography-label-medium": {
+              "$type": "string",
+              "$value": "label-medium"
+            },
+            "--ds-typography-label-medium-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-label-medium-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-16}"
+            },
+            "--ds-typography-label-medium-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-500}"
+            },
+            "--ds-typography-label-medium-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-24}"
+            },
+            "--ds-typography-label-medium-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-005}"
+            },
+            "--ds-typography-label-small": {
+              "$type": "string",
+              "$value": "label-small"
+            },
+            "--ds-typography-label-small-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-label-small-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-14}"
+            },
+            "--ds-typography-label-small-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-500}"
+            },
+            "--ds-typography-label-small-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-20}"
+            },
+            "--ds-typography-label-small-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-005}"
+            },
+            "--ds-typography-label-xsmall": {
+              "$type": "string",
+              "$value": "label-xsmall"
+            },
+            "--ds-typography-label-xsmall-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-label-xsmall-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-12}"
+            },
+            "--ds-typography-label-xsmall-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-500}"
+            },
+            "--ds-typography-label-xsmall-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-16}"
+            },
+            "--ds-typography-label-xsmall-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-005}"
+            },
+            "--ds-typography-label-micro": {
+              "$type": "string",
+              "$value": "label-micro"
+            },
+            "--ds-typography-label-micro-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-label-micro-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-10}"
+            },
+            "--ds-typography-label-micro-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-500}"
+            },
+            "--ds-typography-label-micro-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-16}"
+            },
+            "--ds-typography-label-micro-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-005}"
+            }
+          },
+          "Body": {
+            "--ds-typography-body-large": {
+              "$type": "string",
+              "$value": "body-large"
+            },
+            "--ds-typography-body-large-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-body-large-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-18}"
+            },
+            "--ds-typography-body-large-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-400}"
+            },
+            "--ds-typography-body-large-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-28}"
+            },
+            "--ds-typography-body-large-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-0}"
+            },
+            "--ds-typography-body-medium": {
+              "$type": "string",
+              "$value": "body-medium"
+            },
+            "--ds-typography-body-medium-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-body-medium-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-16}"
+            },
+            "--ds-typography-body-medium-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-400}"
+            },
+            "--ds-typography-body-medium-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-24}"
+            },
+            "--ds-typography-body-medium-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-0}"
+            },
+            "--ds-typography-body-small": {
+              "$type": "string",
+              "$value": "body-small"
+            },
+            "--ds-typography-body-small-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-body-small-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-14}"
+            },
+            "--ds-typography-body-small-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-400}"
+            },
+            "--ds-typography-body-small-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-20}"
+            },
+            "--ds-typography-body-small-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-0}"
+            },
+            "--ds-typography-body-xsmall": {
+              "$type": "string",
+              "$value": "body-xsmall"
+            },
+            "--ds-typography-body-xsmall-font-family": {
+              "$scopes": [
+                "FONT_FAMILY"
+              ],
+              "$type": "string",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Family.font-family-base}"
+            },
+            "--ds-typography-body-xsmall-font-size": {
+              "$scopes": [
+                "FONT_SIZE"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Font Size.font-size-12}"
+            },
+            "--ds-typography-body-xsmall-font-weight": {
+              "$scopes": [
+                "FONT_WEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Weight.font-weight-400}"
+            },
+            "--ds-typography-body-xsmall-line-height": {
+              "$scopes": [
+                "LINE_HEIGHT"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Line Height.line-height-20}"
+            },
+            "--ds-typography-body-xsmall-letter-spacing": {
+              "$scopes": [
+                "LETTER_SPACING"
+              ],
+              "$type": "float",
+              "$libraryName": "",
+              "$collectionName": "Foundations",
+              "$value": "{Typography.Letter Spacing.letter-spacing-0}"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "Width": {
+      "modes": {
+        "Mode 1": {
+          "--ds-width-0": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-0}"
+          },
+          "--ds-width-2": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-2}"
+          },
+          "--ds-width-4": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-4}"
+          },
+          "--ds-width-8": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-8}"
+          },
+          "--ds-width-12": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-12}"
+          },
+          "--ds-width-16": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-16}"
+          },
+          "--ds-width-20": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-20}"
+          },
+          "--ds-width-24": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-24}"
+          },
+          "--ds-width-32": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-32}"
+          },
+          "--ds-width-36": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-36}"
+          },
+          "--ds-width-40": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-40}"
+          },
+          "--ds-width-48": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-48}"
+          },
+          "--ds-width-64": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-64}"
+          },
+          "--ds-width-80": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-80}"
+          },
+          "--ds-width-96": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-96}"
+          },
+          "--ds-width-112": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-112}"
+          },
+          "--ds-width-128": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-128}"
+          },
+          "--ds-width-160": {
+            "$scopes": [
+              "WIDTH_HEIGHT"
+            ],
+            "$type": "float",
+            "$libraryName": "",
+            "$collectionName": "Foundations",
+            "$value": "{Sizes.size-160}"
+          }
+        }
+      }
+    }
+  }
+]

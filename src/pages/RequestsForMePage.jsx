@@ -21,6 +21,19 @@ function normalizeRetentionLabel(value) {
   return value === 'To be retained' ? 'Retained' : value;
 }
 
+function getAlertRowClassName({ priority, highlighted = false, animatedHighlight = false }) {
+  const priorityClassName = priority === 'high' ? 'is-high' : 'is-medium';
+
+  return [
+    'requests-for-me-alert-row',
+    priorityClassName,
+    highlighted ? 'is-highlighted' : '',
+    animatedHighlight ? 'is-arrival-highlight' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
+
 const requestApprovalRows = [
   { sr: '1', approverName: 'Technical Assistant', status: 'Approved', daysTaken: '4', decisionOn: '01-04-2026 12:34', comments: 'No comments' },
   { sr: '2', approverName: 'Technical Assistant', status: 'Approved', daysTaken: '4', decisionOn: '01-04-2026 12:34', comments: 'No comments' },
@@ -283,12 +296,14 @@ function RequestDetailsModal({ request, onClose }) {
   );
 }
 
-function MaterialAlertRow({ alert, index }) {
-  const isHighPriority = alert.priority === 'high';
-
+function MaterialAlertRow({ alert, index, highlighted = false, animatedHighlight = false }) {
   return (
     <article
-      className={`requests-for-me-alert-row ${isHighPriority ? 'is-high' : 'is-medium'}`}
+      className={getAlertRowClassName({
+        priority: alert.priority,
+        highlighted,
+        animatedHighlight,
+      })}
       style={{ '--alert-row-columns': '40px minmax(0, 1.8fr) minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.85fr) minmax(0, 1.25fr) minmax(0, 0.8fr) 176px' }}
     >
       <div className="requests-for-me-alert-row__cell is-index">{index}</div>
@@ -309,7 +324,14 @@ function MaterialAlertRow({ alert, index }) {
   );
 }
 
-function AlertSection({ rows, columns, legend, RowComponent }) {
+function AlertSection({
+  rows,
+  columns,
+  legend,
+  RowComponent,
+  highlightedAlertId = null,
+  animatedHighlightId = null,
+}) {
   return (
     <div className="requests-for-me-panel requests-for-me-panel--alerts">
       <div className="requests-for-me-alerts" style={{ '--alert-row-columns': columns }}>
@@ -326,7 +348,13 @@ function AlertSection({ rows, columns, legend, RowComponent }) {
 
         <div className="requests-for-me-alerts__rows">
           {rows.map((alert, index) => (
-            <RowComponent key={alert.id} alert={alert} index={index + 1} />
+            <RowComponent
+              key={alert.id}
+              alert={alert}
+              index={index + 1}
+              highlighted={alert.id === highlightedAlertId}
+              animatedHighlight={alert.id === animatedHighlightId}
+            />
           ))}
         </div>
       </div>
@@ -368,7 +396,13 @@ function EnvDataAlertsModeSwitch({ mode, onToggle }) {
   );
 }
 
-function EnvDataAlertsSection({ rows, mode, onModeChange }) {
+function EnvDataAlertsSection({
+  rows,
+  mode,
+  onModeChange,
+  highlightedAlertId = null,
+  animatedHighlightId = null,
+}) {
   const isEmpty = rows.length === 0;
 
   return (
@@ -389,7 +423,13 @@ function EnvDataAlertsSection({ rows, mode, onModeChange }) {
 
             <div className="requests-for-me-alerts__rows">
               {rows.map((alert, index) => (
-                <EnvDataAlertRow key={alert.id} alert={alert} index={index + 1} />
+                <EnvDataAlertRow
+                  key={alert.id}
+                  alert={alert}
+                  index={index + 1}
+                  highlighted={alert.id === highlightedAlertId}
+                  animatedHighlight={alert.id === animatedHighlightId}
+                />
               ))}
             </div>
           </>
@@ -403,10 +443,12 @@ function EnvDataAlertsSection({ rows, mode, onModeChange }) {
   );
 }
 
-function MaterialAlertsSection({ rows }) {
+function MaterialAlertsSection({ rows, highlightedAlertId, animatedHighlightId }) {
   return (
     <AlertSection
       rows={rows}
+      highlightedAlertId={highlightedAlertId}
+      animatedHighlightId={animatedHighlightId}
       columns="40px minmax(0, 1.8fr) minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.85fr) minmax(0, 1.25fr) minmax(0, 0.8fr) 176px"
       legend={['#', 'Name', 'Alert Type', 'Batch No.', 'Min Qty', 'Current Qty', 'Alert Raised On', 'Days Since', 'Action']}
       RowComponent={MaterialAlertRow}
@@ -414,14 +456,18 @@ function MaterialAlertsSection({ rows }) {
   );
 }
 
-function InstrumentAlertRow({ alert, index }) {
+function InstrumentAlertRow({ alert, index, highlighted = false, animatedHighlight = false }) {
   const actionLabel = alert.type === 'breakdown' ? 'View Service' : 'Generate Service';
   const actionIcon = alert.type === 'breakdown' ? 'eye' : 'plus';
   const serviceDue = alert.type === 'breakdown' ? '' : alert.serviceDue;
 
   return (
     <article
-      className={`requests-for-me-alert-row ${alert.priority === 'high' ? 'is-high' : 'is-medium'}`}
+      className={getAlertRowClassName({
+        priority: alert.priority,
+        highlighted,
+        animatedHighlight,
+      })}
       style={{ '--alert-row-columns': '40px minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 1fr) 176px' }}
     >
       <div className="requests-for-me-alert-row__cell is-index">{index}</div>
@@ -441,10 +487,12 @@ function InstrumentAlertRow({ alert, index }) {
   );
 }
 
-function InstrumentAlertsSection({ rows }) {
+function InstrumentAlertsSection({ rows, highlightedAlertId, animatedHighlightId }) {
   return (
     <AlertSection
       rows={rows}
+      highlightedAlertId={highlightedAlertId}
+      animatedHighlightId={animatedHighlightId}
       columns="40px minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 1fr) 176px"
       legend={['#', 'Name', 'Type', 'Alert Raised On', 'Days Since', 'Last Service', 'Service Due', 'Action']}
       RowComponent={InstrumentAlertRow}
@@ -452,10 +500,14 @@ function InstrumentAlertsSection({ rows }) {
   );
 }
 
-function EnvDataAlertRow({ alert, index }) {
+function EnvDataAlertRow({ alert, index, highlighted = false, animatedHighlight = false }) {
   return (
     <article
-      className={`requests-for-me-alert-row ${alert.priority === 'high' ? 'is-high' : 'is-medium'}`}
+      className={getAlertRowClassName({
+        priority: alert.priority,
+        highlighted,
+        animatedHighlight,
+      })}
       style={{ '--alert-row-columns': '40px minmax(0, 1.8fr) minmax(0, 1.2fr) minmax(0, 1.6fr) minmax(0, 1.6fr) 176px' }}
     >
       <div className="requests-for-me-alert-row__cell is-index">{index}</div>
@@ -473,10 +525,14 @@ function EnvDataAlertRow({ alert, index }) {
   );
 }
 
-function DocumentAlertRow({ alert, index }) {
+function DocumentAlertRow({ alert, index, highlighted = false, animatedHighlight = false }) {
   return (
     <article
-      className={`requests-for-me-alert-row ${alert.priority === 'high' ? 'is-high' : 'is-medium'}`}
+      className={getAlertRowClassName({
+        priority: alert.priority,
+        highlighted,
+        animatedHighlight,
+      })}
       style={{ '--alert-row-columns': '40px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 176px' }}
     >
       <div className="requests-for-me-alert-row__cell is-index">{index}</div>
@@ -493,10 +549,12 @@ function DocumentAlertRow({ alert, index }) {
   );
 }
 
-function DocumentAlertsSection({ rows }) {
+function DocumentAlertsSection({ rows, highlightedAlertId, animatedHighlightId }) {
   return (
     <AlertSection
       rows={rows}
+      highlightedAlertId={highlightedAlertId}
+      animatedHighlightId={animatedHighlightId}
       columns="40px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 176px"
       legend={['#', 'Doc Name', 'Last Update', 'Expiry Date', 'Action']}
       RowComponent={DocumentAlertRow}
@@ -508,11 +566,37 @@ export default function RequestsForMePage({
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
+  initialSection = 'requests',
+  highlightedAlertId = null,
 }) {
-  const [activeSection, setActiveSection] = useState('requests');
+  const [activeSection, setActiveSection] = useState(initialSection);
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [envDataAlertsMode, setEnvDataAlertsMode] = useState('empty');
+  const [activeHighlightedAlertId, setActiveHighlightedAlertId] = useState(highlightedAlertId);
+  const [animatedHighlightId, setAnimatedHighlightId] = useState(highlightedAlertId);
+
+  useEffect(() => {
+    setActiveSection(initialSection);
+    setActiveHighlightedAlertId(highlightedAlertId);
+    setAnimatedHighlightId(highlightedAlertId);
+    if (initialSection !== 'requests') {
+      setActiveCategory('all');
+    }
+    if (initialSection === 'env-data-alerts') {
+      setEnvDataAlertsMode('content');
+    }
+
+    if (!highlightedAlertId) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setAnimatedHighlightId(null);
+    }, 900);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [initialSection, highlightedAlertId]);
 
   const sections = useMemo(
     () =>
@@ -563,15 +647,47 @@ export default function RequestsForMePage({
         <CategoryFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
       ) : null}
       <main className="requests-for-me-page">
-        <div className="container-fluid px-4">
+        <div
+          className="container-fluid px-4"
+          onClickCapture={(event) => {
+            if (!activeHighlightedAlertId) {
+              return;
+            }
+
+            if (event.target.closest('.requests-for-me-alert-row')) {
+              return;
+            }
+
+            setActiveHighlightedAlertId(null);
+            setAnimatedHighlightId(null);
+          }}
+        >
           {activeSection === 'material-alerts' ? (
-            <MaterialAlertsSection rows={requestRows} />
+            <MaterialAlertsSection
+              rows={requestRows}
+              highlightedAlertId={activeHighlightedAlertId}
+              animatedHighlightId={animatedHighlightId}
+            />
           ) : activeSection === 'instrument-alerts' ? (
-            <InstrumentAlertsSection rows={requestRows} />
+            <InstrumentAlertsSection
+              rows={requestRows}
+              highlightedAlertId={activeHighlightedAlertId}
+              animatedHighlightId={animatedHighlightId}
+            />
           ) : activeSection === 'env-data-alerts' ? (
-            <EnvDataAlertsSection rows={requestRows} mode={envDataAlertsMode} onModeChange={setEnvDataAlertsMode} />
+            <EnvDataAlertsSection
+              rows={requestRows}
+              mode={envDataAlertsMode}
+              onModeChange={setEnvDataAlertsMode}
+              highlightedAlertId={activeHighlightedAlertId}
+              animatedHighlightId={animatedHighlightId}
+            />
           ) : activeSection === 'document-alerts' ? (
-            <DocumentAlertsSection rows={requestRows} />
+            <DocumentAlertsSection
+              rows={requestRows}
+              highlightedAlertId={activeHighlightedAlertId}
+              animatedHighlightId={animatedHighlightId}
+            />
           ) : (
             <div className="requests-for-me-panel requests-for-me-panel--requests">
               <div className="requests-for-me-panel__legend">

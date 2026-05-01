@@ -554,7 +554,7 @@ function RequestsCardSelection({
               className="tr-link"
               onClick={(event) => {
                 event.preventDefault();
-                onOpenTrDetails?.(row.id);
+                onOpenTrDetails?.(row.id, row.status);
               }}
             >
               {row.id}
@@ -679,7 +679,7 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
                 className="tr-link"
                 onClick={(event) => {
                   event.preventDefault();
-                  onOpenTrDetails?.(row.id);
+                  onOpenTrDetails?.(row.id, row.status);
                 }}
               >
                 {row.id}
@@ -702,8 +702,8 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
             <div className="col tr-table-cell tr-table-cell--truncate">{getDateOnly(row.reportingDate)}</div>
             <div className="col-auto tr-table-cell tr-table-cell--actions">
               <div className="tr-actions-shell tr-request-actions">
-                {!readOnly && !row.allocated ? <AllocateTestRequestButton onClick={() => onAllocate(row)} /> : null}
-                <ViewTestRequestButton iconOnly={!row.allocated} />
+                {!readOnly && !row.allocated ? <AllocateTestRequestButton size="medium" onClick={() => onAllocate(row)} /> : null}
+                <ViewTestRequestButton size="medium" iconOnly={!row.allocated} />
               </div>
             </div>
           </div>
@@ -740,7 +740,7 @@ function JobsCard({ jobs, onAllocate, onOpenTrDetails, readOnly = false }) {
                 className="tr-link"
                 onClick={(event) => {
                   event.preventDefault();
-                  onOpenTrDetails?.(row.id);
+                  onOpenTrDetails?.(row.id, row.status);
                 }}
               >
                 {row.id}
@@ -761,8 +761,8 @@ function JobsCard({ jobs, onAllocate, onOpenTrDetails, readOnly = false }) {
             <div className="col tr-table-cell tr-table-cell--truncate">{getDateOnly(row.reportingDate)}</div>
             <div className="col-auto tr-table-cell tr-table-cell--actions">
               <div className="tr-actions-shell tr-job-actions">
-                {!readOnly && row.action === 'allocate' ? <AllocateTestRequestButton onClick={() => onAllocate(row)} /> : null}
-                <ViewTestRequestButton />
+                {!readOnly && row.action === 'allocate' ? <AllocateTestRequestButton size="medium" onClick={() => onAllocate(row)} /> : null}
+                <ViewTestRequestButton size="medium" />
               </div>
             </div>
           </div>
@@ -867,14 +867,25 @@ export default function TestRequestsListingPage({
   };
 
   const handleOpenJobAllocation = (row) => {
+    console.log('handleOpenJobAllocation called with:', row);
     if (readOnly) {
       return;
     }
 
-    setJobAllocationTargetId(row.id);
-    setJobAllocateTo('');
-    setJobReviewer('');
-    setJobAllocationModalOpen(true);
+    // Jobs in "Pending for allocation" should open the test request allocation modal
+    setAllocationTargetId(row.id);
+    setAllocationDetails({
+      id: row.id,
+      parameter: 'Multiple Parameters',
+      moa: 'Wet Chemistry',
+      template: allocationTemplate,
+    });
+    setAllocationTab('analyst');
+    setAllocateTo('');
+    setReviewer('');
+    setInstrument('');
+    setAllocationModalOpen(true);
+    console.log('Modal should be open now');
   };
 
   const handleSubmitAllocation = () => {

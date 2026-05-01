@@ -108,7 +108,10 @@ function MaterialDetailsHeader({ materialName, onBack, onNewTransaction }) {
             />
             <h1 className="material-details-page-header__title">{materialName}</h1>
           </div>
-          <div className="col-auto">
+          <div className="col-auto d-flex align-items-center gap-3">
+            <SecondaryButton leftIcon="printer">
+              Print QR
+            </SecondaryButton>
             <PrimaryButton leftIcon="plus" onClick={onNewTransaction}>
               New Transaction
             </PrimaryButton>

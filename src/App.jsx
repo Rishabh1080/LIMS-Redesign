@@ -2,6 +2,7 @@ import AllSamplesListingPage from './pages/AllSamplesListingPage';
 import { useState } from 'react';
 import NewSampleCustomerDetailsPage from './pages/NewSampleCustomerDetailsPage';
 import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
+import DashboardPage from './pages/DashboardPage';
 import DatasheetPage from './pages/DatasheetPage';
 import EnvironmentDataPage from './pages/EnvironmentDataPage';
 import FinalisedReportPage from './pages/FinalisedReportPage';
@@ -11,6 +12,8 @@ import MaterialDetailsPage from './pages/MaterialDetailsPage';
 import InstrumentsPage from './pages/InstrumentsPage';
 import InstrumentDetailsPage from './pages/InstrumentDetailsPage';
 import NewInstrumentPage from './pages/NewInstrumentPage';
+import TrainingAttendancePage from './pages/TrainingAttendancePage';
+import TrainingsPage, { defaultTrainings } from './pages/TrainingsPage';
 import RequestsForMePage from './pages/RequestsForMePage';
 import SampleDetailsPage from './pages/SampleDetailsPage';
 import SampleWorkspacePage from './pages/SampleWorkspacePage';
@@ -20,10 +23,103 @@ import TestRequestsListingPage from './pages/TestRequestsListingPage';
 import TrDetailsPage from './pages/TrDetailsPage';
 import { requestSections } from './data/requestsForMeData';
 
+const instrumentCatalog = [
+  {
+    id: 'inst-001',
+    name: 'Stabinger Viscometer',
+    description: 'Precision viscosity analyzer used for fuel, oil, and lubricant characterization under controlled lab conditions.',
+    make: 'Anton Paar',
+    uniqueKey: 'SVM-001',
+    modelNo: 'SVM 3001',
+    serialNo: 'AP-3001-26',
+    lastServiceOn: '14/04/2026',
+    calibrated: 'Yes',
+    nextServiceOn: '14/10/2026',
+    allowAccessTo: 'Lab Manager',
+    calibLastPerformedOn: '14/04/2026',
+    calibFrequency: '180',
+    calibRemindBeforeDays: '15',
+    calibReminderFrequency: '7',
+    calibAllowAccessTo: 'Lab Manager',
+    calibAllowAccessTo2: 'Technician',
+    calibAllowAccessTo3: 'Quality Analyst',
+    pmLastPerformedOn: '14/04/2026',
+    pmFrequency: '90',
+    pmRemindBeforeDays: '10',
+    pmReminderFrequency: '5',
+    pmAllowAccessTo: 'Lab Manager',
+    pmAllowAccessTo2: 'Technician',
+    pmAllowAccessTo3: 'Supervisor',
+    bdAllowAccessTo: 'Lab Manager',
+    bdAllowAccessTo2: 'Technician',
+    bdAllowAccessTo3: 'Supervisor',
+    costOfEquipment: '125000',
+    referencePurchaseFile: 'PO-2026-014',
+    currentLocation: 'Central Lab',
+    manufacturerSupplier: 'Anton Paar India',
+  },
+  {
+    id: 'inst-002',
+    name: 'UV-Vis Spectrophotometer',
+    description: 'Bench-top absorbance system used for quantitative chemical analysis and method validation.',
+    make: 'Shimadzu',
+    uniqueKey: 'UVV-002',
+    modelNo: 'UV-1900i',
+    serialNo: 'SH-1900-26',
+    lastServiceOn: '02/03/2026',
+    calibrated: 'No',
+    nextServiceOn: '02/09/2026',
+  },
+  {
+    id: 'inst-003',
+    name: 'Gas Chromatograph',
+    description: 'Used for compositional separation and trace-level analysis of volatile compounds.',
+    make: 'Agilent',
+    uniqueKey: 'GC-003',
+    modelNo: '8890',
+    serialNo: 'AG-8890-26',
+    lastServiceOn: '18/01/2026',
+    calibrated: 'Yes',
+    nextServiceOn: '18/07/2026',
+  },
+  {
+    id: 'inst-004',
+    name: 'Atomic Absorption Spectrometer',
+    description: 'High-sensitivity elemental analysis system for metals and trace contaminants.',
+    make: 'PerkinElmer',
+    uniqueKey: 'AAS-004',
+    modelNo: 'PinAAcle 900T',
+    serialNo: 'PE-900T-26',
+    lastServiceOn: '05/04/2026',
+    calibrated: 'No',
+    nextServiceOn: '05/10/2026',
+  },
+  {
+    id: 'inst-005',
+    name: 'pH Meter',
+    description: 'Routine pH measurement instrument used for sample prep, solution verification, and QC checks.',
+    make: 'Mettler Toledo',
+    uniqueKey: 'PHM-005',
+    modelNo: 'SevenCompact',
+    serialNo: 'MT-SC-26',
+    lastServiceOn: '22/03/2026',
+    calibrated: 'Yes',
+    nextServiceOn: '22/06/2026',
+  },
+];
+
+function getInstrumentById(instrumentId) {
+  return instrumentCatalog.find((instrument) => instrument.id === instrumentId) ?? null;
+}
+
 export default function App() {
-  const [activePage, setActivePage] = useState('workspace');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [activePage, setActivePage] = useState('dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [sampleCardViewMode, setSampleCardViewMode] = useState('grid');
+  const [requestsForMeState, setRequestsForMeState] = useState({
+    initialSection: 'requests',
+    highlightedAlertId: null,
+  });
   const [sampleEditorState, setSampleEditorState] = useState({
     mode: 'create',
     sample: null,
@@ -64,12 +160,24 @@ export default function App() {
     origin: 'temp-report',
   });
   const [instrumentToast, setInstrumentToast] = useState(null);
-  const [instrumentDetailsState, setInstrumentDetailsState] = useState({ id: null, name: '', initialToast: null });
+  const [instrumentDetailsState, setInstrumentDetailsState] = useState({
+    id: null,
+    name: '',
+    instrument: null,
+    initialToast: null,
+  });
+  const [instrumentEditorState, setInstrumentEditorState] = useState({
+    mode: 'create',
+    instrument: null,
+    sourcePage: 'instruments',
+    parentLabel: 'Instruments',
+  });
   const [materialDetailsState, setMaterialDetailsState] = useState({ id: null, name: '', initialToast: null });
   const [trDetailsState, setTrDetailsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
     requestId: 'URLS/26/ULRS/O/2026/30/330',
+    requestStatus: null,
     workflowStage: 'default',
     initialToast: null,
     remnantAvailable: null,
@@ -78,6 +186,10 @@ export default function App() {
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
     datasheetId: 'URLS/TR/00031',
+  });
+  const [trainingAttendanceState, setTrainingAttendanceState] = useState({
+    id: null,
+    name: 'Training',
   });
 
   const openSampleDetails = (sampleId, options = {}) => {
@@ -102,13 +214,48 @@ export default function App() {
 
   const openInstrumentDetails = (instrumentId, instrumentName, options = {}) => {
     const { initialToast = null } = options;
-
-    setInstrumentDetailsState({
+    const instrument = getInstrumentById(instrumentId) ?? {
       id: instrumentId,
       name: instrumentName,
+    };
+
+    setInstrumentDetailsState({
+      id: instrument.id,
+      name: instrument.name,
+      instrument,
       initialToast,
     });
     setActivePage('instrument-details');
+  };
+
+  const openNewInstrument = () => {
+    setInstrumentEditorState({
+      mode: 'create',
+      instrument: null,
+      sourcePage: 'instruments',
+      parentLabel: 'Instruments',
+    });
+    setActivePage('new-instrument');
+  };
+
+  const openEditInstrument = (instrumentOrId, options = {}) => {
+    const { sourcePage = 'instruments' } = options;
+    const instrument =
+      typeof instrumentOrId === 'string'
+        ? getInstrumentById(instrumentOrId)
+        : instrumentOrId;
+
+    if (!instrument) {
+      return;
+    }
+
+    setInstrumentEditorState({
+      mode: 'edit',
+      instrument,
+      sourcePage,
+      parentLabel: 'Instruments',
+    });
+    setActivePage('new-instrument');
   };
 
   const openMaterialDetails = (materialId, materialName, options = {}) => {
@@ -164,11 +311,16 @@ export default function App() {
   };
 
   const openTrDetails = (sampleId, options = {}) => {
-    const { sourcePage = 'all-samples', requestId = 'URLS/26/ULRS/O/2026/30/330' } = options;
+    const {
+      sourcePage = 'all-samples',
+      requestId = 'URLS/26/ULRS/O/2026/30/330',
+      requestStatus = null,
+    } = options;
     setTrDetailsState((current) => ({
       sampleId,
       sourcePage,
       requestId,
+      requestStatus,
       workflowStage: current.requestId === requestId ? current.workflowStage : 'default',
       initialToast: null,
       remnantAvailable: current.requestId === requestId ? current.remnantAvailable : null,
@@ -180,6 +332,14 @@ export default function App() {
     const { sourcePage = 'all-samples', datasheetId = 'URLS/TR/00031' } = options;
     setDatasheetState({ sampleId, sourcePage, datasheetId });
     setActivePage('datasheet');
+  };
+
+  const openTrainingAttendance = (trainingId, trainingName) => {
+    setTrainingAttendanceState({
+      id: trainingId,
+      name: trainingName,
+    });
+    setActivePage('training-attendance');
   };
 
   const openNewSample = (options = {}) => {
@@ -230,13 +390,23 @@ export default function App() {
     }));
   };
 
-  const handleNavigate = (nextPage) => {
+  const handleNavigate = (nextPage, options = {}) => {
+    if (nextPage === 'dashboard') {
+      setSidebarCollapsed(true);
+      setActivePage('dashboard');
+      return;
+    }
+
     if (nextPage === 'samples-workspace') {
       setActivePage('workspace');
       return;
     }
 
     if (nextPage === 'requests-for-me') {
+      setRequestsForMeState({
+        initialSection: options.initialSection ?? 'requests',
+        highlightedAlertId: options.highlightedAlertId ?? null,
+      });
       setActivePage('requests-for-me');
       return;
     }
@@ -266,6 +436,11 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'trainings') {
+      setActivePage('trainings');
+      return;
+    }
+
     if (nextPage === 'new-instrument') {
       setActivePage('new-instrument');
       return;
@@ -275,6 +450,20 @@ export default function App() {
       setActivePage('all-samples');
     }
   };
+
+  if (activePage === 'dashboard') {
+    return (
+      <DashboardPage
+        instruments={instrumentCatalog}
+        trainings={defaultTrainings}
+        onNavigate={handleNavigate}
+        onOpenSample={openSampleDetails}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
 
   if (activePage === 'sample-details') {
     const isCompletedSample = sampleDetailsState.sampleStatus === 'Completed';
@@ -331,10 +520,11 @@ export default function App() {
         sourcePage={testRequestsState.sourcePage}
         viewMode={testRequestsState.viewMode}
         onBack={() => setActivePage('sample-details')}
-        onOpenTrDetails={(requestId) =>
+        onOpenTrDetails={(requestId, requestStatus) =>
           openTrDetails(testRequestsState.sampleId, {
             sourcePage: testRequestsState.sourcePage,
             requestId,
+            requestStatus,
           })
         }
         onNavigate={handleNavigate}
@@ -351,6 +541,7 @@ export default function App() {
           sampleId={trDetailsState.sampleId}
           sourcePage={trDetailsState.sourcePage}
           requestId={trDetailsState.requestId}
+          requestStatus={trDetailsState.requestStatus}
           workflowStage={trDetailsState.workflowStage}
           initialToast={trDetailsState.initialToast}
           onBack={() =>
@@ -481,6 +672,8 @@ export default function App() {
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+        initialSection={requestsForMeState.initialSection}
+        highlightedAlertId={requestsForMeState.highlightedAlertId}
       />
     );
   }
@@ -552,9 +745,35 @@ export default function App() {
     return (
       <InstrumentsPage
         onNavigate={handleNavigate}
-        onNewInstrument={() => setActivePage('new-instrument')}
+        onNewInstrument={openNewInstrument}
+        onEditInstrument={(instrumentId) => openEditInstrument(instrumentId, { sourcePage: 'instruments' })}
         onOpenInstrument={(id, name) => openInstrumentDetails(id, name)}
         initialToast={instrumentToast}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'trainings') {
+    return (
+      <TrainingsPage
+        onOpenAttendance={(id, name) => openTrainingAttendance(id, name)}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'training-attendance') {
+    return (
+      <TrainingAttendancePage
+        trainingName={trainingAttendanceState.name}
+        onBack={() => setActivePage('trainings')}
+        onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
@@ -568,8 +787,18 @@ export default function App() {
         key={`${instrumentDetailsState.id}-${instrumentDetailsState.initialToast}`}
         instrumentId={instrumentDetailsState.id}
         instrumentName={instrumentDetailsState.name}
+        description={instrumentDetailsState.instrument?.description}
+        make={instrumentDetailsState.instrument?.make}
+        uniqueKey={instrumentDetailsState.instrument?.uniqueKey}
+        modelNo={instrumentDetailsState.instrument?.modelNo}
+        serialNo={instrumentDetailsState.instrument?.serialNo}
         initialToast={instrumentDetailsState.initialToast}
         onBack={() => setActivePage('instruments')}
+        onEditInstrument={() =>
+          openEditInstrument(instrumentDetailsState.instrument ?? instrumentDetailsState.id, {
+            sourcePage: 'instrument-details',
+          })
+        }
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
@@ -581,11 +810,33 @@ export default function App() {
   if (activePage === 'new-instrument') {
     return (
       <NewInstrumentPage
-        onBack={() => setActivePage('instruments')}
+        mode={instrumentEditorState.mode}
+        instrument={instrumentEditorState.instrument}
+        parentLabel={instrumentEditorState.parentLabel}
+        onBack={() =>
+          setActivePage(
+            instrumentEditorState.sourcePage === 'instrument-details' ? 'instrument-details' : 'instruments',
+          )
+        }
         onComplete={(instrumentData) => {
-          openInstrumentDetails('INST-2026-001', instrumentData?.name || 'New Instrument', {
-            initialToast: 'Instrument Created Successfully.',
+          const nextId = instrumentData?.id || instrumentEditorState.instrument?.id || 'INST-2026-001';
+          const nextName = instrumentData?.name || 'New Instrument';
+
+          setInstrumentDetailsState({
+            id: nextId,
+            name: nextName,
+            instrument: {
+              ...(instrumentEditorState.instrument ?? {}),
+              ...instrumentData,
+              id: nextId,
+              name: nextName,
+            },
+            initialToast:
+              instrumentEditorState.mode === 'edit'
+                ? 'Instrument Updated Successfully.'
+                : 'Instrument Created Successfully.',
           });
+          setActivePage('instrument-details');
         }}
       />
     );

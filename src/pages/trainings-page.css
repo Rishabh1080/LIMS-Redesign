@@ -1,0 +1,131 @@
+.trainings-page-header {
+  height: 72px;
+  padding: 16px 24px;
+  background: #fff;
+  border-bottom: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+}
+
+.trainings-page-header__title {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.trainings-page {
+  min-height: 100%;
+  padding: 24px;
+  background: var(--page-bg);
+}
+
+.trainings-listing {
+  display: flex;
+  flex-direction: column;
+}
+
+.trainings-listing__grid {
+  --trainings-cell-pad-x: 16px;
+  --trainings-columns:
+    minmax(220px, 1.15fr)
+    minmax(360px, 2fr)
+    minmax(150px, 0.8fr)
+    minmax(150px, 0.8fr)
+    minmax(120px, 0.55fr);
+  display: grid;
+  grid-template-columns: var(--trainings-columns);
+  align-items: center;
+  column-gap: 0;
+}
+
+.trainings-listing__legend {
+  padding: 0 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.trainings-listing__legend .trainings-listing__cell {
+  color: #6d737e;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.trainings-listing__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.trainings-listing__row {
+  min-height: 64px;
+  padding: 12px 0;
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgba(28, 33, 38, 0.04);
+}
+
+.trainings-listing__cell {
+  min-width: 0;
+  padding: 0 calc(var(--trainings-cell-pad-x) - 4px);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trainings-listing__cell--name {
+  padding-left: var(--trainings-cell-pad-x);
+}
+
+.trainings-listing__cell--actions {
+  padding-right: var(--trainings-cell-pad-x);
+}
+
+.trainings-listing__name {
+  color: var(--smplfy-primitive-blue-500);
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 600;
+}
+
+.trainings-listing__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@media (max-width: 1199.98px) {
+  .trainings-listing__grid {
+    --trainings-columns:
+      minmax(200px, 1fr)
+      minmax(300px, 1.8fr)
+      minmax(140px, 0.8fr)
+      minmax(140px, 0.8fr)
+      minmax(100px, 0.5fr);
+  }
+}
+
+@media (max-width: 991.98px) {
+  .trainings-page {
+    padding-top: 20px;
+  }
+
+  .trainings-listing {
+    overflow-x: auto;
+  }
+
+  .trainings-listing__legend,
+  .trainings-listing__row {
+    min-width: 980px;
+  }
+}

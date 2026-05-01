@@ -58,6 +58,7 @@ const pendingForApproval = [
     age: '4 hrs',
     reportingDate: '23/02/2026',
     action: 'view',
+    approvalAction: 'review',
   },
   {
     id: 'URLS/O/26-29-8',
@@ -67,6 +68,7 @@ const pendingForApproval = [
     age: '6 hrs',
     reportingDate: '23/02/2026',
     action: 'view',
+    approvalAction: 'review',
   },
   {
     id: 'URLS/O/26-29-9',
@@ -76,6 +78,37 @@ const pendingForApproval = [
     age: '8 hrs',
     reportingDate: '23/02/2026',
     action: 'view',
+    approvalAction: 'review',
+  },
+  {
+    id: 'URLS/O/26-29-10',
+    bucket: 'pending-for-approval',
+    status: 'Result Under Approval',
+    product: 'DM Water',
+    age: '9 hrs',
+    reportingDate: '23/02/2026',
+    action: 'view',
+    approvalAction: 'approve',
+  },
+  {
+    id: 'URLS/O/26-29-11',
+    bucket: 'pending-for-approval',
+    status: 'Result Under Approval',
+    product: 'Raw Water',
+    age: '11 hrs',
+    reportingDate: '23/02/2026',
+    action: 'view',
+    approvalAction: 'approve',
+  },
+  {
+    id: 'URLS/O/26-29-12',
+    bucket: 'pending-for-approval',
+    status: 'Result Under Approval',
+    product: 'Effluent Stream',
+    age: '13 hrs',
+    reportingDate: '23/02/2026',
+    action: 'view',
+    approvalAction: 'approve',
   },
 ];
 

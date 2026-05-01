@@ -210,7 +210,7 @@
   --smplfy-field-shadow-focused: 0 0 0 3px rgba(19, 121, 240, 0.12);
   --smplfy-field-shadow-error: 0 0 0 3px rgba(244, 67, 54, 0.12);
 
-  --smplfy-toast-success-bg: var(--smplfy-primitive-green-600);
+  --smplfy-toast-success-bg: var(--smplfy-primitive-green-500);
   --smplfy-toast-success-text: var(--smplfy-primitive-neutral-100);
   --smplfy-toast-success-border: var(--smplfy-primitive-green-700);
   --smplfy-toast-shadow: 0 10px 24px rgba(11, 182, 59, 0.22);

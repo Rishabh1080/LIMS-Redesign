@@ -1,0 +1,2874 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIMS Knowledge Base</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-sans: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  /* ── DARK THEME (default) ── */
+  [data-theme="dark"] {
+    --bg: #0e0f11;
+    --surface: #16181c;
+    --surface2: #1e2026;
+    --border: #2a2d35;
+    --border-light: #363a44;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8b909e;
+    --text-muted: #555b6a;
+    --accent: #4f8ef7;
+    --accent-dim: rgba(79,142,247,0.12);
+    --accent-border: rgba(79,142,247,0.3);
+    --green: #3ecf8e;
+    --green-dim: rgba(62,207,142,0.1);
+    --yellow: #d4a017;
+    --yellow-dim: rgba(212,160,23,0.12);
+    --red: #f26d6d;
+    --red-dim: rgba(242,109,109,0.1);
+    --orange: #f0935a;
+    --orange-dim: rgba(240,147,90,0.1);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.1);
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-modal: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  /* ── LIGHT THEME ── */
+  [data-theme="light"] {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface2: #f0f1f4;
+    --border: #e2e4e9;
+    --border-light: #c8cad1;
+    --text-primary: #111318;
+    --text-secondary: #4a4f5e;
+    --text-muted: #9297a6;
+    --accent: #2563eb;
+    --accent-dim: rgba(37,99,235,0.08);
+    --accent-border: rgba(37,99,235,0.25);
+    --green: #16a34a;
+    --green-dim: rgba(22,163,74,0.08);
+    --yellow: #92680a;
+    --yellow-dim: rgba(146,104,10,0.08);
+    --red: #dc2626;
+    --red-dim: rgba(220,38,38,0.08);
+    --orange: #c2500a;
+    --orange-dim: rgba(194,80,10,0.08);
+    --purple: #7c3aed;
+    --purple-dim: rgba(124,58,237,0.08);
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-modal: 0 20px 60px rgba(0,0,0,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── LAYOUT ── */
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    box-shadow: 1px 0 0 var(--border);
+  }
+
+  .sidebar-header {
+    padding: 20px 16px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+
+  .sidebar-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .sidebar-nav { padding: 10px 8px; flex: 1; }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 8px 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 12.5px;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    user-select: none;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text-primary); }
+
+  .nav-item.active {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-color: var(--accent-border);
+  }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .topbar-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+  }
+
+  .topbar-path {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .search-wrap {
+    position: relative;
+  }
+
+  .search-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px 6px 30px;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    width: 240px;
+    outline: none;
+    transition: border 0.15s;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text-muted); }
+
+  .search-icon {
+    position: absolute;
+    left: 9px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn:hover { border-color: var(--border-light); color: var(--text-primary); }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .btn-primary:hover { background: var(--accent); filter: brightness(1.1); border-color: var(--accent); color: #fff; }
+
+  /* ── FILTERS BAR ── */
+  .filters-bar {
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    background: var(--bg);
+  }
+
+  .filter-label { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); margin-right: 4px; }
+
+  .filter-chip {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .filter-chip:hover { border-color: var(--border-light); color: var(--text-secondary); }
+  .filter-chip.active { border-color: var(--accent-border); background: var(--accent-dim); color: var(--accent); }
+
+  .filter-sep { width: 1px; height: 16px; background: var(--border); margin: 0 4px; }
+
+  /* ── CONTENT ── */
+  .content { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 24px; }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  .table-scroll table {
+    min-width: 1280px;
+  }
+
+  .table-meta {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .table-count { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    background: var(--surface2);
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 10.5px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+
+  tbody td {
+    padding: 10px 12px;
+    vertical-align: top;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    max-width: 240px;
+  }
+
+  td.primary { color: var(--text-primary); font-weight: 500; }
+
+  td .mono { font-family: var(--font-mono); font-size: 11px; }
+
+  td .path {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    display: inline-block;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+
+  .tag-stable    { background: var(--green-dim);  color: var(--green);  border-color: rgba(62,207,142,0.2); }
+  .tag-buggy     { background: var(--red-dim);    color: var(--red);    border-color: rgba(242,109,109,0.2); }
+  .tag-discuss   { background: var(--yellow-dim); color: var(--yellow); border-color: rgba(245,200,66,0.2); }
+  .tag-partial   { background: var(--orange-dim); color: var(--orange); border-color: rgba(240,147,90,0.2); }
+  .tag-removed   { background: var(--surface2);   color: var(--text-muted); border-color: var(--border); }
+
+  .tag-low    { background: var(--green-dim);  color: var(--green);  border-color: rgba(62,207,142,0.2); }
+  .tag-mid    { background: var(--yellow-dim); color: var(--yellow); border-color: rgba(245,200,66,0.2); }
+  .tag-high   { background: var(--red-dim);    color: var(--red);    border-color: rgba(242,109,109,0.2); }
+
+  .tag-module { background: var(--purple-dim); color: var(--purple); border-color: rgba(167,139,250,0.2); }
+  .tag-role   { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-border); }
+
+  .notes-cell {
+    font-size: 12px;
+    color: var(--yellow);
+    font-style: italic;
+    opacity: 0.85;
+  }
+
+  .notes-cell:empty::before { content: '—'; color: var(--text-muted); font-style: normal; opacity: 0.4; }
+
+  .empty-state {
+    padding: 60px 24px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .empty-state .empty-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.4; }
+  .empty-state p { font-size: 13px; }
+
+  /* ── VIEW TABS ── */
+  .view-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--surface2);
+    padding: 3px;
+    border-radius: 7px;
+  }
+
+  .view-tab {
+    padding: 5px 14px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+  }
+
+  .view-tab:hover { color: var(--text-secondary); }
+  .view-tab.active { background: var(--surface); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+  /* ── ADD FORM MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    width: 640px;
+    max-width: 95vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-modal);
+  }
+
+  .modal-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title { font-size: 14px; font-weight: 600; }
+
+  .modal-close {
+    background: none; border: none; color: var(--text-muted);
+    cursor: pointer; font-size: 18px; line-height: 1;
+    transition: color 0.15s;
+  }
+
+  .modal-close:hover { color: var(--text-primary); }
+
+  .modal-body { padding: 20px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+
+  .form-label {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .form-required { color: var(--red); margin-left: 2px; }
+
+  .form-input, .form-select, .form-textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 7px 10px;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    outline: none;
+    transition: border 0.15s;
+    width: 100%;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { resize: vertical; min-height: 70px; }
+  .form-select { appearance: none; cursor: pointer; }
+  .form-select option { background: var(--surface); }
+
+  .modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  /* ── EXPORT TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    z-index: 200;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── VIEW MODE TABS (digest / full db) ── */
+  .view-mode-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px;
+    border-radius: 6px;
+  }
+
+  .view-mode-btn {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-muted);
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .view-mode-btn:hover { color: var(--text-secondary); }
+  .view-mode-btn.active {
+    background: var(--surface);
+    color: var(--text-primary);
+    box-shadow: var(--shadow);
+  }
+
+  /* ── DIGEST / CARD VIEW ── */
+  .flow-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .flow-card:hover { border-color: var(--border-light); }
+
+  .flow-card-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .flow-card-header:hover .flow-card-title { color: var(--accent); }
+
+  .flow-card-left { display: flex; align-items: flex-start; gap: 14px; flex: 1; min-width: 0; }
+
+  .flow-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .flow-card-meta { flex: 1; min-width: 0; }
+
+  .flow-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    transition: color 0.15s;
+  }
+
+  .flow-card-tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+  .flow-card-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .flow-chevron {
+    color: var(--text-muted);
+    font-size: 12px;
+    transition: transform 0.2s;
+    line-height: 1;
+  }
+
+  .flow-card.open .flow-chevron { transform: rotate(90deg); }
+
+  .flow-card-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 0;
+  }
+
+  .flow-card.open .flow-card-body { display: block; }
+
+  .flow-section {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .flow-section:last-child { border-bottom: none; }
+
+  .flow-section-label {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  /* Steps as a visual flow */
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    position: relative;
+  }
+
+  .step-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 26px;
+    bottom: -8px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .step-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    margin-top: 1px;
+    z-index: 1;
+    position: relative;
+  }
+
+  .step-text {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    padding-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  /* Issues and notes blocks */
+  .issue-block {
+    background: var(--red-dim);
+    border: 1px solid rgba(242,109,109,0.15);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: var(--red);
+    line-height: 1.6;
+  }
+
+  .notes-block {
+    background: var(--yellow-dim);
+    border: 1px solid rgba(245,200,66,0.15);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: var(--yellow);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  [data-theme="light"] .issue-block { color: var(--red); }
+  [data-theme="light"] .notes-block { color: var(--yellow); }
+
+  .end-state-block {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green-dim);
+    border: 1px solid rgba(62,207,142,0.15);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 12.5px;
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  .modules-list { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* two col layout for body */
+  .flow-body-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .flow-body-grid .flow-section {
+    border-right: 1px solid var(--border);
+  }
+
+  .flow-body-grid .flow-section:nth-child(even) {
+    border-right: none;
+  }
+
+  @media (max-width: 900px) {
+    .flow-body-grid { grid-template-columns: 1fr; }
+    .flow-body-grid .flow-section { border-right: none; }
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px;
+    flex-shrink: 0;
+  }
+
+  .theme-btn {
+    padding: 4px 9px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+
+  .theme-btn:hover { color: var(--text-secondary); }
+
+  .theme-btn.active {
+    background: var(--surface);
+    color: var(--text-primary);
+    box-shadow: var(--shadow);
+  }
+
+  [data-theme="light"] .theme-btn.active {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     SETUP GUIDE
+  ══════════════════════════════════════════════════════════════════════ */
+
+  /* Progress bar */
+  .sg-progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .sg-progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .sg-progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .sg-progress-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  /* Phase container */
+  .sg-phase {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+    background: var(--surface);
+  }
+
+  .sg-phase.done { border-color: rgba(62,207,142,0.35); }
+  .sg-phase.done .sg-phase-icon-wrap { background: var(--green-dim); }
+  .sg-phase.active { border-color: var(--accent-border); box-shadow: 0 0 0 3px var(--accent-dim); }
+
+  /* Phase header */
+  .sg-phase-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .sg-phase-icon-wrap {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .sg-phase-info { flex: 1; min-width: 0; }
+
+  .sg-phase-number {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+  }
+
+  .sg-phase-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .sg-phase-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .sg-phase-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .sg-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .sg-phase.done .sg-check {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+
+  .sg-phase-chevron {
+    font-size: 11px;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+  }
+
+  .sg-phase.open .sg-phase-chevron { transform: rotate(90deg); }
+
+  /* Phase body */
+  .sg-phase-body {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .sg-phase.open .sg-phase-body { display: block; }
+
+  /* Steps inside a phase */
+  .sg-steps {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .sg-step {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 0 16px;
+    position: relative;
+  }
+
+  /* vertical connector line */
+  .sg-step:not(:last-child) .sg-step-spine::after {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 36px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .sg-step-spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .sg-step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    z-index: 1;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .sg-step.key .sg-step-num {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .sg-step-content {
+    padding-bottom: 24px;
+  }
+
+  .sg-step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    margin-top: 5px;
+    line-height: 1.4;
+  }
+
+  .sg-step-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  /* Inline path pill */
+  .sg-path {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+
+  .sg-path-arrow { opacity: 0.4; }
+
+  /* Field list — visual config block */
+  .sg-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  .sg-field {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+    font-size: 12px;
+  }
+
+  .sg-field-name {
+    padding: 6px 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    border-right: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .sg-field-val {
+    padding: 6px 10px;
+    color: var(--text-muted);
+    font-size: 11.5px;
+  }
+
+  /* Warning / tip callout */
+  .sg-tip {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--accent);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  .sg-warn {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--yellow-dim);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--yellow);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  .sg-gap {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--red-dim);
+    border: 1px solid rgba(242,109,109,0.2);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--red);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* Dependency chain visual */
+  .sg-dep-chain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .sg-dep-node {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .sg-dep-node.highlight {
+    background: var(--accent-dim);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+
+  .sg-dep-arrow {
+    color: var(--text-muted);
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* Phase done state */
+  .sg-phase.done .sg-phase-title { color: var(--green); }
+  .sg-phase.done .sg-phase-number::before { content: '✓ '; color: var(--green); }
+
+  /* Completion badge */
+  .sg-done-banner {
+    display: none;
+    padding: 28px 20px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .sg-done-icon { font-size: 36px; margin-bottom: 8px; }
+  .sg-done-title { font-size: 16px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+  .sg-done-sub { font-size: 12px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">LIMS / KB</div>
+      <div class="sidebar-subtitle">Knowledge Base v0.1</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Views</div>
+      <div class="nav-item" data-view="settings" onclick="switchView('settings')">
+        <div class="nav-dot" style="background:var(--accent)"></div>
+        Settings Reference
+      </div>
+      <div class="nav-item" data-view="flows" onclick="switchView('flows')">
+        <div class="nav-dot" style="background:var(--purple)"></div>
+        User Flows
+      </div>
+      <div class="nav-item active" data-view="setup" onclick="switchView('setup')">
+        <div class="nav-dot" style="background:var(--green)"></div>
+        Setup Guide
+      </div>
+      <div class="nav-section-label" style="margin-top:8px">Modules</div>
+      <div class="nav-item" onclick="filterModule('all')">All Modules</div>
+      <div class="nav-item" onclick="filterModule('Sample Management')">Sample Management</div>
+      <div class="nav-item" onclick="filterModule('Workflow Management')">Workflow Mgmt</div>
+      <div class="nav-item" onclick="filterModule('Template Management')">Template Mgmt</div>
+      <div class="nav-item" onclick="filterModule('Invoice Management')">Invoice & Billing</div>
+      <div class="nav-item" onclick="filterModule('Instrument Management')">Instruments</div>
+      <div class="nav-item" onclick="filterModule('Inventory Management')">Inventory</div>
+      <div class="nav-item" onclick="filterModule('Organisation Settings')">Org Settings</div>
+      <div class="nav-item" onclick="filterModule('Document Management')">Documents</div>
+    </nav>
+    <div class="sidebar-footer">Sampleify LIMS · Internal</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="view-tabs">
+        <button class="view-tab" id="tab-settings" onclick="switchView('settings')">Settings</button>
+        <button class="view-tab" id="tab-flows" onclick="switchView('flows')">Flows</button>
+        <button class="view-tab active" id="tab-setup" onclick="switchView('setup')">Setup Guide</button>
+      </div>
+      <div class="topbar-title" id="view-title">Settings Reference</div>
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input class="search-input" id="search-input" placeholder="Search anything…" oninput="applyFilters()">
+      </div>
+      <button class="btn" onclick="exportCSV()">↓ Export CSV</button>
+      <div class="theme-toggle">
+        <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')" title="Dark theme">🌙</button>
+        <button class="theme-btn active" id="btn-light" onclick="setTheme('light')" title="Light theme">☀️</button>
+      </div>
+      <button class="btn btn-primary" onclick="openModal()">+ Add Entry</button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters-bar" id="filters-bar">
+      <span class="filter-label">status</span>
+      <div class="filter-chip active" data-filter="status" data-value="all" onclick="toggleFilter(this)">All</div>
+      <div class="filter-chip" data-filter="status" data-value="Stable" onclick="toggleFilter(this)">Stable</div>
+      <div class="filter-chip" data-filter="status" data-value="Buggy" onclick="toggleFilter(this)">Buggy</div>
+      <div class="filter-chip" data-filter="status" data-value="In Discussion" onclick="toggleFilter(this)">In Discussion</div>
+      <div class="filter-chip" data-filter="status" data-value="Partial" onclick="toggleFilter(this)">Partial</div>
+      <div class="filter-chip" data-filter="status" data-value="Not Implemented" onclick="toggleFilter(this)">Not Implemented</div>
+      <div class="filter-sep"></div>
+      <span class="filter-label">impact</span>
+      <div class="filter-chip active" data-filter="impact" data-value="all" onclick="toggleFilter(this)">All</div>
+      <div class="filter-chip" data-filter="impact" data-value="High" onclick="toggleFilter(this)">High</div>
+      <div class="filter-chip" data-filter="impact" data-value="Mid" onclick="toggleFilter(this)">Mid</div>
+      <div class="filter-chip" data-filter="impact" data-value="Low" onclick="toggleFilter(this)">Low</div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- SETTINGS TABLE -->
+      <div id="view-settings">
+
+        <!-- Settings view mode toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em">View</span>
+            <div class="view-mode-tabs">
+              <button class="view-mode-btn active" id="settings-digest-btn" onclick="setSettingsMode('digest')">📖 Digest</button>
+              <button class="view-mode-btn" id="settings-table-btn" onclick="setSettingsMode('table')">⊞ Full DB</button>
+            </div>
+          </div>
+          <span class="table-count" id="settings-count" style="color:var(--text-muted)">— entries</span>
+        </div>
+
+        <!-- DIGEST MODE -->
+        <div id="settings-digest">
+          <div id="settings-cards"></div>
+        </div>
+
+        <!-- TABLE MODE -->
+        <div id="settings-table-wrap" style="display:none">
+          <div class="table-wrap">
+            <div class="table-meta">
+              <span class="table-count" id="settings-count-table">— entries</span>
+              <span class="table-count" style="color:var(--yellow)">⚠ Gap entries = data not yet confirmed from source doc</span>
+            </div>
+            <div class="table-scroll">
+            <table id="settings-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Label</th>
+                  <th>Module</th>
+                  <th>Path</th>
+                  <th>Input Type</th>
+                  <th>Allowed Values</th>
+                  <th>Description</th>
+                  <th>User-Facing Impact</th>
+                  <th>Impact</th>
+                  <th>Status</th>
+                  <th>Designer Notes</th>
+                </tr>
+              </thead>
+              <tbody id="settings-tbody"></tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FLOWS VIEW -->
+      <div id="view-flows" style="display:none">
+
+        <!-- Flows view mode toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em">View</span>
+            <div class="view-mode-tabs">
+              <button class="view-mode-btn active" id="flows-digest-btn" onclick="setFlowsMode('digest')">📖 Digest</button>
+              <button class="view-mode-btn" id="flows-table-btn" onclick="setFlowsMode('table')">⊞ Full DB</button>
+            </div>
+          </div>
+          <span class="table-count" id="flows-count" style="color:var(--text-muted)">— flows</span>
+        </div>
+
+        <!-- DIGEST MODE -->
+        <div id="flows-digest">
+          <div id="flows-cards"></div>
+        </div>
+
+        <!-- TABLE MODE -->
+        <div id="flows-table-wrap" style="display:none">
+          <div class="table-wrap">
+            <div class="table-meta">
+              <span class="table-count" id="flows-count-table">— flows</span>
+              <span class="table-count" style="color:var(--text-muted)">Cross-module user journeys</span>
+            </div>
+            <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Flow Name</th>
+                  <th>Role</th>
+                  <th>Module(s)</th>
+                  <th>Steps Summary</th>
+                  <th>System Response</th>
+                  <th>End State</th>
+                  <th>Status</th>
+                  <th>Known Issues</th>
+                  <th>Designer Notes</th>
+                </tr>
+              </thead>
+              <tbody id="flows-tbody"></tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════ -->
+      <!-- SETUP GUIDE                                                    -->
+      <!-- ══════════════════════════════════════════════════════════════ -->
+      <div id="view-setup" style="display:none">
+
+        <!-- Progress bar -->
+        <div class="sg-progress-bar">
+          <div class="sg-progress-track">
+            <div class="sg-progress-fill" id="sg-progress-fill"></div>
+          </div>
+          <span class="sg-progress-label" id="sg-progress-label">0 / 8 phases complete</span>
+        </div>
+
+        <div class="sg-phases" id="sg-phases"></div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Add Settings Entry</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid" id="settings-form">
+        <div class="form-group">
+          <label class="form-label">Label <span class="form-required">*</span></label>
+          <input class="form-input" id="f-label" placeholder="e.g. Enable Job Card Button">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Module <span class="form-required">*</span></label>
+          <select class="form-select" id="f-module">
+            <option value="">Select module…</option>
+            <option>Sample Management</option>
+            <option>Workflow Management</option>
+            <option>Template Management</option>
+            <option>Invoice Management</option>
+            <option>Quotation Management</option>
+            <option>Inquiry Management</option>
+            <option>Instrument Management</option>
+            <option>Inventory Management</option>
+            <option>Document Management</option>
+            <option>Organisation Settings</option>
+            <option>User Management</option>
+            <option>Customer Management</option>
+            <option>MOA Management</option>
+            <option>Role Management</option>
+            <option>Custom Fields</option>
+            <option>Dashboard Management</option>
+            <option>Email Management</option>
+            <option>Header/Footer Management</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Path in App</label>
+          <input class="form-input" id="f-path" placeholder="e.g. Organisation Settings > Sample Page">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Input Type</label>
+          <select class="form-select" id="f-input-type">
+            <option value="">Select…</option>
+            <option>Toggle / Checkbox</option>
+            <option>Text Input</option>
+            <option>Number Input</option>
+            <option>Single-select Dropdown</option>
+            <option>Multi-select Dropdown</option>
+            <option>File Upload</option>
+            <option>Rich Text Editor</option>
+            <option>Date Picker</option>
+            <option>Table</option>
+            <option>Button / Action</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Impact Level</label>
+          <select class="form-select" id="f-impact">
+            <option value="Low">Low</option>
+            <option value="Mid">Mid</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Allowed Values</label>
+          <input class="form-input" id="f-allowed" placeholder="e.g. Yes / No, or free text, or list of module names">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Description <span class="form-required">*</span></label>
+          <textarea class="form-textarea" id="f-desc" placeholder="What does this setting control?"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">User-Facing Impact</label>
+          <textarea class="form-textarea" id="f-ux-impact" placeholder="What does a user actually see/experience change? e.g. 'A Barcode section appears below the sample after creation'"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="f-status">
+            <option value="Stable">Stable</option>
+            <option value="Partial">Partial</option>
+            <option value="Buggy">Buggy</option>
+            <option value="In Discussion">In Discussion</option>
+            <option value="Not Implemented">Not Implemented</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Designer Notes</label>
+          <textarea class="form-textarea" id="f-notes" placeholder="Your observations — misleading label, insufficient visual feedback, impact doesn't match prominence, etc."></textarea>
+        </div>
+      </div>
+
+      <div class="form-grid" id="flows-form" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Flow Name <span class="form-required">*</span></label>
+          <input class="form-input" id="ff-name" placeholder="e.g. Sample Creation → COA">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Primary Role</label>
+          <input class="form-input" id="ff-role" placeholder="e.g. Sample Receiver">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Modules Involved</label>
+          <input class="form-input" id="ff-modules" placeholder="e.g. Sample Management, Workflow Management">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Steps Summary <span class="form-required">*</span></label>
+          <textarea class="form-textarea" id="ff-steps" placeholder="Step 1 → Step 2 → Step 3…"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">System Response</label>
+          <textarea class="form-textarea" id="ff-response" placeholder="What does the system do at each key step?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">End State</label>
+          <input class="form-input" id="ff-end" placeholder="e.g. COA generated, sample Approved">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="ff-status">
+            <option value="Stable">Stable</option>
+            <option value="Partial">Partial</option>
+            <option value="Buggy">Buggy</option>
+            <option value="In Discussion">In Discussion</option>
+            <option value="Not Implemented">Not Implemented</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Known Issues</label>
+          <textarea class="form-textarea" id="ff-issues" placeholder="Any bugs, broken steps, or unresolved discussions…"></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Designer Notes</label>
+          <textarea class="form-textarea" id="ff-notes" placeholder="UX observations, friction points, design opportunities…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEntry()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+let currentView = 'setup';
+let activeFilters = { status: 'all', impact: 'all', module: 'all' };
+
+const SETTINGS = [
+  // ── ORGANISATION SETTINGS ──────────────────────────────────────────────────
+  {
+    id: 1, label: "Company / Organisation Name", module: "Organisation Settings",
+    path: "Organisation Settings > Basic",
+    inputType: "Text Input", allowedValues: "Free text",
+    description: "The official name of the organisation.",
+    uxImpact: "Displayed in the top-right header area of the app, next to the notification icon.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 2, label: "Upload Logo", module: "Organisation Settings",
+    path: "Organisation Settings > Basic",
+    inputType: "File Upload", allowedValues: "PNG, JPEG",
+    description: "Upload the organisation's logo.",
+    uxImpact: "Logo appears in the top-left of the application across all pages.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 3, label: "NABL Registration Number", module: "Organisation Settings",
+    path: "Organisation Settings > Basic",
+    inputType: "Text Input", allowedValues: "Must start with 'T'; format: T-XXXXXX",
+    description: "Organisation's NABL accreditation number. Long form: National Accreditation Board for Testing and Calibration Laboratories.",
+    uxImpact: "Appears in the generated ULR number on COA reports. Format: T231243234000000F",
+    impact: "Mid", status: "Stable",
+    notes: "Label says 'Enable Registration Number' in some places — misleading. Should be 'NABL Registration Number'."
+  },
+  {
+    id: 4, label: "NABL Location Code", module: "Organisation Settings",
+    path: "Organisation Settings > Basic",
+    inputType: "Text Input", allowedValues: "Numeric",
+    description: "Location-specific code added into the ULR number.",
+    uxImpact: "Appended into the ULR number. e.g. if code is 88, ULR becomes T23124323488000000F",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 5, label: "Header Style", module: "Organisation Settings",
+    path: "Organisation Settings > Basic",
+    inputType: "Single-select Dropdown", allowedValues: "Fixed / Floating",
+    description: "Controls behaviour of the top navigation bar.",
+    uxImpact: "Fixed: header stays in place on scroll. Floating: header moves with scroll.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 6, label: "Enabled Modules", module: "Organisation Settings",
+    path: "Organisation Settings > Access Control",
+    inputType: "Multi-select Dropdown",
+    allowedValues: "LIMS, ELN, Inquiry, Invoice, Proforma Invoice, Quotation, Inventory, Instrument, Custom Forms, Dashboard, Reports, Document Management, Training, Customer Feedback, Task Management, Image Comparison, TAT Report, Timesheet, Timesheet Reports",
+    description: "Controls which functional modules are active for this organisation.",
+    uxImpact: "Disabled modules disappear from the sidebar entirely. Defines the full scope of what users can access.",
+    impact: "High", status: "Stable",
+    notes: "This is the most powerful single setting in the system. Should have higher visual weight in the UI — currently sits alongside low-impact settings."
+  },
+  {
+    id: 7, label: "Module-wise Permissions", module: "Organisation Settings",
+    path: "Organisation Settings > Access Control",
+    inputType: "Table",
+    allowedValues: "Module Name (fixed), Role With Access (multi-select from Role Management), User With Access (multi-select from User Management)",
+    description: "Per-module access control. For each module, assign which roles and individual users can access it. Effective access = union of role + user selections.",
+    uxImpact: "Users without access see a blank page for that module — the page is still visible in sidebar but has no data.",
+    impact: "High", status: "Stable",
+    notes: "The blank-page fallback for unauthorised users is a UX problem worth flagging. Users with no access to a module should ideally not see that module at all — but this is currently a new feature per the team."
+  },
+  {
+    id: 8, label: "Allocated Fields", module: "Organisation Settings",
+    path: "Organisation Settings > Access Control",
+    inputType: "Multi-select Dropdown",
+    allowedValues: "Disciplines, Customer, Invoices, To be Retained?, Generate ULR Number, Blind Sample, Product",
+    description: "Controls which optional fields appear in the New Sample creation form.",
+    uxImpact: "Only selected fields appear when a user creates a new sample. Keeps the form lean per client configuration.",
+    impact: "Mid", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 9, label: "Sample Listing Page Fields", module: "Organisation Settings",
+    path: "Organisation Settings > Access Control",
+    inputType: "Multi-select Dropdown",
+    allowedValues: "Customer, Product, Created Date, Category, Status, ULR Number, Name",
+    description: "Controls which columns are shown on the All Samples listing page.",
+    uxImpact: "Only selected columns appear in the All Samples table view.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 10, label: "Follow Access Control in Templates", module: "Organisation Settings",
+    path: "Organisation Settings > Basic",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "When enabled, template widgets are only visible to users explicitly granted view/edit access in Template Management settings.",
+    uxImpact: "Enabled: users see only widgets they've been granted access to. Disabled: all widgets visible to all users.",
+    impact: "Mid", status: "In Discussion",
+    notes: ""
+  },
+  {
+    id: 11, label: "Follow Workflow Based Access Control", module: "Organisation Settings",
+    path: "Organisation Settings > Basic",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "When enabled, sample visibility is tied to workflow stage. A sample in 'Review' state does not appear in the 'Pending' section.",
+    uxImpact: "Users only see samples that are currently in their court based on workflow node. Samples move between role views as they progress.",
+    impact: "High", status: "Stable",
+    notes: "This is one of the most important UX settings — it determines whether the app feels like a task queue (good) or a global data dump (bad). Should be on by default."
+  },
+  {
+    id: 12, label: "Make Sample Listing Scrollable", module: "Organisation Settings",
+    path: "Organisation Settings > Sample Page",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Adds scroll behaviour to the All Samples listing table.",
+    uxImpact: "When enabled, the sample table scrolls independently rather than using full page scroll.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 13, label: "Auto Initialize Samples", module: "Organisation Settings",
+    path: "Organisation Settings > Sample Page",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "After a sample is created, it is automatically initialised into the workflow without a manual initialise action.",
+    uxImpact: "Removes a manual step after sample creation. Sample moves straight into the workflow.",
+    impact: "Mid", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 14, label: "Show Barcode Section", module: "Organisation Settings",
+    path: "Organisation Settings > Sample Page",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Shows a barcode on the sample page after creation.",
+    uxImpact: "A barcode is generated and displayed below the sample details after creation.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 15, label: "Show Job Card Button", module: "Organisation Settings",
+    path: "Organisation Settings > Sample Page",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Reveals the Job Card button on sample pages. Requires 'Enable Job Card' to also be selected in the relevant Workflow node.",
+    uxImpact: "Job Card option appears after sample creation, allowing test allocation per parameter.",
+    impact: "Mid", status: "Stable",
+    notes: "Dual dependency (org setting + workflow node setting) is confusing. A user enabling this setting has no obvious indication they also need to configure the workflow node."
+  },
+  {
+    id: 16, label: "Create Datasheet Manually", module: "Organisation Settings",
+    path: "Organisation Settings > Sample Page",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Allows users to manually create datasheets from within a sample.",
+    uxImpact: "A 'Data Sheets' section and '+New DataSheet' button appear on the sample page.",
+    impact: "Mid", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 17, label: "Show Node Wise Template", module: "Organisation Settings",
+    path: "Organisation Settings > Sample Page",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "When enabled, different templates are shown per workflow node. Works in conjunction with 'Print Node Template' setting on each workflow node.",
+    uxImpact: "Template tabs change as a sample moves through workflow stages. Each node can show a different template.",
+    impact: "High", status: "In Discussion",
+    notes: "Relationship between this and 'Follow Workflow Based Template' is unclear even internally. Needs clarification before designing the template tab pattern."
+  },
+  {
+    id: 18, label: "Use Product Name as Sample Name", module: "Organisation Settings",
+    path: "Organisation Settings > Sample Page",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "When enabled, selecting a product in sample creation auto-fills the sample name field with the product name.",
+    uxImpact: "Sample name field is auto-populated from product selection. Applies to all samples globally.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 19, label: "Generate ULR on Demand", module: "Organisation Settings",
+    path: "Organisation Settings > NABL Settings",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Controls when the Unique Laboratory Report number is generated. If enabled, ULR is not generated at sample creation — it is generated only after final approval.",
+    uxImpact: "Disabled: 'Generate ULR' option appears during sample creation (Yes/No). Enabled: option hidden at creation; ULR appears only in the Sample Approver page after switching to NABL mode.",
+    impact: "High", status: "Stable",
+    notes: "ULR is NABL-specific — only applies to NABL-accredited labs. This setting fundamentally changes the sample creation form. Important to know for the sample creation redesign."
+  },
+  {
+    id: 20, label: "Print NABL Samples in Non-NABL CoA", module: "Organisation Settings",
+    path: "Organisation Settings > NABL Settings",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Controls whether NABL parameters can be included when printing a non-NABL COA report.",
+    uxImpact: "Affects which parameters appear in the Select Parameter list on the Sample Approver page depending on NABL mode toggle state.",
+    impact: "Mid", status: "Buggy",
+    notes: "Label is incorrect in the UI — shows as 'Print NABL Samples in Non NABL CoA' but should read 'Print NABL Parameters in Non NABL CoA'. The word 'Samples' is wrong."
+  },
+  {
+    id: 21, label: "Landing Page", module: "Organisation Settings",
+    path: "Organisation Settings > Tenant Settings",
+    inputType: "Single-select Dropdown", allowedValues: "Dashboard / Sample Listing / Project Listing",
+    description: "The first page a user sees after logging in.",
+    uxImpact: "Sets the default landing destination post-login for all users.",
+    impact: "Mid", status: "Buggy",
+    notes: "Project Listing option is broken — clicking Dashboard opens Project Management page instead. Bug confirmed in source doc."
+  },
+  {
+    id: 22, label: "Sample Product Association", module: "Organisation Settings",
+    path: "Organisation Settings > Tenant Settings",
+    inputType: "Single-select Dropdown", allowedValues: "Single / Multiple",
+    description: "Controls whether a sample can have one product or multiple products assigned.",
+    uxImpact: "Single: parameter selection page appears during sample creation. Multiple: parameter selection page does not appear.",
+    impact: "High", status: "Buggy",
+    notes: "Multiple option has a known bug — parameter selection page doesn't appear when it should in some cases."
+  },
+  {
+    id: 23, label: "Product Label", module: "Organisation Settings",
+    path: "Organisation Settings > Tenant Settings > Display Settings",
+    inputType: "Text Input", allowedValues: "Free text",
+    description: "Renames the 'Product' label throughout the application.",
+    uxImpact: "'Product Management' in sidebar becomes '{custom label} Management'. Affects all references to Product in the UI.",
+    impact: "Low", status: "Stable",
+    notes: "This is a white-label rename feature. Good for client customisation but adds complexity when reading generic documentation."
+  },
+  {
+    id: 24, label: "Sample Label", module: "Organisation Settings",
+    path: "Organisation Settings > Tenant Settings > Display Settings",
+    inputType: "Text Input", allowedValues: "Free text",
+    description: "Renames the 'Sample' label throughout the application.",
+    uxImpact: "'All Samples' becomes 'All {label}', 'Sample Receipts' becomes '{label} Receipts', 'Sample Category' becomes '{label} Category'.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 25, label: "Customer Label", module: "Organisation Settings",
+    path: "Organisation Settings > Tenant Settings > Display Settings",
+    inputType: "Text Input", allowedValues: "Free text",
+    description: "Renames the 'Customer' label throughout the application.",
+    uxImpact: "'Customer Management' in sidebar becomes '{custom label} Management'.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+
+  // ── SAMPLE MANAGEMENT ────────────────────────────────────────────────────────
+  {
+    id: 26, label: "Blind Sample", module: "Sample Management",
+    path: "All Samples > New Sample",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "When selected during sample creation, the customer name and product name are hidden on the sample listing page.",
+    uxImpact: "Customer Name and Product Name columns appear blank in the All Samples table for that sample.",
+    impact: "Mid", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 27, label: "Sample Category — Retention Days", module: "Sample Management",
+    path: "Sample Category > Create/Edit Category",
+    inputType: "Number Input", allowedValues: "Integer (days)",
+    description: "Number of days a sample should be retained before disposal. Drives the 'To Be Retained' date shown in sample creation.",
+    uxImpact: "In sample creation, if 'To Be Retained = Yes', the calendar auto-selects a date X days from today based on this setting.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 28, label: "Sample Category — Enable Events", module: "Sample Management",
+    path: "Sample Category > Create/Edit Category",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Enables email notifications for events associated with samples in this category. Must be used with Email Management's 'Associated Events' (e.g. add_sample, add_document).",
+    uxImpact: "Users receive email notifications when relevant events occur on samples in this category.",
+    impact: "Mid", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 29, label: "Sample Category — Enable Reissue", module: "Sample Management",
+    path: "Sample Category > Create/Edit Category",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Enables the Reissue feature for samples in this category. Reissue allows re-sending a COA to a different customer name while keeping all test results unchanged.",
+    uxImpact: "A 'Reissue' button appears in the All Samples listing for samples in this category.",
+    impact: "Mid", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 30, label: "COA Generation Type", module: "Sample Management",
+    path: "Sample Approver Page > Generate COA",
+    inputType: "Single-select Dropdown",
+    allowedValues: "Consolidated / Product Wise / Parameter Wise",
+    description: "Determines how the Certificate of Analysis report is structured. Consolidated = one COA, one ULR/TC. Product Wise = one COA per product. Parameter Wise = one COA per parameter.",
+    uxImpact: "Directly changes the structure, page count, and ULR number count of the printed COA document.",
+    impact: "High", status: "Stable",
+    notes: "This is a high-stakes decision point for the lab. The three options have completely different outputs. Currently not obvious enough in the UI."
+  },
+
+  // ── WORKFLOW MANAGEMENT ──────────────────────────────────────────────────────
+  {
+    id: 31, label: "Workflow Node — Enable Template Validation", module: "Workflow Management",
+    path: "Workflow Management > Edit Flow > Node Settings",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "When enabled, users cannot transition a sample out of this node unless all 'Required' input widgets in the template are filled.",
+    uxImpact: "State transition is blocked with a validation error if required template fields are empty.",
+    impact: "High", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 32, label: "Workflow Node — Enable Critical Params Validation", module: "Workflow Management",
+    path: "Workflow Management > Edit Flow > Node Settings",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "When enabled, all parameters marked as 'Critical' on the product must have results entered before transitioning out of this node.",
+    uxImpact: "State transition is blocked if any critical parameter result is missing.",
+    impact: "High", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 33, label: "Workflow Node — Show Sample Edit", module: "Workflow Management",
+    path: "Workflow Management > Edit Flow > Node Settings",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Controls which roles can see and use the 'Edit Details' option for a sample when it is in this workflow node.",
+    uxImpact: "Only users with allowed roles see the 'Edit Details' button in the pending/state transition view.",
+    impact: "Mid", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 34, label: "Workflow Node — Anyone vs Everyone Can Approve", module: "Workflow Management",
+    path: "Workflow Management > Edit Flow > Node Connection Settings",
+    inputType: "Single-select Dropdown", allowedValues: "Anyone Can Approve / Everyone Must Approve",
+    description: "Anyone Can Approve: transition proceeds if at least one assigned user approves. Everyone Must Approve: all assigned users must approve before transition.",
+    uxImpact: "Determines how many approvals are needed to move a sample to the next stage.",
+    impact: "High", status: "Stable",
+    notes: ""
+  },
+
+  // ── TEMPLATE MANAGEMENT ──────────────────────────────────────────────────────
+  {
+    id: 35, label: "Template — Param Loop (Container Config)", module: "Template Management",
+    path: "Template Management > Edit Template > Container Settings > Configure",
+    inputType: "Single-select Dropdown", allowedValues: "Param Loop / (other options not used)",
+    description: "Enables a container to repeat its contents for each parameter on the product. Required for MOA Widget, Custom Data Dropdown Widget, and other parameter-linked widgets to work.",
+    uxImpact: "Template displays a repeated section for every parameter — useful for result tables and per-parameter data.",
+    impact: "High", status: "Stable",
+    notes: "Only one param loop should be added per template. Not obvious to first-time template builders."
+  },
+  {
+    id: 36, label: "Template — Make Cloneable (Row Setting)", module: "Template Management",
+    path: "Template Management > Edit Template > Row Settings",
+    inputType: "Toggle / Checkbox", allowedValues: "Enabled / Disabled",
+    description: "Allows a row to be duplicated in the template while adding results. Used for bulk data upload via file.",
+    uxImpact: "An 'editable' option appears in Add Result mode. Users can download a file, fill data, and upload it to populate the template row in bulk.",
+    impact: "Mid", status: "Stable",
+    notes: "Only compatible with data-entry widgets: Input Widget, Rich Text, Number Widget, Textarea Widget."
+  },
+
+  // ── INVOICE / COMMERCIAL ─────────────────────────────────────────────────────
+  {
+    id: 37, label: "Invoice Number Padding", module: "Invoice Management",
+    path: "Organisation Settings > Accounting > Invoice",
+    inputType: "Number Input", allowedValues: "Integer",
+    description: "The number of leading zeros in the invoice number. e.g. padding of 3 = '000'.",
+    uxImpact: "Invoice numbers display as: [Scheme][padded counter]. e.g. 2025-2026003",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 38, label: "Invoice Scheme", module: "Invoice Management",
+    path: "Organisation Settings > Accounting > Invoice",
+    inputType: "Text Input", allowedValues: "Free text with placeholders: {{financial_year}}, {{current_year}}",
+    description: "The prefix pattern for invoice numbers. Counter auto-appended.",
+    uxImpact: "Defines the prefix of every invoice number generated in the system.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 39, label: "Rate Card (Parameter Level)", module: "Invoice Management",
+    path: "Product Management > Params Page > Edit Parameter > MOA Applicable > Rate Card",
+    inputType: "Table",
+    allowedValues: "MOA Method (from MOA Management), Rate (numeric)",
+    description: "Per-parameter pricing per MOA method. When a parameter is selected in an invoice line, the rate auto-populates from this table.",
+    uxImpact: "Rate field in Invoice line auto-fills when Product + Parameter + MOA Method are selected.",
+    impact: "Mid", status: "Stable",
+    notes: ""
+  },
+
+  // ── INSTRUMENT MANAGEMENT ────────────────────────────────────────────────────
+  {
+    id: 40, label: "Instrument — Frequency (Calibration)", module: "Instrument Management",
+    path: "Instrument Management > Add/Edit Instrument > Service Details",
+    inputType: "Number Input", allowedValues: "Integer (days)",
+    description: "How often the instrument needs calibration/service. Drives the auto-generation of service log dates.",
+    uxImpact: "System generates future service dates spaced by this frequency from the last service date.",
+    impact: "Mid", status: "Buggy",
+    notes: "Next Service On date display shows 12:00:00am in one environment and 00:00 in another — inconsistent. Last service date is used as the base, not Next Service On."
+  },
+  {
+    id: 41, label: "Instrument — Remind Before Days", module: "Instrument Management",
+    path: "Instrument Management > Add/Edit Instrument > Service Details",
+    inputType: "Number Input", allowedValues: "Integer (days)",
+    description: "How many days before a calibration due date the system sends a reminder notification.",
+    uxImpact: "Email/notification sent X days before the calibration date.",
+    impact: "Low", status: "Not Implemented",
+    notes: "Mail functionality not enabled in either Commercial or Veedol environments as of last test."
+  },
+
+  // ── CUSTOM FIELDS ────────────────────────────────────────────────────────────
+  {
+    id: 42, label: "Custom Field — Generated At", module: "Custom Fields",
+    path: "Custom Fields > Create/Edit Field",
+    inputType: "Single-select Dropdown",
+    allowedValues: "On Demand / On Init / On First Save / On First Transition / On First Successful Transition",
+    description: "Controls when the custom field's value is auto-generated. 'On Demand' gives a rotate/generate button. All others generate automatically at the specified lifecycle event.",
+    uxImpact: "On Demand: a rotate button appears in sample creation. Others: no button; value generates silently at the trigger point. Only 'On Init' combined with Mandatory correctly enforces the field at creation.",
+    impact: "High", status: "Buggy",
+    notes: "Mandatory + On First Save / On First Transition / On First Successful Transition does NOT enforce the mandatory rule at creation — the error message never appears. Only On Init correctly triggers the mandatory validation. This is a significant bug for data integrity."
+  },
+  {
+    id: 43, label: "Custom Field — Filter Search Type", module: "Custom Fields",
+    path: "Custom Fields > Create/Edit Field",
+    inputType: "Single-select Dropdown", allowedValues: "text / dropdown",
+    description: "Controls how this custom field appears as a filter on the All Samples listing page.",
+    uxImpact: "Text: a text input filter appears in All Samples. Dropdown: a dropdown filter appears in All Samples.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+  {
+    id: 44, label: "Custom Field — Scheme", module: "Custom Fields",
+    path: "Custom Fields > Create/Edit Field",
+    inputType: "Text Input",
+    allowedValues: "Placeholders: {{samples_counter}}, {{category_name}}, {{category_abbr}}, {{nabl_term}}, {{nabl_counter}}",
+    description: "Auto-generation pattern for the field value. Used to create structured IDs like ULR numbers or sample IDs.",
+    uxImpact: "When a scheme is set, the generated value follows the pattern. Rotate button appears if 'On Demand' is selected. Value auto-fills per scheme at the configured trigger point.",
+    impact: "High", status: "Stable",
+    notes: ""
+  },
+
+  // ── USER MANAGEMENT ──────────────────────────────────────────────────────────
+  {
+    id: 45, label: "User — Signature", module: "User Management",
+    path: "User Management > Edit User",
+    inputType: "File Upload", allowedValues: "Image",
+    description: "Upload a signature image for this user. Used in the State Transition Widget with Data Type = Signature.",
+    uxImpact: "When a template uses a State Transition Widget set to 'Signature', this uploaded image appears in the appropriate workflow stage.",
+    impact: "Low", status: "Stable",
+    notes: ""
+  },
+];
+
+const FLOWS = [
+  {
+    id: 1,
+    name: "Sample Creation (Full)",
+    role: "Sample Receiver / Sample Creator",
+    modules: "Sample Management, Workflow Management, Template Management",
+    steps: "Login → All Samples → New Sample → Fill category, product, customer, parameters → Select NABL/Non-NABL → Generate ULR (if enabled) → Submit → Sample initialises into workflow (auto or manual) → Template appears → Add results → State transition (Pending → Under Analysis)",
+    response: "Sample gets a unique ID. Workflow stage changes. Template loads based on node configuration. Relevant roles receive the sample in their queue.",
+    endState: "Sample in 'Under Analysis' or next workflow state",
+    status: "Stable",
+    issues: "If 'Auto Initialize Samples' is off, user must manually initialize after creation — extra step with no clear prompt. ULR generation behaviour varies based on 'Generate ULR on Demand' org setting.",
+    notes: "The sample creation form is the highest-traffic entry point. Currently mixes mandatory and optional fields with no visual hierarchy. The NABL/Non-NABL toggle is buried but has significant downstream impact."
+  },
+  {
+    id: 2,
+    name: "Sample Review & Approval → COA",
+    role: "Technical Manager / Reviewer / Approver",
+    modules: "Sample Management, Workflow Management, Template Management",
+    steps: "Reviewer logs in → sees samples in their queue → opens sample → reviews results and template → state transition (Under Analysis → Review) → Approver logs in → sees sample in approval queue → switches NABL/Non-NABL mode → selects parameters → prints COA → approves → COA generated",
+    response: "Each state transition moves the sample to the next role's queue. Final approval generates the COA document. ULR number stamped on report.",
+    endState: "Sample Approved, COA generated and available for print/download",
+    status: "Stable",
+    issues: "Non-NABL footer display bug confirmed. 'Switch to NABL Mode' must be manually toggled — easy to forget, leading to wrong parameter list selected.",
+    notes: "The NABL mode toggle before printing is a compliance risk. A user who forgets to toggle gets the wrong parameter set in the report. This should be surfaced more prominently or made automatic based on sample/product settings."
+  },
+  {
+    id: 3,
+    name: "Sample Retrieval (Customer Inquiry)",
+    role: "Sample Receiver",
+    modules: "Sample Management",
+    steps: "Customer calls → Sample Receiver goes to All Samples → searches by sample ID or customer name → finds sample → reads status",
+    response: "System returns filtered sample list. User reads current workflow stage.",
+    endState: "Status communicated to customer verbally",
+    status: "Stable",
+    issues: "Status visibility is poor — workflow stage names are system-defined and may not map to human-readable status clearly. Search requires knowing an ID or exact name.",
+    notes: "This is the second most common task for the sample receiver. The current All Samples view is a data dump — status is one column among many. A dedicated 'quick lookup' mode or prominent search-first entry would significantly improve this flow."
+  },
+  {
+    id: 4,
+    name: "Inquiry → Quotation → Invoice",
+    role: "Commercial / Admin",
+    modules: "Inquiry Management, Quotation Management, Invoice Management",
+    steps: "Add Inquiry (select customer, add remarks) → Make Quotation (add product rows, parameters, MOA, rate, HSN/SAC, discount) → Quotation sent → Convert to Proforma Invoice or directly to Invoice → Record Payment",
+    response: "Each step generates a numbered document (Inquiry, Quotation, Invoice) with auto-populated scheme numbers. GST, CIN, company details pulled from Org Settings.",
+    endState: "Invoice created, payment recorded",
+    status: "Partial",
+    issues: "Proforma Invoice page reportedly not opening. Rate Card must be configured per parameter/MOA for auto-fill to work — if missing, rate field is blank with no indicator.",
+    notes: "Four separate modules for one commercial flow. No visual continuity between steps. A user doing this for the first time has no indication that Inquiry → Quotation → Invoice is a connected journey."
+  },
+  {
+    id: 5,
+    name: "Datasheet Flow (Job Card)",
+    role: "Technical Manager / Lab Analyst",
+    modules: "Sample Management, Workflow Management, Template Management",
+    steps: "Create Discipline with Datasheet Workflow → Add Discipline to Product → Create Sample with this Product → Initialize Sample → Click Add Datasheet → Fill datasheet details → Submit → Job Card: allocate parameters → Send for Approval → Datasheet workflow runs independently",
+    response: "Datasheet runs on its own workflow separate from the sample workflow. Both can be in different states simultaneously.",
+    endState: "Datasheet approved independently",
+    status: "Partial",
+    issues: "Manual Datasheet flow not widely used. Job Card allocation flow has known issues in some environments. Add Datasheet button must be clicked manually even with 'Create Datasheet Manually' enabled.",
+    notes: "The parallel workflow concept (sample workflow + datasheet workflow running independently) is architecturally complex and not explained anywhere in the UI. First-time users have no context for why there are two separate approval chains."
+  },
+  {
+    id: 6,
+    name: "Instrument Calibration Lifecycle",
+    role: "Lab Admin / Instrument Manager",
+    modules: "Instrument Management",
+    steps: "Add Instrument → Set service frequency, last service date, remind before days → Generate Service (select type, number of services) → View service log dates → Initialize service log → Complete workflow",
+    response: "System generates future calibration dates based on frequency from last service date. Email reminders sent before due date (if mail enabled).",
+    endState: "Service logged, next service date updated",
+    status: "Buggy",
+    issues: "Mail functionality not enabled in any environment. 'Next Service On' date display inconsistent across environments. New Service functionality not working. Attachment in New Service page only.",
+    notes: ""
+  },
+  {
+    id: 7,
+    name: "Template Creation (COA Layout)",
+    role: "Admin / Implementation Team",
+    modules: "Template Management, Header/Footer Management",
+    steps: "Create Header in Header Management → Create Footer → Open Template Management → New Template → Add rows/columns (max 12 col per row) → Add widgets → Configure containers (param loop if needed) → Set Template Settings (NABL/Non-NABL header/footer) → Save → Assign template to Sample Category workflow",
+    response: "Template rendered on sample page at the workflow node it is assigned to.",
+    endState: "Template live on sample pages for that category/workflow",
+    status: "Partial",
+    issues: "Template Tags (to scope templates to specific contexts like Sample/Dashboard/Custom Form) not working. Filter Options in Reports/Dashboards not saving. HTML file upload in Parse & Generate not working — only Word files work.",
+    notes: "53 widget types with no grouping or search. No preview of what a widget looks like before adding. The template builder is the most complex surface in the entire system and has zero onboarding scaffolding. This is an implementation team problem, but the complexity bleeds into the sample experience when templates are misconfigured."
+  },
+];
+
+// ── SETTINGS VIEW MODE ────────────────────────────────────────────────────────
+
+let settingsMode = 'digest';
+
+function setSettingsMode(mode) {
+  settingsMode = mode;
+  document.getElementById('settings-digest').style.display = mode === 'digest' ? 'block' : 'none';
+  document.getElementById('settings-table-wrap').style.display = mode === 'table' ? 'block' : 'none';
+  document.getElementById('settings-digest-btn').classList.toggle('active', mode === 'digest');
+  document.getElementById('settings-table-btn').classList.toggle('active', mode === 'table');
+  applyFilters();
+}
+
+function renderSettingsDigest(data) {
+  const container = document.getElementById('settings-cards');
+  if (!data.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><p>No entries match your filters.</p></div>`;
+    return;
+  }
+
+  // Group by module
+  const grouped = {};
+  data.forEach(r => {
+    if (!grouped[r.module]) grouped[r.module] = [];
+    grouped[r.module].push(r);
+  });
+
+  container.innerHTML = Object.entries(grouped).map(([module, entries]) => `
+    <div style="margin-bottom:24px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span class="tag tag-module" style="font-size:12px;padding:4px 12px">${module}</span>
+        <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted)">${entries.length} setting${entries.length === 1 ? '' : 's'}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px">
+        ${entries.map(r => `
+          <div class="flow-card" id="setting-card-${r.id}" style="margin-bottom:0">
+            <div class="flow-card-header" onclick="toggleSettingCard(${r.id})" style="padding:14px 16px">
+              <div class="flow-card-left">
+                <div class="flow-number" style="font-size:10px">${String(r.id).padStart(2,'0')}</div>
+                <div class="flow-card-meta">
+                  <div class="flow-card-title" style="font-size:13px;margin-bottom:5px">${r.label}</div>
+                  <div class="flow-card-tags">
+                    ${impactTag(r.impact)}
+                    ${statusTag(r.status)}
+                    <span style="font-family:var(--font-mono);font-size:10.5px;color:var(--text-muted)">${r.inputType || ''}</span>
+                  </div>
+                </div>
+              </div>
+              <span class="flow-chevron">▶</span>
+            </div>
+            <div class="flow-card-body">
+              <div class="flow-section" style="padding:12px 16px">
+                <div class="flow-section-label">Path</div>
+                <span class="path">${r.path}</span>
+              </div>
+              <div class="flow-section" style="padding:12px 16px">
+                <div class="flow-section-label">What it does</div>
+                <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.6">${r.description}</div>
+              </div>
+              ${r.uxImpact ? `
+              <div class="flow-section" style="padding:12px 16px">
+                <div class="flow-section-label">What the user sees</div>
+                <div style="font-size:12.5px;color:var(--accent);line-height:1.6">${r.uxImpact}</div>
+              </div>` : ''}
+              ${r.allowedValues ? `
+              <div class="flow-section" style="padding:12px 16px">
+                <div class="flow-section-label">Allowed Values</div>
+                <div style="font-size:12px;font-family:var(--font-mono);color:var(--text-muted);line-height:1.6">${r.allowedValues}</div>
+              </div>` : ''}
+              ${r.notes ? `
+              <div class="flow-section" style="padding:12px 16px">
+                <div class="flow-section-label">✏ Designer Notes</div>
+                <div class="notes-block">${r.notes}</div>
+              </div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleSettingCard(id) {
+  const card = document.getElementById(`setting-card-${id}`);
+  card.classList.toggle('open');
+}
+
+// ── FLOWS VIEW MODE ───────────────────────────────────────────────────────────
+
+let flowsMode = 'digest';
+
+function setFlowsMode(mode) {
+  flowsMode = mode;
+  document.getElementById('flows-digest').style.display = mode === 'digest' ? 'block' : 'none';
+  document.getElementById('flows-table-wrap').style.display = mode === 'table' ? 'block' : 'none';
+  document.getElementById('flows-digest-btn').classList.toggle('active', mode === 'digest');
+  document.getElementById('flows-table-btn').classList.toggle('active', mode === 'table');
+  applyFilters();
+}
+
+function parseSteps(stepsStr) {
+  // Split on → or numbered list
+  return stepsStr.split(/\s*→\s*/).map(s => s.trim()).filter(Boolean);
+}
+
+function parseModules(modulesStr) {
+  return modulesStr.split(/,\s*/).map(s => s.trim()).filter(Boolean);
+}
+
+function renderFlowsDigest(data) {
+  const container = document.getElementById('flows-cards');
+  if (!data.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><p>No flows match your filters.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(r => {
+    const steps = parseSteps(r.steps);
+    const modules = parseModules(r.modules);
+
+    const stepsHtml = steps.map((s, i) => `
+      <div class="step-item">
+        <div class="step-dot">${i + 1}</div>
+        <div class="step-text">${s}</div>
+      </div>
+    `).join('');
+
+    const modulesHtml = modules.map(m => `<span class="tag tag-module">${m}</span>`).join('');
+
+    const issuesHtml = r.issues
+      ? `<div class="flow-section"><div class="flow-section-label">⚠ Known Issues</div><div class="issue-block">${r.issues}</div></div>`
+      : '';
+
+    const notesHtml = r.notes
+      ? `<div class="flow-section"><div class="flow-section-label">✏ Designer Notes</div><div class="notes-block">${r.notes}</div></div>`
+      : '';
+
+    return `
+      <div class="flow-card" id="flow-card-${r.id}">
+        <div class="flow-card-header" onclick="toggleFlowCard(${r.id})">
+          <div class="flow-card-left">
+            <div class="flow-number">${String(r.id).padStart(2,'0')}</div>
+            <div class="flow-card-meta">
+              <div class="flow-card-title">${r.name}</div>
+              <div class="flow-card-tags">
+                <span class="tag tag-role">${r.role}</span>
+                ${statusTag(r.status)}
+              </div>
+            </div>
+          </div>
+          <div class="flow-card-right">
+            <span class="flow-chevron">▶</span>
+          </div>
+        </div>
+        <div class="flow-card-body">
+
+          <div class="flow-section">
+            <div class="flow-section-label">Modules Involved</div>
+            <div class="modules-list">${modulesHtml}</div>
+          </div>
+
+          <div class="flow-section">
+            <div class="flow-section-label">Step-by-step</div>
+            <div class="steps-list">${stepsHtml}</div>
+          </div>
+
+          <div class="flow-body-grid">
+            <div class="flow-section">
+              <div class="flow-section-label">System Response</div>
+              <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.6">${r.response || '<span style="color:var(--text-muted);opacity:.4">—</span>'}</div>
+            </div>
+            <div class="flow-section">
+              <div class="flow-section-label">End State</div>
+              <div class="end-state-block">✓ ${r.endState}</div>
+            </div>
+          </div>
+
+          ${issuesHtml}
+          ${notesHtml}
+
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleFlowCard(id) {
+  const card = document.getElementById(`flow-card-${id}`);
+  card.classList.toggle('open');
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────────
+
+function statusTag(s) {
+  const map = {
+    'Stable': 'tag-stable', 'Buggy': 'tag-buggy',
+    'In Discussion': 'tag-discuss', 'Partial': 'tag-partial',
+    'Not Implemented': 'tag-removed'
+  };
+  return `<span class="tag ${map[s]||'tag-removed'}">${s}</span>`;
+}
+
+function impactTag(i) {
+  const map = { 'High': 'tag-high', 'Mid': 'tag-mid', 'Low': 'tag-low' };
+  return `<span class="tag ${map[i]||'tag-low'}">${i}</span>`;
+}
+
+function moduleTag(m) {
+  return `<span class="tag tag-module">${m}</span>`;
+}
+
+function renderSettings(data) {
+  const countEl = document.getElementById('settings-count');
+  const countTableEl = document.getElementById('settings-count-table');
+  const label = `${data.length} entr${data.length === 1 ? 'y' : 'ies'}`;
+  if (countEl) countEl.textContent = label;
+  if (countTableEl) countTableEl.textContent = label;
+
+  if (settingsMode === 'digest') {
+    renderSettingsDigest(data);
+  } else {
+    const tbody = document.getElementById('settings-tbody');
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="11"><div class="empty-state"><div class="empty-icon">◈</div><p>No entries match your filters.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = data.map(r => `
+      <tr>
+        <td class="mono" style="color:var(--text-muted)">${r.id}</td>
+        <td class="primary">${r.label}</td>
+        <td>${moduleTag(r.module)}</td>
+        <td><span class="path">${r.path}</span></td>
+        <td class="mono" style="font-size:11px;color:var(--text-secondary)">${r.inputType || '—'}</td>
+        <td style="max-width:180px;font-size:11.5px;color:var(--text-muted)">${r.allowedValues || '—'}</td>
+        <td style="max-width:240px">${r.description}</td>
+        <td style="max-width:200px;font-size:12px;color:var(--accent)">${r.uxImpact || '<span style="color:var(--text-muted);opacity:.4">—</span>'}</td>
+        <td>${impactTag(r.impact)}</td>
+        <td>${statusTag(r.status)}</td>
+        <td class="notes-cell" style="max-width:200px">${r.notes}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+function renderFlows(data) {
+  const countEl = document.getElementById('flows-count');
+  const countTableEl = document.getElementById('flows-count-table');
+  const label = `${data.length} flow${data.length === 1 ? '' : 's'}`;
+  if (countEl) countEl.textContent = label;
+  if (countTableEl) countTableEl.textContent = label;
+
+  if (flowsMode === 'digest') {
+    renderFlowsDigest(data);
+  } else {
+    const tbody = document.getElementById('flows-tbody');
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">◈</div><p>No flows match your filters.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = data.map(r => `
+      <tr>
+        <td class="mono" style="color:var(--text-muted)">${r.id}</td>
+        <td class="primary">${r.name}</td>
+        <td><span class="tag tag-role">${r.role}</span></td>
+        <td style="font-size:11.5px;color:var(--text-muted)">${r.modules}</td>
+        <td style="max-width:260px;font-size:12px">${r.steps}</td>
+        <td style="max-width:180px;font-size:12px;color:var(--text-secondary)">${r.response}</td>
+        <td style="font-size:12px;color:var(--green)">${r.endState}</td>
+        <td>${statusTag(r.status)}</td>
+        <td style="max-width:180px;font-size:11.5px;color:var(--red)">${r.issues || '<span style="opacity:.3">—</span>'}</td>
+        <td class="notes-cell" style="max-width:180px">${r.notes}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+// ── FILTERS ────────────────────────────────────────────────────────────────────
+
+function applyFilters() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+
+  if (currentView === 'settings') {
+    let data = SETTINGS.filter(r => {
+      const matchStatus = activeFilters.status === 'all' || r.status === activeFilters.status;
+      const matchImpact = activeFilters.impact === 'all' || r.impact === activeFilters.impact;
+      const matchModule = activeFilters.module === 'all' || r.module === activeFilters.module;
+      const matchSearch = !q || [r.label, r.module, r.description, r.uxImpact, r.notes, r.path].join(' ').toLowerCase().includes(q);
+      return matchStatus && matchImpact && matchModule && matchSearch;
+    });
+    renderSettings(data);
+  } else {
+    let data = FLOWS.filter(r => {
+      const matchStatus = activeFilters.status === 'all' || r.status === activeFilters.status;
+      const matchModule = activeFilters.module === 'all' || r.modules.includes(activeFilters.module);
+      const matchSearch = !q || [r.name, r.role, r.modules, r.steps, r.notes, r.issues].join(' ').toLowerCase().includes(q);
+      return matchStatus && matchModule && matchSearch;
+    });
+    renderFlows(data);
+  }
+}
+
+function toggleFilter(el) {
+  const filterType = el.dataset.filter;
+  const value = el.dataset.value;
+  activeFilters[filterType] = value;
+  document.querySelectorAll(`[data-filter="${filterType}"]`).forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function filterModule(m) {
+  activeFilters.module = m;
+  applyFilters();
+}
+
+// ── VIEW SWITCH ────────────────────────────────────────────────────────────────
+
+function switchView(v) {
+  currentView = v;
+  document.getElementById('view-settings').style.display = v === 'settings' ? 'block' : 'none';
+  document.getElementById('view-flows').style.display = v === 'flows' ? 'block' : 'none';
+  document.getElementById('view-setup').style.display = v === 'setup' ? 'block' : 'none';
+
+  // Hide filters + search bar when on setup guide
+  document.getElementById('filters-bar').style.display = v === 'setup' ? 'none' : 'flex';
+  document.getElementById('search-input').closest('.search-wrap').style.display = v === 'setup' ? 'none' : 'block';
+  document.querySelector('.btn[onclick="exportCSV()"]').style.display = v === 'setup' ? 'none' : 'block';
+  document.querySelector('.btn-primary').style.display = v === 'setup' ? 'none' : 'block';
+
+  const titles = { settings: 'Settings Reference', flows: 'User Flows', setup: 'Setup Guide' };
+  document.getElementById('view-title').textContent = titles[v];
+
+  document.getElementById('tab-settings').classList.toggle('active', v === 'settings');
+  document.getElementById('tab-flows').classList.toggle('active', v === 'flows');
+  document.getElementById('tab-setup').classList.toggle('active', v === 'setup');
+  document.querySelectorAll('.nav-item[data-view]').forEach(el => el.classList.toggle('active', el.dataset.view === v));
+
+  if (v === 'setup') renderSetupGuide();
+  else applyFilters();
+}
+
+// ── MODAL ──────────────────────────────────────────────────────────────────────
+
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-title').textContent = currentView === 'settings' ? 'Add Settings Entry' : 'Add Flow Entry';
+  document.getElementById('settings-form').style.display = currentView === 'settings' ? 'grid' : 'none';
+  document.getElementById('flows-form').style.display = currentView === 'flows' ? 'grid' : 'none';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function saveEntry() {
+  if (currentView === 'settings') {
+    const label = document.getElementById('f-label').value.trim();
+    const module = document.getElementById('f-module').value;
+    const desc = document.getElementById('f-desc').value.trim();
+    if (!label || !module || !desc) { alert('Label, Module, and Description are required.'); return; }
+    SETTINGS.push({
+      id: SETTINGS.length + 1,
+      label, module,
+      path: document.getElementById('f-path').value.trim(),
+      inputType: document.getElementById('f-input-type').value,
+      allowedValues: document.getElementById('f-allowed').value.trim(),
+      description: desc,
+      uxImpact: document.getElementById('f-ux-impact').value.trim(),
+      impact: document.getElementById('f-impact').value,
+      status: document.getElementById('f-status').value,
+      notes: document.getElementById('f-notes').value.trim(),
+    });
+  } else {
+    const name = document.getElementById('ff-name').value.trim();
+    const steps = document.getElementById('ff-steps').value.trim();
+    if (!name || !steps) { alert('Flow Name and Steps are required.'); return; }
+    FLOWS.push({
+      id: FLOWS.length + 1,
+      name,
+      role: document.getElementById('ff-role').value.trim(),
+      modules: document.getElementById('ff-modules').value.trim(),
+      steps,
+      response: document.getElementById('ff-response').value.trim(),
+      endState: document.getElementById('ff-end').value.trim(),
+      status: document.getElementById('ff-status').value,
+      issues: document.getElementById('ff-issues').value.trim(),
+      notes: document.getElementById('ff-notes').value.trim(),
+    });
+  }
+  closeModal();
+  applyFilters();
+  showToast('Entry saved ✓');
+}
+
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ── EXPORT ─────────────────────────────────────────────────────────────────────
+
+function exportCSV() {
+  let csv, filename;
+  if (currentView === 'settings') {
+    const headers = ['ID','Label','Module','Path','Input Type','Allowed Values','Description','User-Facing Impact','Impact Level','Status','Designer Notes'];
+    const rows = SETTINGS.map(r => [r.id, r.label, r.module, r.path, r.inputType, r.allowedValues, r.description, r.uxImpact, r.impact, r.status, r.notes].map(v => `"${String(v||'').replace(/"/g,'""')}"`));
+    csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    filename = 'lims-settings.csv';
+  } else {
+    const headers = ['ID','Flow Name','Role','Modules','Steps','System Response','End State','Status','Known Issues','Designer Notes'];
+    const rows = FLOWS.map(r => [r.id, r.name, r.role, r.modules, r.steps, r.response, r.endState, r.status, r.issues, r.notes].map(v => `"${String(v||'').replace(/"/g,'""')}"`));
+    csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    filename = 'lims-flows.csv';
+  }
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  showToast('CSV exported ✓');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SETUP GUIDE
+// ══════════════════════════════════════════════════════════════════════════════
+
+const SETUP_PHASES = [
+  {
+    id: 1,
+    icon: '🏢',
+    title: 'Organisation Basics',
+    subtitle: 'Name, logo, accreditation numbers',
+    steps: [
+      {
+        title: 'Set company identity',
+        desc: 'Fill in the core org details that appear across the app.',
+        path: ['Organisation Settings', 'Basic'],
+        fields: [
+          { name: 'Company Name', val: 'Official display name — shows top-right in header' },
+          { name: 'Upload Logo', val: 'PNG or JPEG — shows top-left across all pages' },
+          { name: 'NABL Reg. Number', val: 'Starts with T — goes into every ULR number' },
+          { name: 'NABL Location Code', val: 'Numeric code appended to ULR. e.g. 88 → T23124323488F' },
+        ],
+        tip: 'NABL number and location code are required for NABL-accredited labs. Leave blank for non-NABL setups.'
+      },
+      {
+        title: 'Set header style',
+        desc: 'Choose Fixed (stays on scroll) or Floating.',
+        path: ['Organisation Settings', 'Basic'],
+        fields: [{ name: 'Header Style', val: 'Fixed (recommended) or Floating' }],
+      }
+    ]
+  },
+  {
+    id: 2,
+    icon: '⚙️',
+    title: 'Enable Modules',
+    subtitle: 'Turn on only what this client needs',
+    steps: [
+      {
+        title: 'Select active modules',
+        desc: 'Disabled modules disappear from the sidebar entirely. Only enable what\'s in scope.',
+        path: ['Organisation Settings', 'Access Control'],
+        fields: [
+          { name: 'Enabled Modules', val: 'LIMS (always) · Inquiry/Invoice/Quotation if commercial · Instrument if calibration · Dashboard if reporting needed' },
+        ],
+        warn: 'This is the highest-impact single setting. Getting this wrong means users see modules they should never touch.',
+        dep: ['LIMS', 'Inquiry', 'Invoice', 'Quotation', 'Inventory', 'Instrument', 'Dashboard']
+      },
+      {
+        title: 'Set module-wise permissions',
+        desc: 'For each module, assign which roles and users can access it.',
+        path: ['Organisation Settings', 'Access Control'],
+        fields: [
+          { name: 'Role With Access', val: 'Assign roles per module (built in next phase)' },
+          { name: 'User With Access', val: 'Optional — add specific users on top of roles' },
+        ],
+        tip: 'Come back to this after creating roles in Phase 3. You can\'t assign roles that don\'t exist yet.',
+        key: true
+      }
+    ]
+  },
+  {
+    id: 3,
+    icon: '👥',
+    title: 'Roles & Users',
+    subtitle: 'Create roles first, then users',
+    steps: [
+      {
+        title: 'Create roles',
+        desc: 'Typical lab needs at minimum 4 roles. Name them clearly.',
+        path: ['Role Management', 'Add Role'],
+        dep: ['Sample Receiver', 'Sample Analyst', 'Reviewer', 'Approver'],
+        tip: 'Role names become visible in workflow node configuration — clear names save confusion later.'
+      },
+      {
+        title: 'Create users & assign roles',
+        desc: 'Add each user, set username + password, assign their role.',
+        path: ['User Management', 'New User'],
+        fields: [
+          { name: 'Username', val: 'Not case-sensitive' },
+          { name: 'Password', val: 'Share with user to change on first login' },
+          { name: 'Role', val: 'Assign from roles created above' },
+        ],
+        warn: 'After creating a user, log in as them immediately to verify access is correct before going further.'
+      },
+      {
+        title: 'Go back and complete module permissions',
+        desc: 'Now that roles exist, return to Access Control and assign roles to each module.',
+        path: ['Organisation Settings', 'Access Control'],
+        key: true
+      }
+    ]
+  },
+  {
+    id: 4,
+    icon: '🧪',
+    title: 'Lab Configuration',
+    subtitle: 'MOA → Product → Parameters → Discipline',
+    steps: [
+      {
+        title: 'Create Methods of Analysis (MOA)',
+        desc: 'Each test method used in the lab. These attach to parameters later.',
+        path: ['MOA Management', 'Add MOA'],
+        fields: [
+          { name: 'Method Name', val: 'e.g. Titration, HPLC, Gravimetric' },
+          { name: 'Decimal Places', val: 'Default 4. How many digits after decimal in results.' },
+          { name: 'Convert Number', val: 'YES = pads to full decimal places. e.g. 5 → 5.0000' },
+        ]
+      },
+      {
+        title: 'Create Products',
+        desc: 'Each product/material the lab tests. A unique key is auto-generated per product.',
+        path: ['Product Management', 'Add Product'],
+        fields: [
+          { name: 'Product Name', val: 'e.g. Paracetamol API, Crude Oil Sample' },
+          { name: 'Tags', val: 'From Tag Master — optional grouping' },
+          { name: 'Discipline', val: 'Leave blank — assign after creating Disciplines' },
+        ],
+        tip: 'Bulk upload available for large product lists. Download the sample Excel template from Bulk Upload.'
+      },
+      {
+        title: 'Add Parameters to each Product',
+        desc: 'Parameters are the individual tests run on a product. e.g. Glucose, pH, Viscosity.',
+        path: ['Product Management', 'Product Name', 'Params Page', 'New Parameter'],
+        fields: [
+          { name: 'Order', val: 'Display order in the results table' },
+          { name: 'Critical Param?', val: 'YES = must be tested before approval is allowed' },
+          { name: 'MOA', val: 'Attach test methods from MOA Management' },
+          { name: 'Min / Max', val: 'Range for result validation — out-of-range shows colour indicator' },
+          { name: 'UOM', val: 'Unit of measurement e.g. mg/L, %' },
+          { name: 'Rate Card', val: 'Pricing per MOA method — used in Invoice auto-fill' },
+        ],
+        warn: 'Parameter types: Qualitative = text/description result. Quantitative = numeric result.'
+      },
+      {
+        title: 'Create Disciplines',
+        desc: 'Disciplines group products by testing domain and connect to datasheet workflows.',
+        path: ['Discipline', 'Add Discipline'],
+        fields: [
+          { name: 'Name', val: 'e.g. Chemical Analysis, Microbiology' },
+          { name: 'Datasheet Workflow', val: 'Attach if this discipline uses datasheets' },
+        ],
+        gap: 'Exact discipline setup steps need verification from PM — dependency on datasheet workflow is unclear from source docs.'
+      },
+      {
+        title: 'Assign Disciplines to Products',
+        desc: 'Go back into each Product and assign the relevant Discipline.',
+        path: ['Product Management', 'Edit Product'],
+      }
+    ]
+  },
+  {
+    id: 5,
+    icon: '🔄',
+    title: 'Workflow',
+    subtitle: 'Design the sample lifecycle',
+    steps: [
+      {
+        title: 'Create a Workflow',
+        desc: 'One workflow per sample lifecycle type. Most clients start with one.',
+        path: ['Workflow Management', 'Add Workflow'],
+        fields: [
+          { name: 'Name', val: 'e.g. Standard Testing Workflow' },
+          { name: 'Description', val: 'Optional — for internal clarity' },
+        ],
+        warn: 'Do NOT add spaces in Node names. Breaks functionality.'
+      },
+      {
+        title: 'Add Nodes (stages)',
+        desc: 'Each node = one stage. Minimum: Start → [stage] → End.',
+        path: ['Workflow Management', 'Edit Flow', 'Add Node'],
+        dep: ['START', 'Pending', 'Under Analysis', 'Review', 'Approved', 'END'],
+        fields: [
+          { name: 'Creator Role', val: 'Who sends the sample to this node' },
+          { name: 'Approver Role', val: 'Who receives and approves at this node' },
+          { name: 'Anyone / Everyone', val: 'Anyone = one approval needed. Everyone = all assigned must approve.' },
+          { name: 'Enable Template Validation', val: 'Blocks transition if required template fields are empty' },
+          { name: 'Enable Critical Params', val: 'Blocks transition if critical parameter results are missing' },
+          { name: 'Show Sample Edit?', val: 'Which roles can edit sample details at this node' },
+        ],
+        tip: 'White dot = input (connection comes in). Yellow dot = output (connection goes out).'
+      }
+    ]
+  },
+  {
+    id: 6,
+    icon: '📋',
+    title: 'Templates',
+    subtitle: 'COA report layout and data entry forms',
+    steps: [
+      {
+        title: 'Create Header & Footer',
+        desc: 'The printed header/footer of COA reports. Add logo and lab details here.',
+        path: ['Header Management', 'Add Header'],
+        fields: [
+          { name: 'NABL Header', val: 'Used when sample is in NABL mode' },
+          { name: 'Non-NABL Header', val: 'Used for non-NABL reports' },
+        ]
+      },
+      {
+        title: 'Build the Template',
+        desc: 'Layout is a grid — max 12 columns per row. Add widgets to capture and display data.',
+        path: ['Template Management', 'New Template'],
+        fields: [
+          { name: 'Row layout', val: 'col-1 to col-12 classes. 12 cols = col-1. 4 cols = col-3. 6 cols = col-2.' },
+          { name: 'Param Loop', val: 'Add ONE per template on the container — repeats content for each parameter' },
+          { name: 'Key widgets', val: 'Input Widget (data entry) · Result Widget (shows results) · Sample Details Widget · Method Widget (ULR)' },
+        ],
+        warn: 'Only add ONE Param Loop container per template. Multiple breaks the render.',
+        tip: 'Most useful widgets for a basic COA: Sample Details Widget, Result Widget, Method Widget, State Transition Widget (for signatures).'
+      },
+      {
+        title: 'Assign Header/Footer to Template',
+        desc: 'Link the header and footer created in step 1.',
+        path: ['Template Management', 'Edit Template', 'Settings', 'Template Settings'],
+        fields: [
+          { name: 'NABL Header', val: 'Select from Header Management' },
+          { name: 'Non-NABL Header', val: 'Select from Header Management' },
+          { name: 'NABL Footer', val: 'Select from Footer Management' },
+          { name: 'Non-NABL Footer', val: 'Select from Footer Management' },
+        ]
+      }
+    ]
+  },
+  {
+    id: 7,
+    icon: '🗂️',
+    title: 'Sample Category',
+    subtitle: 'The central config object — ties everything together',
+    steps: [
+      {
+        title: 'Create a Sample Category',
+        desc: 'Category = the type of testing job. Links workflow, template, and settings in one place.',
+        path: ['Sample Category', 'Add Category'],
+        fields: [
+          { name: 'Name', val: 'e.g. Blood Testing, Water Quality Analysis' },
+          { name: 'Abbreviation', val: 'Used in sample ID scheme. e.g. BT → BT-2025-001' },
+          { name: 'Retention Days', val: 'How many days to keep the sample before disposal' },
+          { name: 'Workflow', val: 'Select the workflow built in Phase 5' },
+          { name: 'Template', val: 'Select the template built in Phase 6' },
+          { name: 'Enable Reissue', val: 'Allows re-sending COA to a different customer (same test data)' },
+          { name: 'Enable Events', val: 'Triggers email notifications for this category' },
+        ],
+        key: true,
+        dep: ['Phase 4: MOA + Products', 'Phase 5: Workflow', 'Phase 6: Template'],
+        tip: 'Sample Category is the glue. Everything upstream (workflow, template, products) must exist before creating it.'
+      }
+    ]
+  },
+  {
+    id: 8,
+    icon: '🚀',
+    title: 'Final Configuration',
+    subtitle: 'Org settings, custom fields, and test run',
+    steps: [
+      {
+        title: 'Configure Org-level sample settings',
+        desc: 'Fine-tune how samples behave globally.',
+        path: ['Organisation Settings', 'Sample Page'],
+        fields: [
+          { name: 'Auto Initialize Samples', val: 'ON = sample enters workflow automatically after creation' },
+          { name: 'Follow Workflow Based Access Control', val: 'ON (recommended) = users only see samples in their court' },
+          { name: 'Sample Product Association', val: 'Single = one product per sample (shows parameter selector). Multiple = many products, no parameter selector.' },
+          { name: 'Allocated Fields', val: 'Which optional fields appear in New Sample form: Customer, Discipline, ULR, Blind Sample, etc.' },
+          { name: 'Sample Listing Page Fields', val: 'Which columns appear in the All Samples table' },
+        ],
+        warn: '"Follow Workflow Based Access Control" should almost always be ON. Without it, all users see all samples at all times — defeats the purpose of workflows.'
+      },
+      {
+        title: 'Set up Custom Fields (if needed)',
+        desc: 'Client-specific data fields that attach to samples, products, or customers.',
+        path: ['Custom Fields', 'Add Custom Field'],
+        fields: [
+          { name: 'Data Type', val: 'Text (fixed for scheme-based fields)' },
+          { name: 'Associated With', val: 'Sample / Product / Customer / Instrument etc.' },
+          { name: 'Generated At', val: 'On Demand (button) · On Init (at creation) · On First Transition (when moved)' },
+          { name: 'Scheme', val: 'Pattern for auto-ID. e.g. {{category_abbr}}/{{samples_counter}}' },
+        ],
+        warn: 'Mandatory + "On First Save / On First Transition" does NOT enforce the field at creation — known bug. Use "On Init" if mandatory validation is required.'
+      },
+      {
+        title: 'Create a test sample',
+        desc: 'End-to-end smoke test. Create a sample, run it through the full workflow, generate a COA.',
+        path: ['All Samples', 'New Sample'],
+        dep: ['Create Sample', 'Initialize', 'Add Results', 'State Transition', 'Approve', 'Generate COA'],
+        tip: 'Log in as each role separately to verify the workflow queue works correctly at each stage.'
+      }
+    ]
+  }
+];
+
+let sgDone = new Set();
+
+function renderSetupGuide() {
+  const container = document.getElementById('sg-phases');
+
+  container.innerHTML = SETUP_PHASES.map(phase => {
+
+    const stepsHtml = phase.steps.map((step, si) => {
+
+      const pathHtml = step.path
+        ? `<div class="sg-path">${step.path.map((p,i) => i < step.path.length-1 ? `${p} <span class="sg-path-arrow">›</span>` : p).join(' ')}</div>`
+        : '';
+
+      const fieldsHtml = step.fields
+        ? `<div class="sg-fields">${step.fields.map(f => `
+            <div class="sg-field">
+              <div class="sg-field-name">${f.name}</div>
+              <div class="sg-field-val">${f.val}</div>
+            </div>`).join('')}</div>`
+        : '';
+
+      const depHtml = step.dep
+        ? `<div class="sg-dep-chain">${step.dep.map((d,i) => `
+            <div class="sg-dep-node ${i === step.dep.length-1 ? 'highlight' : ''}">${d}</div>
+            ${i < step.dep.length-1 ? '<span class="sg-dep-arrow">→</span>' : ''}`).join('')}
+          </div>`
+        : '';
+
+      const tipHtml  = step.tip  ? `<div class="sg-tip">💡 ${step.tip}</div>` : '';
+      const warnHtml = step.warn ? `<div class="sg-warn">⚠ ${step.warn}</div>` : '';
+      const gapHtml  = step.gap  ? `<div class="sg-gap">🔍 ${step.gap}</div>` : '';
+
+      return `
+        <div class="sg-step ${step.key ? 'key' : ''}">
+          <div class="sg-step-spine">
+            <div class="sg-step-num">${si + 1}</div>
+          </div>
+          <div class="sg-step-content">
+            <div class="sg-step-title">${step.title}</div>
+            ${step.desc ? `<div class="sg-step-desc">${step.desc}</div>` : ''}
+            ${pathHtml}
+            ${depHtml}
+            ${fieldsHtml}
+            ${tipHtml}
+            ${warnHtml}
+            ${gapHtml}
+          </div>
+        </div>`;
+    }).join('');
+
+    const doneClass = sgDone.has(phase.id) ? 'done' : '';
+
+    return `
+      <div class="sg-phase ${doneClass}" id="sg-phase-${phase.id}">
+        <div class="sg-phase-header" onclick="togglePhase(${phase.id})">
+          <div class="sg-phase-icon-wrap">${phase.icon}</div>
+          <div class="sg-phase-info">
+            <div class="sg-phase-number">Phase ${phase.id} of ${SETUP_PHASES.length}</div>
+            <div class="sg-phase-title">${phase.title}</div>
+            <div class="sg-phase-subtitle">${phase.subtitle}</div>
+          </div>
+          <div class="sg-phase-right">
+            <div class="sg-check" onclick="event.stopPropagation();togglePhaseDone(${phase.id})" title="Mark complete">✓</div>
+            <span class="sg-phase-chevron">▶</span>
+          </div>
+        </div>
+        <div class="sg-phase-body">
+          <div class="sg-steps">${stepsHtml}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  updateProgress();
+}
+
+function togglePhase(id) {
+  const el = document.getElementById(`sg-phase-${id}`);
+  // Close others
+  document.querySelectorAll('.sg-phase.open').forEach(p => {
+    if (p !== el) p.classList.remove('open');
+  });
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) el.classList.add('active');
+  else el.classList.remove('active');
+}
+
+function togglePhaseDone(id) {
+  if (sgDone.has(id)) sgDone.delete(id);
+  else sgDone.add(id);
+  const el = document.getElementById(`sg-phase-${id}`);
+  el.classList.toggle('done', sgDone.has(id));
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = Math.round((sgDone.size / SETUP_PHASES.length) * 100);
+  const fill = document.getElementById('sg-progress-fill');
+  const label = document.getElementById('sg-progress-label');
+  if (fill) fill.style.width = pct + '%';
+  if (label) label.textContent = `${sgDone.size} / ${SETUP_PHASES.length} phases complete`;
+}
+
+// ── THEME ──────────────────────────────────────────────────────────────────────
+
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('btn-dark').classList.toggle('active', t === 'dark');
+  document.getElementById('btn-light').classList.toggle('active', t === 'light');
+  try { localStorage.setItem('lims-kb-theme', t); } catch(e) {}
+}
+
+// restore saved theme
+(function() {
+  try {
+    const saved = localStorage.getItem('lims-kb-theme');
+    if (saved === 'light') setTheme('light');
+  } catch(e) {}
+})();
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+switchView('setup');
+</script>
+</body>
+</html>

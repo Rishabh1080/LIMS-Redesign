@@ -88,6 +88,7 @@ const initialTransactionDraft = {
   supplier: '',
   batchSerialNumber: '',
   expiryDate: '',
+  makeSupplier: '',
 };
 
 function formatDate(date = new Date()) {
@@ -404,6 +405,20 @@ function MaterialTransactionModal({
               }}
             />
           </div>
+
+          {isIn ? (
+            <div className="materials-transaction-modal__field materials-transaction-modal__field--full">
+              <FormElement
+                type="text"
+                label="Make/Supplier"
+                inputProps={{
+                  value: values.makeSupplier,
+                  placeholder: 'eg.',
+                  onChange: (event) => onChange('makeSupplier', event.target.value),
+                }}
+              />
+            </div>
+          ) : null}
         </div>
       </form>
     </Modal>
@@ -430,6 +445,7 @@ export default function MaterialsPage({
   const [transactionDraft, setTransactionDraft] = useState(initialTransactionDraft);
   const [transactionErrors, setTransactionErrors] = useState({});
   const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     setVisibleMaterials(materials);
@@ -559,6 +575,11 @@ export default function MaterialsPage({
     setVisibleMaterials((current) => [nextMaterial, ...current]);
     onNewMaterial?.(nextMaterial);
     closeModal();
+    window.requestAnimationFrame(() => {
+      setToastMessage(`New material added: "${nextMaterial.name}".`);
+      setToastVisible(true);
+      window.setTimeout(() => setToastVisible(false), 5000);
+    });
   };
 
   const handleTransactionSubmit = () => {
@@ -585,10 +606,12 @@ export default function MaterialsPage({
         cost: transactionDraft.cost.trim(),
         supplier: transactionDraft.supplier,
         batchSerialNumber: transactionDraft.batchSerialNumber.trim(),
+        makeSupplier: transactionDraft.makeSupplier.trim(),
       },
     });
     closeTransactionModal();
     window.requestAnimationFrame(() => {
+      setToastMessage('Transaction added successfully.');
       setToastVisible(true);
       window.setTimeout(() => setToastVisible(false), 5000);
     });
@@ -685,7 +708,7 @@ export default function MaterialsPage({
 
       <ToastNotification
         state={toastVisible ? 'default' : 'gone'}
-        message="Transaction added successfully."
+        message={toastMessage}
         className="material-created-toast"
         onClose={() => setToastVisible(false)}
       />

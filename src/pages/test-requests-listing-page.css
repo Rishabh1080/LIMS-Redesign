@@ -249,6 +249,11 @@
   color: #1379f0;
 }
 
+.tr-table-cell--request-id .tr-link {
+  font-size: 16px;
+  line-height: 19px;
+}
+
 .tr-request-status-cell,
 .tr-job-status-cell,
 .tr-request-actions,
@@ -509,8 +514,6 @@
 .tr-allocation-table {
   display: grid;
   align-items: center;
-  border-left: 1px solid #d8dee7;
-  border-right: 1px solid #d8dee7;
 }
 
 .tr-allocation-table--analyst {
@@ -558,15 +561,9 @@
 .tr-allocation-table__row > div {
   min-width: 0;
   padding: 7px 8px;
-  border-right: 1px solid #d8dee7;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.tr-allocation-table__head > div:last-child,
-.tr-allocation-table__row > div:last-child {
-  border-right: 0;
 }
 
 .tr-allocation-table__link {

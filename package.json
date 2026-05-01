@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
     "@siteping/adapter-localstorage": "^0.4.3",
     "@siteping/widget": "^0.9.5",
     "@tabler/icons-react": "^3.41.1",
@@ -17,7 +20,19 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^5.1.2",
+    "@storybook/addon-a11y": "^10.3.5",
+    "@storybook/addon-docs": "^10.3.5",
+    "@storybook/addon-onboarding": "^10.3.5",
+    "@storybook/addon-vitest": "^10.3.5",
+    "@storybook/react-vite": "^10.3.5",
     "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.4.21"
+    "@vitest/browser-playwright": "^4.1.4",
+    "@vitest/coverage-v8": "^4.1.4",
+    "playwright": "^1.59.1",
+    "prop-types": "^15.8.1",
+    "storybook": "^10.3.5",
+    "vite": "^5.4.21",
+    "vitest": "^4.1.4"
   }
 }

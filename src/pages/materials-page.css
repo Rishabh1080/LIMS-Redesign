@@ -100,6 +100,10 @@
   min-width: 0;
 }
 
+.materials-transaction-modal__field--full {
+  grid-column: 1 / -1;
+}
+
 .materials-transaction-modal__cancel {
   min-width: 88px;
 }

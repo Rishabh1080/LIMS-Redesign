@@ -15,6 +15,8 @@ const wizardSteps = [
 ];
 
 const roleOptions = ['Lab Manager', 'Technician', 'Quality Analyst', 'Supervisor'];
+const templateOptions = ['Calibration Template', 'Maintenance Template', 'Breakdown Template'];
+const workflowOptions = ['Standard Workflow', 'Escalated Workflow', 'Approval Workflow'];
 
 const initialFormValues = {
   // Step 1
@@ -30,27 +32,77 @@ const initialFormValues = {
   calibFrequency: '',
   calibRemindBeforeDays: '',
   calibReminderFrequency: '',
-  calibAllowAccessTo: '',
-  calibAllowAccessTo2: '',
-  calibAllowAccessTo3: '',
+  calibRemindTo: '',
+  calibTemplate: '',
+  calibWorkflow: '',
   // Step 3
   pmLastPerformedOn: '',
   pmFrequency: '',
   pmRemindBeforeDays: '',
   pmReminderFrequency: '',
-  pmAllowAccessTo: '',
-  pmAllowAccessTo2: '',
-  pmAllowAccessTo3: '',
+  pmRemindTo: '',
+  pmTemplate: '',
+  pmWorkflow: '',
   // Step 4
-  bdAllowAccessTo: '',
-  bdAllowAccessTo2: '',
-  bdAllowAccessTo3: '',
+  bdLastPerformedOn: '',
+  bdFrequency: '',
+  bdRemindBeforeDays: '',
+  bdReminderFrequency: '',
+  bdRemindTo: '',
+  bdTemplate: '',
+  bdWorkflow: '',
   // Step 5
   costOfEquipment: '',
   referencePurchaseFile: '',
   currentLocation: '',
   manufacturerSupplier: '',
 };
+
+function getInstrumentDisplayName(instrument) {
+  return instrument?.name || 'Instrument';
+}
+
+function buildEditFormValues(instrument) {
+  if (!instrument) {
+    return initialFormValues;
+  }
+
+  return {
+    ...initialFormValues,
+    name: instrument.name ?? '',
+    uniqueKey: instrument.uniqueKey ?? '',
+    serialNumber: instrument.serialNo ?? '',
+    make: instrument.make ?? '',
+    model: instrument.modelNo ?? '',
+    allowAccessTo: instrument.allowAccessTo ?? roleOptions[0],
+    description: instrument.description ?? '',
+    calibLastPerformedOn: instrument.calibLastPerformedOn ?? instrument.lastServiceOn ?? '',
+    calibFrequency: instrument.calibFrequency ?? '180',
+    calibRemindBeforeDays: instrument.calibRemindBeforeDays ?? '15',
+    calibReminderFrequency: instrument.calibReminderFrequency ?? '7',
+    calibRemindTo: instrument.calibRemindTo ?? roleOptions[0],
+    calibTemplate: instrument.calibTemplate ?? templateOptions[0],
+    calibWorkflow: instrument.calibWorkflow ?? workflowOptions[0],
+    pmLastPerformedOn: instrument.pmLastPerformedOn ?? instrument.lastServiceOn ?? '',
+    pmFrequency: instrument.pmFrequency ?? '90',
+    pmRemindBeforeDays: instrument.pmRemindBeforeDays ?? '10',
+    pmReminderFrequency: instrument.pmReminderFrequency ?? '5',
+    pmRemindTo: instrument.pmRemindTo ?? roleOptions[0],
+    pmTemplate: instrument.pmTemplate ?? templateOptions[1],
+    pmWorkflow: instrument.pmWorkflow ?? workflowOptions[0],
+    bdLastPerformedOn: instrument.bdLastPerformedOn ?? instrument.lastServiceOn ?? '',
+    bdFrequency: instrument.bdFrequency ?? '30',
+    bdRemindBeforeDays: instrument.bdRemindBeforeDays ?? '3',
+    bdReminderFrequency: instrument.bdReminderFrequency ?? '1',
+    bdRemindTo: instrument.bdRemindTo ?? roleOptions[0],
+    bdTemplate: instrument.bdTemplate ?? templateOptions[2],
+    bdWorkflow: instrument.bdWorkflow ?? workflowOptions[1],
+    costOfEquipment: instrument.costOfEquipment ?? '125000',
+    referencePurchaseFile: instrument.referencePurchaseFile ?? 'PO-2026-014',
+    currentLocation: instrument.currentLocation ?? 'Central Lab',
+    manufacturerSupplier: instrument.manufacturerSupplier ?? 'Anton Paar',
+  };
+}
 
 function isFilledValue(value) {
   return Boolean(String(value ?? '').trim());
@@ -63,23 +115,29 @@ function getInputProps(key, formValues, onFieldChange) {
   };
 }
 
-function StepRail({ currentStep, onStepChange }) {
+function StepRail({ currentStep, mode, title, onStepChange }) {
   const items = wizardSteps.map((label, index) => ({
     label,
-    state: index < currentStep ? 'completed' : index === currentStep ? 'active' : 'default',
+    state: mode === 'edit'
+      ? 'completed'
+      : index < currentStep
+        ? 'completed'
+        : index === currentStep
+          ? 'active'
+          : 'default',
   }));
 
   return (
-    <aside className="new-instrument-rail">
-      <div className="new-instrument-rail__heading">
-        <h1 className="new-instrument-rail__title">New Instrument</h1>
+    <aside className={`new-instrument-rail ${mode === 'edit' ? 'new-instrument-rail--edit' : ''}`.trim()}>
+      <div className={`new-instrument-rail__heading ${mode === 'edit' ? 'new-instrument-rail__heading--edit' : ''}`.trim()}>
+        <h1 className="new-instrument-rail__title">{mode === 'edit' ? title : 'New Instrument'}</h1>
       </div>
       <Stepper items={items} onItemClick={onStepChange} />
     </aside>
   );
 }
 
-function TopBar({ onBack }) {
+function TopBar({ parentLabel, currentLabel, onBack }) {
   return (
     <header className="new-instrument-topbar">
       <div className="new-instrument-topbar__breadcrumbs">
@@ -88,10 +146,10 @@ function TopBar({ onBack }) {
         </button>
         <AppIcon name="chevron-right" />
         <button className="new-instrument-topbar__crumb new-instrument-topbar__crumb-button" onClick={onBack}>
-          Instruments
+          {parentLabel}
         </button>
         <AppIcon name="chevron-right" />
-        <span className="new-instrument-topbar__crumb is-current">New Instrument</span>
+        <span className="new-instrument-topbar__crumb is-current">{currentLabel}</span>
       </div>
       <div className="new-instrument-topbar__actions">
         <div className="new-instrument-topbar__pill">
@@ -178,179 +236,118 @@ function BasicDetailsSection({ formValues, fieldErrors, onFieldChange }) {
   );
 }
 
-function CalibrationDetailsSection({ formValues, fieldErrors, onFieldChange }) {
+function MaintenanceScheduleSection({
+  prefix,
+  formValues,
+  fieldErrors,
+  onFieldChange,
+}) {
   return (
     <div className="container-fluid new-instrument-form__content">
       <div className="row g-4">
         <div className="col-lg-6">
           <FormElement
-            type="text"
-            mandatory
+            type="date"
             label="Last Performed On"
-            message={fieldErrors.calibLastPerformedOn}
+            message={fieldErrors[`${prefix}LastPerformedOn`]}
             messageTone="error"
-            inputProps={{ ...getInputProps('calibLastPerformedOn', formValues, onFieldChange), placeholder: 'eg. CSL-01' }}
+            inputProps={{
+              ...getInputProps(`${prefix}LastPerformedOn`, formValues, onFieldChange),
+              placeholder: 'dd/mm/yyyy',
+            }}
           />
         </div>
         <div className="col-lg-6">
           <FormElement
             type="text"
-            mandatory
-            label="Frequency (In Days)"
-            message={fieldErrors.calibFrequency}
+            label="Frequency(in days)"
+            message={fieldErrors[`${prefix}Frequency`]}
             messageTone="error"
-            inputProps={{ ...getInputProps('calibFrequency', formValues, onFieldChange), placeholder: 'eg. 37653' }}
+            inputProps={{ ...getInputProps(`${prefix}Frequency`, formValues, onFieldChange), placeholder: '' }}
           />
         </div>
         <div className="col-lg-6">
           <FormElement
             type="text"
-            label="Remind before days"
-            inputProps={{ ...getInputProps('calibRemindBeforeDays', formValues, onFieldChange), placeholder: 'eg. SDL-UK' }}
+            label="Remind Before days"
+            inputProps={{ ...getInputProps(`${prefix}RemindBeforeDays`, formValues, onFieldChange), placeholder: '' }}
           />
         </div>
         <div className="col-lg-6">
           <FormElement
             type="text"
-            label="Reminder frequency"
-            inputProps={{ ...getInputProps('calibReminderFrequency', formValues, onFieldChange), placeholder: 'eg. K 043' }}
+            label="Reminder Frequency"
+            inputProps={{ ...getInputProps(`${prefix}ReminderFrequency`, formValues, onFieldChange), placeholder: '' }}
           />
         </div>
         <div className="col-12">
           <FormElement
             type="dropdown"
-            label="Allow Access to"
-            inputProps={{ ...getInputProps('calibAllowAccessTo', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
+            label="Remind To"
+            inputProps={{
+              ...getInputProps(`${prefix}RemindTo`, formValues, onFieldChange),
+              placeholder: 'Nothing selected',
+              options: roleOptions,
+            }}
           />
         </div>
         <div className="col-lg-6">
           <FormElement
             type="dropdown"
-            mandatory
-            label="Allow Access to"
-            message={fieldErrors.calibAllowAccessTo2}
-            messageTone="error"
-            inputProps={{ ...getInputProps('calibAllowAccessTo2', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
+            label="Template"
+            inputProps={{
+              ...getInputProps(`${prefix}Template`, formValues, onFieldChange),
+              placeholder: 'Select Template',
+              options: templateOptions,
+            }}
           />
         </div>
         <div className="col-lg-6">
           <FormElement
             type="dropdown"
-            mandatory
-            label="Allow Access to"
-            message={fieldErrors.calibAllowAccessTo3}
-            messageTone="error"
-            inputProps={{ ...getInputProps('calibAllowAccessTo3', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
+            label="Workflow"
+            inputProps={{
+              ...getInputProps(`${prefix}Workflow`, formValues, onFieldChange),
+              placeholder: 'Select Workflow',
+              options: workflowOptions,
+            }}
           />
         </div>
       </div>
     </div>
+  );
+}
+
+function CalibrationDetailsSection({ formValues, fieldErrors, onFieldChange }) {
+  return (
+    <MaintenanceScheduleSection
+      prefix="calib"
+      formValues={formValues}
+      fieldErrors={fieldErrors}
+      onFieldChange={onFieldChange}
+    />
   );
 }
 
 function PreventiveMaintenanceSection({ formValues, fieldErrors, onFieldChange }) {
   return (
-    <div className="container-fluid new-instrument-form__content">
-      <div className="row g-4">
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            mandatory
-            label="Last Performed On"
-            message={fieldErrors.pmLastPerformedOn}
-            messageTone="error"
-            inputProps={{ ...getInputProps('pmLastPerformedOn', formValues, onFieldChange), placeholder: 'eg. CSL-01' }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            mandatory
-            label="Frequency (In Days)"
-            message={fieldErrors.pmFrequency}
-            messageTone="error"
-            inputProps={{ ...getInputProps('pmFrequency', formValues, onFieldChange), placeholder: 'eg. 37653' }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            label="Remind before days"
-            inputProps={{ ...getInputProps('pmRemindBeforeDays', formValues, onFieldChange), placeholder: 'eg. SDL-UK' }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            label="Reminder frequency"
-            inputProps={{ ...getInputProps('pmReminderFrequency', formValues, onFieldChange), placeholder: 'eg. K 043' }}
-          />
-        </div>
-        <div className="col-12">
-          <FormElement
-            type="dropdown"
-            label="Allow Access to"
-            inputProps={{ ...getInputProps('pmAllowAccessTo', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="dropdown"
-            mandatory
-            label="Allow Access to"
-            message={fieldErrors.pmAllowAccessTo2}
-            messageTone="error"
-            inputProps={{ ...getInputProps('pmAllowAccessTo2', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="dropdown"
-            mandatory
-            label="Allow Access to"
-            message={fieldErrors.pmAllowAccessTo3}
-            messageTone="error"
-            inputProps={{ ...getInputProps('pmAllowAccessTo3', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
-          />
-        </div>
-      </div>
-    </div>
+    <MaintenanceScheduleSection
+      prefix="pm"
+      formValues={formValues}
+      fieldErrors={fieldErrors}
+      onFieldChange={onFieldChange}
+    />
   );
 }
 
 function BreakdownDetailsSection({ formValues, fieldErrors, onFieldChange }) {
   return (
-    <div className="container-fluid new-instrument-form__content">
-      <div className="row g-4">
-        <div className="col-12">
-          <FormElement
-            type="dropdown"
-            label="Allow Access to"
-            inputProps={{ ...getInputProps('bdAllowAccessTo', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="dropdown"
-            mandatory
-            label="Allow Access to"
-            message={fieldErrors.bdAllowAccessTo2}
-            messageTone="error"
-            inputProps={{ ...getInputProps('bdAllowAccessTo2', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="dropdown"
-            mandatory
-            label="Allow Access to"
-            message={fieldErrors.bdAllowAccessTo3}
-            messageTone="error"
-            inputProps={{ ...getInputProps('bdAllowAccessTo3', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
-          />
-        </div>
-      </div>
-    </div>
+    <MaintenanceScheduleSection
+      prefix="bd"
+      formValues={formValues}
+      fieldErrors={fieldErrors}
+      onFieldChange={onFieldChange}
+    />
   );
 }
 
@@ -391,10 +388,23 @@ function AdditionalDetailsSection({ formValues, onFieldChange }) {
   );
 }
 
-function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel }) {
+function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel, mode }) {
   const prevLabel = currentStep > 0 ? wizardSteps[currentStep - 1] : 'Cancel';
   const isLast = currentStep === wizardSteps.length - 1;
   const handlePrevClick = currentStep > 0 ? onPrev : onCancel;
+
+  if (mode === 'edit') {
+    return (
+      <div className="new-instrument-card__footer">
+        <SecondaryButton className="new-instrument-cancel" leftIcon="close" onClick={onCancel}>
+          Cancel
+        </SecondaryButton>
+        <PrimaryButton leftIcon="save" onClick={onComplete}>
+          Save Changes
+        </PrimaryButton>
+      </div>
+    );
+  }
 
   return (
     <div className="new-instrument-card__footer">
@@ -414,7 +424,7 @@ function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel }) {
   );
 }
 
-function InstrumentForm({ currentStep, formValues, fieldErrors, onFieldChange, onPrev, onNext, onComplete, onCancel, onStepChange }) {
+function InstrumentForm({ currentStep, formValues, fieldErrors, onFieldChange, onPrev, onNext, onComplete, onCancel, onStepChange, mode, title }) {
   const sections = [
     <BasicDetailsSection key="basic" formValues={formValues} fieldErrors={fieldErrors} onFieldChange={onFieldChange} />,
     <CalibrationDetailsSection key="calibration" formValues={formValues} fieldErrors={fieldErrors} onFieldChange={onFieldChange} />,
@@ -426,20 +436,34 @@ function InstrumentForm({ currentStep, formValues, fieldErrors, onFieldChange, o
   return (
     <section className="new-instrument-card">
       <div className="new-instrument-card__body">
-        <StepRail currentStep={currentStep} onStepChange={onStepChange} />
+        <StepRail currentStep={currentStep} mode={mode} title={title} onStepChange={onStepChange} />
         <div className="new-instrument-form">
           <div className="new-instrument-form__stage">{sections[currentStep]}</div>
-          <WizardFooter currentStep={currentStep} onPrev={onPrev} onNext={onNext} onComplete={onComplete} onCancel={onCancel} />
+          <WizardFooter currentStep={currentStep} onPrev={onPrev} onNext={onNext} onComplete={onComplete} onCancel={onCancel} mode={mode} />
         </div>
       </div>
     </section>
   );
 }
 
-export default function NewInstrumentPage({ onBack, onComplete }) {
+export default function NewInstrumentPage({
+  mode = 'create',
+  instrument = null,
+  parentLabel = 'Instruments',
+  onBack,
+  onComplete,
+}) {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formValues, setFormValues] = useState(initialFormValues);
+  const [formValues, setFormValues] = useState(mode === 'edit' ? buildEditFormValues(instrument) : initialFormValues);
   const [fieldErrors, setFieldErrors] = useState({});
+  const instrumentTitle = getInstrumentDisplayName(instrument);
+  const currentCrumbLabel = mode === 'edit' ? `Edit ${instrumentTitle}` : 'New Instrument';
+
+  useEffect(() => {
+    setCurrentStep(0);
+    setFormValues(mode === 'edit' ? buildEditFormValues(instrument) : initialFormValues);
+    setFieldErrors({});
+  }, [mode, instrument]);
 
   const handleFieldChange = (key, value) => {
     setFormValues((current) => ({ ...current, [key]: value }));
@@ -456,12 +480,24 @@ export default function NewInstrumentPage({ onBack, onComplete }) {
   };
 
   const handleComplete = () => {
-    onComplete?.({ name: formValues.name });
+    onComplete?.({
+      ...instrument,
+      ...formValues,
+      name: formValues.name,
+      uniqueKey: formValues.uniqueKey,
+      serialNo: formValues.serialNumber,
+      make: formValues.make,
+      modelNo: formValues.model,
+      description: formValues.description,
+      lastServiceOn: formValues.pmLastPerformedOn || formValues.calibLastPerformedOn || instrument?.lastServiceOn || '',
+      nextServiceOn: instrument?.nextServiceOn ?? '14/10/2026',
+      calibrated: instrument?.calibrated ?? 'Yes',
+    });
   };
 
   return (
     <div className="new-instrument-page">
-      <TopBar onBack={onBack} />
+      <TopBar parentLabel={parentLabel} currentLabel={currentCrumbLabel} onBack={onBack} />
       <main className="new-instrument-page__content">
         <InstrumentForm
           currentStep={currentStep}
@@ -472,7 +508,9 @@ export default function NewInstrumentPage({ onBack, onComplete }) {
           onNext={handleNext}
           onComplete={handleComplete}
           onCancel={onBack}
-          onStepChange={(stepIndex) => setCurrentStep(stepIndex)}
+          onStepChange={mode === 'edit' ? (stepIndex) => setCurrentStep(stepIndex) : undefined}
+          mode={mode}
+          title={instrumentTitle}
         />
       </main>
     </div>

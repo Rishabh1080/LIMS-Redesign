@@ -1,15 +1,35 @@
 import { useEffect, useRef, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
-import { ToastNotification } from '../components/FormControls';
+import { FormElement, ToastNotification } from '../components/FormControls';
+import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
+import ReportSelector from '../components/ReportSelector';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
+import { getStatusPresentation } from '../status/statusRegistry';
 import './tr-details-page.css';
 
 const toastMessageByKey = {
   'datasheet-updated': 'datasheet updated successfully.',
+  'method-added': 'new method added successfully.',
 };
+
+const methodOptions = [
+  'IS 1963',
+  'ASTM D1298',
+  'ASTM D445',
+  'IP 123',
+  'AATCC 61',
+];
+
+const initialMethods = [
+  {
+    id: 'method-001',
+    methodName: 'IS 1963',
+    label: 'Method 1',
+  },
+];
 
 function RemnantModal({ open, onCancel, onSubmit }) {
   if (!open) {
@@ -47,9 +67,78 @@ function RemnantModal({ open, onCancel, onSubmit }) {
   );
 }
 
-function PageHeader({ requestId, workflowStage, onBack, onOpenDatasheet, onOpenRemnantModal }) {
+function AddMethodModal({ open, requestId, draftValue, onDraftChange, onCancel, onSubmit }) {
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <Modal
+      open={open}
+      title="Add Method"
+      titleId="add-method-modal-title"
+      titleIcon="plus"
+      onClose={onCancel}
+      size="md"
+      bodyClassName="add-method-modal__body"
+      actionsClassName="add-method-modal__actions"
+      actions={
+        <>
+          <SecondaryButton leftIcon="close" size="large" className="add-method-modal__cancel" onClick={onCancel}>
+            Cancel
+          </SecondaryButton>
+          <PrimaryButton type="submit" form="add-method-form" leftIcon="plus" disabled={!draftValue}>
+            Add
+          </PrimaryButton>
+        </>
+      }
+    >
+      <form
+        id="add-method-form"
+        className="add-method-modal__form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSubmit();
+        }}
+      >
+        <div className="add-method-modal__request-id">
+          <span className="add-method-modal__request-id-label">Test Request ID:</span>
+          <span className="add-method-modal__request-id-value">{requestId}</span>
+        </div>
+
+        <FormElement
+          type="dropdown"
+          label="Method"
+          inputProps={{
+            value: draftValue,
+            placeholder: 'Select New Method',
+            options: methodOptions,
+            onChange: (event) => onDraftChange(event.target.value),
+          }}
+        />
+      </form>
+    </Modal>
+  );
+}
+
+function PageHeader({
+  requestId,
+  requestStatus,
+  workflowStage,
+  onBack,
+  onOpenDatasheet,
+  onOpenAddMethodModal,
+  onOpenRemnantModal,
+}) {
   const isSubmitted = workflowStage === 'submitted';
   const isReadyForReview = workflowStage === 'in-progress';
+  const resolvedStatusPresentation = requestStatus
+    ? getStatusPresentation('testRequest', requestStatus)
+    : {
+        label: isSubmitted ? 'Submitted' : 'Not submiited',
+        color: isSubmitted ? 'orange' : 'gray',
+        styleType: 'neutral',
+      };
 
   return (
     <section className="tr-details-page-header">
@@ -60,8 +149,8 @@ function PageHeader({ requestId, workflowStage, onBack, onOpenDatasheet, onOpenR
         <div className="tr-details-page-header__title-copy">
           <div className="tr-details-page-header__title-row">
             <h1>{requestId}</h1>
-            <StatusPill color={isSubmitted ? 'orange' : 'gray'} styleType="neutral">
-              {isSubmitted ? 'Submitted' : 'Not submiited'}
+            <StatusPill color={resolvedStatusPresentation.color} styleType={resolvedStatusPresentation.styleType}>
+              {resolvedStatusPresentation.label}
             </StatusPill>
           </div>
           <div className="tr-details-page-header__timestamp">
@@ -76,6 +165,9 @@ function PageHeader({ requestId, workflowStage, onBack, onOpenDatasheet, onOpenR
           <PrimaryButton leftIcon="printer">Print</PrimaryButton>
         ) : isReadyForReview ? (
           <>
+            <SecondaryButton leftIcon="plus" onClick={onOpenAddMethodModal}>
+              Add Method
+            </SecondaryButton>
             <SecondaryButton leftIcon="plus" onClick={onOpenDatasheet}>
               Add Results
             </SecondaryButton>
@@ -84,9 +176,14 @@ function PageHeader({ requestId, workflowStage, onBack, onOpenDatasheet, onOpenR
             </PrimaryButton>
           </>
         ) : (
-          <PrimaryButton leftIcon="plus" onClick={onOpenDatasheet}>
-            Add Results
-          </PrimaryButton>
+          <>
+            <SecondaryButton leftIcon="plus" onClick={onOpenAddMethodModal}>
+              Add Method
+            </SecondaryButton>
+            <PrimaryButton leftIcon="plus" onClick={onOpenDatasheet}>
+              Add Results
+            </PrimaryButton>
+          </>
         )}
       </div>
     </section>
@@ -96,6 +193,7 @@ function PageHeader({ requestId, workflowStage, onBack, onOpenDatasheet, onOpenR
 export default function TrDetailsPage({
   sampleId = 'IICT/2025-2026/1101',
   requestId = 'URLS/26/ULRS/O/2026/30/330',
+  requestStatus = null,
   sourcePage = 'all-samples',
   workflowStage = 'default',
   initialToast = null,
@@ -111,6 +209,11 @@ export default function TrDetailsPage({
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState(toastMessageByKey['datasheet-updated']);
   const [remnantModalOpen, setRemnantModalOpen] = useState(false);
+  const [addMethodModalOpen, setAddMethodModalOpen] = useState(false);
+  const [methodDraft, setMethodDraft] = useState('');
+  const [methods, setMethods] = useState(initialMethods);
+  const [selectedMethodId, setSelectedMethodId] = useState(initialMethods[0]?.id ?? '');
+  const previousMethodCountRef = useRef(initialMethods.length);
   const sourceLabelByPage = {
     'all-samples': 'All Samples',
     'samples-workspace': 'Samples Workspace',
@@ -123,7 +226,6 @@ export default function TrDetailsPage({
   };
   const sourceLabel = sourceLabelByPage[sourcePage] ?? 'Samples Workspace';
   const activeNav = activeNavByPage[sourcePage] ?? 'samples-workspace';
-
   useEffect(() => {
     return () => {
       window.clearTimeout(toastTimerRef.current);
@@ -147,9 +249,43 @@ export default function TrDetailsPage({
     };
   }, [initialToast, onInitialToastConsumed]);
 
+  useEffect(() => {
+    const previousCount = previousMethodCountRef.current;
+    if (methods.length > 1 && previousCount <= 1) {
+      onSidebarCollapsedChange?.(true);
+    }
+    previousMethodCountRef.current = methods.length;
+  }, [methods.length, onSidebarCollapsedChange]);
+
   const handleRemnantSubmit = (remnantAvailable) => {
     setRemnantModalOpen(false);
     onSubmitForReview?.(remnantAvailable);
+  };
+
+  const showToast = (toastKey) => {
+    window.clearTimeout(toastTimerRef.current);
+    setToastMessage(toastMessageByKey[toastKey] ?? toastKey);
+    setToastVisible(true);
+    toastTimerRef.current = window.setTimeout(() => setToastVisible(false), 5000);
+  };
+
+  const handleMethodSubmit = () => {
+    if (!methodDraft) {
+      return;
+    }
+
+    const duplicateCount = methods.filter((method) => method.methodName === methodDraft).length;
+    const nextMethod = {
+      id: `method-${String(methods.length + 1).padStart(3, '0')}`,
+      methodName: methodDraft,
+      label: `Method ${methods.length + 1}`,
+    };
+
+    setMethods((current) => [...current, nextMethod]);
+    setSelectedMethodId(nextMethod.id);
+    setAddMethodModalOpen(false);
+    setMethodDraft('');
+    showToast('method-added');
   };
 
   return (
@@ -166,18 +302,71 @@ export default function TrDetailsPage({
       pageHeader={
         <PageHeader
           requestId={requestId}
+          requestStatus={requestStatus}
           workflowStage={workflowStage}
           onBack={onBack}
           onOpenDatasheet={onOpenDatasheet}
+          onOpenAddMethodModal={() => setAddMethodModalOpen(true)}
           onOpenRemnantModal={() => setRemnantModalOpen(true)}
         />
       }
     >
-      <main className="tr-details-page">
-        <div className="tr-details-page__placeholder">
-          Template content will be added here
-        </div>
+      <main className={`tr-details-page ${methods.length > 1 ? '' : 'tr-details-page--single-method'}`.trim()}>
+        {methods.length > 1 ? (
+          <>
+            <aside className="tr-details-methods-sidebar">
+              <section className="tr-details-methods-group is-expanded">
+                <button
+                  type="button"
+                  className="tr-details-methods-group__header"
+                  aria-expanded="true"
+                >
+                  <div className="tr-details-methods-group__header-copy">
+                    <div className="tr-details-methods-group__title">Test Methods ({methods.length})</div>
+                  </div>
+                  <AppIcon name="chevron-down" className="tr-details-methods-group__chevron" />
+                </button>
+
+                <div className="tr-details-methods-group__rows">
+                  {methods.map((method) => (
+                    <ReportSelector
+                      key={method.id}
+                      label={method.label}
+                      state={method.id === selectedMethodId ? 'active' : 'default'}
+                      hasNabl={false}
+                      onClick={() => setSelectedMethodId(method.id)}
+                    />
+                  ))}
+                </div>
+              </section>
+            </aside>
+
+            <section className="tr-details-page__content">
+              <div className="tr-details-page__placeholder">
+                Template content will be added here
+              </div>
+            </section>
+          </>
+        ) : (
+          <section className="tr-details-page__content">
+            <div className="tr-details-page__placeholder">
+              Template content will be added here
+            </div>
+          </section>
+        )}
       </main>
+
+      <AddMethodModal
+        open={addMethodModalOpen}
+        requestId={requestId}
+        draftValue={methodDraft}
+        onDraftChange={setMethodDraft}
+        onCancel={() => {
+          setAddMethodModalOpen(false);
+          setMethodDraft('');
+        }}
+        onSubmit={handleMethodSubmit}
+      />
 
       <RemnantModal
         open={remnantModalOpen}

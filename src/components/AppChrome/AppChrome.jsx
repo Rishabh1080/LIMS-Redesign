@@ -23,6 +23,7 @@ const navigationSections = [
       { label: 'Leave Records', icon: 'leave-records', key: 'leave-records' },
       { label: 'Materials', icon: 'materials', key: 'materials' },
       { label: 'Instruments', icon: 'tool', key: 'instruments' },
+      { label: 'Trainings', icon: 'checklist', key: 'trainings' },
     ],
   },
 ];
@@ -55,7 +56,6 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
                   } ${badgeCounts[item.badgeKey] ? 'sidebar-link--with-badge' : ''} ${
                     collapsed && badgeCounts[item.badgeKey] ? 'sidebar-link--with-dot' : ''
                   }`}
-                  title={collapsed ? item.label : undefined}
                   aria-label={item.label}
                   onClick={() => {
                     onNavigate?.(item.key);
@@ -72,6 +72,9 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
                       {badgeCounts[item.badgeKey]}
                     </Badge>
                   ) : null}
+                  <span className="sidebar-link__tooltip" role="tooltip">
+                    {item.label}
+                  </span>
                 </button>
               ))}
             </div>
@@ -103,8 +106,8 @@ function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], on
               <div className="header-breadcrumb d-flex align-items-center">
                 <button
                   className="header-home btn d-flex align-items-center"
-                  aria-label="Go to Samples Workspace"
-                  onClick={() => onNavigate?.('samples-workspace')}
+                  aria-label="Go to Dashboard"
+                  onClick={() => onNavigate?.('dashboard')}
                 >
                   <AppIcon name="home" />
                 </button>
@@ -150,8 +153,14 @@ function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], on
               <SecondaryButton size="large" className="header-icon" aria-label="Notifications">
                 <AppIcon name="bell" />
               </SecondaryButton>
-              <SecondaryButton size="large" tone="neutral" className="header-avatar">
-                DC
+              <SecondaryButton
+                size="large"
+                tone="neutral"
+                leftIcon="user"
+                className="header-profile"
+                aria-label="User profile"
+              >
+                Rishabh Gangwar
               </SecondaryButton>
             </div>
           </div>
