@@ -1,6 +1,7 @@
 const defaultProjectName = 'lims-v3';
 const defaultEndpoint = '/api/siteping';
 const defaultStorageKey = 'lims-v3-siteping-feedback';
+const sitepingFrontendVisible = false;
 
 let sitepingInstance = null;
 let sitepingInitPromise = null;
@@ -10,7 +11,8 @@ export function initSitepingFeedbackWidget() {
     return sitepingInstance ?? sitepingInitPromise;
   }
 
-  const enabled = import.meta.env.VITE_SITEPING_ENABLED !== 'false';
+  const enabled =
+    sitepingFrontendVisible && import.meta.env.VITE_SITEPING_ENABLED !== 'false';
 
   if (!enabled) {
     return null;
