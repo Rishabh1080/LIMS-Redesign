@@ -4,7 +4,7 @@ import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import Stepper from '../components/Stepper/Stepper';
-import './new-instrument-page.css';
+import './new-instrument-page.scss';
 
 const wizardSteps = [
   'Basic Details',
@@ -156,14 +156,14 @@ function TopBar({ parentLabel, currentLabel, onBack }) {
           <AppIcon name="activity" />
           <span>No Active Alerts</span>
         </div>
-        <button className="new-instrument-topbar__chip btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral smplfy-secondary-button--has-left-icon">
+        <button className="smplfy-btn btn btn-outline-secondary new-instrument-topbar__chip">
           <AppIcon name="phone" />
           <span>+91-6358273804</span>
         </button>
-        <button className="new-instrument-topbar__icon btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral smplfy-secondary-button--icon-only" aria-label="Notifications">
+        <button className="smplfy-btn btn btn-outline-secondary new-instrument-topbar__icon" aria-label="Notifications">
           <AppIcon name="bell" />
         </button>
-        <button className="new-instrument-topbar__avatar btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral">DC</button>
+        <button className="smplfy-btn btn btn-outline-secondary new-instrument-topbar__avatar">DC</button>
       </div>
     </header>
   );

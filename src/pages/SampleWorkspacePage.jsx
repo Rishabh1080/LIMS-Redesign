@@ -6,8 +6,8 @@ import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import SampleCard, { SampleCardViewToggle } from '../components/SampleCard/SampleCard';
 import { sampleCards } from '../sampleWorkspaceData';
-import '../styles.css';
-import './sample-workspace-page.css';
+import '../styles.scss';
+import './sample-workspace-page.scss';
 
 const filterConfig = [
   {

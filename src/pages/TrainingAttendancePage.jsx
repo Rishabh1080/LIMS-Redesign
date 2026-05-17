@@ -1,7 +1,7 @@
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import SecondaryButton from '../components/SecondaryButton';
-import './training-attendance-page.css';
+import './training-attendance-page.scss';
 
 const defaultAttendanceRows = [
   { id: 'attendance-001', date: '05/04/2026', inTime: '09:30 AM', outTime: '11:00 AM' },

@@ -1,0 +1,36 @@
+.smplfy-list-group-item__icon {
+  width: var(--smplfy-list-group-item-icon-size);
+  height: var(--smplfy-list-group-item-icon-size);
+  flex: 0 0 var(--smplfy-list-group-item-icon-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.smplfy-list-group-item__icon svg {
+  width: var(--smplfy-list-group-item-icon-size);
+  height: var(--smplfy-list-group-item-icon-size);
+  display: block;
+}
+
+.smplfy-list-group-item__label {
+  min-width: var(--smplfy-button-space-0);
+  flex: 1 1 auto;
+  font-size: var(--smplfy-list-group-item-font-size);
+  line-height: var(--smplfy-list-group-item-line-height);
+  font-weight: var(--smplfy-list-group-item-font-weight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.smplfy-list-group-item__pill {
+  flex: 0 0 auto;
+}
+
+.smplfy-list-group-item.list-group-item.active .smplfy-badge[data-smplfy-color],
+.smplfy-list-group-item.list-group-item[data-state='active'] .smplfy-badge[data-smplfy-color] {
+  background-color: var(--smplfy-status-pill-green-subtle-bg);
+  border-color: var(--smplfy-status-pill-green-subtle-border);
+  color: var(--smplfy-status-pill-green-subtle-text);
+}

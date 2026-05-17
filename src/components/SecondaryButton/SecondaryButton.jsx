@@ -1,8 +1,37 @@
 import AppIcon from '../AppIcon';
-import './SecondaryButton.css';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
+}
+
+const toneClassByName = {
+  default: 'btn-outline-secondary',
+  primary: 'btn-outline-primary',
+  secondary: 'btn-outline-secondary',
+  neutral: 'btn-outline-secondary',
+  info: 'btn-outline-info',
+  success: 'btn-outline-success',
+  positive: 'btn-outline-success',
+  danger: 'btn-outline-danger',
+  destructive: 'btn-outline-danger',
+  red: 'btn-outline-danger',
+};
+
+const bootstrapVariantClassPattern = /\bbtn-(primary|secondary|success|danger|warning|info|light|dark|link|outline-[a-z-]+)\b/;
+const bootstrapSizeClassPattern = /\bbtn-(sm|lg)\b/;
+
+function getSizeClass(size) {
+  const resolvedSize = String(size || 'default').toLowerCase();
+
+  if (resolvedSize === 'small' || resolvedSize === 'medium') {
+    return 'btn-sm';
+  }
+
+  if (resolvedSize === 'large') {
+    return 'btn-lg';
+  }
+
+  return '';
 }
 
 export default function SecondaryButton({
@@ -11,7 +40,7 @@ export default function SecondaryButton({
   leftIcon,
   rightIcon,
   size = 'large',
-  tone = 'neutral',
+  tone = 'secondary',
   disabled = false,
   className = '',
   type = 'button',
@@ -19,40 +48,30 @@ export default function SecondaryButton({
 }) {
   const resolvedLabel = children ?? label;
   const hasLabel = Boolean(resolvedLabel);
-  const hasLeftIcon = Boolean(leftIcon);
-  const hasRightIcon = Boolean(rightIcon);
-  const sizeClass = size ? `smplfy-secondary-button--${size.toLowerCase()}` : '';
-  const toneClass = tone ? `smplfy-secondary-button--tone-${tone.toLowerCase()}` : '';
+  const shouldWrapLabel = Boolean(leftIcon || rightIcon || label);
+  const hasClassVariant = bootstrapVariantClassPattern.test(className);
+  const hasClassSize = bootstrapSizeClassPattern.test(className);
+  const sizeClass = hasClassSize ? '' : getSizeClass(size);
+  const toneClass = hasClassVariant
+    ? ''
+    : toneClassByName[String(tone || 'secondary').toLowerCase()] ?? 'btn-outline-secondary';
 
   return (
     <button
       type={type}
       disabled={disabled}
       className={joinClasses(
+        'smplfy-btn',
         'btn',
-        'smplfy-secondary-button',
-        sizeClass,
         toneClass,
-        hasLeftIcon && 'smplfy-secondary-button--has-left-icon',
-        hasRightIcon && 'smplfy-secondary-button--has-right-icon',
-        !hasLabel && 'smplfy-secondary-button--icon-only',
+        sizeClass,
         className,
       )}
       {...props}
     >
-      {leftIcon ? (
-        <span className="smplfy-secondary-button__icon" aria-hidden="true">
-          <AppIcon name={leftIcon} />
-        </span>
-      ) : null}
-
-      {hasLabel ? <span className="smplfy-secondary-button__label">{resolvedLabel}</span> : null}
-
-      {rightIcon ? (
-        <span className="smplfy-secondary-button__icon" aria-hidden="true">
-          <AppIcon name={rightIcon} />
-        </span>
-      ) : null}
+      {leftIcon ? <AppIcon name={leftIcon} /> : null}
+      {hasLabel ? shouldWrapLabel ? <span>{resolvedLabel}</span> : resolvedLabel : null}
+      {rightIcon ? <AppIcon name={rightIcon} /> : null}
     </button>
   );
 }

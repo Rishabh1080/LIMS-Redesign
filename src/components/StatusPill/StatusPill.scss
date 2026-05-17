@@ -1,0 +1,103 @@
+.smplfy-badge.badge.rounded-pill[data-smplfy-color] {
+  --bs-badge-padding-x: var(--smplfy-status-pill-padding-x);
+  --bs-badge-padding-y: var(--smplfy-status-pill-padding-y);
+  --bs-badge-font-size: var(--smplfy-status-pill-font-size);
+  --bs-badge-font-weight: var(--smplfy-status-pill-font-weight);
+  --bs-badge-border-radius: var(--smplfy-status-pill-radius);
+
+  min-height: var(--smplfy-status-pill-height);
+  width: fit-content;
+  max-width: 100%;
+  border-width: var(--smplfy-status-pill-border-width) !important;
+  border-style: solid !important;
+  border-radius: var(--bs-badge-border-radius);
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--bs-badge-font-size);
+  line-height: var(--smplfy-status-pill-line-height);
+  font-weight: var(--bs-badge-font-weight);
+  letter-spacing: var(--smplfy-status-pill-letter-spacing);
+  white-space: nowrap;
+}
+
+.smplfy-badge__label {
+  display: block;
+  min-width: var(--smplfy-button-space-0);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='gray'][data-smplfy-style='neutral'] {
+  background-color: var(--smplfy-status-pill-gray-subtle-bg) !important;
+  border-color: var(--smplfy-status-pill-gray-subtle-border) !important;
+  color: var(--smplfy-status-pill-gray-subtle-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='blue'][data-smplfy-style='neutral'] {
+  background-color: var(--smplfy-status-pill-blue-subtle-bg) !important;
+  border-color: var(--smplfy-status-pill-blue-subtle-border) !important;
+  color: var(--smplfy-status-pill-blue-subtle-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='red'][data-smplfy-style='neutral'] {
+  background-color: var(--smplfy-status-pill-red-subtle-bg) !important;
+  border-color: var(--smplfy-status-pill-red-subtle-border) !important;
+  color: var(--smplfy-status-pill-red-subtle-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='orange'][data-smplfy-style='neutral'] {
+  background-color: var(--smplfy-status-pill-orange-subtle-bg) !important;
+  border-color: var(--smplfy-status-pill-orange-subtle-border) !important;
+  color: var(--smplfy-status-pill-orange-subtle-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='green'][data-smplfy-style='neutral'] {
+  background-color: var(--smplfy-status-pill-green-subtle-bg) !important;
+  border-color: var(--smplfy-status-pill-green-subtle-border) !important;
+  color: var(--smplfy-status-pill-green-subtle-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='yellow'][data-smplfy-style='neutral'] {
+  background-color: var(--smplfy-status-pill-yellow-subtle-bg) !important;
+  border-color: var(--smplfy-status-pill-yellow-subtle-border) !important;
+  color: var(--smplfy-status-pill-yellow-subtle-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='gray'][data-smplfy-style='strong'] {
+  background-color: var(--smplfy-status-pill-gray-solid-bg) !important;
+  border-color: var(--smplfy-status-pill-gray-solid-border) !important;
+  color: var(--smplfy-status-pill-gray-solid-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='blue'][data-smplfy-style='strong'] {
+  background-color: var(--smplfy-status-pill-blue-solid-bg) !important;
+  border-color: var(--smplfy-status-pill-blue-solid-border) !important;
+  color: var(--smplfy-status-pill-blue-solid-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='red'][data-smplfy-style='strong'] {
+  background-color: var(--smplfy-status-pill-red-solid-bg) !important;
+  border-color: var(--smplfy-status-pill-red-solid-border) !important;
+  color: var(--smplfy-status-pill-red-solid-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='orange'][data-smplfy-style='strong'] {
+  background-color: var(--smplfy-status-pill-orange-solid-bg) !important;
+  border-color: var(--smplfy-status-pill-orange-solid-border) !important;
+  color: var(--smplfy-status-pill-orange-solid-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='green'][data-smplfy-style='strong'] {
+  background-color: var(--smplfy-status-pill-green-solid-bg) !important;
+  border-color: var(--smplfy-status-pill-green-solid-border) !important;
+  color: var(--smplfy-status-pill-green-solid-text) !important;
+}
+
+.smplfy-badge.badge.rounded-pill[data-smplfy-color='yellow'][data-smplfy-style='strong'] {
+  background-color: var(--smplfy-status-pill-yellow-solid-bg) !important;
+  border-color: var(--smplfy-status-pill-yellow-solid-border) !important;
+  color: var(--smplfy-status-pill-yellow-solid-text) !important;
+}

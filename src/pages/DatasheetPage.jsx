@@ -4,7 +4,7 @@ import AppIcon from '../components/AppIcon';
 import LoadingAnimation from '../components/LoadingAnimation/LoadingAnimation';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import './datasheet-page.css';
+import './datasheet-page.scss';
 
 function PageHeader({ datasheetId, loading, onBack, onRefresh, onSave }) {
   return (

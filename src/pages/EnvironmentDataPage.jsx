@@ -5,7 +5,7 @@ import { FormElement } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import './environment-data-page.css';
+import './environment-data-page.scss';
 
 const defaultEnvironmentLogs = [
   {

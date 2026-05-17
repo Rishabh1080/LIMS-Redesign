@@ -1,4 +1,4 @@
-import './NavSelector.css';
+import './NavSelector.scss';
 import Badge from '../Badge';
 
 function joinClasses(...values) {
@@ -16,6 +16,7 @@ export default function NavSelector({
   ...props
 }) {
   const resolvedLabel = children ?? label;
+  const normalizedSize = String(size || 'large').toLowerCase();
   const normalizedCount = typeof count === 'string' ? count.trim() : count;
   const hasBadge =
     normalizedCount !== undefined &&
@@ -28,18 +29,19 @@ export default function NavSelector({
     <button
       type={type}
       className={joinClasses(
-        'btn',
-        'smplfy-nav-selector',
-        `smplfy-nav-selector--${size.toLowerCase()}`,
-        active && 'is-active',
-        hasBadge && 'smplfy-nav-selector--with-badge',
+        'smplfy-nav-link',
+        'nav-link',
+        active && 'active',
         className,
       )}
+      aria-current={active ? 'page' : undefined}
+      data-smplfy-size={normalizedSize}
+      data-smplfy-has-badge={hasBadge ? 'true' : undefined}
       {...props}
     >
-      <span className="smplfy-nav-selector__label">{resolvedLabel}</span>
+      <span className="smplfy-nav-link__label">{resolvedLabel}</span>
       {hasBadge ? (
-        <Badge className="smplfy-nav-selector__badge" tone="danger" size="small" shape="circle">
+        <Badge className="smplfy-nav-link__badge" tone="danger" size="small" shape="circle">
           {normalizedCount}
         </Badge>
       ) : null}

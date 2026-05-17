@@ -1,8 +1,34 @@
 import AppIcon from '../AppIcon';
-import './PrimaryButton.css';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
+}
+
+const variantClassByStyle = {
+  default: 'btn-primary',
+  primary: 'btn-primary',
+  positive: 'btn-success',
+  success: 'btn-success',
+  destructive: 'btn-danger',
+  danger: 'btn-danger',
+  red: 'btn-danger',
+};
+
+const bootstrapVariantClassPattern = /\bbtn-(primary|secondary|success|danger|warning|info|light|dark|link|outline-[a-z-]+)\b/;
+const bootstrapSizeClassPattern = /\bbtn-(sm|lg)\b/;
+
+function getSizeClass(size) {
+  const resolvedSize = String(size || 'default').toLowerCase();
+
+  if (resolvedSize === 'small' || resolvedSize === 'medium') {
+    return 'btn-sm';
+  }
+
+  if (resolvedSize === 'large') {
+    return 'btn-lg';
+  }
+
+  return '';
 }
 
 export default function PrimaryButton({
@@ -19,82 +45,29 @@ export default function PrimaryButton({
 }) {
   const resolvedLabel = children ?? label;
   const hasLabel = Boolean(resolvedLabel);
-  const hasLeftIcon = Boolean(leftIcon);
-  const hasRightIcon = Boolean(rightIcon);
-  const iconOnly = !hasLabel;
-  const resolvedSize = String(size || 'default').toLowerCase();
-  const isSmall = resolvedSize === 'small';
-  const variantClass =
-    styleVariant && styleVariant !== 'default'
-      ? `smplfy-primary-button--${styleVariant.toLowerCase()}`
-      : '';
-  const sizeClass = size && size !== 'default' ? `smplfy-primary-button--${size.toLowerCase()}` : '';
-  const buttonStyle = hasLabel
-    ? hasLeftIcon && hasRightIcon
-      ? {
-          '--primary-button-padding-inline-start': isSmall
-            ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-start)'
-            : 'var(--smplfy-component-button-space-padding-inline-both-icons)',
-          '--primary-button-padding-inline-end': isSmall
-            ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-start)'
-            : 'var(--smplfy-component-button-space-padding-inline-both-icons)',
-        }
-      : hasLeftIcon
-        ? {
-            '--primary-button-padding-inline-start': isSmall
-              ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-start)'
-              : 'var(--smplfy-component-button-space-padding-inline-leading-icon-start)',
-            '--primary-button-padding-inline-end': isSmall
-              ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-end)'
-              : 'var(--smplfy-component-button-space-padding-inline-leading-icon-end)',
-          }
-        : hasRightIcon
-          ? {
-              '--primary-button-padding-inline-start': isSmall
-                ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-end)'
-                : 'var(--smplfy-component-button-space-padding-inline-trailing-icon-start)',
-              '--primary-button-padding-inline-end': isSmall
-                ? 'var(--smplfy-component-button-space-padding-inline-small-leading-icon-start)'
-                : 'var(--smplfy-component-button-space-padding-inline-trailing-icon-end)',
-            }
-          : {
-              '--primary-button-padding-inline-start':
-                'var(--smplfy-component-button-space-padding-inline-label-only)',
-              '--primary-button-padding-inline-end':
-                'var(--smplfy-component-button-space-padding-inline-label-only)',
-            }
-    : undefined;
+  const hasClassVariant = bootstrapVariantClassPattern.test(className);
+  const hasClassSize = bootstrapSizeClassPattern.test(className);
+  const variantClass = hasClassVariant
+    ? ''
+    : variantClassByStyle[String(styleVariant || 'default').toLowerCase()] ?? 'btn-primary';
+  const sizeClass = hasClassSize ? '' : getSizeClass(size);
 
   return (
     <button
       type={type}
       disabled={disabled}
-      style={buttonStyle}
       className={joinClasses(
+        'smplfy-btn',
         'btn',
-        'smplfy-primary-button',
         variantClass,
         sizeClass,
-        hasLeftIcon && 'smplfy-primary-button--has-left-icon',
-        hasRightIcon && 'smplfy-primary-button--has-right-icon',
-        iconOnly && 'smplfy-primary-button--icon-only',
         className,
       )}
       {...props}
     >
-      {leftIcon ? (
-        <span className="smplfy-primary-button__icon" aria-hidden="true">
-          <AppIcon name={leftIcon} />
-        </span>
-      ) : null}
-
-      {hasLabel ? <span className="smplfy-primary-button__label">{resolvedLabel}</span> : null}
-
-      {rightIcon ? (
-        <span className="smplfy-primary-button__icon" aria-hidden="true">
-          <AppIcon name={rightIcon} />
-        </span>
-      ) : null}
+      {leftIcon ? <AppIcon name={leftIcon} /> : null}
+      {hasLabel ? <span>{resolvedLabel}</span> : null}
+      {rightIcon ? <AppIcon name={rightIcon} /> : null}
     </button>
   );
 }

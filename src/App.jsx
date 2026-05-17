@@ -1,5 +1,6 @@
 import AllSamplesListingPage from './pages/AllSamplesListingPage';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import AdminHubPage from './pages/AdminHubPage';
 import NewSampleCustomerDetailsPage from './pages/NewSampleCustomerDetailsPage';
 import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
 import DashboardPage from './pages/DashboardPage';
@@ -21,7 +22,22 @@ import TempReportPage from './pages/TempReportPage';
 import TestRequestsHomePage from './pages/TestRequestsHomePage';
 import TestRequestsListingPage from './pages/TestRequestsListingPage';
 import TrDetailsPage from './pages/TrDetailsPage';
+import {
+  createAnalyticsSessionId,
+  getAnalyticsElapsedTime,
+  getAnalyticsNow,
+  trackEvent,
+  trackPageView,
+} from './analytics/posthog';
 import { requestSections } from './data/requestsForMeData';
+
+function getInitialPage() {
+  if (typeof window !== 'undefined' && window.location.hash === '#admin-hub') {
+    return 'admin-hub';
+  }
+
+  return 'dashboard';
+}
 
 const instrumentCatalog = [
   {
@@ -113,7 +129,15 @@ function getInstrumentById(instrumentId) {
 }
 
 export default function App() {
-  const [activePage, setActivePage] = useState('dashboard');
+  const [activePage, setActivePage] = useState(getInitialPage);
+  const sampleCreationFlowRef = useRef({
+    id: createAnalyticsSessionId('sample-creation-flow'),
+    startedAt: getAnalyticsNow(),
+    entryPage: getInitialPage(),
+    formVariant: null,
+  });
+  const lastFlowPageRef = useRef(null);
+  const lastTrackedSampleFormVariantRef = useRef(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [sampleCardViewMode, setSampleCardViewMode] = useState('grid');
   const [requestsForMeState, setRequestsForMeState] = useState({
@@ -192,6 +216,40 @@ export default function App() {
     name: 'Training',
   });
 
+  const getSampleCreationFlowProps = (properties = {}) => ({
+    form_name: 'sample_creation',
+    sample_creation_flow_session_id: sampleCreationFlowRef.current.id,
+    sample_creation_flow_elapsed_ms: getAnalyticsElapsedTime(sampleCreationFlowRef.current.startedAt),
+    sample_creation_flow_entry_page: sampleCreationFlowRef.current.entryPage,
+    form_variant: sampleCreationFlowRef.current.formVariant,
+    ...properties,
+  });
+
+  useEffect(() => {
+    trackPageView(activePage);
+
+    if (activePage === 'dashboard' && lastFlowPageRef.current !== 'dashboard') {
+      sampleCreationFlowRef.current = {
+        id: createAnalyticsSessionId('sample-creation-flow'),
+        startedAt: getAnalyticsNow(),
+        entryPage: 'dashboard',
+        formVariant: null,
+      };
+      lastTrackedSampleFormVariantRef.current = null;
+      trackEvent('sample_creation_flow_dashboard_landed', getSampleCreationFlowProps({
+        page_name: 'dashboard',
+      }));
+    }
+
+    if (activePage === 'workspace' && lastFlowPageRef.current !== 'workspace') {
+      trackEvent('sample_creation_flow_workspace_viewed', getSampleCreationFlowProps({
+        page_name: 'samples-workspace',
+      }));
+    }
+
+    lastFlowPageRef.current = activePage;
+  }, [activePage]);
+
   const openSampleDetails = (sampleId, options = {}) => {
     const {
       initialToast = null,
@@ -209,6 +267,15 @@ export default function App() {
       createdOn,
       sample,
     });
+
+    if (initialToast === 'sample-created') {
+      trackEvent('sample_creation_flow_sample_details_opened', getSampleCreationFlowProps({
+        source_page: sourcePage,
+        sample_status: sampleStatus,
+        toast_key: initialToast,
+      }));
+    }
+
     setActivePage('sample-details');
   };
 
@@ -346,6 +413,12 @@ export default function App() {
     const { sourcePage = 'samples-workspace' } = options;
     const parentLabel = sourcePage === 'all-samples' ? 'All Samples' : 'Samples Workspace';
 
+    trackEvent('sample_creation_flow_new_sample_clicked', getSampleCreationFlowProps({
+      from_page: activePage,
+      source_page: sourcePage,
+      parent_label: parentLabel,
+    }));
+
     setSampleEditorState({
       mode: 'create',
       sample: null,
@@ -353,6 +426,26 @@ export default function App() {
       parentLabel,
     });
     setActivePage('new-sample-customer-details');
+  };
+
+  const handleSampleFormVariantChange = (formVariant) => {
+    if (!formVariant) {
+      return;
+    }
+
+    sampleCreationFlowRef.current = {
+      ...sampleCreationFlowRef.current,
+      formVariant,
+    };
+
+    if (lastTrackedSampleFormVariantRef.current === formVariant) {
+      return;
+    }
+
+    lastTrackedSampleFormVariantRef.current = formVariant;
+    trackEvent('sample_creation_flow_variant_assigned', getSampleCreationFlowProps({
+      form_variant: formVariant,
+    }));
   };
 
   const openEditSample = (sample, options = {}) => {
@@ -391,6 +484,26 @@ export default function App() {
   };
 
   const handleNavigate = (nextPage, options = {}) => {
+    if (activePage === 'dashboard' && ['samples-workspace', 'all-samples'].includes(nextPage)) {
+      trackEvent('sample_creation_flow_dashboard_navigation_clicked', getSampleCreationFlowProps({
+        from_page: activePage,
+        to_page: nextPage,
+        opens_in_new_tab: Boolean(options.newTab),
+      }));
+    }
+
+    if (nextPage === 'admin-hub') {
+      if (options.newTab && typeof window !== 'undefined') {
+        const adminHubUrl = new URL(window.location.href);
+        adminHubUrl.hash = 'admin-hub';
+        window.open(adminHubUrl.toString(), '_blank', 'noopener,noreferrer');
+        return;
+      }
+
+      setActivePage('admin-hub');
+      return;
+    }
+
     if (nextPage === 'dashboard') {
       setSidebarCollapsed(true);
       setActivePage('dashboard');
@@ -451,6 +564,10 @@ export default function App() {
     }
   };
 
+  if (activePage === 'admin-hub') {
+    return <AdminHubPage />;
+  }
+
   if (activePage === 'dashboard') {
     return (
       <DashboardPage
@@ -476,6 +593,9 @@ export default function App() {
         sampleStatus={sampleDetailsState.sampleStatus}
         createdOn={sampleDetailsState.createdOn}
         sample={sampleDetailsState.sample}
+        sampleCreationFlowSessionId={sampleCreationFlowRef.current.id}
+        sampleCreationFlowStartedAt={sampleCreationFlowRef.current.startedAt}
+        sampleCreationFormVariant={sampleCreationFlowRef.current.formVariant}
         onBack={() =>
           setActivePage(sampleDetailsState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
         }
@@ -848,6 +968,8 @@ export default function App() {
         mode={sampleEditorState.mode}
         sample={sampleEditorState.sample}
         parentLabel={sampleEditorState.parentLabel}
+        sampleCreationFlowSessionId={sampleCreationFlowRef.current.id}
+        onSampleFormVariantChange={handleSampleFormVariantChange}
         onBackToWorkspace={() =>
           setActivePage(sampleEditorState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
         }
@@ -861,6 +983,13 @@ export default function App() {
             });
             return;
           }
+
+          trackEvent('sample_creation_flow_create_resolved', getSampleCreationFlowProps({
+            source_page: sampleEditorState.sourcePage,
+            target_page: 'sample-details',
+            sample_status: 'Pending',
+            toast_key: 'sample-created',
+          }));
 
           openSampleDetails('IICT/2025-2026/1101', {
             initialToast: 'sample-created',

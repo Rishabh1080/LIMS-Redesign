@@ -1,5 +1,6 @@
 import RadioButton from '../RadioButton';
-import './SelectableCard.css';
+import '../CardSelector/CardSelector.scss';
+import './SelectableCard.scss';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
@@ -16,15 +17,18 @@ export default function SelectableCard({
   return (
     <button
       type="button"
-      className={joinClasses('smplfy-selectable-card', selected && 'is-selected', className)}
+      className={joinClasses('smplfy-card', 'card', 'btn', selected && 'active', className)}
+      aria-pressed={selected}
+      data-state={selected ? 'active' : 'default'}
+      data-layout="relaxed"
       onClick={onClick}
       {...props}
     >
-      <div className="smplfy-selectable-card__head">
+      <div className="smplfy-card__head">
         <RadioButton checked={selected} ariaLabel={title} />
-        <span className="smplfy-selectable-card__title">{title}</span>
+        <span className="smplfy-card__title card-title">{title}</span>
       </div>
-      <div className="smplfy-selectable-card__description">{description}</div>
+      <div className="smplfy-card__description card-text">{description}</div>
     </button>
   );
 }

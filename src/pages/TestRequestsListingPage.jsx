@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import Checkbox from '../components/Checkbox/Checkbox';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
-import { FormElement, ToastNotification } from '../components/FormControls';
+import { FormElement, InputFieldDropdown, ToastNotification } from '../components/FormControls';
 import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
 import { AllocateTestRequestButton, ViewTestRequestButton } from '../components/TestRequestActions';
 import { getStatusPresentation } from '../status/statusRegistry';
-import './test-requests-listing-page.css';
+import './test-requests-listing-page.scss';
 
 const targetReportingDate = '31/03/2026';
 
@@ -423,34 +423,17 @@ function JobAllocationModal({
 }
 
 function InlineSelect({ label, placeholder, value, onChange, options, error = false }) {
-  const fieldStateClass = error
-    ? 'smplfy-input-field--error'
-    : value
-      ? 'smplfy-input-field--filled'
-      : 'smplfy-input-field--empty';
-
   return (
     <div className="tr-inline-select">
       <label className="tr-inline-select__label">{label}</label>
-      <div className={`smplfy-input-field smplfy-input-field--default ${fieldStateClass} tr-inline-select__field`}>
-        <div className="smplfy-input-field__shell">
-          <select
-            className="smplfy-input-field__control smplfy-input-field__control--select"
-            value={value}
-            onChange={(event) => onChange(event.target.value)}
-          >
-          <option value="">{placeholder}</option>
-          {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-          </select>
-          <span className="smplfy-input-field__icon" aria-hidden="true">
-            <AppIcon name="chevron-down" size={20} />
-          </span>
-        </div>
-      </div>
+      <InputFieldDropdown
+        state={error ? 'error' : value ? 'filled' : 'default'}
+        className="tr-inline-select__field"
+        value={value}
+        placeholder={placeholder}
+        options={options}
+        onChange={(event) => onChange(event.target.value)}
+      />
     </div>
   );
 }

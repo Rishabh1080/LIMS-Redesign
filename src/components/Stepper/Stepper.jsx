@@ -1,8 +1,4 @@
-import './Stepper.css';
-
-function joinClasses(...values) {
-  return values.filter(Boolean).join(' ');
-}
+import './Stepper.scss';
 
 function StepperItem({ label, state, position, onClick }) {
   const content = (
@@ -20,12 +16,10 @@ function StepperItem({ label, state, position, onClick }) {
 
   return (
     <li
-      className={joinClasses(
-        'smplfy-stepper-item',
-        `smplfy-stepper-item--${state}`,
-        `smplfy-stepper-item--${position}`,
-        onClick && 'smplfy-stepper-item--interactive',
-      )}
+      className="smplfy-stepper-item"
+      data-smplfy-state={state}
+      data-smplfy-position={position}
+      data-smplfy-interactive={onClick ? 'true' : undefined}
     >
       {onClick ? (
         <button type="button" className="btn smplfy-stepper-item__button" onClick={onClick}>

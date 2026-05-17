@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AppIcon from '../components/AppIcon';
 import AppChrome from '../components/AppChrome/AppChrome';
 import Modal from '../components/Modal/Modal';
@@ -7,8 +7,9 @@ import MoreActionButton from '../components/MoreActionButton';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
+import { getAnalyticsElapsedTime, trackEvent } from '../analytics/posthog';
 import { getStatusPresentation } from '../status/statusRegistry';
-import './sample-details-page.css';
+import './sample-details-page.scss';
 
 const toastMessageByKey = {
   'sample-created': 'Sample Created.',
@@ -455,6 +456,9 @@ export default function SampleDetailsPage({
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
+  sampleCreationFlowSessionId = null,
+  sampleCreationFlowStartedAt = null,
+  sampleCreationFormVariant = null,
 }) {
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState(toastMessageByKey['sample-created']);
@@ -462,6 +466,7 @@ export default function SampleDetailsPage({
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [sendTo, setSendTo] = useState('');
   const [comments, setComments] = useState('');
+  const trackedSuccessToastRef = useRef(null);
 
   useEffect(() => {
     if (!initialToast) {
@@ -473,8 +478,30 @@ export default function SampleDetailsPage({
     let timerId = 0;
 
     frameId = window.requestAnimationFrame(() => {
-      setToastMessage(toastMessageByKey[initialToast] ?? initialToast);
+      const nextToastMessage = toastMessageByKey[initialToast] ?? initialToast;
+      setToastMessage(nextToastMessage);
       setToastVisible(true);
+
+      if (initialToast === 'sample-created' && sampleCreationFlowSessionId) {
+        const trackingKey = `${sampleCreationFlowSessionId}-${initialToast}`;
+
+        if (trackedSuccessToastRef.current !== trackingKey) {
+          trackedSuccessToastRef.current = trackingKey;
+          trackEvent('sample_creation_flow_success_toast_shown', {
+            form_name: 'sample_creation',
+            sample_creation_flow_session_id: sampleCreationFlowSessionId,
+            sample_creation_flow_elapsed_ms: sampleCreationFlowStartedAt
+              ? getAnalyticsElapsedTime(sampleCreationFlowStartedAt)
+              : undefined,
+            form_variant: sampleCreationFormVariant,
+            source_page: sourcePage,
+            sample_status: sampleStatus,
+            toast_key: initialToast,
+            toast_message: nextToastMessage,
+          });
+        }
+      }
+
       timerId = window.setTimeout(() => setToastVisible(false), 5000);
     });
 
@@ -482,7 +509,14 @@ export default function SampleDetailsPage({
       window.cancelAnimationFrame(frameId);
       window.clearTimeout(timerId);
     };
-  }, [initialToast]);
+  }, [
+    initialToast,
+    sampleCreationFlowSessionId,
+    sampleCreationFlowStartedAt,
+    sampleCreationFormVariant,
+    sampleStatus,
+    sourcePage,
+  ]);
 
   const showToast = (messageKey) => {
     setToastMessage(toastMessageByKey[messageKey] ?? messageKey);

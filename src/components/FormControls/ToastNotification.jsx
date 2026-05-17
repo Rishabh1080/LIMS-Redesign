@@ -1,5 +1,5 @@
 import AppIcon from '../AppIcon';
-import './form-controls.css';
+import './form-controls.scss';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
@@ -19,12 +19,14 @@ export default function ToastNotification({
     <div
       className={joinClasses(
         'smplfy-toast',
-        tone !== 'success' && `smplfy-toast--${tone}`,
-        state === 'gone' && 'smplfy-toast--gone',
+        'toast',
+        'show',
         className,
       )}
       role="status"
       aria-live="polite"
+      data-smplfy-tone={tone}
+      data-smplfy-state={state}
       {...props}
     >
       <div className="smplfy-toast__content">

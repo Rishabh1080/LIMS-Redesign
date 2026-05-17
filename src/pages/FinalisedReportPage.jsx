@@ -7,7 +7,7 @@ import ReportSelector from '../components/ReportSelector';
 import SecondaryButton from '../components/SecondaryButton';
 import SplitSecondaryButton from '../components/SplitSecondaryButton';
 import VersionSelector from '../components/VersionSelector/VersionSelector';
-import './finalised-report-page.css';
+import './finalised-report-page.scss';
 
 const finalisedRows = [
   { key: 'cooling-tower-water-1', label: 'Cooling Tower Water', hasNabl: true },

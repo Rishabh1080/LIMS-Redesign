@@ -8,7 +8,7 @@ import ReportSelector from '../components/ReportSelector';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
 import { getStatusPresentation } from '../status/statusRegistry';
-import './tr-details-page.css';
+import './tr-details-page.scss';
 
 const toastMessageByKey = {
   'datasheet-updated': 'datasheet updated successfully.',

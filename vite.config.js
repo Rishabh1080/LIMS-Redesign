@@ -14,6 +14,13 @@ export default defineConfig({
   server: {
     allowedHosts: ['unfeloniously-noncranking-deja.ngrok-free.dev']
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler'
+      }
+    }
+  },
   test: {
     projects: [{
       extends: true,

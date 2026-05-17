@@ -6,7 +6,7 @@ import SecondaryButton from '../components/SecondaryButton';
 import { allSamplesDb } from '../data/samplesDb';
 import { requestCategories, requestSections, requestsForMeBySection } from '../data/requestsForMeData';
 import { allTestRequestBuckets } from '../data/testRequestsHomeData';
-import './dashboard-page.css';
+import './dashboard-page.scss';
 
 const dashboardModules = [
   {

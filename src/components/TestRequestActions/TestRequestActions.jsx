@@ -5,7 +5,7 @@ export function ViewTestRequestButton({ iconOnly = false, className = '', size =
   return (
     <SecondaryButton
       size={size}
-      className={['tr-secondary-action', className].filter(Boolean).join(' ')}
+      className={className}
       aria-label="View request"
       leftIcon="eye"
       {...props}
@@ -20,7 +20,7 @@ export function AllocateTestRequestButton({ className = '', size = 'medium', ...
     <PrimaryButton
       leftIcon="workspace"
       size={size}
-      className={['tr-primary-action', className].filter(Boolean).join(' ')}
+      className={className}
       {...props}
     >
       Allocate

@@ -6,7 +6,7 @@ import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import qrCode from '../../assets/qr.png';
-import './material-details-page.css';
+import './material-details-page.scss';
 
 const mockRecords = [
   { id: 1, type: 'IN', quantity: '2500 mL', supplierBatch: 'Merck / B240301', transactionDate: '01/03/2026', expiryDate: '01/03/2028', cost: '₹ 480', by: 'Deepak Cybit' },

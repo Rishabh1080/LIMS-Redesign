@@ -8,7 +8,7 @@ import SecondaryButton from '../components/SecondaryButton';
 import { FormElement, ToastNotification } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import qrCode from '../../assets/qr.png';
-import './instrument-details-page.css';
+import './instrument-details-page.scss';
 
 const serviceTypeOptions = ['Calibration', 'Breakdown', 'Maintenance', 'Service'];
 

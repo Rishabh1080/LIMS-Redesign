@@ -7,7 +7,7 @@ import {
   IconUserExclamation,
   IconX,
 } from '@tabler/icons-react';
-import './ParameterCircles.css';
+import './ParameterCircles.scss';
 
 export const PARAMETER_STATUS_ORDER = [
   'Not allocated',
@@ -20,33 +20,33 @@ export const PARAMETER_STATUS_ORDER = [
 
 const STATUS_VISUALS = {
   'Not allocated': {
-    circleColor: '#D1D5DB',
-    iconColor: '#0B1218',
+    circleColor: 'var(--smplfy-primitive-neutral-400)',
+    iconColor: 'var(--smplfy-primitive-neutral-900)',
     icon: IconClock,
   },
   'Under Approval': {
-    circleColor: '#FFE599',
-    iconColor: '#8A5F1E',
+    circleColor: 'var(--smplfy-primitive-yellow-250)',
+    iconColor: 'var(--smplfy-primitive-yellow-800)',
     icon: IconUserExclamation,
   },
   'Under Testing': {
-    circleColor: '#94CCF9',
-    iconColor: '#0E5FBB',
+    circleColor: 'var(--smplfy-primitive-blue-350)',
+    iconColor: 'var(--smplfy-primitive-blue-600)',
     icon: IconTestPipe2,
   },
   Rejected: {
-    circleColor: '#EF7267',
-    iconColor: '#FFFFFF',
+    circleColor: 'var(--smplfy-primitive-red-400)',
+    iconColor: 'var(--smplfy-primitive-neutral-100)',
     icon: IconX,
   },
   Reviewed: {
-    circleColor: '#A9DCA9',
-    iconColor: '#245A28',
+    circleColor: 'var(--smplfy-primitive-green-250)',
+    iconColor: 'var(--smplfy-primitive-green-800)',
     icon: IconCheck,
   },
   Approved: {
-    circleColor: '#3F9443',
-    iconColor: '#FFFFFF',
+    circleColor: 'var(--smplfy-primitive-green-600)',
+    iconColor: 'var(--smplfy-primitive-neutral-100)',
     icon: IconChecks,
   },
 };

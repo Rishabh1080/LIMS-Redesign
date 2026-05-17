@@ -1,4 +1,4 @@
-import './Checkbox.css';
+import './Checkbox.scss';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
@@ -9,37 +9,30 @@ export default function Checkbox({
   onChange,
   className = '',
   ariaLabel,
+  'aria-label': ariaLabelAttribute,
   disabled = false,
+  type: _type,
+  ...props
 }) {
-  return (
-    <button
-      type="button"
-      role="checkbox"
-      aria-checked={checked}
-      aria-label={ariaLabel}
-      disabled={disabled}
-      className={joinClasses('smplfy-checkbox', checked && 'is-checked', className)}
-      onClick={() => {
-        if (disabled) {
-          return;
-        }
+  const resolvedAriaLabel = ariaLabel ?? ariaLabelAttribute;
 
-        onChange?.(!checked);
+  return (
+    <input
+      {...props}
+      type="checkbox"
+      checked={checked}
+      aria-label={resolvedAriaLabel}
+      disabled={disabled}
+      readOnly={onChange ? undefined : true}
+      className={joinClasses(
+        'smplfy-form-check-input',
+        'form-check-input',
+        checked && 'is-checked',
+        className,
+      )}
+      onChange={(event) => {
+        onChange?.(event.target.checked, event);
       }}
-    >
-      <span className="smplfy-checkbox__box">
-        <svg
-          className="smplfy-checkbox__tick"
-          width="6"
-          height="4"
-          viewBox="0 0 6 4"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path d="M1 2L2.4 3.3L5 1" />
-        </svg>
-      </span>
-    </button>
+    />
   );
 }

@@ -4,7 +4,7 @@ import { FormElement, ToastNotification } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import './materials-page.css';
+import './materials-page.scss';
 
 const defaultMaterials = [
   {

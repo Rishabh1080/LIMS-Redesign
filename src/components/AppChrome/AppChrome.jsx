@@ -5,12 +5,15 @@ import AppIcon from '../AppIcon';
 import SecondaryButton from '../SecondaryButton';
 import { requestSections } from '../../data/requestsForMeData';
 import { allTestRequestBuckets } from '../../data/testRequestsHomeData';
-import '../../styles.css';
+import '../../styles.scss';
 
 const navigationSections = [
   {
     title: 'HOME',
-    items: [{ label: 'Dashboard', icon: 'home', key: 'dashboard' }],
+    items: [
+      { label: 'Dashboard', icon: 'home', key: 'dashboard' },
+      { label: 'Admin Hub', icon: 'admin-hub', key: 'admin-hub', opensInNewTab: true },
+    ],
   },
   {
     title: 'LIMS',
@@ -56,9 +59,9 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
                   } ${badgeCounts[item.badgeKey] ? 'sidebar-link--with-badge' : ''} ${
                     collapsed && badgeCounts[item.badgeKey] ? 'sidebar-link--with-dot' : ''
                   }`}
-                  aria-label={item.label}
+                  aria-label={item.opensInNewTab ? `${item.label} (opens in a new tab)` : item.label}
                   onClick={() => {
-                    onNavigate?.(item.key);
+                    onNavigate?.(item.key, { newTab: item.opensInNewTab });
                     onItemClick?.();
                   }}
                 >
@@ -72,8 +75,13 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
                       {badgeCounts[item.badgeKey]}
                     </Badge>
                   ) : null}
+                  {item.opensInNewTab && !collapsed ? (
+                    <span className="sidebar-link__external" aria-hidden="true">
+                      <AppIcon name="external-link" size={14} stroke={2} />
+                    </span>
+                  ) : null}
                   <span className="sidebar-link__tooltip" role="tooltip">
-                    {item.label}
+                    {item.opensInNewTab ? `${item.label} - opens in a new tab` : item.label}
                   </span>
                 </button>
               ))}
@@ -150,7 +158,7 @@ function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], on
               >
                 <span className="header-chip-label">+91-6358273804</span>
               </SecondaryButton>
-              <SecondaryButton size="large" className="header-icon" aria-label="Notifications">
+              <SecondaryButton size="large" tone="neutral" className="header-icon" aria-label="Notifications">
                 <AppIcon name="bell" />
               </SecondaryButton>
               <SecondaryButton

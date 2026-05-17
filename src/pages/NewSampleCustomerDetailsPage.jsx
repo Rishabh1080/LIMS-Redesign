@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { SAMPLE_FORM_EXPERIMENT_FLAG, trackEvent, useFeatureFlagVariant } from '../analytics/posthog';
 import AppIcon from '../components/AppIcon';
 import Checkbox from '../components/Checkbox/Checkbox';
 import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
-import SecondaryButton from '../components/SecondaryButton';
-import Stepper from '../components/Stepper/Stepper';
-import './new-sample-customer-details.css';
+import './new-sample-customer-details.scss';
 
 const wizardSteps = [
   'Customer Details',
@@ -13,6 +12,8 @@ const wizardSteps = [
   'Product Details',
   'Additional Details',
 ];
+
+const sampleFormName = 'sample_creation';
 
 const basicDetailsRows = [
   ['Sampling Plan & Procedure', 'eg. Carpet Static Loading Machine'],
@@ -108,6 +109,18 @@ const stepFields = [
     placeholder,
   })),
 ];
+
+const fieldMetaByKey = stepFields.reduce((fieldsByKey, fields, stepIndex) => {
+  fields.forEach((field) => {
+    fieldsByKey[field.key] = {
+      ...field,
+      stepIndex,
+      stepName: wizardSteps[stepIndex],
+    };
+  });
+
+  return fieldsByKey;
+}, {});
 
 const initialFormValues = {
   sampleType: 'Consumer Sample',
@@ -217,6 +230,59 @@ function isFilledValue(type, value) {
   return Boolean(value?.toString().trim());
 }
 
+function getNow() {
+  return typeof performance !== 'undefined' ? performance.now() : Date.now();
+}
+
+function getElapsedTime(startedAt) {
+  return Math.max(0, Math.round(getNow() - startedAt));
+}
+
+function createFormSessionId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+
+  return `sample-form-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function getStepName(stepIndex) {
+  return wizardSteps[stepIndex] ?? `Step ${stepIndex + 1}`;
+}
+
+function getStepFieldSummary(stepIndex, formValues) {
+  const fields = stepFields[stepIndex] ?? [];
+  const requiredFields = fields.filter((field) => field.mandatory);
+  const missingRequiredFields = requiredFields.filter((field) => !isFilledValue(field.type, formValues[field.key]));
+
+  return {
+    field_count: fields.length,
+    required_field_count: requiredFields.length,
+    missing_required_field_count: missingRequiredFields.length,
+    missing_required_fields: missingRequiredFields.map((field) => field.key),
+  };
+}
+
+function getParameterSummary(parameterFormRows) {
+  return {
+    parameter_count: parameterFormRows.length,
+    selected_parameter_count: parameterFormRows.filter((row) => row.checked).length,
+  };
+}
+
+function getFieldInteractionSummary(fieldChangeCounts) {
+  const entries = Object.entries(fieldChangeCounts);
+  const repeatedlyEditedFields = entries
+    .filter(([, count]) => count >= 3)
+    .map(([fieldKey]) => fieldKey);
+
+  return {
+    changed_field_count: entries.length,
+    field_change_counts: fieldChangeCounts,
+    repeatedly_edited_fields: repeatedlyEditedFields,
+  };
+}
+
 function getFieldState(type, value, hasError) {
   if (hasError) {
     return 'error';
@@ -225,9 +291,13 @@ function getFieldState(type, value, hasError) {
   return isFilledValue(type, value) ? 'filled' : 'default';
 }
 
-function getFieldInputProps(field, formValues, onFieldChange, hasError) {
+function getFieldInputProps(field, formValues, onFieldChange, hasError, onFieldFocus, onFieldBlur) {
   const value = formValues[field.key];
   const baseState = getFieldState(field.type, value, hasError);
+  const analyticsProps = {
+    onFocus: () => onFieldFocus?.(field.key),
+    onBlur: () => onFieldBlur?.(field.key),
+  };
 
   if (field.type === 'split') {
     return {
@@ -241,6 +311,7 @@ function getFieldInputProps(field, formValues, onFieldChange, hasError) {
           value: event.target.value,
           unit: event.target.unit,
         }),
+      ...analyticsProps,
     };
   }
 
@@ -249,29 +320,8 @@ function getFieldInputProps(field, formValues, onFieldChange, hasError) {
     value: value ?? '',
     placeholder: field.placeholder,
     onChange: (event) => onFieldChange(field.key, event.target.value),
+    ...analyticsProps,
   };
-}
-
-function StepRail({ currentStep, title, mode, onStepChange }) {
-  const items = wizardSteps.map((label, index) => ({
-    label,
-    state: mode === 'edit'
-      ? 'completed'
-      : index < currentStep
-        ? 'completed'
-        : index === currentStep
-          ? 'active'
-          : 'default',
-  }));
-
-  return (
-    <aside className={`new-sample-rail ${mode === 'edit' ? 'new-sample-rail--edit' : ''}`.trim()}>
-      <div className={`new-sample-rail__heading ${mode === 'edit' ? 'new-sample-rail__heading--edit' : ''}`.trim()}>
-        <h1 className="new-sample-rail__title">{title}</h1>
-      </div>
-      <Stepper items={items} onItemClick={onStepChange} />
-    </aside>
-  );
 }
 
 function TopBar({ parentLabel, currentLabel, onBack }) {
@@ -298,406 +348,514 @@ function TopBar({ parentLabel, currentLabel, onBack }) {
           <AppIcon name="activity" />
           <span>No Active Alerts</span>
         </div>
-        <button className="new-sample-topbar__chip btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral smplfy-secondary-button--has-left-icon">
+        <button className="smplfy-btn btn btn-outline-secondary new-sample-topbar__chip">
           <AppIcon name="phone" />
           <span>+91-6358273804</span>
         </button>
-        <button className="new-sample-topbar__icon btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral smplfy-secondary-button--icon-only" aria-label="Notifications">
+        <button className="smplfy-btn btn btn-outline-secondary new-sample-topbar__icon" aria-label="Notifications">
           <AppIcon name="bell" />
         </button>
-        <button className="new-sample-topbar__avatar btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral">DC</button>
+        <button className="smplfy-btn btn btn-outline-secondary new-sample-topbar__avatar">DC</button>
       </div>
     </header>
   );
 }
 
-function CustomerDetailsSection({ formValues, fieldErrors, onFieldChange }) {
+function PageHeader({ title, mode, formId }) {
   return (
-    <div className="container-fluid new-sample-form__content">
-      <div className="row g-4">
-        <div className="col-lg-6">
-          <FormElement
-            type="dropdown"
-            mandatory
-            label="Sample Type"
-            message={fieldErrors.sampleType}
-            messageTone="error"
-            inputProps={getFieldInputProps(stepFields[0][0], formValues, onFieldChange, Boolean(fieldErrors.sampleType))}
-          />
-        </div>
+    <section className="new-sample-page-header">
+      <div className="new-sample-page-header__title-wrap">
+        <h1>{title}</h1>
+      </div>
+      <PrimaryButton type="submit" form={formId} leftIcon="save">
+        {mode === 'edit' ? 'Save Changes' : 'Save Sample'}
+      </PrimaryButton>
+    </section>
+  );
+}
 
-        <div className="col-lg-6">
-          <FormElement
-            type="date"
-            mandatory
-            label="Receiving Date"
-            message={fieldErrors.receivingDate}
-            messageTone="error"
-            inputProps={getFieldInputProps(stepFields[0][1], formValues, onFieldChange, Boolean(fieldErrors.receivingDate))}
-          />
-        </div>
+function FormSection({ id, title, children }) {
+  return (
+    <section className="new-sample-section" aria-labelledby={`${id}-title`}>
+      <header className="new-sample-section__header">
+        <h2 id={`${id}-title`}>{title}</h2>
+      </header>
+      <div className="new-sample-section__body">
+        {children}
+      </div>
+    </section>
+  );
+}
 
-        <div className="col-12">
-          <div className="new-sample-customer-row">
-            <div className="new-sample-customer-row__field">
+function CustomerDetailsSection({ formValues, fieldErrors, onFieldChange, onFieldFocus, onFieldBlur }) {
+  return (
+    <FormSection id="new-sample-customer-details" title="Customer Details">
+      <div className="container-fluid new-sample-form__content">
+        <div className="row g-4">
+          <div className="col-lg-6">
+            <FormElement
+              type="dropdown"
+              mandatory
+              label="Sample Type"
+              message={fieldErrors.sampleType}
+              messageTone="error"
+              inputProps={getFieldInputProps(
+                stepFields[0][0],
+                formValues,
+                onFieldChange,
+                Boolean(fieldErrors.sampleType),
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-lg-6">
+            <FormElement
+              type="date"
+              mandatory
+              label="Receiving Date"
+              message={fieldErrors.receivingDate}
+              messageTone="error"
+              inputProps={getFieldInputProps(
+                stepFields[0][1],
+                formValues,
+                onFieldChange,
+                Boolean(fieldErrors.receivingDate),
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-12">
+            <div className="new-sample-customer-row">
+              <div className="new-sample-customer-row__field">
+                <FormElement
+                  type="dropdown"
+                  mandatory
+                  label="Customer"
+                  message={fieldErrors.customer}
+                  messageTone="error"
+                  inputProps={getFieldInputProps(
+                    stepFields[0][2],
+                    formValues,
+                    onFieldChange,
+                    Boolean(fieldErrors.customer),
+                    onFieldFocus,
+                    onFieldBlur,
+                  )}
+                />
+              </div>
+              <PrimaryButton className="new-sample-add-button" aria-label="Add customer" leftIcon="plus" />
+            </div>
+          </div>
+
+          <div className="col-12">
+            <FormElement
+              type="text"
+              mandatory
+              label="Customer Address"
+              message={fieldErrors.customerAddress}
+              messageTone="error"
+              inputProps={getFieldInputProps(
+                stepFields[0][3],
+                formValues,
+                onFieldChange,
+                Boolean(fieldErrors.customerAddress),
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+        </div>
+      </div>
+    </FormSection>
+  );
+}
+
+function BasicDetailsSection({ formValues, fieldErrors, onFieldChange, onFieldFocus, onFieldBlur }) {
+  return (
+    <FormSection id="new-sample-basic-details" title="Basic Details">
+      <div className="container-fluid new-sample-form__content">
+        <div className="row g-4">
+          {stepFields[1].map((field) => (
+            <div className="col-lg-6" key={field.key}>
               <FormElement
-                type="dropdown"
-                mandatory
-                label="Customer"
-                message={fieldErrors.customer}
+                type={field.type}
+                mandatory={field.mandatory}
+                label={field.label}
+                message={fieldErrors[field.key]}
                 messageTone="error"
-                inputProps={getFieldInputProps(stepFields[0][2], formValues, onFieldChange, Boolean(fieldErrors.customer))}
+                inputProps={getFieldInputProps(
+                  field,
+                  formValues,
+                  onFieldChange,
+                  Boolean(fieldErrors[field.key]),
+                  onFieldFocus,
+                  onFieldBlur,
+                )}
               />
             </div>
-            <PrimaryButton className="new-sample-add-button" aria-label="Add customer" leftIcon="plus" />
-          </div>
-        </div>
-
-        <div className="col-12">
-          <FormElement
-            type="text"
-            mandatory
-            label="Customer Address"
-            message={fieldErrors.customerAddress}
-            messageTone="error"
-            inputProps={getFieldInputProps(stepFields[0][3], formValues, onFieldChange, Boolean(fieldErrors.customerAddress))}
-          />
+          ))}
         </div>
       </div>
-    </div>
+    </FormSection>
   );
 }
 
-function BasicDetailsSection({ formValues, fieldErrors, onFieldChange }) {
+function ProductDetailsSection({
+  formValues,
+  fieldErrors,
+  onFieldChange,
+  onFieldFocus,
+  onFieldBlur,
+  parameterFormRows,
+  onParameterRowChange,
+}) {
   return (
-    <div className="container-fluid new-sample-form__content">
-      <div className="row g-4">
-        {stepFields[1].map((field) => (
-          <div className="col-lg-6" key={field.key}>
-            <FormElement
-              type={field.type}
-              mandatory={field.mandatory}
-              label={field.label}
-              message={fieldErrors[field.key]}
-              messageTone="error"
-              inputProps={getFieldInputProps(field, formValues, onFieldChange, Boolean(fieldErrors[field.key]))}
-            />
+    <FormSection id="new-sample-product-details" title="Product Details">
+      <div className="container-fluid new-sample-form__content new-sample-form__content--product">
+        <div className="new-sample-product-head">
+          <div className="new-sample-product-head__title">
+            <span className="new-sample-product-head__index">1</span>
+            <span>Product 1</span>
           </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
-function ProductDetailsSection({ formValues, fieldErrors, onFieldChange, parameterFormRows, onParameterRowChange }) {
-  return (
-    <div className="container-fluid new-sample-form__content new-sample-form__content--product">
-      <div className="new-sample-product-head">
-        <div className="new-sample-product-head__title">
-          <span className="new-sample-product-head__index">1</span>
-          <span>Product 1</span>
-        </div>
-
-        <button className="new-sample-product-head__delete btn" aria-label="Delete product">
-          <AppIcon name="trash" />
-        </button>
-      </div>
-
-      <div className="row g-4">
-        <div className="col-lg-6">
-          <FormElement
-            type="dropdown"
-            mandatory
-            label="Category"
-            message={fieldErrors.category}
-            messageTone="error"
-            inputProps={getFieldInputProps(stepFields[2][0], formValues, onFieldChange, Boolean(fieldErrors.category))}
-          />
-        </div>
-
-        <div className="col-lg-6">
-          <FormElement
-            type="dropdown"
-            mandatory
-            label="Product"
-            message={fieldErrors.product}
-            messageTone="error"
-            inputProps={getFieldInputProps(stepFields[2][1], formValues, onFieldChange, Boolean(fieldErrors.product))}
-          />
-        </div>
-
-        <div className="col-12">
-          <FormElement
-            type="text"
-            label="Description"
-            inputProps={getFieldInputProps(stepFields[2][2], formValues, onFieldChange, false)}
-          />
-        </div>
-
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            mandatory
-            label="Quantity"
-            message={fieldErrors.quantity}
-            messageTone="error"
-            inputProps={getFieldInputProps(stepFields[2][3], formValues, onFieldChange, Boolean(fieldErrors.quantity))}
-          />
-        </div>
-
-        <div className="col-lg-6">
-          <FormElement
-            type="split"
-            mandatory
-            label="Sample Size"
-            message={fieldErrors.sampleSize}
-            messageTone="error"
-            inputProps={getFieldInputProps(stepFields[2][4], formValues, onFieldChange, Boolean(fieldErrors.sampleSize))}
-          />
-        </div>
-
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            label="Quality"
-            inputProps={getFieldInputProps(stepFields[2][5], formValues, onFieldChange, false)}
-          />
-        </div>
-
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            label="Identification Mark"
-            inputProps={getFieldInputProps(stepFields[2][6], formValues, onFieldChange, false)}
-          />
-        </div>
-
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            label="Condition"
-            inputProps={getFieldInputProps(stepFields[2][7], formValues, onFieldChange, false)}
-          />
-        </div>
-
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            label="Image Upload"
-            inputProps={getFieldInputProps(stepFields[2][8], formValues, onFieldChange, false)}
-          />
-        </div>
-      </div>
-
-      <div className="new-sample-parameter-row">
-        <h3>Parameter Data</h3>
-        <button className="new-sample-parameter-link btn">Auto-fill parameters</button>
-      </div>
-
-      <div className="new-sample-parameter-table">
-        <div className="new-sample-parameter-table__header">
-          <div className="new-sample-parameter-checkbox-cell">
-            <Checkbox
-              checked={parameterFormRows.length > 0 && parameterFormRows.every((row) => row.checked)}
-              ariaLabel="Select all parameters"
-              onChange={(nextChecked) => {
-                parameterFormRows.forEach((_, index) => {
-                  onParameterRowChange(index, 'checked', nextChecked);
-                });
-              }}
-            />
-          </div>
-          <div>Parameter</div>
-          <div>Test Method</div>
-          <div>Req. Size</div>
-          <div>Charges</div>
-          <div>Est. Time</div>
-          <button className="new-sample-product-head__delete btn" aria-label="Delete parameter group">
+          <button
+            className="smplfy-btn btn btn-outline-danger new-sample-product-head__delete"
+            type="button"
+            aria-label="Delete product"
+          >
             <AppIcon name="trash" />
           </button>
         </div>
 
-        {parameterFormRows.map((row, index) => (
-          <div className="new-sample-parameter-table__row" key={`${row.parameter}-${index}`}>
+        <div className="row g-4">
+          <div className="col-lg-6">
+            <FormElement
+              type="dropdown"
+              mandatory
+              label="Category"
+              message={fieldErrors.category}
+              messageTone="error"
+              inputProps={getFieldInputProps(
+                stepFields[2][0],
+                formValues,
+                onFieldChange,
+                Boolean(fieldErrors.category),
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-lg-6">
+            <FormElement
+              type="dropdown"
+              mandatory
+              label="Product"
+              message={fieldErrors.product}
+              messageTone="error"
+              inputProps={getFieldInputProps(
+                stepFields[2][1],
+                formValues,
+                onFieldChange,
+                Boolean(fieldErrors.product),
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-12">
+            <FormElement
+              type="text"
+              label="Description"
+              inputProps={getFieldInputProps(
+                stepFields[2][2],
+                formValues,
+                onFieldChange,
+                false,
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-lg-6">
+            <FormElement
+              type="text"
+              mandatory
+              label="Quantity"
+              message={fieldErrors.quantity}
+              messageTone="error"
+              inputProps={getFieldInputProps(
+                stepFields[2][3],
+                formValues,
+                onFieldChange,
+                Boolean(fieldErrors.quantity),
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-lg-6">
+            <FormElement
+              type="split"
+              mandatory
+              label="Sample Size"
+              message={fieldErrors.sampleSize}
+              messageTone="error"
+              inputProps={getFieldInputProps(
+                stepFields[2][4],
+                formValues,
+                onFieldChange,
+                Boolean(fieldErrors.sampleSize),
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-lg-6">
+            <FormElement
+              type="text"
+              label="Quality"
+              inputProps={getFieldInputProps(
+                stepFields[2][5],
+                formValues,
+                onFieldChange,
+                false,
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-lg-6">
+            <FormElement
+              type="text"
+              label="Identification Mark"
+              inputProps={getFieldInputProps(
+                stepFields[2][6],
+                formValues,
+                onFieldChange,
+                false,
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-lg-6">
+            <FormElement
+              type="text"
+              label="Condition"
+              inputProps={getFieldInputProps(
+                stepFields[2][7],
+                formValues,
+                onFieldChange,
+                false,
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+
+          <div className="col-lg-6">
+            <FormElement
+              type="text"
+              label="Image Upload"
+              inputProps={getFieldInputProps(
+                stepFields[2][8],
+                formValues,
+                onFieldChange,
+                false,
+                onFieldFocus,
+                onFieldBlur,
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="new-sample-parameter-row">
+          <h3>Parameter Data</h3>
+          <button className="new-sample-parameter-link btn" type="button">Auto-fill parameters</button>
+        </div>
+
+        <div className="new-sample-parameter-table">
+          <div className="new-sample-parameter-table__header">
             <div className="new-sample-parameter-checkbox-cell">
               <Checkbox
-                checked={row.checked}
-                ariaLabel={`Select ${row.parameter}`}
-                onChange={(nextChecked) => onParameterRowChange(index, 'checked', nextChecked)}
+                checked={parameterFormRows.length > 0 && parameterFormRows.every((row) => row.checked)}
+                ariaLabel="Select all parameters"
+                onChange={(nextChecked) => {
+                  parameterFormRows.forEach((_, index) => {
+                    onParameterRowChange(index, 'checked', nextChecked);
+                  });
+                }}
               />
             </div>
-            <input
-              className="new-sample-parameter-input"
-              value={row.parameter}
-              onChange={(event) => onParameterRowChange(index, 'parameter', event.target.value)}
-            />
-            <input
-              className="new-sample-parameter-input"
-              value={row.method}
-              onChange={(event) => onParameterRowChange(index, 'method', event.target.value)}
-            />
-            <input
-              className="new-sample-parameter-input"
-              value={row.size}
-              onChange={(event) => onParameterRowChange(index, 'size', event.target.value)}
-            />
-            <input
-              className="new-sample-parameter-input"
-              value={row.charges}
-              onChange={(event) => onParameterRowChange(index, 'charges', event.target.value)}
-            />
-            <input
-              className="new-sample-parameter-input"
-              value={row.time}
-              onChange={(event) => onParameterRowChange(index, 'time', event.target.value)}
-            />
-            <button className="new-sample-product-head__delete btn" aria-label={`Delete ${row.parameter}`}>
+            <div>Parameter</div>
+            <div>Test Method</div>
+            <div>Req. Size</div>
+            <div>Charges</div>
+            <div>Est. Time</div>
+            <button
+              className="smplfy-btn btn btn-outline-danger new-sample-product-head__delete"
+              type="button"
+              aria-label="Delete parameter group"
+            >
               <AppIcon name="trash" />
             </button>
           </div>
-        ))}
 
-        <button className="new-sample-outline-action btn">
+          {parameterFormRows.map((row, index) => (
+            <div className="new-sample-parameter-table__row" key={`${row.parameter}-${index}`}>
+              <div className="new-sample-parameter-checkbox-cell">
+                <Checkbox
+                  checked={row.checked}
+                  ariaLabel={`Select ${row.parameter}`}
+                  onChange={(nextChecked) => onParameterRowChange(index, 'checked', nextChecked)}
+                />
+              </div>
+              <input
+                className="new-sample-parameter-input"
+                value={row.parameter}
+                onChange={(event) => onParameterRowChange(index, 'parameter', event.target.value)}
+              />
+              <input
+                className="new-sample-parameter-input"
+                value={row.method}
+                onChange={(event) => onParameterRowChange(index, 'method', event.target.value)}
+              />
+              <input
+                className="new-sample-parameter-input"
+                value={row.size}
+                onChange={(event) => onParameterRowChange(index, 'size', event.target.value)}
+              />
+              <input
+                className="new-sample-parameter-input"
+                value={row.charges}
+                onChange={(event) => onParameterRowChange(index, 'charges', event.target.value)}
+              />
+              <input
+                className="new-sample-parameter-input"
+                value={row.time}
+                onChange={(event) => onParameterRowChange(index, 'time', event.target.value)}
+              />
+              <button
+                className="smplfy-btn btn btn-outline-danger new-sample-product-head__delete"
+                type="button"
+                aria-label={`Delete ${row.parameter}`}
+              >
+                <AppIcon name="trash" />
+              </button>
+            </div>
+          ))}
+
+          <button className="smplfy-btn btn btn-outline-secondary new-sample-outline-action" type="button">
+            <AppIcon name="plus" />
+            <span>Add New Parameter</span>
+          </button>
+        </div>
+
+        <div className="new-sample-product-divider" />
+
+        <button className="smplfy-btn btn btn-outline-secondary new-sample-outline-action new-sample-outline-action--large" type="button">
           <AppIcon name="plus" />
-          <span>Add New Parameter</span>
+          <span>Add New Product</span>
         </button>
       </div>
-
-      <div className="new-sample-product-divider" />
-
-      <button className="new-sample-outline-action btn new-sample-outline-action--large">
-        <AppIcon name="plus" />
-        <span>Add New Product</span>
-      </button>
-    </div>
+    </FormSection>
   );
 }
 
-function AdditionalDetailsSection({ formValues, fieldErrors, onFieldChange }) {
+function AdditionalDetailsSection({ formValues, fieldErrors, onFieldChange, onFieldFocus, onFieldBlur }) {
   return (
-    <div className="container-fluid new-sample-form__content">
-      <div className="row g-4">
-        {stepFields[3].map((field) => (
-          <div className="col-lg-6" key={field.key}>
-            <FormElement
-              type={field.type}
-              mandatory={field.mandatory}
-              label={field.label}
-              message={fieldErrors[field.key]}
-              messageTone="error"
-              inputProps={getFieldInputProps(field, formValues, onFieldChange, Boolean(fieldErrors[field.key]))}
-            />
-          </div>
-        ))}
+    <FormSection id="new-sample-additional-details" title="Additional Details">
+      <div className="container-fluid new-sample-form__content">
+        <div className="row g-4">
+          {stepFields[3].map((field) => (
+            <div className="col-lg-6" key={field.key}>
+              <FormElement
+                type={field.type}
+                mandatory={field.mandatory}
+                label={field.label}
+                message={fieldErrors[field.key]}
+                messageTone="error"
+                inputProps={getFieldInputProps(
+                  field,
+                  formValues,
+                  onFieldChange,
+                  Boolean(fieldErrors[field.key]),
+                  onFieldFocus,
+                  onFieldBlur,
+                )}
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
-}
-
-function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel, mode }) {
-  const prevLabel = currentStep > 0 ? wizardSteps[currentStep - 1] : 'Cancel';
-  const isLast = currentStep === wizardSteps.length - 1;
-  const handlePrevClick = currentStep > 0 ? onPrev : onCancel;
-
-  if (mode === 'edit') {
-    return (
-      <div className="new-sample-card__footer">
-        <SecondaryButton className="new-sample-cancel" leftIcon="close" onClick={onCancel}>
-          Cancel
-        </SecondaryButton>
-        <PrimaryButton leftIcon="save" onClick={onComplete}>
-          Save Changes
-        </PrimaryButton>
-      </div>
-    );
-  }
-
-  return (
-    <div className="new-sample-card__footer">
-      <SecondaryButton className="new-sample-cancel" leftIcon="chevron-left" onClick={handlePrevClick}>
-        {prevLabel}
-      </SecondaryButton>
-
-      {isLast ? (
-        <PrimaryButton leftIcon="save" onClick={onComplete}>
-          Save Sample
-        </PrimaryButton>
-      ) : (
-        <PrimaryButton rightIcon="chevron-right" onClick={onNext}>
-          Next
-        </PrimaryButton>
-      )}
-    </div>
+    </FormSection>
   );
 }
 
 function CustomerForm({
-  currentStep,
+  formId,
   formValues,
   fieldErrors,
   onFieldChange,
-  onPrev,
-  onNext,
+  onFieldFocus,
+  onFieldBlur,
   onComplete,
-  onCancel,
-  mode,
-  sampleTitle,
-  onStepChange,
   parameterFormRows,
   onParameterRowChange,
 }) {
-  const sections = [
-    <CustomerDetailsSection
-      key="customer"
-      formValues={formValues}
-      fieldErrors={fieldErrors}
-      onFieldChange={onFieldChange}
-    />,
-    <BasicDetailsSection
-      key="basic"
-      formValues={formValues}
-      fieldErrors={fieldErrors}
-      onFieldChange={onFieldChange}
-    />,
-    <ProductDetailsSection
-      key="product"
-      formValues={formValues}
-      fieldErrors={fieldErrors}
-      onFieldChange={onFieldChange}
-      parameterFormRows={parameterFormRows}
-      onParameterRowChange={onParameterRowChange}
-    />,
-    <AdditionalDetailsSection
-      key="additional"
-      formValues={formValues}
-      fieldErrors={fieldErrors}
-      onFieldChange={onFieldChange}
-    />,
-  ];
-
   return (
-    <section className="new-sample-card">
-      <div className="new-sample-card__body">
-        <StepRail
-          currentStep={currentStep}
-          title={sampleTitle}
-          mode={mode}
-          onStepChange={mode === 'edit' ? onStepChange : undefined}
+    <form
+      id={formId}
+      className="new-sample-form"
+      onSubmit={(event) => {
+        event.preventDefault();
+        onComplete();
+      }}
+    >
+      <div className="new-sample-form__sections">
+        <CustomerDetailsSection
+          formValues={formValues}
+          fieldErrors={fieldErrors}
+          onFieldChange={onFieldChange}
+          onFieldFocus={onFieldFocus}
+          onFieldBlur={onFieldBlur}
         />
-
-        <div className="new-sample-form">
-          <div className="new-sample-form__stage">{sections[currentStep]}</div>
-          <WizardFooter
-            currentStep={currentStep}
-            onPrev={onPrev}
-            onNext={onNext}
-            onComplete={onComplete}
-            onCancel={onCancel}
-            mode={mode}
-          />
-        </div>
+        <BasicDetailsSection
+          formValues={formValues}
+          fieldErrors={fieldErrors}
+          onFieldChange={onFieldChange}
+          onFieldFocus={onFieldFocus}
+          onFieldBlur={onFieldBlur}
+        />
+        <ProductDetailsSection
+          formValues={formValues}
+          fieldErrors={fieldErrors}
+          onFieldChange={onFieldChange}
+          onFieldFocus={onFieldFocus}
+          onFieldBlur={onFieldBlur}
+          parameterFormRows={parameterFormRows}
+          onParameterRowChange={onParameterRowChange}
+        />
+        <AdditionalDetailsSection
+          formValues={formValues}
+          fieldErrors={fieldErrors}
+          onFieldChange={onFieldChange}
+          onFieldFocus={onFieldFocus}
+          onFieldBlur={onFieldBlur}
+        />
       </div>
-    </section>
+    </form>
   );
 }
 
@@ -705,24 +863,180 @@ export default function NewSampleCustomerDetailsPage({
   mode = 'create',
   sample = null,
   parentLabel = 'Samples Workspace',
+  sampleCreationFlowSessionId = null,
+  onSampleFormVariantChange,
   onBackToWorkspace,
   onComplete,
 }) {
-  const [currentStep, setCurrentStep] = useState(0);
+  const { isReady: isExperimentReady, variant: formVariant } = useFeatureFlagVariant(
+    SAMPLE_FORM_EXPERIMENT_FLAG,
+    'form-a',
+  );
+  const currentStep = 0;
   const [formValues, setFormValues] = useState(mode === 'edit' ? buildEditFormValues(sample) : initialFormValues);
   const [parameterFormRows, setParameterFormRows] = useState(buildParameterFormRows(mode));
   const [fieldErrors, setFieldErrors] = useState({});
   const sampleTitle = mode === 'edit' ? getSampleDisplayName(sample) : 'New Sample';
   const currentCrumbLabel = mode === 'edit' ? `Edit ${sampleTitle}` : 'New Sample';
+  const formId = 'new-sample-v2-form';
+  const formSessionRef = useRef(createFormSessionId());
+  const startedAtRef = useRef(getNow());
+  const stepStartedAtRef = useRef(getNow());
+  const lastInteractionAtRef = useRef(getNow());
+  const trackedStartRef = useRef(false);
+  const lastViewedStepRef = useRef(null);
+  const outcomeRef = useRef(null);
+  const fieldChangeCountsRef = useRef({});
+  const fieldFocusStateRef = useRef({});
+  const parameterFormRowsRef = useRef(parameterFormRows);
+  const analyticsContext = useMemo(() => ({
+    form_name: sampleFormName,
+    form_variant: formVariant,
+    experiment_flag: SAMPLE_FORM_EXPERIMENT_FLAG,
+    experiment_ready: isExperimentReady,
+    mode,
+    parent_label: parentLabel,
+    sample_present: Boolean(sample),
+    sample_creation_flow_session_id: sampleCreationFlowSessionId,
+  }), [formVariant, isExperimentReady, mode, parentLabel, sample, sampleCreationFlowSessionId]);
+  const analyticsContextRef = useRef(analyticsContext);
+  analyticsContextRef.current = analyticsContext;
+  parameterFormRowsRef.current = parameterFormRows;
+
+  const captureFormEvent = (eventName, properties = {}) => {
+    trackEvent(eventName, {
+      ...analyticsContextRef.current,
+      form_session_id: formSessionRef.current,
+      elapsed_ms: getElapsedTime(startedAtRef.current),
+      ...properties,
+    });
+  };
+
+  const captureHesitationIfNeeded = (actionName) => {
+    const stepDurationMs = getElapsedTime(stepStartedAtRef.current);
+    const idleBeforeActionMs = getElapsedTime(lastInteractionAtRef.current);
+
+    if (stepDurationMs < 30000 && idleBeforeActionMs < 15000) {
+      return;
+    }
+
+    captureFormEvent('sample_form_hesitation_detected', {
+      action_name: actionName,
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      step_duration_ms: stepDurationMs,
+      idle_before_action_ms: idleBeforeActionMs,
+    });
+  };
 
   useEffect(() => {
-    setCurrentStep(0);
+    if (isExperimentReady && mode === 'create') {
+      onSampleFormVariantChange?.(formVariant);
+    }
+  }, [formVariant, isExperimentReady, mode, onSampleFormVariantChange]);
+
+  useEffect(() => {
+    formSessionRef.current = createFormSessionId();
+    startedAtRef.current = getNow();
+    stepStartedAtRef.current = getNow();
+    lastInteractionAtRef.current = getNow();
+    trackedStartRef.current = false;
+    lastViewedStepRef.current = null;
+    outcomeRef.current = null;
+    fieldChangeCountsRef.current = {};
+    fieldFocusStateRef.current = {};
     setFormValues(mode === 'edit' ? buildEditFormValues(sample) : initialFormValues);
     setParameterFormRows(buildParameterFormRows(mode));
     setFieldErrors({});
   }, [mode, sample]);
 
+  useEffect(() => {
+    if (!isExperimentReady || trackedStartRef.current) {
+      return;
+    }
+
+    const now = getNow();
+    trackedStartRef.current = true;
+    startedAtRef.current = now;
+    stepStartedAtRef.current = now;
+    lastInteractionAtRef.current = now;
+    lastViewedStepRef.current = currentStep;
+
+    captureFormEvent('sample_form_experiment_assigned', {
+      flag_key: SAMPLE_FORM_EXPERIMENT_FLAG,
+      variant: formVariant,
+    });
+    captureFormEvent('sample_form_started', {
+      step_count: wizardSteps.length,
+      ...getStepFieldSummary(currentStep, formValues),
+      ...getParameterSummary(parameterFormRows),
+    });
+    captureFormEvent('sample_form_step_viewed', {
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      ...getStepFieldSummary(currentStep, formValues),
+    });
+  }, [currentStep, formValues, formVariant, isExperimentReady, parameterFormRows]);
+
+  useEffect(() => {
+    if (!trackedStartRef.current || lastViewedStepRef.current === currentStep) {
+      return;
+    }
+
+    lastViewedStepRef.current = currentStep;
+    stepStartedAtRef.current = getNow();
+
+    captureFormEvent('sample_form_step_viewed', {
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      ...getStepFieldSummary(currentStep, formValues),
+    });
+  }, [currentStep, formValues]);
+
+  useEffect(() => () => {
+    if (!trackedStartRef.current || outcomeRef.current) {
+      return;
+    }
+
+    trackEvent('sample_form_abandoned', {
+      ...analyticsContextRef.current,
+      form_session_id: formSessionRef.current,
+      elapsed_ms: getElapsedTime(startedAtRef.current),
+      step_index: lastViewedStepRef.current,
+      step_name: getStepName(lastViewedStepRef.current ?? 0),
+      ...getFieldInteractionSummary(fieldChangeCountsRef.current),
+      ...getParameterSummary(parameterFormRowsRef.current),
+    });
+  }, []);
+
   const handleFieldChange = (key, value) => {
+    const fieldMeta = fieldMetaByKey[key] ?? {};
+    const previousChangeCount = fieldChangeCountsRef.current[key] ?? 0;
+    const nextChangeCount = previousChangeCount + 1;
+    fieldChangeCountsRef.current = {
+      ...fieldChangeCountsRef.current,
+      [key]: nextChangeCount,
+    };
+    lastInteractionAtRef.current = getNow();
+
+    if (previousChangeCount === 0) {
+      captureFormEvent('sample_form_field_changed', {
+        field_key: key,
+        field_type: fieldMeta.type,
+        step_index: fieldMeta.stepIndex,
+        step_name: fieldMeta.stepName,
+        change_count: nextChangeCount,
+      });
+    } else if ([3, 5, 10].includes(nextChangeCount) || nextChangeCount % 20 === 0) {
+      captureFormEvent('sample_form_field_reedited', {
+        field_key: key,
+        field_type: fieldMeta.type,
+        step_index: fieldMeta.stepIndex,
+        step_name: fieldMeta.stepName,
+        change_count: nextChangeCount,
+      });
+    }
+
     setFormValues((current) => ({
       ...current,
       [key]: value,
@@ -739,34 +1053,42 @@ export default function NewSampleCustomerDetailsPage({
     });
   };
 
-  const validateStep = (stepIndex) => {
-    const nextErrors = {};
+  const handleFieldFocus = (key) => {
+    const fieldMeta = fieldMetaByKey[key] ?? {};
+    const now = getNow();
 
-    stepFields[stepIndex].forEach((field) => {
-      if (!field.mandatory) {
-        return;
-      }
+    lastInteractionAtRef.current = now;
+    fieldFocusStateRef.current[key] = {
+      startedAt: now,
+      changeCountAtFocus: fieldChangeCountsRef.current[key] ?? 0,
+    };
 
-      if (!isFilledValue(field.type, formValues[field.key])) {
-        nextErrors[field.key] = 'This field is required.';
-      }
+    captureFormEvent('sample_form_field_focused', {
+      field_key: key,
+      field_type: fieldMeta.type,
+      step_index: fieldMeta.stepIndex,
+      step_name: fieldMeta.stepName,
     });
-
-    setFieldErrors((current) => ({
-      ...current,
-      ...nextErrors,
-    }));
-
-    return Object.keys(nextErrors).length === 0;
   };
 
-  const handleNext = () => {
-    // Validation is temporarily disabled.
-    // if (!validateStep(currentStep)) {
-    //   return;
-    // }
+  const handleFieldBlur = (key) => {
+    const fieldMeta = fieldMetaByKey[key] ?? {};
+    const focusState = fieldFocusStateRef.current[key];
+    const currentChangeCount = fieldChangeCountsRef.current[key] ?? 0;
 
-    setCurrentStep((step) => Math.min(wizardSteps.length - 1, step + 1));
+    lastInteractionAtRef.current = getNow();
+
+    captureFormEvent('sample_form_field_blurred', {
+      field_key: key,
+      field_type: fieldMeta.type,
+      step_index: fieldMeta.stepIndex,
+      step_name: fieldMeta.stepName,
+      focus_duration_ms: focusState ? getElapsedTime(focusState.startedAt) : undefined,
+      changed_during_focus: focusState ? currentChangeCount > focusState.changeCountAtFocus : undefined,
+      change_count: currentChangeCount,
+    });
+
+    delete fieldFocusStateRef.current[key];
   };
 
   const handleComplete = () => {
@@ -775,10 +1097,56 @@ export default function NewSampleCustomerDetailsPage({
     //   return;
     // }
 
+    captureHesitationIfNeeded('complete');
+    if (mode === 'create') {
+      captureFormEvent('sample_creation_flow_submit_clicked', {
+        step_index: currentStep,
+        step_name: getStepName(currentStep),
+        total_duration_ms: getElapsedTime(startedAtRef.current),
+        step_duration_ms: getElapsedTime(stepStartedAtRef.current),
+        ...getStepFieldSummary(currentStep, formValues),
+        ...getFieldInteractionSummary(fieldChangeCountsRef.current),
+        ...getParameterSummary(parameterFormRows),
+      });
+    }
+
+    outcomeRef.current = 'completed';
+    captureFormEvent('sample_form_completed', {
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      total_duration_ms: getElapsedTime(startedAtRef.current),
+      step_duration_ms: getElapsedTime(stepStartedAtRef.current),
+      ...getStepFieldSummary(currentStep, formValues),
+      ...getFieldInteractionSummary(fieldChangeCountsRef.current),
+      ...getParameterSummary(parameterFormRows),
+    });
+    lastInteractionAtRef.current = getNow();
+
     onComplete?.();
   };
 
+  const handleCancel = () => {
+    outcomeRef.current = 'cancelled';
+    captureFormEvent('sample_form_cancelled', {
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      total_duration_ms: getElapsedTime(startedAtRef.current),
+      step_duration_ms: getElapsedTime(stepStartedAtRef.current),
+      ...getFieldInteractionSummary(fieldChangeCountsRef.current),
+      ...getParameterSummary(parameterFormRows),
+    });
+    lastInteractionAtRef.current = getNow();
+    onBackToWorkspace?.();
+  };
+
   const handleParameterRowChange = (rowIndex, field, value) => {
+    lastInteractionAtRef.current = getNow();
+    captureFormEvent('sample_form_parameter_changed', {
+      row_index: rowIndex,
+      field_key: field,
+      ...getParameterSummary(parameterFormRows),
+    });
+
     setParameterFormRows((current) =>
       current.map((row, index) => (
         index === rowIndex
@@ -789,21 +1157,18 @@ export default function NewSampleCustomerDetailsPage({
   };
 
   return (
-    <div className="new-sample-page">
-      <TopBar parentLabel={parentLabel} currentLabel={currentCrumbLabel} onBack={onBackToWorkspace} />
+    <div className="new-sample-page" data-sample-form-variant={formVariant}>
+      <TopBar parentLabel={parentLabel} currentLabel={currentCrumbLabel} onBack={handleCancel} />
+      <PageHeader title={currentCrumbLabel} mode={mode} formId={formId} />
       <main className="new-sample-page__content">
         <CustomerForm
-          currentStep={currentStep}
+          formId={formId}
           formValues={formValues}
           fieldErrors={fieldErrors}
           onFieldChange={handleFieldChange}
-          onPrev={() => setCurrentStep((step) => Math.max(0, step - 1))}
-          onNext={handleNext}
+          onFieldFocus={handleFieldFocus}
+          onFieldBlur={handleFieldBlur}
           onComplete={handleComplete}
-          onCancel={onBackToWorkspace}
-          mode={mode}
-          sampleTitle={sampleTitle}
-          onStepChange={(stepIndex) => setCurrentStep(stepIndex)}
           parameterFormRows={parameterFormRows}
           onParameterRowChange={handleParameterRowChange}
         />

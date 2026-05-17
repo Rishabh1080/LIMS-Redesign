@@ -3,7 +3,7 @@ import ParameterCircles, { getParameterSummary } from '../ParameterCircles/Param
 import SecondaryButton from '../SecondaryButton';
 import StatusPill from '../StatusPill';
 import { getStatusPresentation } from '../../status/statusRegistry';
-import './SampleCard.css';
+import './SampleCard.scss';
 
 function renderFieldList(fields = []) {
   return fields.length
@@ -39,10 +39,10 @@ function getRowColsClass(itemCount) {
 
 export function SampleCardViewToggle({ value, onChange, className = '' }) {
   return (
-    <div className={`sample-card-view-toggle ${className}`.trim()} role="group" aria-label="Sample card view">
+    <div className={`smplfy-btn-group btn-group sample-card-view-toggle ${className}`.trim()} role="group" aria-label="Sample card view">
       <button
         type="button"
-        className={`sample-card-view-toggle__button ${value === 'modern' ? 'is-active' : ''}`}
+        className={`btn sample-card-view-toggle__button ${value === 'modern' ? 'active is-active' : ''}`}
         aria-pressed={value === 'modern'}
         aria-label="New view"
         onClick={() => onChange('modern')}
@@ -51,7 +51,7 @@ export function SampleCardViewToggle({ value, onChange, className = '' }) {
       </button>
       <button
         type="button"
-        className={`sample-card-view-toggle__button ${value === 'legacy' ? 'is-active' : ''}`}
+        className={`btn sample-card-view-toggle__button ${value === 'legacy' ? 'active is-active' : ''}`}
         aria-pressed={value === 'legacy'}
         aria-label="Old view"
         onClick={() => onChange('legacy')}
@@ -60,7 +60,7 @@ export function SampleCardViewToggle({ value, onChange, className = '' }) {
       </button>
       <button
         type="button"
-        className={`sample-card-view-toggle__button ${value === 'grid' ? 'is-active' : ''}`}
+        className={`btn sample-card-view-toggle__button ${value === 'grid' ? 'active is-active' : ''}`}
         aria-pressed={value === 'grid'}
         aria-label="Data grid view"
         onClick={() => onChange('grid')}
@@ -88,7 +88,7 @@ function SampleCardLegacy({ sample, onOpenSample, sourcePage, extraMetaFields = 
   ];
 
   return (
-    <article className="sample-card sample-card--legacy">
+    <article className="smplfy-card card sample-card sample-card--legacy">
       <div className="row g-0 align-items-stretch">
         <div className="col-xl-3 col-lg-4">
           <div className="sample-column sample-primary h-100">
@@ -194,7 +194,7 @@ function SampleCardModern({ sample, onOpenSample, sourcePage, extraMetaFields = 
   const statusPresentation = getStatusPresentation('sample', sample.status);
 
   return (
-    <article className="sample-card sample-card--modern">
+    <article className="smplfy-card card sample-card sample-card--modern">
       <div className="sample-card__top">
         <div className="sample-card__panel sample-card__panel--primary">
           {isOpenable ? (
@@ -295,7 +295,7 @@ function SampleCardGrid({
   const statusPresentation = getStatusPresentation('sample', sample.status);
 
   return (
-    <article className="sample-card sample-card--grid">
+    <article className="smplfy-card card sample-card sample-card--grid">
       <div className="sample-card__grid-header">
         {isOpenable ? (
           <a

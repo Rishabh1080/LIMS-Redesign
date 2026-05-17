@@ -1,29 +1,44 @@
-import './RadioButton.css';
+import './RadioButton.scss';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
 }
 
 export default function RadioButton({
-  selected = false,
+  selected,
+  checked,
   state = 'default',
   className = '',
   ariaLabel,
+  'aria-label': ariaLabelAttribute,
   onClick,
-  type = 'button',
+  onChange,
+  disabled = false,
+  type: _type,
   ...props
 }) {
+  const isSelected = checked ?? selected ?? false;
+  const resolvedAriaLabel = ariaLabel ?? ariaLabelAttribute;
+
   return (
-    <button
-      type={type}
-      className={joinClasses('smplfy-radio-button', `smplfy-radio-button--${state}`, selected && 'is-selected', className)}
-      aria-label={ariaLabel}
-      aria-pressed={selected}
-      onClick={onClick}
+    <input
       {...props}
-    >
-      <span className="smplfy-radio-button__ring" />
-      <span className="smplfy-radio-button__dot" />
-    </button>
+      type="radio"
+      checked={isSelected}
+      aria-label={resolvedAriaLabel}
+      disabled={disabled}
+      readOnly={onChange ? undefined : true}
+      data-radio-state={state}
+      className={joinClasses(
+        'smplfy-form-check-input',
+        'form-check-input',
+        isSelected && 'is-selected',
+        className,
+      )}
+      onClick={onClick}
+      onChange={(event) => {
+        onChange?.(event.target.checked, event);
+      }}
+    />
   );
 }

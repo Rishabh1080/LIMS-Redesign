@@ -2,8 +2,8 @@ import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../src/design-system.css';
-import '../src/styles.css';
+import '../src/design-system.scss';
+import '../src/styles.scss';
 
 /** @type { import('@storybook/react-vite').Preview } */
 const preview = {

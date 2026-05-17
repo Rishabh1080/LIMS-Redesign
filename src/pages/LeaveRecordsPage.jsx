@@ -4,7 +4,7 @@ import { FormElement } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import './leave-records-page.css';
+import './leave-records-page.scss';
 
 const defaultLeaveRecords = [
   {

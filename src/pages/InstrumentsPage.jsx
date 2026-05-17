@@ -3,7 +3,7 @@ import AppChrome from '../components/AppChrome/AppChrome';
 import { ToastNotification } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import './instruments-page.css';
+import './instruments-page.scss';
 
 const defaultInstruments = [
   { id: 'inst-001', name: 'Stabinger Viscometer', lastServiceOn: '14/04/2026', calibrated: 'Yes', nextServiceOn: '14/10/2026' },

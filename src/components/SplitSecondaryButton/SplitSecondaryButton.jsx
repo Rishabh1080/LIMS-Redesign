@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import AppIcon from '../AppIcon';
 import MenuActionItem from '../MenuActionItem';
-import './SplitSecondaryButton.css';
+import './SplitSecondaryButton.scss';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
@@ -52,18 +52,22 @@ export default function SplitSecondaryButton({
   return (
     <div
       ref={rootRef}
-      className={joinClasses('smplfy-split-secondary-button', menuOpen ? 'is-menu-open' : '', className)}
+      className={joinClasses('smplfy-btn-group', 'btn-group', menuOpen ? 'is-menu-open' : '', className)}
       {...props}
     >
-      <button type="button" className="smplfy-split-secondary-button__primary btn" onClick={onPrimaryClick}>
-        <span className="smplfy-split-secondary-button__icon" aria-hidden="true">
+      <button
+        type="button"
+        className="smplfy-btn btn btn-primary smplfy-btn-group__primary"
+        onClick={onPrimaryClick}
+      >
+        <span className="smplfy-btn-group__icon" aria-hidden="true">
           <AppIcon name={leftIcon} size={18} />
         </span>
         <span>{label}</span>
       </button>
       <button
         type="button"
-        className="smplfy-split-secondary-button__secondary btn"
+        className="smplfy-btn btn btn-primary dropdown-toggle dropdown-toggle-split smplfy-btn-group__secondary"
         onClick={(event) => {
           onSecondaryClick?.(event);
           setMenuOpen((current) => !current);
@@ -76,7 +80,11 @@ export default function SplitSecondaryButton({
       </button>
 
       {menuOpen ? (
-        <div className="smplfy-split-secondary-button__menu" role="menu" aria-label="Print actions">
+        <div
+          className="smplfy-dropdown-menu dropdown-menu show smplfy-btn-group__menu"
+          role="menu"
+          aria-label="Print actions"
+        >
           {resolvedMenuItems.map((item) => (
             <MenuActionItem
               key={item.key}

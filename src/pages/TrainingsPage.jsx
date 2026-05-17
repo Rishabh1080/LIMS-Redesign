@@ -1,6 +1,6 @@
 import AppChrome from '../components/AppChrome/AppChrome';
 import SecondaryButton from '../components/SecondaryButton';
-import './trainings-page.css';
+import './trainings-page.scss';
 
 export const defaultTrainings = [
   {

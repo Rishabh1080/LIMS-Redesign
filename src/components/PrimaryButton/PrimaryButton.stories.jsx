@@ -1,10 +1,66 @@
 import { useState } from 'react';
+import AppIcon from '../AppIcon';
 import PrimaryButton from './PrimaryButton';
 
 const iconOptions = [undefined, 'plus', 'save', 'send', 'check', 'close', 'printer', 'user-plus'];
 
+const bootstrapButtonVariants = [
+  { label: 'Primary', className: 'btn-primary' },
+  { label: 'Outline Primary', className: 'btn-outline-primary' },
+  { label: 'Neutral', className: 'btn-outline-secondary' },
+  { label: 'Success', className: 'btn-success' },
+  { label: 'Outline Success', className: 'btn-outline-success' },
+  { label: 'Danger', className: 'btn-danger' },
+  { label: 'Outline Danger', className: 'btn-outline-danger' },
+];
+
+const bootstrapSizes = [
+  { label: 'Large / default', className: '' },
+  { label: 'Medium', className: 'btn-sm' },
+];
+
+const bootstrapLayouts = [
+  {
+    label: 'Label only',
+    render: (label) => <span>{label}</span>,
+  },
+  {
+    label: 'Leading icon',
+    render: (label) => (
+      <>
+        <AppIcon name="plus" />
+        <span>{label}</span>
+      </>
+    ),
+  },
+  {
+    label: 'Trailing icon',
+    render: (label) => (
+      <>
+        <span>{label}</span>
+        <AppIcon name="arrow-up-right" />
+      </>
+    ),
+  },
+  {
+    label: 'Both icons',
+    render: (label) => (
+      <>
+        <AppIcon name="save" />
+        <span>{label}</span>
+        <AppIcon name="check" />
+      </>
+    ),
+  },
+  {
+    label: 'Icon only',
+    iconOnly: true,
+    render: () => <AppIcon name="plus" />,
+  },
+];
+
 const meta = {
-  title: 'Components/Primary Button',
+  title: 'Components/Buttons',
   component: PrimaryButton,
   tags: ['autodocs'],
   parameters: {
@@ -12,7 +68,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Primary action button used for the highest-emphasis actions in the LIMS UI. Supports semantic variants, multiple sizes, optional icons on either side, disabled state, and icon-only usage.',
+          'Button system built on Bootstrap-style classes. Preferred usage is `smplfy-btn btn btn-primary`, `smplfy-btn btn btn-outline-primary`, `smplfy-btn btn btn-success`, or `smplfy-btn btn btn-danger`; the React wrapper remains for existing screens.',
       },
     },
   },
@@ -32,13 +88,13 @@ const meta = {
     },
     styleVariant: {
       control: 'select',
-      options: ['default', 'positive', 'destructive', 'red'],
-      description: 'Visual emphasis variant.',
+      options: ['default', 'primary', 'positive', 'success', 'destructive', 'danger', 'red'],
+      description: 'Compatibility prop. Prefer Bootstrap classes such as `btn-primary`, `btn-success`, and `btn-danger`.',
     },
     size: {
       control: 'select',
       options: ['default', 'medium', 'small'],
-      description: 'Button size.',
+      description: 'Compatibility prop. Prefer Bootstrap size class `btn-sm` for the medium button.',
     },
     leftIcon: {
       control: 'select',
@@ -193,6 +249,81 @@ export const DisabledStates = {
           Destructive Disabled
         </PrimaryButton>
       </StoryRow>
+    </Surface>
+  ),
+};
+
+function BootstrapClassButton({
+  variantClass,
+  sizeClass = '',
+  layout,
+  disabled = false,
+}) {
+  const classes = ['smplfy-btn', 'btn', variantClass, sizeClass].filter(Boolean).join(' ');
+  const label = layout.iconOnly ? 'Action' : variantClass.replace('btn-', '');
+
+  return (
+    <button
+      type="button"
+      className={classes}
+      disabled={disabled}
+      aria-label={layout.iconOnly ? `${label} ${layout.label}` : undefined}
+    >
+      {layout.render(label)}
+    </button>
+  );
+}
+
+export const BootstrapClassMatrix = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'The class-first API: one `smplfy-btn` alias plus standard Bootstrap base and variant classes. The same CSS covers every size, state, and icon composition.',
+      },
+    },
+  },
+  render: () => (
+    <Surface>
+      <StoryStack align="stretch">
+        {bootstrapButtonVariants.map((variant) => (
+          <div key={variant.className}>
+            <div
+              style={{
+                color: 'var(--smplfy-semantic-color-text-muted)',
+                fontSize: '12px',
+                fontWeight: 600,
+                marginBottom: '8px',
+              }}
+            >
+              smplfy-btn btn {variant.className}
+            </div>
+            <StoryStack align="flex-start">
+              {bootstrapSizes.map((size) => (
+                <StoryRow key={`${variant.className}-${size.label}`}>
+                  {bootstrapLayouts.map((layout) => (
+                    <BootstrapClassButton
+                      key={`${variant.className}-${size.label}-${layout.label}`}
+                      variantClass={variant.className}
+                      sizeClass={size.className}
+                      layout={layout}
+                    />
+                  ))}
+                </StoryRow>
+              ))}
+              <StoryRow>
+                {bootstrapLayouts.map((layout) => (
+                  <BootstrapClassButton
+                    key={`${variant.className}-disabled-${layout.label}`}
+                    variantClass={variant.className}
+                    layout={layout}
+                    disabled
+                  />
+                ))}
+              </StoryRow>
+            </StoryStack>
+          </div>
+        ))}
+      </StoryStack>
     </Surface>
   ),
 };

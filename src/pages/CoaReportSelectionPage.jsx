@@ -6,7 +6,7 @@ import InputFieldDropdown from '../components/FormControls/InputFieldDropdown';
 import LoadingAnimation from '../components/LoadingAnimation/LoadingAnimation';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import './coa-report-selection-page.css';
+import './coa-report-selection-page.scss';
 
 const reportTypeOptions = [
   {

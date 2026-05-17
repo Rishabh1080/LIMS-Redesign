@@ -1,0 +1,51 @@
+.smplfy-loading-screen {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--smplfy-loading-screen-gap);
+  padding:
+    var(--smplfy-loading-screen-padding-y)
+    var(--smplfy-loading-screen-padding-x);
+  grid-column: 1 / -1;
+}
+
+.smplfy-loading-screen__title {
+  margin: var(--smplfy-button-space-0);
+  color: var(--smplfy-loading-title-color);
+  font-size: var(--smplfy-loading-title-font-size);
+  line-height: var(--smplfy-loading-title-line-height);
+  font-weight: var(--smplfy-loading-title-font-weight);
+  letter-spacing: var(--smplfy-loading-title-letter-spacing);
+}
+
+.smplfy-progress.progress {
+  width: min(var(--smplfy-progress-width), 100%);
+  height: var(--smplfy-progress-height);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--smplfy-progress-bg);
+  border-radius: var(--smplfy-progress-radius);
+}
+
+.smplfy-progress.progress .progress-bar {
+  width: 100%;
+  height: 100%;
+  background-color: var(--smplfy-progress-bar-bg);
+  border-radius: var(--smplfy-progress-radius);
+  transform-origin: left center;
+  animation: smplfy-loading-bar var(--smplfy-progress-animation-duration) var(--smplfy-progress-animation-easing) forwards;
+}
+
+@keyframes smplfy-loading-bar {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}

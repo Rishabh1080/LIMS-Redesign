@@ -9,8 +9,8 @@ import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import SampleCard, { SampleCardViewToggle } from '../components/SampleCard/SampleCard';
 import { getSamplesByCategory, sampleCategories } from '../data/samplesDb';
-import '../styles.css';
-import './all-samples-listing-page.css';
+import '../styles.scss';
+import './all-samples-listing-page.scss';
 
 const extraMetaFieldSets = [
   [

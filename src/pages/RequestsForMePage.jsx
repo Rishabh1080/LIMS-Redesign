@@ -14,8 +14,8 @@ import {
   requestCategories,
   requestSections,
 } from '../data/requestsForMeData';
-import '../styles.css';
-import './requests-for-me-page.css';
+import '../styles.scss';
+import './requests-for-me-page.scss';
 
 function normalizeRetentionLabel(value) {
   return value === 'To be retained' ? 'Retained' : value;

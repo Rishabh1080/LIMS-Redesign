@@ -1,0 +1,69 @@
+.smplfy-card.card.btn {
+  --smplfy-card-current-gap: var(--smplfy-card-gap);
+  --smplfy-card-current-desc-indent: var(--smplfy-card-desc-indent);
+  --smplfy-card-current-focus-border-width: var(--smplfy-card-border-width);
+  --smplfy-card-current-focus-shadow: inset 0 0 0 var(--smplfy-card-border-width) var(--smplfy-card-focus-border);
+  --smplfy-card-current-active-border-width: var(--smplfy-card-border-width);
+  --smplfy-card-current-active-shadow: inset 0 0 0 var(--smplfy-card-border-width) var(--smplfy-card-active-border);
+
+  width: var(--smplfy-card-width);
+  min-height: var(--smplfy-card-min-height);
+  padding: var(--smplfy-card-padding);
+  border: var(--smplfy-card-border-width) solid var(--smplfy-card-border);
+  border-radius: var(--smplfy-card-radius);
+  background-color: var(--smplfy-card-bg);
+  color: var(--smplfy-card-text);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--smplfy-card-current-gap);
+  text-align: left;
+  transition:
+    border-color var(--smplfy-card-motion-standard),
+    box-shadow var(--smplfy-card-motion-standard);
+}
+
+.smplfy-card.card.btn:hover,
+.smplfy-card.card.btn[data-state='hover'] {
+  border-color: var(--smplfy-card-hover-border);
+}
+
+.smplfy-card.card.btn:focus-visible,
+.smplfy-card.card.btn[data-state='focussed'] {
+  border-width: var(--smplfy-card-current-focus-border-width);
+  border-color: var(--smplfy-card-focus-border);
+  box-shadow: var(--smplfy-card-current-focus-shadow);
+  outline: none;
+}
+
+.smplfy-card.card.btn.active,
+.smplfy-card.card.btn[data-state='active'] {
+  border-width: var(--smplfy-card-current-active-border-width);
+  border-color: var(--smplfy-card-active-border);
+  box-shadow: var(--smplfy-card-current-active-shadow);
+}
+
+.smplfy-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--smplfy-card-header-gap);
+}
+
+.smplfy-card__title.card-title {
+  margin: var(--smplfy-button-space-0);
+  color: var(--smplfy-card-text);
+  font-size: var(--smplfy-card-title-font-size);
+  line-height: var(--smplfy-card-title-line-height);
+  font-weight: var(--smplfy-card-title-font-weight);
+  letter-spacing: var(--smplfy-card-title-letter-spacing);
+}
+
+.smplfy-card__description.card-text {
+  margin: var(--smplfy-button-space-0);
+  padding-left: var(--smplfy-card-current-desc-indent);
+  color: var(--smplfy-card-muted-text);
+  font-size: var(--smplfy-card-description-font-size);
+  line-height: var(--smplfy-card-description-line-height);
+  font-weight: var(--smplfy-card-description-font-weight);
+  white-space: pre-line;
+}

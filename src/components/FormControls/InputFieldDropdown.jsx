@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import AppIcon from '../AppIcon';
-import './form-controls.css';
+import './form-controls.scss';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
@@ -12,6 +12,7 @@ export default function InputFieldDropdown({
   placeholder = '',
   options = [],
   className = '',
+  disabled = false,
   onChange,
   ...props
 }) {
@@ -19,7 +20,8 @@ export default function InputFieldDropdown({
   useEffect(() => {
     setSelectedValue(value);
   }, [value]);
-  const isDisabled = state === 'disabled';
+  const isDisabled = disabled || state === 'disabled';
+  const isInvalid = state === 'error';
   const isFilled = state === 'filled' || state === 'active-multiselect' || Boolean(selectedValue);
   const resolvedOptions = options.length
     ? options
@@ -28,34 +30,41 @@ export default function InputFieldDropdown({
   return (
     <div
       className={joinClasses(
-        'smplfy-input-field',
-        `smplfy-input-field--${isDisabled ? 'disabled' : 'default'}`,
-        isFilled ? 'smplfy-input-field--filled' : 'smplfy-input-field--empty',
+        'smplfy-select-field',
         className,
       )}
+      data-filled={isFilled ? 'true' : 'false'}
+      data-field-state={state}
     >
-      <div className="smplfy-input-field__shell">
-        <select
-          className="smplfy-input-field__control smplfy-input-field__control--select"
-          value={selectedValue}
-          disabled={isDisabled}
-          onChange={(event) => {
-            setSelectedValue(event.target.value);
-            onChange?.(event);
-          }}
-          {...props}
-        >
-          <option value="">{placeholder}</option>
-          {resolvedOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
+      <select
+        className={joinClasses(
+          'smplfy-form-select',
+          'form-select',
+          isInvalid && 'is-invalid',
+        )}
+        value={selectedValue}
+        disabled={isDisabled}
+        onChange={(event) => {
+          setSelectedValue(event.target.value);
+          onChange?.(event);
+        }}
+        {...props}
+      >
+        <option value="">{placeholder}</option>
+        {resolvedOptions.map((option) => {
+          const optionValue = typeof option === 'object' ? option.value : option;
+          const optionLabel = typeof option === 'object' ? option.label : option;
+
+          return (
+            <option key={optionValue} value={optionValue}>
+              {optionLabel}
             </option>
-          ))}
-        </select>
-        <span className="smplfy-input-field__icon" aria-hidden="true">
-          <AppIcon name="chevron-down" />
-        </span>
-      </div>
+          );
+        })}
+      </select>
+      <span className="smplfy-select-icon" aria-hidden="true">
+        <AppIcon name="chevron-down" />
+      </span>
     </div>
   );
 }

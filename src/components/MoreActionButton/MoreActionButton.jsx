@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import AppIcon from '../AppIcon';
 import MenuActionItem from '../MenuActionItem';
-import './MoreActionButton.css';
+import './MoreActionButton.scss';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
@@ -42,10 +42,10 @@ export default function MoreActionButton({ className = '', items, ...props }) {
   }, [open]);
 
   return (
-    <div ref={rootRef} className={joinClasses('smplfy-more-action-items', open && 'is-open', className)}>
+    <div ref={rootRef} className={joinClasses('smplfy-dropdown', 'dropdown', open && 'show', className)}>
       <button
         type="button"
-        className="smplfy-more-action-button btn smplfy-secondary-button smplfy-secondary-button--large smplfy-secondary-button--tone-neutral smplfy-secondary-button--icon-only"
+        className={joinClasses('smplfy-btn', 'btn', 'btn-outline-secondary', 'dropdown-toggle', open && 'show')}
         aria-label="More actions"
         aria-haspopup="menu"
         aria-expanded={open}
@@ -56,7 +56,11 @@ export default function MoreActionButton({ className = '', items, ...props }) {
       </button>
 
       {open ? (
-        <div className="smplfy-more-action-items__menu" role="menu" aria-label="More actions">
+        <div
+          className="smplfy-dropdown-menu dropdown-menu show"
+          role="menu"
+          aria-label="More actions"
+        >
           {menuItems.map((item) => (
             <MenuActionItem
               key={item.key}

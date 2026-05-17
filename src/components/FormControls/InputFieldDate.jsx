@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import AppIcon from '../AppIcon';
-import './form-controls.css';
+import './form-controls.scss';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
@@ -18,6 +18,20 @@ function toDisplayDate(date) {
   return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
 }
 
+function toDateFromParts(day, month, year) {
+  const parsed = new Date(Number(year), Number(month) - 1, Number(day));
+
+  if (
+    parsed.getFullYear() === Number(year) &&
+    parsed.getMonth() === Number(month) - 1 &&
+    parsed.getDate() === Number(day)
+  ) {
+    return parsed;
+  }
+
+  return null;
+}
+
 function parseVisibleDate(value) {
   const trimmed = value.trim();
 
@@ -31,14 +45,40 @@ function parseVisibleDate(value) {
 
   if (dateTimeMatch) {
     const [, day, month, year] = dateTimeMatch;
-    const parsed = new Date(Number(year), Number(month) - 1, Number(day));
+    const parsed = toDateFromParts(day, month, year);
 
-    if (
-      parsed.getFullYear() === Number(year) &&
-      parsed.getMonth() === Number(month) - 1 &&
-      parsed.getDate() === Number(day)
-    ) {
-      return { display: trimmed, iso: toIsoDate(parsed) };
+    if (parsed) {
+      return { display: toDisplayDate(parsed), iso: toIsoDate(parsed) };
+    }
+  }
+
+  const namedMonthMatch = trimmed.match(
+    /(?:\d{1,2}:\d{2}\s*(?:am|pm)\s*)?(\d{1,2})\s+([a-z]+)\s+(\d{4})/i
+  );
+
+  if (namedMonthMatch) {
+    const [, day, monthName, year] = namedMonthMatch;
+    const monthIndex = [
+      'january',
+      'february',
+      'march',
+      'april',
+      'may',
+      'june',
+      'july',
+      'august',
+      'september',
+      'october',
+      'november',
+      'december',
+    ].indexOf(monthName.toLowerCase());
+
+    if (monthIndex >= 0) {
+      const parsed = toDateFromParts(day, monthIndex + 1, year);
+
+      if (parsed) {
+        return { display: toDisplayDate(parsed), iso: toIsoDate(parsed) };
+      }
     }
   }
 
@@ -46,30 +86,46 @@ function parseVisibleDate(value) {
 
   if (isoMatch) {
     const [, year, month, day] = isoMatch;
-    const parsed = new Date(Number(year), Number(month) - 1, Number(day));
+    const parsed = toDateFromParts(day, month, year);
 
-    if (
-      parsed.getFullYear() === Number(year) &&
-      parsed.getMonth() === Number(month) - 1 &&
-      parsed.getDate() === Number(day)
-    ) {
+    if (parsed) {
       return { display: toDisplayDate(parsed), iso: trimmed };
     }
   }
 
   const fallback = new Date(trimmed);
   if (!Number.isNaN(fallback.getTime())) {
-    return { display: trimmed, iso: toIsoDate(fallback) };
+    return { display: toDisplayDate(fallback), iso: toIsoDate(fallback) };
   }
 
   return null;
 }
 
+function formatDateInput(value) {
+  const digits = value.replace(/\D/g, '').slice(0, 8);
+  const day = digits.slice(0, 2);
+  const month = digits.slice(2, 4);
+  const year = digits.slice(4, 8);
+
+  return [day, month, year].filter(Boolean).join('/');
+}
+
+function createChangeEvent(sourceEvent, value) {
+  return {
+    ...sourceEvent,
+    target: {
+      ...sourceEvent.target,
+      value,
+    },
+  };
+}
+
 export default function InputFieldDate({
   state = 'default',
   value = '',
-  placeholder = '',
+  placeholder = 'DD/MM/YYYY',
   className = '',
+  disabled = false,
   onChange,
   onBlur,
   ...props
@@ -90,8 +146,9 @@ export default function InputFieldDate({
     setLastValidPickerValue(parsed.iso);
   }, [value]);
 
-  const isDisabled = state === 'disabled';
+  const isDisabled = disabled || state === 'disabled';
   const isFilled = state === 'filled' || Boolean(textValue);
+  const isInvalid = state === 'error';
   const visualState = isDisabled
     ? 'disabled'
     : state === 'hover'
@@ -105,88 +162,100 @@ export default function InputFieldDate({
   return (
     <div
       className={joinClasses(
-        'smplfy-input-field',
-        'smplfy-input-field--date-field',
-        `smplfy-input-field--${visualState}`,
-        isFilled ? 'smplfy-input-field--filled' : 'smplfy-input-field--empty',
+        'smplfy-date-field',
+        'input-group',
+        isInvalid && 'is-invalid',
         className,
       )}
+      data-filled={isFilled ? 'true' : 'false'}
+      data-field-state={visualState}
     >
-      <div className="smplfy-input-field__shell smplfy-input-field__shell--date">
-        <input
-          ref={visibleInputRef}
-          className="smplfy-input-field__control smplfy-input-field__control--date-text"
-          type="text"
-          inputMode="numeric"
-          value={textValue}
-          placeholder={placeholder}
-          disabled={isDisabled}
-          onChange={(event) => {
-            setTextValue(event.target.value);
-            onChange?.(event);
-          }}
-          onBlur={(event) => {
-            const parsed = parseVisibleDate(event.target.value);
+      <input
+        ref={visibleInputRef}
+        className={joinClasses(
+          'smplfy-form-control',
+          'form-control',
+          'smplfy-date-field__input',
+          isInvalid && 'is-invalid',
+        )}
+        type="text"
+        inputMode="numeric"
+        value={textValue}
+        placeholder={placeholder}
+        disabled={isDisabled}
+        maxLength={10}
+        pattern="\d{2}/\d{2}/\d{4}"
+        onChange={(event) => {
+          const nextValue = formatDateInput(event.target.value);
+          setTextValue(nextValue);
+          onChange?.(createChangeEvent(event, nextValue));
+        }}
+        onBlur={(event) => {
+          const parsed = parseVisibleDate(event.target.value);
 
-            if (parsed) {
-              setTextValue(parsed.display);
-              setPickerValue(parsed.iso);
-              setLastValidText(parsed.display);
-              setLastValidPickerValue(parsed.iso);
-            } else if (event.target.value.trim()) {
-              setTextValue(lastValidText);
-              setPickerValue(lastValidPickerValue);
-            } else {
-              setTextValue('');
-              setPickerValue('');
-              setLastValidText('');
-              setLastValidPickerValue('');
-            }
+          if (parsed) {
+            setTextValue(parsed.display);
+            setPickerValue(parsed.iso);
+            setLastValidText(parsed.display);
+            setLastValidPickerValue(parsed.iso);
+            onChange?.(createChangeEvent(event, parsed.display));
+          } else if (event.target.value.trim()) {
+            setTextValue(lastValidText);
+            setPickerValue(lastValidPickerValue);
+            onChange?.(createChangeEvent(event, lastValidText));
+          } else {
+            setTextValue('');
+            setPickerValue('');
+            setLastValidText('');
+            setLastValidPickerValue('');
+            onChange?.(createChangeEvent(event, ''));
+          }
 
-            onBlur?.(event);
-          }}
-          {...props}
-        />
+          onBlur?.(event);
+        }}
+        data-filled={isFilled ? 'true' : 'false'}
+        {...props}
+      />
 
-        <button
-          type="button"
-          className="btn smplfy-input-field__action smplfy-input-field__action--date"
-          aria-label="Open date picker"
-          disabled={isDisabled}
-          onClick={() => {
-            pickerRef.current?.showPicker?.();
-            pickerRef.current?.focus();
-          }}
-        >
-          <input
-            ref={pickerRef}
-            className="smplfy-input-field__native-picker"
-            type="date"
-            tabIndex={-1}
-            aria-hidden="true"
-            value={pickerValue}
-            disabled={isDisabled}
-            onChange={(event) => {
-              setPickerValue(event.target.value);
+      <button
+        type="button"
+        className="smplfy-date-button btn"
+        aria-label="Open calendar"
+        disabled={isDisabled}
+        onClick={() => {
+          pickerRef.current?.showPicker?.();
+          pickerRef.current?.focus();
+        }}
+      >
+        <AppIcon name="calendar" className="smplfy-date-button__icon" />
+      </button>
 
-              if (event.target.value) {
-                const [year, month, day] = event.target.value.split('-').map(Number);
-                const nextDate = new Date(year, month - 1, day);
-                const nextDisplay = toDisplayDate(nextDate);
-                setTextValue(nextDisplay);
-                setLastValidText(nextDisplay);
-                setLastValidPickerValue(event.target.value);
-                onChange?.({ target: { value: nextDisplay } });
-              } else {
-                onChange?.({ target: { value: '' } });
-              }
+      <input
+        ref={pickerRef}
+        className="smplfy-date-field__native-picker"
+        type="date"
+        tabIndex={-1}
+        aria-hidden="true"
+        value={pickerValue}
+        disabled={isDisabled}
+        onChange={(event) => {
+          setPickerValue(event.target.value);
 
-              visibleInputRef.current?.focus();
-            }}
-          />
-          <AppIcon name="calendar" className="smplfy-input-field__calendar" />
-        </button>
-      </div>
+          if (event.target.value) {
+            const [year, month, day] = event.target.value.split('-').map(Number);
+            const nextDate = new Date(year, month - 1, day);
+            const nextDisplay = toDisplayDate(nextDate);
+            setTextValue(nextDisplay);
+            setLastValidText(nextDisplay);
+            setLastValidPickerValue(event.target.value);
+            onChange?.(createChangeEvent(event, nextDisplay));
+          } else {
+            onChange?.(createChangeEvent(event, ''));
+          }
+
+          visibleInputRef.current?.focus();
+        }}
+      />
     </div>
   );
 }

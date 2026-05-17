@@ -14,8 +14,8 @@ import {
   getTestRequestsForTab,
   testRequestsHomeTabs,
 } from '../data/testRequestsHomeData';
-import './test-requests-listing-page.css';
-import './test-requests-home-page.css';
+import './test-requests-listing-page.scss';
+import './test-requests-home-page.scss';
 
 const allocationTabs = [
   { key: 'analyst', label: 'Analysts' },
@@ -348,7 +348,6 @@ function TestRequestHomeCard({ row, showStatus, showApprovalActions, onAllocate,
               size="medium"
               leftIcon="check"
               styleVariant="positive"
-              className="tr-primary-action"
               onClick={() => onPositiveAction(row)}
             >
               {positiveActionLabel}
@@ -359,7 +358,6 @@ function TestRequestHomeCard({ row, showStatus, showApprovalActions, onAllocate,
               size="medium"
               leftIcon="close"
               styleVariant="destructive"
-              className="tr-primary-action"
               onClick={() => onReject(row)}
             >
               Reject

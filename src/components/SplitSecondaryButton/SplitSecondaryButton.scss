@@ -1,0 +1,66 @@
+.smplfy-btn-group.btn-group {
+  position: relative;
+  width: var(--smplfy-split-button-width);
+  height: var(--smplfy-split-button-height);
+  border-radius: var(--smplfy-split-button-radius);
+  display: inline-flex;
+  box-shadow: var(--smplfy-split-button-outline-shadow);
+}
+
+.smplfy-btn-group .smplfy-btn {
+  --bs-btn-border-width: var(--smplfy-button-space-0);
+  --smplfy-button-current-height: var(--smplfy-split-button-height);
+  --smplfy-button-current-gap: var(--smplfy-split-button-gap);
+  --smplfy-button-current-icon-size: var(--smplfy-split-button-icon-size);
+
+  min-height: var(--smplfy-split-button-height);
+  height: var(--smplfy-split-button-height);
+  flex: 0 0 auto;
+  box-shadow: none;
+}
+
+.smplfy-btn-group__primary.smplfy-btn {
+  width: var(--smplfy-split-button-primary-width);
+  padding:
+    var(--smplfy-split-button-padding-y)
+    var(--smplfy-split-button-padding-x);
+  border-start-start-radius: var(--smplfy-split-button-radius);
+  border-start-end-radius: var(--smplfy-button-space-0);
+  border-end-start-radius: var(--smplfy-split-button-radius);
+  border-end-end-radius: var(--smplfy-button-space-0);
+}
+
+.smplfy-btn-group.btn-group .smplfy-btn-group__secondary.smplfy-btn {
+  width: var(--smplfy-split-button-secondary-width);
+  min-width: var(--smplfy-split-button-secondary-width);
+  padding-inline: var(--smplfy-button-space-0);
+  border-inline-start: var(--smplfy-split-button-divider-width) solid var(--smplfy-split-button-divider-color);
+  border-start-start-radius: var(--smplfy-button-space-0);
+  border-start-end-radius: var(--smplfy-split-button-radius);
+  border-end-start-radius: var(--smplfy-button-space-0);
+  border-end-end-radius: var(--smplfy-split-button-radius);
+}
+
+.smplfy-btn-group__secondary.dropdown-toggle::after {
+  display: none;
+}
+
+.smplfy-btn-group__icon {
+  width: var(--smplfy-split-button-icon-size);
+  height: var(--smplfy-split-button-icon-size);
+  flex: 0 0 var(--smplfy-split-button-icon-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.smplfy-btn-group__icon > svg {
+  width: var(--smplfy-split-button-icon-size);
+  height: var(--smplfy-split-button-icon-size);
+}
+
+.smplfy-btn-group__menu.dropdown-menu {
+  position: absolute;
+  inset-block-start: calc(100% + var(--smplfy-dropdown-offset));
+  inset-inline-end: var(--smplfy-button-space-0);
+}
