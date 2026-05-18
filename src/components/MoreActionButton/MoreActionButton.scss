@@ -12,9 +12,16 @@
 }
 
 .smplfy-dropdown.dropdown.show > .smplfy-btn.dropdown-toggle {
-  border-color: var(--smplfy-button-outline-secondary-hover-border);
-  color: var(--smplfy-button-outline-secondary-hover-text);
-  background: var(--smplfy-button-outline-secondary-hover-bg);
+  --bs-btn-color: var(--smplfy-button-outline-secondary-hover-text);
+  --bs-btn-bg: var(--smplfy-button-outline-secondary-hover-bg);
+  --bs-btn-border-color: var(--smplfy-button-outline-secondary-hover-border);
+  --bs-btn-hover-color: var(--smplfy-button-outline-secondary-hover-text);
+  --bs-btn-hover-bg: var(--smplfy-button-outline-secondary-hover-bg);
+  --bs-btn-hover-border-color: var(--smplfy-button-outline-secondary-hover-border);
+  --bs-btn-active-color: var(--smplfy-button-outline-secondary-active-text);
+  --bs-btn-active-bg: var(--smplfy-button-outline-secondary-active-bg);
+  --bs-btn-active-border-color: var(--smplfy-button-outline-secondary-active-border);
+
   box-shadow: var(--smplfy-button-focus-ring-primary);
 }
 

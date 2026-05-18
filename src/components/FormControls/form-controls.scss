@@ -255,31 +255,37 @@
 
 .smplfy-date-button.btn,
 .smplfy-file-button.btn {
+  --bs-btn-padding-x: var(--smplfy-button-space-0);
+  --bs-btn-padding-y: var(--smplfy-button-space-0);
+  --bs-btn-color: var(--smplfy-field-icon-color);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-width: var(--smplfy-button-space-0);
+  --bs-btn-border-color: transparent;
+  --bs-btn-border-radius: var(--smplfy-button-space-0);
+  --bs-btn-hover-color: var(--smplfy-field-icon-color);
+  --bs-btn-hover-bg: var(--smplfy-field-hover-action-bg);
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-color: var(--smplfy-field-icon-color);
+  --bs-btn-active-bg: var(--smplfy-field-hover-action-bg);
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-disabled-color: var(--smplfy-field-text-disabled);
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: transparent;
+  --bs-btn-disabled-opacity: 1;
+  --bs-btn-focus-box-shadow: none;
+
   flex: 0 0 var(--smplfy-field-action-width);
   width: var(--smplfy-field-action-width);
   min-width: var(--smplfy-field-action-width);
   min-height: calc(var(--smplfy-field-height) - (var(--smplfy-field-border-width) * 2));
-  padding: var(--smplfy-button-space-0);
-  border-width: var(--smplfy-button-space-0);
   border-left: var(--smplfy-field-border-width) solid var(--smplfy-field-divider);
-  border-radius: var(--smplfy-button-space-0);
-  background-color: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-.smplfy-date-button.btn:hover,
-.smplfy-date-button.btn:focus-visible,
-.smplfy-file-button.btn:hover,
-.smplfy-file-button.btn:focus-visible {
-  background-color: var(--smplfy-field-hover-action-bg);
-}
-
 .smplfy-date-button.btn:disabled,
 .smplfy-file-button.btn:disabled {
-  color: var(--smplfy-field-text-disabled);
-  opacity: 1;
   cursor: not-allowed;
 }
 
@@ -344,28 +350,31 @@
 }
 
 .smplfy-toast.toast {
-  width: var(--smplfy-toast-width);
+  --bs-toast-max-width: var(--smplfy-toast-width);
+  --bs-toast-font-size: var(--smplfy-toast-font-size);
+  --bs-toast-color: var(--smplfy-toast-success-text);
+  --bs-toast-bg: var(--smplfy-toast-success-bg);
+  --bs-toast-border-width: var(--smplfy-toast-border-width);
+  --bs-toast-border-color: var(--smplfy-toast-success-border);
+  --bs-toast-border-radius: var(--smplfy-toast-radius);
+  --bs-toast-box-shadow: var(--smplfy-toast-shadow);
+
   max-width: var(--smplfy-toast-width);
   min-height: var(--smplfy-toast-min-height);
   padding: var(--smplfy-toast-padding);
-  border: var(--smplfy-toast-border-width) solid var(--smplfy-toast-success-border);
-  border-radius: var(--smplfy-toast-radius);
   display: inline-flex;
   align-items: flex-start;
   justify-content: space-between;
-  background: var(--smplfy-toast-success-bg);
-  color: var(--smplfy-toast-success-text);
-  box-shadow: var(--smplfy-toast-shadow);
   transition:
     opacity var(--smplfy-toast-motion-standard),
     transform var(--smplfy-toast-motion-standard);
 }
 
 .smplfy-toast.toast[data-smplfy-tone='error'] {
-  background: var(--smplfy-toast-error-bg);
-  color: var(--smplfy-toast-error-text);
-  border-color: var(--smplfy-toast-error-border);
-  box-shadow: var(--smplfy-toast-error-shadow);
+  --bs-toast-color: var(--smplfy-toast-error-text);
+  --bs-toast-bg: var(--smplfy-toast-error-bg);
+  --bs-toast-border-color: var(--smplfy-toast-error-border);
+  --bs-toast-box-shadow: var(--smplfy-toast-error-shadow);
 }
 
 .smplfy-toast.toast[data-smplfy-state='gone'] {
@@ -402,7 +411,20 @@
 }
 
 .smplfy-toast__close {
-  padding: var(--smplfy-button-space-0);
+  --bs-btn-padding-x: var(--smplfy-button-space-0);
+  --bs-btn-padding-y: var(--smplfy-button-space-0);
+  --bs-btn-color: inherit;
+  --bs-btn-bg: transparent;
+  --bs-btn-border-width: var(--smplfy-button-space-0);
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-color: inherit;
+  --bs-btn-hover-bg: transparent;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-color: inherit;
+  --bs-btn-active-bg: transparent;
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-focus-box-shadow: none;
+
   margin-left: var(--smplfy-toast-close-margin-start);
   flex: 0 0 var(--smplfy-toast-icon-size);
 }

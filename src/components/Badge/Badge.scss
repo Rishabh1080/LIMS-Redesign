@@ -5,14 +5,13 @@
   --bs-badge-font-weight: var(--smplfy-badge-font-weight);
   --bs-badge-color: var(--smplfy-badge-danger-text);
   --bs-badge-border-radius: var(--smplfy-badge-radius-pill);
+  --bs-border-radius-pill: var(--smplfy-badge-radius-pill);
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  font-size: var(--bs-badge-font-size);
   line-height: var(--smplfy-badge-line-height);
-  font-weight: var(--bs-badge-font-weight);
   text-align: center;
 }
 

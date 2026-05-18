@@ -124,13 +124,24 @@
 }
 
 .sample-card-view-toggle__button {
+  --bs-btn-padding-x: var(--smplfy-button-space-0);
+  --bs-btn-padding-y: var(--smplfy-button-space-0);
+  --bs-btn-color: var(--text-secondary);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-width: var(--smplfy-button-space-0);
+  --bs-btn-border-color: transparent;
+  --bs-btn-border-radius: var(--smplfy-sample-card-view-toggle-button-radius);
+  --bs-btn-hover-color: var(--text-primary);
+  --bs-btn-hover-bg: transparent;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-color: var(--smplfy-primitive-blue-600);
+  --bs-btn-active-bg: var(--smplfy-primitive-neutral-100);
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-active-shadow: var(--smplfy-sample-card-view-toggle-active-shadow);
+  --bs-btn-focus-box-shadow: none;
+
   width: var(--smplfy-sample-card-view-toggle-button-width);
   height: var(--smplfy-sample-card-view-toggle-button-height);
-  padding: var(--smplfy-button-space-0);
-  border: var(--smplfy-button-space-0);
-  border-radius: var(--smplfy-sample-card-view-toggle-button-radius);
-  background: transparent;
-  color: var(--text-secondary);
   transition:
     background-color 160ms ease,
     color 160ms ease,
@@ -140,13 +151,7 @@
   justify-content: center;
 }
 
-.sample-card-view-toggle__button:hover {
-  color: var(--text-primary);
-}
-
 .sample-card-view-toggle__button.is-active {
-  background: var(--smplfy-primitive-neutral-100);
-  color: var(--smplfy-primitive-blue-600);
   box-shadow: var(--smplfy-sample-card-view-toggle-active-shadow);
 }
 

@@ -713,6 +713,7 @@
   /* Button foundation tokens */
   --smplfy-button-space-0: 0;
   --smplfy-button-space-1: 0.25rem;
+  --smplfy-button-space-1-5: 0.375rem;
   --smplfy-button-space-2: 0.5rem;
   --smplfy-button-space-3: 0.75rem;
   --smplfy-button-space-4: 1rem;
@@ -743,7 +744,8 @@
   --smplfy-button-gap-compact: var(--smplfy-button-space-1);
   --smplfy-button-padding-x-base: var(--smplfy-component-button-space-padding-inline-label-only);
   --smplfy-button-padding-x-compact: var(--smplfy-component-button-space-padding-inline-leading-icon-start);
-  --smplfy-button-padding-y-base: var(--smplfy-button-space-0);
+  --smplfy-button-padding-y-base: var(--smplfy-component-button-space-padding-block-default);
+  --smplfy-button-padding-y-compact: var(--smplfy-button-space-1-5);
   --smplfy-button-padding-leading-icon-start: var(--smplfy-component-button-space-padding-inline-leading-icon-start);
   --smplfy-button-padding-leading-icon-end: var(--smplfy-component-button-space-padding-inline-leading-icon-end);
   --smplfy-button-padding-trailing-icon-start: var(--smplfy-component-button-space-padding-inline-trailing-icon-start);
@@ -858,19 +860,6 @@
 }
 
 .smplfy-btn {
-  --bs-btn-color: var(--smplfy-button-outline-secondary-text);
-  --bs-btn-bg: var(--smplfy-button-outline-secondary-bg);
-  --bs-btn-border-color: var(--smplfy-button-outline-secondary-border);
-  --bs-btn-hover-color: var(--smplfy-button-outline-secondary-hover-text);
-  --bs-btn-hover-bg: var(--smplfy-button-outline-secondary-hover-bg);
-  --bs-btn-hover-border-color: var(--smplfy-button-outline-secondary-hover-border);
-  --bs-btn-active-color: var(--smplfy-button-outline-secondary-active-text);
-  --bs-btn-active-bg: var(--smplfy-button-outline-secondary-active-bg);
-  --bs-btn-active-border-color: var(--smplfy-button-outline-secondary-active-border);
-  --bs-btn-disabled-color: var(--smplfy-button-disabled-text);
-  --bs-btn-disabled-bg: var(--smplfy-button-outline-secondary-bg);
-  --bs-btn-disabled-border-color: var(--smplfy-button-disabled-border);
-  --bs-btn-disabled-opacity: var(--smplfy-button-disabled-opacity);
   --bs-btn-padding-x: var(--smplfy-button-padding-x-base);
   --bs-btn-padding-y: var(--smplfy-button-padding-y-base);
   --bs-btn-font-family: var(--smplfy-button-font-family-base);
@@ -879,49 +868,49 @@
   --bs-btn-line-height: var(--smplfy-button-line-height-base);
   --bs-btn-border-width: var(--smplfy-button-border-width);
   --bs-btn-border-radius: var(--smplfy-button-radius-base);
+  --bs-btn-disabled-opacity: var(--smplfy-button-disabled-opacity);
   --smplfy-button-current-height: var(--smplfy-button-height-md);
   --smplfy-button-current-icon-size: var(--smplfy-button-icon-md);
   --smplfy-button-current-gap: var(--smplfy-button-gap-base);
   --smplfy-button-current-padding-inline-start: var(--bs-btn-padding-x);
   --smplfy-button-current-padding-inline-end: var(--bs-btn-padding-x);
-  --smplfy-button-current-hover-shadow: none;
   --smplfy-button-current-focus-shadow: var(--smplfy-button-focus-ring-primary);
+  --bs-btn-focus-box-shadow: var(--smplfy-button-current-focus-shadow);
 
-  box-sizing: border-box;
   min-height: var(--smplfy-button-current-height);
   height: var(--smplfy-button-current-height);
-  padding-block: var(--bs-btn-padding-y);
   padding-inline: var(--smplfy-button-current-padding-inline-start) var(--smplfy-button-current-padding-inline-end);
-  border: var(--bs-btn-border-width) solid var(--bs-btn-border-color);
-  border-radius: var(--bs-btn-border-radius);
-  background-color: var(--bs-btn-bg);
-  color: var(--bs-btn-color);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--smplfy-button-current-gap);
-  font-family: var(--bs-btn-font-family);
-  font-size: var(--bs-btn-font-size);
-  font-weight: var(--bs-btn-font-weight);
-  line-height: var(--bs-btn-line-height);
   letter-spacing: var(--smplfy-button-letter-spacing);
-  text-align: center;
-  text-decoration: none;
-  vertical-align: middle;
-  cursor: pointer;
-  user-select: none;
-  white-space: nowrap;
-  background-image: none;
   transition:
+    color var(--smplfy-button-motion-standard),
     background-color var(--smplfy-button-motion-standard),
     border-color var(--smplfy-button-motion-standard),
-    color var(--smplfy-button-motion-standard),
     box-shadow var(--smplfy-button-motion-standard),
     transform var(--smplfy-button-motion-press);
 }
 
+.smplfy-btn:not(:disabled):not(.disabled):active,
+.smplfy-btn:not(:disabled):not(.disabled).active,
+.smplfy-btn:not(:disabled):not(.disabled)[data-smplfy-state='onpress'] {
+  transform: scale(var(--smplfy-button-active-scale));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smplfy-btn {
+    transition: none;
+  }
+}
+
+.smplfy-btn:has(> svg) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--smplfy-button-current-gap);
+}
+
 .smplfy-btn.btn-sm {
   --bs-btn-padding-x: var(--smplfy-button-padding-x-compact);
+  --bs-btn-padding-y: var(--smplfy-button-padding-y-compact);
   --bs-btn-font-size: var(--smplfy-button-font-size-sm);
   --smplfy-button-current-height: var(--smplfy-button-height-sm);
   --smplfy-button-current-icon-size: var(--smplfy-button-icon-sm);
@@ -978,42 +967,6 @@
   gap: var(--smplfy-button-space-0);
 }
 
-.smplfy-btn:hover {
-  border-color: var(--bs-btn-hover-border-color);
-  background-color: var(--bs-btn-hover-bg);
-  color: var(--bs-btn-hover-color);
-  box-shadow: var(--smplfy-button-current-hover-shadow);
-  text-decoration: none;
-}
-
-.smplfy-btn:focus-visible {
-  outline: none;
-  border-color: var(--bs-btn-active-border-color);
-  background-color: var(--bs-btn-active-bg);
-  color: var(--bs-btn-active-color);
-  box-shadow: var(--smplfy-button-current-focus-shadow);
-}
-
-.smplfy-btn:active {
-  border-color: var(--bs-btn-active-border-color);
-  background-color: var(--bs-btn-active-bg);
-  color: var(--bs-btn-active-color);
-  transform: scale(var(--smplfy-button-active-scale));
-  box-shadow: var(--smplfy-button-current-focus-shadow);
-}
-
-.smplfy-btn:disabled,
-.smplfy-btn.disabled {
-  border-color: var(--bs-btn-disabled-border-color);
-  background-color: var(--bs-btn-disabled-bg);
-  color: var(--bs-btn-disabled-color);
-  opacity: var(--bs-btn-disabled-opacity);
-  box-shadow: none;
-  cursor: default;
-  pointer-events: none;
-  transform: none;
-}
-
 .smplfy-btn.btn-primary {
   --bs-btn-color: var(--smplfy-button-primary-text);
   --bs-btn-bg: var(--smplfy-button-primary-bg);
@@ -1027,7 +980,6 @@
   --bs-btn-disabled-color: var(--smplfy-button-primary-disabled-text);
   --bs-btn-disabled-bg: var(--smplfy-button-primary-disabled-bg);
   --bs-btn-disabled-border-color: var(--smplfy-button-primary-disabled-border);
-  --smplfy-button-current-hover-shadow: var(--smplfy-button-primary-shadow-hover);
   --smplfy-button-current-focus-shadow: var(--smplfy-button-primary-shadow-focus);
 }
 
@@ -1044,7 +996,6 @@
   --bs-btn-disabled-color: var(--smplfy-button-success-disabled-text);
   --bs-btn-disabled-bg: var(--smplfy-button-success-disabled-bg);
   --bs-btn-disabled-border-color: var(--smplfy-button-success-disabled-border);
-  --smplfy-button-current-hover-shadow: var(--smplfy-button-success-shadow-hover);
   --smplfy-button-current-focus-shadow: var(--smplfy-button-success-shadow-focus);
 }
 
@@ -1061,7 +1012,6 @@
   --bs-btn-disabled-color: var(--smplfy-button-danger-disabled-text);
   --bs-btn-disabled-bg: var(--smplfy-button-danger-disabled-bg);
   --bs-btn-disabled-border-color: var(--smplfy-button-danger-disabled-border);
-  --smplfy-button-current-hover-shadow: var(--smplfy-button-danger-shadow-hover);
   --smplfy-button-current-focus-shadow: var(--smplfy-button-danger-shadow-focus);
 }
 
@@ -1145,20 +1095,28 @@
 }
 
 .smplfy-list-group-item.list-group-item {
+  --bs-list-group-item-padding-x: var(--smplfy-list-group-item-padding-x);
+  --bs-list-group-item-padding-y: var(--smplfy-list-group-item-padding-y);
+  --bs-list-group-color: var(--smplfy-list-group-item-text);
+  --bs-list-group-bg: var(--smplfy-list-group-item-bg);
+  --bs-list-group-border-color: var(--smplfy-list-group-item-border);
+  --bs-list-group-border-width: var(--smplfy-list-group-item-border-width);
+  --bs-list-group-action-color: var(--smplfy-list-group-item-text);
+  --bs-list-group-action-hover-color: var(--smplfy-list-group-item-text);
+  --bs-list-group-action-hover-bg: var(--smplfy-list-group-item-hover-bg);
+  --bs-list-group-action-active-color: var(--smplfy-list-group-item-text);
+  --bs-list-group-action-active-bg: var(--smplfy-list-group-item-hover-bg);
+  --bs-list-group-active-color: var(--smplfy-list-group-item-active-text);
+  --bs-list-group-active-bg: var(--smplfy-list-group-item-active-bg);
+  --bs-list-group-active-border-color: var(--smplfy-list-group-item-active-border);
+
   width: var(--smplfy-list-group-item-width);
   min-height: var(--smplfy-list-group-item-min-height);
-  padding:
-    var(--smplfy-list-group-item-padding-y)
-    var(--smplfy-list-group-item-padding-x);
-  border: var(--smplfy-list-group-item-border-width) solid var(--smplfy-list-group-item-border);
   border-radius: var(--smplfy-list-group-item-radius);
-  background-color: var(--smplfy-list-group-item-bg);
-  color: var(--smplfy-list-group-item-text);
   display: flex;
   align-items: center;
   gap: var(--smplfy-list-group-item-gap);
   text-align: left;
-  cursor: pointer;
   transition:
     background-color var(--smplfy-list-group-item-motion-standard),
     border-color var(--smplfy-list-group-item-motion-standard),
@@ -1166,7 +1124,6 @@
     box-shadow var(--smplfy-list-group-item-motion-standard);
 }
 
-.smplfy-list-group-item.list-group-item:hover,
 .smplfy-list-group-item.list-group-item[data-state='hover'],
 .smplfy-list-group-item.list-group-item[data-smplfy-state='hover'] {
   background-color: var(--smplfy-list-group-item-hover-bg);
@@ -1184,9 +1141,8 @@
   outline: none;
 }
 
-.smplfy-list-group-item.list-group-item.active,
 .smplfy-list-group-item.list-group-item[data-state='active'],
-.smplfy-list-group-item.list-group-item.active:hover {
+.smplfy-list-group-item.list-group-item[data-smplfy-state='active'] {
   background-color: var(--smplfy-list-group-item-active-bg);
   border-color: var(--smplfy-list-group-item-active-border);
   color: var(--smplfy-list-group-item-active-text);

@@ -1,6 +1,8 @@
 .smplfy-nav-link.nav-link {
   --bs-nav-link-padding-x: var(--smplfy-nav-link-padding-x);
   --bs-nav-link-padding-y: var(--smplfy-button-space-0);
+  --bs-nav-link-font-size: var(--smplfy-nav-link-font-size);
+  --bs-nav-link-font-weight: var(--smplfy-nav-link-font-weight);
   --bs-nav-link-color: var(--smplfy-nav-link-text);
   --bs-nav-link-hover-color: var(--smplfy-nav-link-hover-text);
   --smplfy-nav-link-current-height: var(--smplfy-nav-link-height-large);
@@ -11,7 +13,6 @@
 
   position: relative;
   min-height: var(--smplfy-nav-link-current-height);
-  padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
   border: var(--smplfy-button-space-0);
   border-radius: var(--smplfy-nav-link-radius);
   background-color: var(--smplfy-nav-link-current-bg);
@@ -20,9 +21,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--smplfy-nav-link-gap);
-  font-size: var(--smplfy-nav-link-font-size);
   line-height: var(--smplfy-nav-link-line-height);
-  font-weight: var(--smplfy-nav-link-font-weight);
   letter-spacing: var(--smplfy-nav-link-letter-spacing);
   white-space: nowrap;
   text-decoration: none;

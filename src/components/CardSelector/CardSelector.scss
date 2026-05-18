@@ -1,4 +1,19 @@
 .smplfy-card.card.btn {
+  --bs-card-bg: var(--smplfy-card-bg);
+  --bs-card-color: var(--smplfy-card-text);
+  --bs-card-border-width: var(--smplfy-card-border-width);
+  --bs-card-border-color: var(--smplfy-card-border);
+  --bs-card-border-radius: var(--smplfy-card-radius);
+  --bs-btn-color: var(--smplfy-card-text);
+  --bs-btn-bg: var(--smplfy-card-bg);
+  --bs-btn-border-color: var(--smplfy-card-border);
+  --bs-btn-hover-color: var(--smplfy-card-text);
+  --bs-btn-hover-bg: var(--smplfy-card-bg);
+  --bs-btn-hover-border-color: var(--smplfy-card-hover-border);
+  --bs-btn-active-color: var(--smplfy-card-text);
+  --bs-btn-active-bg: var(--smplfy-card-bg);
+  --bs-btn-active-border-color: var(--smplfy-card-active-border);
+  --bs-btn-focus-box-shadow: var(--smplfy-card-current-focus-shadow);
   --smplfy-card-current-gap: var(--smplfy-card-gap);
   --smplfy-card-current-desc-indent: var(--smplfy-card-desc-indent);
   --smplfy-card-current-focus-border-width: var(--smplfy-card-border-width);
@@ -9,10 +24,6 @@
   width: var(--smplfy-card-width);
   min-height: var(--smplfy-card-min-height);
   padding: var(--smplfy-card-padding);
-  border: var(--smplfy-card-border-width) solid var(--smplfy-card-border);
-  border-radius: var(--smplfy-card-radius);
-  background-color: var(--smplfy-card-bg);
-  color: var(--smplfy-card-text);
   display: flex;
   flex-direction: column;
   align-items: stretch;

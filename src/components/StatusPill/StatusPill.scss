@@ -4,20 +4,19 @@
   --bs-badge-font-size: var(--smplfy-status-pill-font-size);
   --bs-badge-font-weight: var(--smplfy-status-pill-font-weight);
   --bs-badge-border-radius: var(--smplfy-status-pill-radius);
+  --bs-border-radius-pill: var(--smplfy-status-pill-radius);
+  --bs-border-width: var(--smplfy-status-pill-border-width);
 
   min-height: var(--smplfy-status-pill-height);
   width: fit-content;
   max-width: 100%;
   border-width: var(--smplfy-status-pill-border-width) !important;
   border-style: solid !important;
-  border-radius: var(--bs-badge-border-radius);
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  font-size: var(--bs-badge-font-size);
   line-height: var(--smplfy-status-pill-line-height);
-  font-weight: var(--bs-badge-font-weight);
   letter-spacing: var(--smplfy-status-pill-letter-spacing);
   white-space: nowrap;
 }

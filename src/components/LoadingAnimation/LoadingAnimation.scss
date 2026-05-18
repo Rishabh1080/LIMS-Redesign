@@ -23,18 +23,19 @@
 }
 
 .smplfy-progress.progress {
+  --bs-progress-height: var(--smplfy-progress-height);
+  --bs-progress-bg: var(--smplfy-progress-bg);
+  --bs-progress-border-radius: var(--smplfy-progress-radius);
+  --bs-progress-bar-bg: var(--smplfy-progress-bar-bg);
+  --bs-progress-bar-transition: none;
+
   width: min(var(--smplfy-progress-width), 100%);
-  height: var(--smplfy-progress-height);
-  overflow: hidden;
   position: relative;
-  background-color: var(--smplfy-progress-bg);
-  border-radius: var(--smplfy-progress-radius);
 }
 
 .smplfy-progress.progress .progress-bar {
   width: 100%;
   height: 100%;
-  background-color: var(--smplfy-progress-bar-bg);
   border-radius: var(--smplfy-progress-radius);
   transform-origin: left center;
   animation: smplfy-loading-bar var(--smplfy-progress-animation-duration) var(--smplfy-progress-animation-easing) forwards;
