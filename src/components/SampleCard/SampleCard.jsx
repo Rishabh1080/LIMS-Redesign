@@ -5,13 +5,27 @@ import StatusPill from '../StatusPill';
 import { getStatusPresentation } from '../../status/statusRegistry';
 import './SampleCard.scss';
 
+function joinClasses(...values) {
+  return values.filter(Boolean).join(' ');
+}
+
+function MetaBlock({ label, value, className = '' }) {
+  return (
+    <dl className={joinClasses('mb-0', className)}>
+      <dt>{label}</dt>
+      <dd className="mb-0">{value}</dd>
+    </dl>
+  );
+}
+
 function renderFieldList(fields = []) {
   return fields.length
     ? fields.map((field, index) => (
-        <div className="sample-card__field" key={`${field.label}-${field.value}-${index}`}>
-          <div className="meta-label">{field.label}</div>
-          <div className="meta-value">{field.value}</div>
-        </div>
+        <MetaBlock
+          key={`${field.label}-${field.value}-${index}`}
+          label={field.label}
+          value={field.value}
+        />
     ))
     : null;
 }
@@ -37,36 +51,65 @@ function getRowColsClass(itemCount) {
   return `row-cols-${mobileCols} row-cols-md-${tabletCols} row-cols-xl-${desktopCols}`;
 }
 
-export function SampleCardViewToggle({ value, onChange, className = '' }) {
+function SampleId({ sample, isOpenable, sourcePage, onOpenSample }) {
+  if (!isOpenable) {
+    return <span className="card-title mb-0">{sample.id}</span>;
+  }
+
   return (
-    <div className={`smplfy-btn-group btn-group sample-card-view-toggle ${className}`.trim()} role="group" aria-label="Sample card view">
-      <button
-        type="button"
-        className={`btn sample-card-view-toggle__button ${value === 'modern' ? 'active is-active' : ''}`}
-        aria-pressed={value === 'modern'}
-        aria-label="New view"
-        onClick={() => onChange('modern')}
-      >
-        <IconLayoutBottombar size={16} stroke={2} aria-hidden="true" />
-      </button>
-      <button
-        type="button"
-        className={`btn sample-card-view-toggle__button ${value === 'legacy' ? 'active is-active' : ''}`}
-        aria-pressed={value === 'legacy'}
-        aria-label="Old view"
-        onClick={() => onChange('legacy')}
-      >
-        <IconColumns2 size={16} stroke={2} aria-hidden="true" />
-      </button>
-      <button
-        type="button"
-        className={`btn sample-card-view-toggle__button ${value === 'grid' ? 'active is-active' : ''}`}
-        aria-pressed={value === 'grid'}
-        aria-label="Data grid view"
-        onClick={() => onChange('grid')}
-      >
-        <IconLayoutGrid size={16} stroke={2} aria-hidden="true" />
-      </button>
+    <a
+      href="/"
+      onClick={(event) => {
+        event.preventDefault();
+        onOpenSample?.(sample.id, {
+          sourcePage,
+          sampleStatus: sample.status,
+          createdOn: sample.createdOn,
+          sample,
+        });
+      }}
+      className="smplfy-link link-primary card-title mb-0 p-0"
+    >
+      {sample.id}
+    </a>
+  );
+}
+
+function SampleStatus({ sample, className = '' }) {
+  const statusPresentation = getStatusPresentation('sample', sample.status);
+
+  return (
+    <StatusPill
+      className={className}
+      color={statusPresentation.color}
+      styleType={statusPresentation.styleType}
+    >
+      {statusPresentation.label}
+    </StatusPill>
+  );
+}
+
+export function SampleCardViewToggle({ value, onChange, className = '' }) {
+  const options = [
+    { value: 'modern', label: 'New view', Icon: IconLayoutBottombar },
+    { value: 'legacy', label: 'Old view', Icon: IconColumns2 },
+    { value: 'grid', label: 'Data grid view', Icon: IconLayoutGrid },
+  ];
+
+  return (
+    <div className={joinClasses('smplfy-btn-group', 'btn-group', 'smplfy-sample-view-toggle', className)} role="group" aria-label="Sample card view">
+      {options.map(({ value: optionValue, label, Icon }) => (
+        <button
+          key={optionValue}
+          type="button"
+          className={joinClasses('smplfy-btn', 'btn', 'btn-outline-secondary', value === optionValue ? 'active' : '')}
+          aria-pressed={value === optionValue}
+          aria-label={label}
+          onClick={() => onChange(optionValue)}
+        >
+          <Icon size={16} stroke={2} aria-hidden="true" />
+        </button>
+      ))}
     </div>
   );
 }
@@ -74,7 +117,6 @@ export function SampleCardViewToggle({ value, onChange, className = '' }) {
 function SampleCardLegacy({ sample, onOpenSample, sourcePage, extraMetaFields = [], extraDateFields = [] }) {
   const isOpenable =
     sample.status === 'Under Analysis' || sample.status === 'Pending' || sample.status === 'Completed';
-  const statusPresentation = getStatusPresentation('sample', sample.status);
   const metaRows = [
     [
       { label: 'Reference', value: sample.reference },
@@ -88,59 +130,24 @@ function SampleCardLegacy({ sample, onOpenSample, sourcePage, extraMetaFields = 
   ];
 
   return (
-    <article className="smplfy-card card sample-card sample-card--legacy">
+    <article className="smplfy-card card smplfy-sample-card">
       <div className="row g-0 align-items-stretch">
-        <div className="col-xl-3 col-lg-4">
-          <div className="sample-column sample-primary h-100">
-            <div className="sample-primary-header">
-              {isOpenable ? (
-                <a
-                  href="/"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    onOpenSample?.(sample.id, {
-                      sourcePage,
-                      sampleStatus: sample.status,
-                      createdOn: sample.createdOn,
-                      sample,
-                    });
-                  }}
-                  className="sample-id"
-                >
-                  {sample.id}
-                </a>
-              ) : (
-                <span className="sample-id">{sample.id}</span>
-              )}
-              <StatusPill
-                className="status-badge"
-                color={statusPresentation.color}
-                styleType={statusPresentation.styleType}
-              >
-                {statusPresentation.label}
-              </StatusPill>
-            </div>
+        <div className="col-xl-3 col-lg-4 col-12">
+          <div className="card-body h-100 d-flex flex-column align-items-start justify-content-center">
+            <SampleId sample={sample} isOpenable={isOpenable} sourcePage={sourcePage} onOpenSample={onOpenSample} />
+            <SampleStatus sample={sample} className="mt-3" />
           </div>
         </div>
 
-        <div className="col-xl-3 col-lg-4">
-          <div className="sample-column sample-meta h-100 sample-divider">
-            <div className="sample-details-stack">
-              <div className="meta-block">
-                <div className="meta-label">Customer Representative</div>
-                <div className="meta-value">{sample.representative}</div>
-              </div>
+        <div className="col-xl-3 col-lg-4 col-12">
+          <div className="card-body h-100">
+            <div className="d-grid gap-3">
+              <MetaBlock label="Customer Representative" value={sample.representative} />
               {metaRows.map((row, rowIndex) => (
-                <div className="sample-details-row" key={`meta-row-${sample.id}-${rowIndex}`}>
+                <div className="row g-3" key={`meta-row-${sample.id}-${rowIndex}`}>
                   {row.map((item) => (
-                    <div
-                      className={row.length === 1 ? 'sample-details-cell is-full' : 'sample-details-cell'}
-                      key={item.label}
-                    >
-                      <div className="meta-block">
-                        <div className="meta-label">{item.label}</div>
-                        <div className="meta-value">{item.value}</div>
-                      </div>
+                    <div className={row.length === 1 ? 'col-12' : 'col-6'} key={item.label}>
+                      <MetaBlock label={item.label} value={item.value} />
                     </div>
                   ))}
                 </div>
@@ -149,24 +156,15 @@ function SampleCardLegacy({ sample, onOpenSample, sourcePage, extraMetaFields = 
           </div>
         </div>
 
-        <div className="col-xl-3 col-lg-4">
-          <div className="sample-column sample-dates h-100 sample-divider">
-            <div className="sample-details-stack">
-              <div className="meta-block">
-                <div className="meta-label">Created on</div>
-                <div className="meta-value">{sample.createdOn}</div>
-              </div>
+        <div className="col-xl-3 col-lg-4 col-12">
+          <div className="card-body h-100">
+            <div className="d-grid gap-3">
+              <MetaBlock label="Created on" value={sample.createdOn} />
               {dateRows.map((row, rowIndex) => (
-                <div className="sample-details-row" key={`date-row-${sample.id}-${rowIndex}`}>
+                <div className="row g-3" key={`date-row-${sample.id}-${rowIndex}`}>
                   {row.map((item) => (
-                    <div
-                      className={row.length === 1 ? 'sample-details-cell is-full' : 'sample-details-cell'}
-                      key={item.label}
-                    >
-                      <div className="meta-block">
-                        <div className="meta-label">{item.label}</div>
-                        <div className="meta-value">{item.value}</div>
-                      </div>
+                    <div className={row.length === 1 ? 'col-12' : 'col-6'} key={item.label}>
+                      <MetaBlock label={item.label} value={item.value} />
                     </div>
                   ))}
                 </div>
@@ -176,8 +174,10 @@ function SampleCardLegacy({ sample, onOpenSample, sourcePage, extraMetaFields = 
         </div>
 
         <div className="col-xl-3 col-12">
-          <div className="sample-column sample-parameters h-100 sample-divider">
-            <div className="meta-label">Parameters</div>
+          <div className="card-body h-100">
+            <dl className="mb-3">
+              <dt>Parameters</dt>
+            </dl>
             <ParameterCircles parameters={sample.parameters} />
           </div>
         </div>
@@ -191,86 +191,52 @@ function SampleCardModern({ sample, onOpenSample, sourcePage, extraMetaFields = 
     sample.status === 'Under Analysis' || sample.status === 'Pending' || sample.status === 'Completed';
   const { approvedCount, totalCount, sortedParameters } = getParameterSummary(sample.parameters);
   const customFields = [...(extraMetaFields ?? []), ...(extraDateFields ?? [])];
-  const statusPresentation = getStatusPresentation('sample', sample.status);
 
   return (
-    <article className="smplfy-card card sample-card sample-card--modern">
-      <div className="sample-card__top">
-        <div className="sample-card__panel sample-card__panel--primary">
-          {isOpenable ? (
-            <a
-              href="/"
-              onClick={(event) => {
-                event.preventDefault();
-                    onOpenSample?.(sample.id, {
-                      sourcePage,
-                      sampleStatus: sample.status,
-                      createdOn: sample.createdOn,
-                      sample,
-                    });
-              }}
-              className="sample-id"
-            >
-              {sample.id}
-            </a>
-          ) : (
-            <span className="sample-id">{sample.id}</span>
-          )}
-          <StatusPill
-            className="status-badge"
-            color={statusPresentation.color}
-            styleType={statusPresentation.styleType}
-          >
-            {statusPresentation.label}
-          </StatusPill>
+    <article className="smplfy-card card smplfy-sample-card overflow-hidden p-0">
+      <div className="smplfy-sample-card-layout">
+        <div className="card-body d-flex flex-column align-items-start justify-content-center">
+          <SampleId sample={sample} isOpenable={isOpenable} sourcePage={sourcePage} onOpenSample={onOpenSample} />
+          <SampleStatus sample={sample} className="mt-3" />
         </div>
 
-        <div className="sample-card__panel sample-card__panel--details">
-          <div className="sample-card__fields sample-card__fields--two-up">
-            <div className="sample-card__field">
-              <div className="meta-label">Customer Representative</div>
-              <div className="meta-value">{sample.representative}</div>
+        <div className="card-body">
+          <div className="row g-3">
+            <div className="col-6">
+              <MetaBlock label="Customer Representative" value={sample.representative} />
             </div>
-            <div className="sample-card__field">
-              <div className="meta-label">Reference</div>
-              <div className="meta-value">{sample.reference}</div>
+            <div className="col-6">
+              <MetaBlock label="Reference" value={sample.reference} />
             </div>
-            <div className="sample-card__field">
-              <div className="meta-label">Request Mode</div>
-              <div className="meta-value">{sample.requestMode}</div>
+            <div className="col-6">
+              <MetaBlock label="Request Mode" value={sample.requestMode} />
             </div>
           </div>
         </div>
 
-        <div className="sample-card__panel sample-card__panel--dates">
-          <div className="sample-card__fields">
-            <div className="sample-card__field">
-              <div className="meta-label">Created on</div>
-              <div className="meta-value">{sample.createdOn}</div>
-            </div>
-            <div className="sample-card__field">
-              <div className="meta-label">Reporting Date</div>
-              <div className="meta-value">{sample.reportingDate}</div>
-            </div>
+        <div className="card-body">
+          <div className="d-grid gap-3">
+            <MetaBlock label="Created on" value={sample.createdOn} />
+            <MetaBlock label="Reporting Date" value={sample.reportingDate} />
           </div>
         </div>
 
-        <div className="sample-card__panel sample-card__panel--custom">
-          <div className="sample-card__fields">
+        <div className="card-body">
+          <div className="d-grid gap-3">
             {customFields.length ? renderFieldList(customFields) : (
-              <div className="sample-card__empty-field">No custom fields</div>
+              <div className="text-secondary d-flex align-items-center">No custom fields</div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="sample-card__parameters-row">
-        <div className="sample-card__parameters-label">Parameters:</div>
+      <div className="card-footer bg-transparent d-flex align-items-center gap-2">
+        <div className="text-secondary flex-shrink-0">Parameters:</div>
         <ParameterCircles
           parameters={sortedParameters}
-          className="sample-card__parameters-circles"
+          className="flex-grow-1 w-100 mw-100 flex-nowrap overflow-visible"
         />
-        <div className="sample-card__parameters-summary">
+        <div className="text-secondary text-end flex-shrink-0">
           {approvedCount}/{totalCount} Approved
         </div>
       </div>
@@ -292,41 +258,16 @@ function SampleCardGrid({
   const { approvedCount, totalCount, sortedParameters } = getParameterSummary(sample.parameters);
   const dataItems = buildDataItems(sample, extraMetaFields, extraDateFields);
   const dataGridClass = getRowColsClass(dataItems.length);
-  const statusPresentation = getStatusPresentation('sample', sample.status);
 
   return (
-    <article className="smplfy-card card sample-card sample-card--grid">
-      <div className="sample-card__grid-header">
-        {isOpenable ? (
-          <a
-            href="/"
-            onClick={(event) => {
-              event.preventDefault();
-              onOpenSample?.(sample.id, {
-                sourcePage,
-                sampleStatus: sample.status,
-                createdOn: sample.createdOn,
-                sample,
-              });
-            }}
-            className="sample-id"
-          >
-            {sample.id}
-          </a>
-        ) : (
-          <span className="sample-id">{sample.id}</span>
-        )}
-        <StatusPill
-          className="status-badge"
-          color={statusPresentation.color}
-          styleType={statusPresentation.styleType}
-        >
-          {statusPresentation.label}
-        </StatusPill>
+    <article className="smplfy-card card smplfy-sample-card overflow-hidden p-0">
+      <div className="card-header bg-transparent d-flex align-items-center gap-2">
+        <SampleId sample={sample} isOpenable={isOpenable} sourcePage={sourcePage} onOpenSample={onOpenSample} />
+        <SampleStatus sample={sample} />
         {isEditable ? (
           <SecondaryButton
             size="medium"
-            className="sample-card__grid-edit-button"
+            className="ms-auto"
             onClick={() => onEditSample(sample, { sourcePage })}
           >
             Edit
@@ -334,24 +275,23 @@ function SampleCardGrid({
         ) : null}
       </div>
 
-      <div className={`sample-card__grid-body row gx-2 ${dataGridClass}`.trim()}>
+      <div className={joinClasses('card-body', 'row', 'gx-2', dataGridClass)}>
         {dataItems.map((item, index) => (
           <div className="col" key={`${item.label}-${item.value}-${index}`}>
-            <div className="sample-card__data-item">
-              <div className="meta-label">{item.label}</div>
-              <div className="meta-value">{item.value}</div>
+            <div className="d-flex flex-column gap-1">
+              <MetaBlock label={item.label} value={item.value} />
             </div>
           </div>
         ))}
       </div>
 
-      <div className="sample-card__parameters-row">
-        <div className="sample-card__parameters-label">Parameters:</div>
+      <div className="card-footer bg-transparent d-flex align-items-center gap-2">
+        <div className="text-secondary flex-shrink-0">Parameters:</div>
         <ParameterCircles
           parameters={sortedParameters}
-          className="sample-card__parameters-circles"
+          className="flex-grow-1 w-100 mw-100 flex-nowrap overflow-visible"
         />
-        <div className="sample-card__parameters-summary">
+        <div className="text-secondary text-end flex-shrink-0">
           {approvedCount}/{totalCount} Approved
         </div>
       </div>

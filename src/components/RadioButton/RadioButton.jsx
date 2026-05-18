@@ -28,11 +28,9 @@ export default function RadioButton({
       aria-label={resolvedAriaLabel}
       disabled={disabled}
       readOnly={onChange ? undefined : true}
-      data-radio-state={state}
       className={joinClasses(
         'smplfy-form-check-input',
         'form-check-input',
-        isSelected && 'is-selected',
         className,
       )}
       onClick={onClick}

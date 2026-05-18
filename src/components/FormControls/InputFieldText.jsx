@@ -30,14 +30,15 @@ export default function InputFieldText({
         'smplfy-form-control',
         'form-control',
         isInvalid && 'is-invalid',
+        !isFilled && 'smplfy-form-empty',
+        state === 'hover' && 'smplfy-form-hover',
+        state === 'focused' && 'smplfy-form-focused',
         className,
       )}
       type={type}
       value={inputValue}
       placeholder={placeholder}
       disabled={isDisabled}
-      data-filled={isFilled ? 'true' : 'false'}
-      data-field-state={state}
       onChange={(event) => {
         setInputValue(event.target.value);
         onChange?.(event);

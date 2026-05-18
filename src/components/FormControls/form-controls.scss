@@ -46,7 +46,7 @@
   color: var(--smplfy-field-error-color);
 }
 
-.smplfy-form-feedback[data-smplfy-tone='warning'] {
+.smplfy-form-feedback.text-warning {
   color: var(--smplfy-field-warning-color);
 }
 
@@ -123,30 +123,30 @@
   opacity: 1;
 }
 
-.smplfy-form-control.form-control[data-filled='false']:not(:disabled):not(.is-invalid),
-.smplfy-form-select.form-select[data-filled='false']:not(:disabled):not(.is-invalid),
-.smplfy-select-field[data-filled='false'],
-.smplfy-date-field[data-filled='false'],
-.smplfy-file-field[data-filled='false'],
-.smplfy-split-field[data-filled='false'] {
+.smplfy-form-control.form-control.smplfy-form-empty:not(:disabled):not(.is-invalid),
+.smplfy-form-select.form-select.smplfy-form-empty:not(:disabled):not(.is-invalid),
+.smplfy-select-field.smplfy-form-empty,
+.smplfy-date-field.smplfy-form-empty,
+.smplfy-file-field.smplfy-form-empty,
+.smplfy-split-field.smplfy-form-empty {
   --smplfy-field-current-bg: var(--smplfy-field-bg-empty);
 }
 
-.smplfy-form-control.form-control[data-field-state='hover'],
-.smplfy-form-select.form-select[data-field-state='hover'],
-.smplfy-select-field[data-field-state='hover'],
-.smplfy-date-field[data-field-state='hover'],
-.smplfy-file-field[data-field-state='hover'],
-.smplfy-split-field[data-field-state='hover'] {
+.smplfy-form-control.form-control.smplfy-form-hover,
+.smplfy-form-select.form-select.smplfy-form-hover,
+.smplfy-select-field.smplfy-form-hover,
+.smplfy-date-field.smplfy-form-hover,
+.smplfy-file-field.smplfy-form-hover,
+.smplfy-split-field.smplfy-form-hover {
   --smplfy-field-current-border: var(--smplfy-field-border-hover);
 }
 
-.smplfy-form-control.form-control[data-field-state='focused'],
-.smplfy-form-select.form-select[data-field-state='focused'],
-.smplfy-select-field[data-field-state='focused'],
-.smplfy-date-field[data-field-state='focused'],
-.smplfy-file-field[data-field-state='focused'],
-.smplfy-split-field[data-field-state='focused'] {
+.smplfy-form-control.form-control.smplfy-form-focused,
+.smplfy-form-select.form-select.smplfy-form-focused,
+.smplfy-select-field.smplfy-form-focused,
+.smplfy-date-field.smplfy-form-focused,
+.smplfy-file-field.smplfy-form-focused,
+.smplfy-split-field.smplfy-form-focused {
   --smplfy-field-current-border: var(--smplfy-field-border-focused);
   --smplfy-field-current-shadow: var(--smplfy-field-shadow-focused);
 }
@@ -233,9 +233,9 @@
 }
 
 .smplfy-select-icon,
-.smplfy-split-field__chevron,
-.smplfy-date-button__icon,
-.smplfy-file-button__icon {
+.smplfy-date-button svg,
+.smplfy-file-button svg,
+.smplfy-split-field .position-absolute {
   color: var(--smplfy-field-icon-color);
   display: inline-flex;
   align-items: center;
@@ -289,17 +289,6 @@
   cursor: not-allowed;
 }
 
-.smplfy-date-field__native-picker,
-.smplfy-file-field__native-file {
-  position: absolute;
-  width: var(--smplfy-button-space-0);
-  height: var(--smplfy-button-space-0);
-  opacity: var(--smplfy-button-space-0);
-  pointer-events: none;
-  border: var(--smplfy-button-space-0);
-  margin: var(--smplfy-button-space-0);
-}
-
 .smplfy-file-display.form-control.btn {
   flex: 1 1 auto;
   min-width: var(--smplfy-button-space-0);
@@ -315,14 +304,14 @@
   align-items: center;
 }
 
-.smplfy-file-display__text {
+.smplfy-file-display.form-control.btn > .text-truncate {
   min-width: var(--smplfy-button-space-0);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.smplfy-file-display__text--placeholder {
+.smplfy-file-display.form-control.btn > .text-secondary {
   color: var(--smplfy-field-current-placeholder);
 }
 
@@ -331,22 +320,21 @@
   grid-template-columns: minmax(var(--smplfy-button-space-0), 1fr) var(--smplfy-field-split-unit-width);
 }
 
-.smplfy-split-field__unit {
+.smplfy-split-field > .input-group-text {
   position: relative;
   min-height: inherit;
+  border: 0;
   border-left: var(--smplfy-field-border-width) solid var(--smplfy-field-divider);
+  border-radius: 0;
+  background: transparent;
 }
 
-.smplfy-split-field__select.form-select {
+.smplfy-split-field .smplfy-form-select.form-select {
   padding-inline: var(--smplfy-field-padding-inline-compact) calc(var(--smplfy-field-icon-size) + var(--smplfy-field-padding-inline-compact));
 }
 
-.smplfy-split-field__chevron {
-  position: absolute;
-  top: 50%;
+.smplfy-split-field .position-absolute {
   right: var(--smplfy-field-select-icon-offset);
-  transform: translateY(-50%);
-  pointer-events: none;
 }
 
 .smplfy-toast.toast {
@@ -370,20 +358,25 @@
     transform var(--smplfy-toast-motion-standard);
 }
 
-.smplfy-toast.toast[data-smplfy-tone='error'] {
+.smplfy-toast.toast.text-bg-danger {
   --bs-toast-color: var(--smplfy-toast-error-text);
   --bs-toast-bg: var(--smplfy-toast-error-bg);
   --bs-toast-border-color: var(--smplfy-toast-error-border);
   --bs-toast-box-shadow: var(--smplfy-toast-error-shadow);
+
+  background-color: var(--smplfy-toast-error-bg) !important;
+  border-color: var(--smplfy-toast-error-border) !important;
+  color: var(--smplfy-toast-error-text) !important;
 }
 
-.smplfy-toast.toast[data-smplfy-state='gone'] {
+.smplfy-toast.toast.smplfy-toast-gone {
   opacity: 0;
   transform: var(--smplfy-toast-gone-transform);
   pointer-events: none;
 }
 
-.smplfy-toast__content {
+.smplfy-toast.toast > .toast-body {
+  padding: var(--smplfy-button-space-0);
   display: inline-flex;
   align-items: flex-start;
   gap: var(--smplfy-toast-content-gap);
@@ -395,22 +388,19 @@
   font-weight: var(--smplfy-toast-font-weight);
 }
 
-.smplfy-toast__content span:last-child {
+.smplfy-toast.toast > .toast-body span:last-child {
   white-space: normal;
   overflow-wrap: anywhere;
 }
 
-.smplfy-toast__icon,
-.smplfy-toast__close {
+.smplfy-toast.toast > .toast-body > .d-inline-flex,
+.smplfy-toast-close {
   width: var(--smplfy-toast-icon-size);
   height: var(--smplfy-toast-icon-size);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   color: inherit;
 }
 
-.smplfy-toast__close {
+.smplfy-toast-close {
   --bs-btn-padding-x: var(--smplfy-button-space-0);
   --bs-btn-padding-y: var(--smplfy-button-space-0);
   --bs-btn-color: inherit;

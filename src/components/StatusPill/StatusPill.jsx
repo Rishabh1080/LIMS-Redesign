@@ -4,13 +4,22 @@ function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
 }
 
-const bootstrapColorByName = {
-  gray: 'secondary',
-  blue: 'primary',
-  red: 'danger',
-  orange: 'warning',
-  green: 'success',
-  yellow: 'warning',
+const neutralClassByColor = {
+  gray: 'text-secondary bg-secondary-subtle border border-secondary-subtle',
+  blue: 'text-primary bg-primary-subtle border border-primary-subtle',
+  red: 'text-danger bg-danger-subtle border border-danger-subtle',
+  orange: 'text-warning bg-warning-subtle border border-warning',
+  green: 'text-success bg-success-subtle border border-success-subtle',
+  yellow: 'text-warning-emphasis bg-warning-subtle border border-warning-subtle',
+};
+
+const strongClassByColor = {
+  gray: 'text-bg-secondary border border-secondary',
+  blue: 'text-bg-primary border border-primary',
+  red: 'text-bg-danger border border-danger',
+  orange: 'text-bg-warning border border-warning',
+  green: 'text-bg-success border border-success',
+  yellow: 'text-bg-warning border border-warning-subtle',
 };
 
 export default function StatusPill({
@@ -22,25 +31,23 @@ export default function StatusPill({
   ...props
 }) {
   const resolvedLabel = children ?? label;
-  const bootstrapColor = bootstrapColorByName[color] ?? color;
   const isStrong = styleType === 'strong' || styleType === 'solid';
+  const colorKey = String(color || 'gray').toLowerCase();
+  const variantClass = isStrong
+    ? strongClassByColor[colorKey] ?? strongClassByColor.gray
+    : neutralClassByColor[colorKey] ?? neutralClassByColor.gray;
 
   return (
     <span
       className={joinClasses(
         'smplfy-badge',
         'badge',
-        'rounded-pill',
-        isStrong
-          ? `text-bg-${bootstrapColor}`
-          : `bg-${bootstrapColor}-subtle text-${bootstrapColor}-emphasis border border-${bootstrapColor}-subtle`,
+        variantClass,
         className,
       )}
-      data-smplfy-color={color}
-      data-smplfy-style={isStrong ? 'strong' : 'neutral'}
       {...props}
     >
-      <span className="smplfy-badge__label">{resolvedLabel}</span>
+      {resolvedLabel}
     </span>
   );
 }

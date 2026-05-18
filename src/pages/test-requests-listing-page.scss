@@ -265,8 +265,8 @@
   min-width: 0;
 }
 
-.tr-request-status-cell .smplfy-badge[data-smplfy-color],
-.tr-job-status-cell .smplfy-badge[data-smplfy-color] {
+.tr-request-status-cell .smplfy-badge.badge.border,
+.tr-job-status-cell .smplfy-badge.badge.border {
   max-width: 100%;
 }
 

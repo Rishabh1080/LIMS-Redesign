@@ -50,10 +50,11 @@ export default function InputFieldFile({
         'smplfy-file-field',
         'input-group',
         isInvalid && 'is-invalid',
+        !isFilled && 'smplfy-form-empty',
+        state === 'hover' && 'smplfy-form-hover',
+        state === 'focused' && 'smplfy-form-focused',
         className,
       )}
-      data-filled={isFilled ? 'true' : 'false'}
-      data-field-state={isDisabled ? 'disabled' : state}
     >
       <button
         type="button"
@@ -68,8 +69,8 @@ export default function InputFieldFile({
       >
         <span
           className={joinClasses(
-            'smplfy-file-display__text',
-            !displayValue && 'smplfy-file-display__text--placeholder',
+            'text-truncate',
+            !displayValue && 'text-secondary',
           )}
         >
           {displayValue || placeholder}
@@ -78,19 +79,19 @@ export default function InputFieldFile({
 
       <button
         type="button"
-        className="smplfy-file-button btn"
+        className="smplfy-file-button smplfy-btn btn btn-light"
         disabled={isDisabled}
         aria-label="Choose file"
         onClick={() => inputRef.current?.click()}
       >
-        <span className="smplfy-file-button__icon" aria-hidden="true">
+        <span className="d-inline-flex align-items-center justify-content-center" aria-hidden="true">
           <AppIcon name="file-description" />
         </span>
       </button>
 
       <input
         ref={inputRef}
-        className="smplfy-file-field__native-file"
+        className="visually-hidden"
         type="file"
         accept={accept}
         disabled={isDisabled}

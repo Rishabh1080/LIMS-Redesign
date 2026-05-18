@@ -17,18 +17,16 @@ export default function SelectableCard({
   return (
     <button
       type="button"
-      className={joinClasses('smplfy-card', 'card', 'btn', selected && 'active', className)}
+      className={joinClasses('smplfy-card', 'card', 'btn', 'smplfy-card-relaxed', selected && 'active', className)}
       aria-pressed={selected}
-      data-state={selected ? 'active' : 'default'}
-      data-layout="relaxed"
       onClick={onClick}
       {...props}
     >
-      <div className="smplfy-card__head">
+      <div className="card-body">
         <RadioButton checked={selected} ariaLabel={title} />
-        <span className="smplfy-card__title card-title">{title}</span>
+        <span className="card-title">{title}</span>
       </div>
-      <div className="smplfy-card__description card-text">{description}</div>
+      <div className="card-text">{description}</div>
     </button>
   );
 }

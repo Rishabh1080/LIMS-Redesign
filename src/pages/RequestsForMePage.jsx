@@ -1,12 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
-import { FormElement } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
-import NavSelector from '../components/NavSelector';
 import SecondaryButton from '../components/SecondaryButton';
-import StatusPill from '../components/StatusPill';
 import { getStatusPresentation } from '../status/statusRegistry';
 import {
   getRequestsForCategory,
@@ -21,14 +18,54 @@ function normalizeRetentionLabel(value) {
   return value === 'To be retained' ? 'Retained' : value;
 }
 
+function joinClasses(...values) {
+  return values.filter(Boolean).join(' ');
+}
+
+const neutralStatusClassByColor = {
+  gray: 'text-secondary bg-secondary-subtle border border-secondary-subtle',
+  blue: 'text-primary bg-primary-subtle border border-primary-subtle',
+  red: 'text-danger bg-danger-subtle border border-danger-subtle',
+  orange: 'text-warning bg-warning-subtle border border-warning',
+  green: 'text-success bg-success-subtle border border-success-subtle',
+  yellow: 'text-warning-emphasis bg-warning-subtle border border-warning-subtle',
+};
+
+const strongStatusClassByColor = {
+  gray: 'text-bg-secondary',
+  blue: 'text-bg-primary',
+  red: 'text-bg-danger',
+  orange: 'text-bg-warning border border-warning',
+  green: 'text-bg-success',
+  yellow: 'text-bg-warning border border-warning-subtle',
+};
+
+function getStatusBadgeClassName(presentation) {
+  const color = presentation.color ?? 'gray';
+  const variantClass = presentation.styleType === 'strong'
+    ? strongStatusClassByColor[color] ?? strongStatusClassByColor.gray
+    : neutralStatusClassByColor[color] ?? neutralStatusClassByColor.gray;
+
+  return joinClasses('smplfy-badge', 'badge', variantClass);
+}
+
+function StatusBadge({ presentation }) {
+  return (
+    <span className={getStatusBadgeClassName(presentation)}>
+      {presentation.label}
+    </span>
+  );
+}
+
 function getAlertRowClassName({ priority, highlighted = false, animatedHighlight = false }) {
-  const priorityClassName = priority === 'high' ? 'is-high' : 'is-medium';
+  const priorityClassName = priority === 'high' ? 'text-bg-danger' : 'text-bg-warning';
 
   return [
-    'requests-for-me-alert-row',
+    'smplfy-alert-row',
+    'list-group-item',
     priorityClassName,
-    highlighted ? 'is-highlighted' : '',
-    animatedHighlight ? 'is-arrival-highlight' : '',
+    highlighted ? 'border-primary' : '',
+    animatedHighlight ? 'smplfy-alert-row-arrival' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -49,26 +86,27 @@ const requestApprovalRows = [
 
 function RequestsHeader({ sections, activeSection, onSectionChange }) {
   return (
-    <section className="requests-for-me-tabs">
+    <section className="smplfy-requests-tabs">
       <div className="container-fluid h-100 px-4">
         <div className="row h-100 gx-0 align-items-stretch flex-nowrap">
           <div className="col">
-            <div className="requests-for-me-tabs__group">
+            <nav className="smplfy-requests-tabs-group nav" aria-label="Request sections">
               {sections.map((section) => (
-                <NavSelector
+                <button
                   key={section.key}
-                  className="requests-for-me-tabs__item"
-                  active={activeSection === section.key}
-                  count={section.count}
+                  type="button"
+                  className={joinClasses('smplfy-nav-link', 'nav-link', activeSection === section.key ? 'active' : '')}
+                  aria-current={activeSection === section.key ? 'page' : undefined}
                   onClick={() => onSectionChange(section.key)}
                 >
-                  <span className="requests-for-me-tabs__label">
+                  <span className="smplfy-nav-link-label">
                     <AppIcon name={section.icon} size={14} />
                     <span>{section.label}</span>
                   </span>
-                </NavSelector>
+                  {section.count ? <span className="smplfy-badge badge text-bg-danger">{section.count}</span> : null}
+                </button>
               ))}
-            </div>
+            </nav>
           </div>
         </div>
       </div>
@@ -78,23 +116,24 @@ function RequestsHeader({ sections, activeSection, onSectionChange }) {
 
 function CategoryFilter({ activeCategory, onCategoryChange }) {
   return (
-    <section className="requests-for-me-categories">
+    <section className="smplfy-requests-categories">
       <div className="container-fluid px-4">
-        <div className="requests-for-me-categories__inner">
-          <div className="requests-for-me-categories__label">Categories:</div>
-          <div className="requests-for-me-categories__rail">
+        <div className="smplfy-requests-categories-inner">
+          <div className="smplfy-requests-categories-label">Categories:</div>
+          <nav className="smplfy-requests-categories-rail nav nav-pills" aria-label="Request categories">
             {requestCategories.map((category) => (
               <button
                 key={category.key}
                 type="button"
-                className={`requests-for-me-category-chip ${activeCategory === category.key ? 'is-active' : ''}`}
+                className={joinClasses('smplfy-nav-link', 'nav-link', activeCategory === category.key ? 'active' : '')}
+                aria-current={activeCategory === category.key ? 'page' : undefined}
                 onClick={() => onCategoryChange(category.key)}
               >
                 <AppIcon name={category.icon} size={16} stroke={1.8} />
                 <span>{`${category.label} (${category.count})`}</span>
               </button>
             ))}
-          </div>
+          </nav>
         </div>
       </div>
     </section>
@@ -108,35 +147,31 @@ function RequestCard({ request, onOpenDetails }) {
   const requestDays = request.daysToTransition ?? '4';
 
   return (
-    <article className="requests-for-me-request-card">
-      <div className="requests-for-me-request-card__item">
-        <button type="button" className="tr-link requests-for-me-request-card__title" onClick={() => onOpenDetails(request)}>
+    <article className="smplfy-card card smplfy-request-card">
+      <div className="smplfy-request-card-item">
+        <button type="button" className="smplfy-btn btn btn-link smplfy-request-title" onClick={() => onOpenDetails(request)}>
           {title}
         </button>
       </div>
 
-      <div className="requests-for-me-request-card__transition">
-        <StatusPill color={sourceState.color} styleType={sourceState.styleType}>
-          {sourceState.label}
-        </StatusPill>
-        <span className="requests-for-me-request-card__state-arrow">→</span>
-        <StatusPill color={targetState.color} styleType={targetState.styleType}>
-          {targetState.label}
-        </StatusPill>
+      <div className="smplfy-state-transition">
+        <StatusBadge presentation={sourceState} />
+        <span aria-hidden="true">→</span>
+        <StatusBadge presentation={targetState} />
       </div>
 
-      <div className="requests-for-me-request-card__days">{requestDays}</div>
+      <div className="smplfy-request-days">{requestDays}</div>
 
-      <div className="requests-for-me-request-card__raised">
+      <div className="smplfy-request-raised">
         <span>{request.requestedOn}</span>
       </div>
 
-      <div className="requests-for-me-request-card__actions">
+      <div className="smplfy-request-actions">
         <SecondaryButton
           size="small"
           tone="info"
           leftIcon="arrow-up-right"
-          className="requests-for-me-request-card__action-button"
+          className="smplfy-request-action-button"
           onClick={() => onOpenDetails(request)}
         >
           View
@@ -145,7 +180,7 @@ function RequestCard({ request, onOpenDetails }) {
           size="small"
           tone="success"
           leftIcon="check"
-          className="requests-for-me-request-card__action-button"
+          className="smplfy-request-action-button"
         >
           Approve
         </SecondaryButton>
@@ -153,7 +188,7 @@ function RequestCard({ request, onOpenDetails }) {
           size="small"
           tone="danger"
           leftIcon="close"
-          className="requests-for-me-request-card__action-button"
+          className="smplfy-request-action-button"
         >
           Reject
         </SecondaryButton>
@@ -198,96 +233,94 @@ function RequestDetailsModal({ request, onClose }) {
       titleId="request-details-title"
       size="xl"
       onClose={onClose}
-      cardClassName="requests-for-me-request-modal__card"
-      bodyClassName="requests-for-me-request-modal__body"
+      cardClassName="smplfy-request-modal-card"
+      bodyClassName="smplfy-request-modal-body"
       titleExtra={
-        <div className="requests-for-me-request-card__transition">
-          <StatusPill color={sourceState.color} styleType={sourceState.styleType}>
-            {sourceState.label}
-          </StatusPill>
-          <span className="requests-for-me-request-card__state-arrow">→</span>
-          <StatusPill color={targetState.color} styleType={targetState.styleType}>
-            {targetState.label}
-          </StatusPill>
+        <div className="smplfy-state-transition">
+          <StatusBadge presentation={sourceState} />
+          <span aria-hidden="true">→</span>
+          <StatusBadge presentation={targetState} />
         </div>
       }
     >
-      <div className="requests-for-me-request-modal__main">
-        <div className="requests-for-me-request-modal__summary">
-          <div className="requests-for-me-request-modal__summary-row">
-            <div className="requests-for-me-request-modal__summary-label">Request by</div>
-            <div className="requests-for-me-request-modal__summary-value">{request.requestedByName}</div>
+      <div className="smplfy-request-modal-main">
+        <div className="smplfy-request-modal-summary">
+          <div className="smplfy-request-modal-summary-row">
+            <div className="smplfy-request-modal-summary-label">Request by</div>
+            <div className="smplfy-request-modal-summary-value">{request.requestedByName}</div>
           </div>
-          <div className="requests-for-me-request-modal__summary-row">
-            <div className="requests-for-me-request-modal__summary-label">Requested on</div>
-            <div className="requests-for-me-request-modal__summary-value">{request.requestedOn}</div>
+          <div className="smplfy-request-modal-summary-row">
+            <div className="smplfy-request-modal-summary-label">Requested on</div>
+            <div className="smplfy-request-modal-summary-value">{request.requestedOn}</div>
           </div>
-          <div className="requests-for-me-request-modal__summary-row">
-            <div className="requests-for-me-request-modal__summary-label">Comment</div>
-            <div className="requests-for-me-request-modal__summary-value">
+          <div className="smplfy-request-modal-summary-row">
+            <div className="smplfy-request-modal-summary-label">Comment</div>
+            <div className="smplfy-request-modal-summary-value">
               {normalizeRetentionLabel(request.comments)}
             </div>
           </div>
         </div>
 
-        <div className="requests-for-me-request-modal__body-grid">
-          <div className="requests-for-me-request-modal__section-head">
-            <div className="requests-for-me-request-modal__tab">Everyone Needs to approve</div>
-            <div className="requests-for-me-request-modal__responded">6/12 Responded</div>
-            <SecondaryButton size="small" className="requests-for-me-request-modal__remind">
+        <div className="smplfy-request-modal-body-grid">
+          <div className="smplfy-request-modal-section-head">
+            <div className="smplfy-nav-link nav-link active smplfy-request-modal-tab">Everyone Needs to approve</div>
+            <div className="smplfy-request-modal-responded">6/12 Responded</div>
+            <SecondaryButton size="small" className="smplfy-request-modal-remind">
               Remind All
             </SecondaryButton>
           </div>
 
-          <div className="requests-for-me-request-modal__table-wrap">
-            <div className="requests-for-me-request-modal__table-head">
-              <span>Sr.</span>
-              <span>Approver Name</span>
-              <span>Status</span>
-              <span>Days taken</span>
-              <span>Decision on</span>
-              <span>Comments</span>
-            </div>
-
-            <div className="requests-for-me-request-modal__table-body">
+          <div className="smplfy-request-modal-table-wrap table-responsive">
+            <table className="smplfy-table table mb-0 align-middle">
+              <thead>
+                <tr>
+                  <th scope="col">Sr.</th>
+                  <th scope="col">Approver Name</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Days taken</th>
+                  <th scope="col">Decision on</th>
+                  <th scope="col">Comments</th>
+                </tr>
+              </thead>
+              <tbody>
               {requestApprovalRows.map((row) => (
-                <div key={`${request.id}-${row.sr}`} className="requests-for-me-request-modal__table-row">
-                  <span>{row.sr}</span>
-                  <span>{row.approverName}</span>
-                  <span>{row.status}</span>
-                  <span>{row.daysTaken}</span>
-                  <span>{row.decisionOn}</span>
-                  <span>{row.comments}</span>
-                </div>
+                <tr key={`${request.id}-${row.sr}`}>
+                  <td>{row.sr}</td>
+                  <td>{row.approverName}</td>
+                  <td>{row.status}</td>
+                  <td>{row.daysTaken}</td>
+                  <td>{row.decisionOn}</td>
+                  <td>{row.comments}</td>
+                </tr>
               ))}
-            </div>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      <div className="requests-for-me-request-modal__sidebar">
-        <div className="requests-for-me-request-modal__sidebar-form">
-          <FormElement
-            type="text"
-            mandatory
-            label="Comment"
-            message={commentError}
-            messageTone="error"
-            inputProps={{
-              value: comment,
-              placeholder: 'Add a comment to respond',
-              onChange: (e) => {
-                setComment(e.target.value);
-                if (e.target.value.trim()) setCommentError('');
-              },
+      <div className="smplfy-request-modal-sidebar">
+        <div className="smplfy-request-modal-sidebar-form">
+          <label className="smplfy-form-label form-label" htmlFor="request-comment">
+            Comment <span className="text-danger">*</span>
+          </label>
+          <input
+            id="request-comment"
+            className={joinClasses('smplfy-form-control', 'form-control', commentError ? 'is-invalid' : '')}
+            value={comment}
+            placeholder="Add a comment to respond"
+            onChange={(e) => {
+              setComment(e.target.value);
+              if (e.target.value.trim()) setCommentError('');
             }}
           />
+          {commentError ? <div className="smplfy-form-feedback invalid-feedback d-block">{commentError}</div> : null}
         </div>
-        <div className="requests-for-me-request-modal__actions">
-          <PrimaryButton styleVariant="destructive" size="large" className="requests-for-me-request-modal__action" onClick={handleAction} leftIcon="close">
+        <div className="smplfy-request-modal-actions">
+          <PrimaryButton styleVariant="destructive" size="large" className="smplfy-request-modal-action" onClick={handleAction} leftIcon="close">
             Reject
           </PrimaryButton>
-          <PrimaryButton styleVariant="positive" size="large" className="requests-for-me-request-modal__action" onClick={handleAction} leftIcon="check">
+          <PrimaryButton styleVariant="positive" size="large" className="smplfy-request-modal-action" onClick={handleAction} leftIcon="check">
             Approve
           </PrimaryButton>
         </div>
@@ -304,18 +337,17 @@ function MaterialAlertRow({ alert, index, highlighted = false, animatedHighlight
         highlighted,
         animatedHighlight,
       })}
-      style={{ '--alert-row-columns': '40px minmax(0, 1.8fr) minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.85fr) minmax(0, 1.25fr) minmax(0, 0.8fr) 176px' }}
     >
-      <div className="requests-for-me-alert-row__cell is-index">{index}</div>
-      <div className="requests-for-me-alert-row__cell is-entity">{alert.entityName}</div>
-      <div className="requests-for-me-alert-row__cell is-alert-type">{alert.alertType}</div>
-      <div className="requests-for-me-alert-row__cell is-batch">{alert.batchNo}</div>
-      <div className="requests-for-me-alert-row__cell is-min">{alert.minQuantity}</div>
-      <div className="requests-for-me-alert-row__cell is-current">{alert.currentQuantity}</div>
-      <div className="requests-for-me-alert-row__cell is-raised">{alert.alertRaisedOn}</div>
-      <div className="requests-for-me-alert-row__cell is-days">{alert.daysSince}</div>
-      <div className="requests-for-me-alert-row__cell is-action">
-        <button type="button" className="requests-for-me-alert-row__action">
+      <div className="smplfy-alert-cell smplfy-alert-cell-index">{index}</div>
+      <div className="smplfy-alert-cell smplfy-alert-cell-entity">{alert.entityName}</div>
+      <div className="smplfy-alert-cell">{alert.alertType}</div>
+      <div className="smplfy-alert-cell">{alert.batchNo}</div>
+      <div className="smplfy-alert-cell">{alert.minQuantity}</div>
+      <div className="smplfy-alert-cell">{alert.currentQuantity}</div>
+      <div className="smplfy-alert-cell">{alert.alertRaisedOn}</div>
+      <div className="smplfy-alert-cell">{alert.daysSince}</div>
+      <div className="smplfy-alert-cell smplfy-alert-cell-action">
+        <button type="button" className="smplfy-btn btn btn-light smplfy-alert-action">
           <AppIcon name={alert.actionIcon} size={14} />
           <span>{alert.actionLabel}</span>
         </button>
@@ -326,27 +358,27 @@ function MaterialAlertRow({ alert, index, highlighted = false, animatedHighlight
 
 function AlertSection({
   rows,
-  columns,
+  layoutClass,
   legend,
   RowComponent,
   highlightedAlertId = null,
   animatedHighlightId = null,
 }) {
   return (
-    <div className="requests-for-me-panel requests-for-me-panel--alerts">
-      <div className="requests-for-me-alerts" style={{ '--alert-row-columns': columns }}>
-        <div className="requests-for-me-alerts__legend row g-0 align-items-end">
+    <div className="smplfy-requests-panel smplfy-alerts-panel">
+      <div className={joinClasses('smplfy-alerts', layoutClass)}>
+        <div className="smplfy-alerts-legend row g-0 align-items-end">
           {legend.map((label, index) => (
             <div
               key={label}
-              className={`requests-for-me-alerts__legend-item ${index === 0 ? 'is-index' : `is-${index}`}`}
+              className={joinClasses('smplfy-alerts-legend-item', index === 0 ? 'smplfy-alerts-legend-index' : '')}
             >
               {label}
             </div>
           ))}
         </div>
 
-        <div className="requests-for-me-alerts__rows">
+        <div className="smplfy-alerts-rows list-group">
           {rows.map((alert, index) => (
             <RowComponent
               key={alert.id}
@@ -364,19 +396,19 @@ function AlertSection({
 
 function EnvDataAlertsEmptyState() {
   return (
-    <div className="requests-for-me-alerts-empty-state">
-      <div className="requests-for-me-alerts-empty-state__badge">System healthy</div>
+    <div className="smplfy-card card smplfy-alerts-empty-state">
+      <div className="smplfy-badge badge text-bg-success smplfy-alerts-empty-badge">System healthy</div>
 
-      <div className="requests-for-me-alerts-empty-state__icon-shell" aria-hidden="true">
-        <span className="requests-for-me-alerts-empty-state__halo requests-for-me-alerts-empty-state__halo--outer" />
-        <span className="requests-for-me-alerts-empty-state__halo requests-for-me-alerts-empty-state__halo--inner" />
-        <div className="requests-for-me-alerts-empty-state__icon">
+      <div className="smplfy-alerts-empty-icon-shell" aria-hidden="true">
+        <span className="smplfy-alerts-empty-halo smplfy-alerts-empty-halo-outer" />
+        <span className="smplfy-alerts-empty-halo smplfy-alerts-empty-halo-inner" />
+        <div className="smplfy-alerts-empty-icon">
           <AppIcon name="cloud-data" size={32} stroke={1.9} />
         </div>
       </div>
 
-      <div className="requests-for-me-alerts-empty-state__title">All environment data is up to date</div>
-      <div className="requests-for-me-alerts-empty-state__copy">
+      <div className="smplfy-alerts-empty-title">All environment data is up to date</div>
+      <div className="smplfy-alerts-empty-copy">
         Every monitored lab has a fresh reading logged on time.
       </div>
     </div>
@@ -388,8 +420,8 @@ function EnvDataAlertsModeSwitch({ mode, onToggle }) {
   const buttonLabel = mode === 'empty' ? 'Show test alerts' : 'Show empty state';
 
   return (
-    <div className="requests-for-me-alerts__mode-switch" aria-label="Env data alerts preview mode">
-      <button type="button" className="requests-for-me-alerts__mode-switch-button" onClick={() => onToggle(nextMode)}>
+    <div className="smplfy-alerts-mode-switch" aria-label="Env data alerts preview mode">
+      <button type="button" className="smplfy-btn btn btn-link smplfy-alerts-mode-button" onClick={() => onToggle(nextMode)}>
         {buttonLabel}
       </button>
     </div>
@@ -406,22 +438,22 @@ function EnvDataAlertsSection({
   const isEmpty = rows.length === 0;
 
   return (
-    <div className={`requests-for-me-panel requests-for-me-panel--alerts ${isEmpty ? 'is-empty' : ''}`.trim()}>
-      <div className="requests-for-me-alerts" style={{ '--alert-row-columns': '40px minmax(0, 1.8fr) minmax(0, 1.2fr) minmax(0, 1.6fr) minmax(0, 1.6fr) 176px' }}>
+    <div className={joinClasses('smplfy-requests-panel', 'smplfy-alerts-panel', isEmpty ? 'smplfy-alerts-panel-empty' : '')}>
+      <div className="smplfy-alerts smplfy-alerts-env">
         {!isEmpty ? (
           <>
-            <div className="requests-for-me-alerts__legend row g-0 align-items-end">
+            <div className="smplfy-alerts-legend row g-0 align-items-end">
               {['#', 'Lab', 'Alert Raised On', 'Last Update', 'Due', 'Action'].map((label, index) => (
                 <div
                   key={label}
-                  className={`requests-for-me-alerts__legend-item ${index === 0 ? 'is-index' : `is-${index}`}`}
+                  className={joinClasses('smplfy-alerts-legend-item', index === 0 ? 'smplfy-alerts-legend-index' : '')}
                 >
                   {label}
                 </div>
               ))}
             </div>
 
-            <div className="requests-for-me-alerts__rows">
+            <div className="smplfy-alerts-rows list-group">
               {rows.map((alert, index) => (
                 <EnvDataAlertRow
                   key={alert.id}
@@ -449,7 +481,7 @@ function MaterialAlertsSection({ rows, highlightedAlertId, animatedHighlightId }
       rows={rows}
       highlightedAlertId={highlightedAlertId}
       animatedHighlightId={animatedHighlightId}
-      columns="40px minmax(0, 1.8fr) minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.85fr) minmax(0, 1.25fr) minmax(0, 0.8fr) 176px"
+      layoutClass="smplfy-alerts-material"
       legend={['#', 'Name', 'Alert Type', 'Batch No.', 'Min Qty', 'Current Qty', 'Alert Raised On', 'Days Since', 'Action']}
       RowComponent={MaterialAlertRow}
     />
@@ -468,17 +500,16 @@ function InstrumentAlertRow({ alert, index, highlighted = false, animatedHighlig
         highlighted,
         animatedHighlight,
       })}
-      style={{ '--alert-row-columns': '40px minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 1fr) 176px' }}
     >
-      <div className="requests-for-me-alert-row__cell is-index">{index}</div>
-      <div className="requests-for-me-alert-row__cell is-entity">{alert.instrumentName}</div>
-      <div className="requests-for-me-alert-row__cell is-alert-type">{alert.type}</div>
-      <div className="requests-for-me-alert-row__cell is-raised">{alert.alertRaisedOn}</div>
-      <div className="requests-for-me-alert-row__cell is-days">{alert.daysSince}</div>
-      <div className="requests-for-me-alert-row__cell is-min">{alert.lastService}</div>
-      <div className="requests-for-me-alert-row__cell is-current">{serviceDue}</div>
-      <div className="requests-for-me-alert-row__cell is-action">
-        <button type="button" className="requests-for-me-alert-row__action">
+      <div className="smplfy-alert-cell smplfy-alert-cell-index">{index}</div>
+      <div className="smplfy-alert-cell smplfy-alert-cell-entity">{alert.instrumentName}</div>
+      <div className="smplfy-alert-cell">{alert.type}</div>
+      <div className="smplfy-alert-cell">{alert.alertRaisedOn}</div>
+      <div className="smplfy-alert-cell">{alert.daysSince}</div>
+      <div className="smplfy-alert-cell">{alert.lastService}</div>
+      <div className="smplfy-alert-cell">{serviceDue}</div>
+      <div className="smplfy-alert-cell smplfy-alert-cell-action">
+        <button type="button" className="smplfy-btn btn btn-light smplfy-alert-action">
           <AppIcon name={actionIcon} size={14} />
           <span>{actionLabel}</span>
         </button>
@@ -493,7 +524,7 @@ function InstrumentAlertsSection({ rows, highlightedAlertId, animatedHighlightId
       rows={rows}
       highlightedAlertId={highlightedAlertId}
       animatedHighlightId={animatedHighlightId}
-      columns="40px minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 1fr) 176px"
+      layoutClass="smplfy-alerts-instrument"
       legend={['#', 'Name', 'Type', 'Alert Raised On', 'Days Since', 'Last Service', 'Service Due', 'Action']}
       RowComponent={InstrumentAlertRow}
     />
@@ -508,15 +539,14 @@ function EnvDataAlertRow({ alert, index, highlighted = false, animatedHighlight 
         highlighted,
         animatedHighlight,
       })}
-      style={{ '--alert-row-columns': '40px minmax(0, 1.8fr) minmax(0, 1.2fr) minmax(0, 1.6fr) minmax(0, 1.6fr) 176px' }}
     >
-      <div className="requests-for-me-alert-row__cell is-index">{index}</div>
-      <div className="requests-for-me-alert-row__cell is-entity">{alert.labName}</div>
-      <div className="requests-for-me-alert-row__cell is-raised">{alert.alertRaisedOn}</div>
-      <div className="requests-for-me-alert-row__cell is-min">{alert.lastUpdate}</div>
-      <div className="requests-for-me-alert-row__cell is-current">{alert.due}</div>
-      <div className="requests-for-me-alert-row__cell is-action">
-        <button type="button" className="requests-for-me-alert-row__action">
+      <div className="smplfy-alert-cell smplfy-alert-cell-index">{index}</div>
+      <div className="smplfy-alert-cell smplfy-alert-cell-entity">{alert.labName}</div>
+      <div className="smplfy-alert-cell">{alert.alertRaisedOn}</div>
+      <div className="smplfy-alert-cell">{alert.lastUpdate}</div>
+      <div className="smplfy-alert-cell">{alert.due}</div>
+      <div className="smplfy-alert-cell smplfy-alert-cell-action">
+        <button type="button" className="smplfy-btn btn btn-light smplfy-alert-action">
           <AppIcon name="plus" size={14} />
           <span>{alert.actionLabel}</span>
         </button>
@@ -533,14 +563,13 @@ function DocumentAlertRow({ alert, index, highlighted = false, animatedHighlight
         highlighted,
         animatedHighlight,
       })}
-      style={{ '--alert-row-columns': '40px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 176px' }}
     >
-      <div className="requests-for-me-alert-row__cell is-index">{index}</div>
-      <div className="requests-for-me-alert-row__cell is-entity">{alert.docName}</div>
-      <div className="requests-for-me-alert-row__cell is-raised">{alert.lastUpdate}</div>
-      <div className="requests-for-me-alert-row__cell is-current">{alert.due}</div>
-      <div className="requests-for-me-alert-row__cell is-action">
-        <button type="button" className="requests-for-me-alert-row__action">
+      <div className="smplfy-alert-cell smplfy-alert-cell-index">{index}</div>
+      <div className="smplfy-alert-cell smplfy-alert-cell-entity">{alert.docName}</div>
+      <div className="smplfy-alert-cell">{alert.lastUpdate}</div>
+      <div className="smplfy-alert-cell">{alert.due}</div>
+      <div className="smplfy-alert-cell smplfy-alert-cell-action">
+        <button type="button" className="smplfy-btn btn btn-light smplfy-alert-action">
           <AppIcon name="file-text" size={14} />
           <span>{alert.actionLabel}</span>
         </button>
@@ -555,7 +584,7 @@ function DocumentAlertsSection({ rows, highlightedAlertId, animatedHighlightId }
       rows={rows}
       highlightedAlertId={highlightedAlertId}
       animatedHighlightId={animatedHighlightId}
-      columns="40px minmax(0, 2fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 176px"
+      layoutClass="smplfy-alerts-document"
       legend={['#', 'Doc Name', 'Last Update', 'Expiry Date', 'Action']}
       RowComponent={DocumentAlertRow}
     />
@@ -646,7 +675,7 @@ export default function RequestsForMePage({
       {activeSection === 'requests' ? (
         <CategoryFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
       ) : null}
-      <main className="requests-for-me-page">
+      <main className="smplfy-requests-page">
         <div
           className="container-fluid px-4"
           onClickCapture={(event) => {
@@ -654,7 +683,7 @@ export default function RequestsForMePage({
               return;
             }
 
-            if (event.target.closest('.requests-for-me-alert-row')) {
+            if (event.target.closest('.smplfy-alert-row')) {
               return;
             }
 
@@ -689,16 +718,16 @@ export default function RequestsForMePage({
               animatedHighlightId={animatedHighlightId}
             />
           ) : (
-            <div className="requests-for-me-panel requests-for-me-panel--requests">
-              <div className="requests-for-me-panel__legend">
-                <div className="requests-for-me-panel__legend-item is-item">Item</div>
-                <div className="requests-for-me-panel__legend-item is-transition">Transition Request</div>
-                <div className="requests-for-me-panel__legend-item is-days">Days</div>
-                <div className="requests-for-me-panel__legend-item is-raised">Raised on</div>
-                <div className="requests-for-me-panel__legend-item is-actions">Actions</div>
+            <div className="smplfy-requests-panel smplfy-requests-list-panel">
+              <div className="smplfy-requests-legend">
+                <div className="smplfy-requests-legend-item smplfy-requests-legend-item-main">Item</div>
+                <div className="smplfy-requests-legend-item">Transition Request</div>
+                <div className="smplfy-requests-legend-item smplfy-requests-legend-item-days">Days</div>
+                <div className="smplfy-requests-legend-item">Raised on</div>
+                <div className="smplfy-requests-legend-item smplfy-requests-legend-item-actions">Actions</div>
               </div>
 
-              <div className="requests-for-me-panel__list">
+              <div className="smplfy-requests-list">
                 {requestRows.map((request) => (
                   <RequestCard key={request.id} request={request} onOpenDetails={setSelectedRequest} />
                 ))}

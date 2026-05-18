@@ -86,15 +86,10 @@
   box-shadow: none;
 }
 
-.smplfy-nav-link__label {
-  display: inline-flex;
-  align-items: center;
-}
-
-.smplfy-nav-link__badge {
+.smplfy-nav-link.nav-link > .smplfy-badge.badge {
   letter-spacing: var(--smplfy-nav-link-badge-letter-spacing);
 }
 
-.smplfy-nav-link.nav-link[data-smplfy-size='medium'] {
+.smplfy-nav-link.nav-link.smplfy-nav-link-medium {
   --smplfy-nav-link-current-height: var(--smplfy-nav-link-height-medium);
 }

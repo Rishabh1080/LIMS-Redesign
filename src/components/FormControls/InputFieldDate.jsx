@@ -165,17 +165,18 @@ export default function InputFieldDate({
         'smplfy-date-field',
         'input-group',
         isInvalid && 'is-invalid',
+        !isFilled && 'smplfy-form-empty',
+        visualState === 'hover' && 'smplfy-form-hover',
+        visualState === 'focused' && 'smplfy-form-focused',
         className,
       )}
-      data-filled={isFilled ? 'true' : 'false'}
-      data-field-state={visualState}
     >
       <input
         ref={visibleInputRef}
         className={joinClasses(
           'smplfy-form-control',
           'form-control',
-          'smplfy-date-field__input',
+          !isFilled && 'smplfy-form-empty',
           isInvalid && 'is-invalid',
         )}
         type="text"
@@ -213,13 +214,12 @@ export default function InputFieldDate({
 
           onBlur?.(event);
         }}
-        data-filled={isFilled ? 'true' : 'false'}
         {...props}
       />
 
       <button
         type="button"
-        className="smplfy-date-button btn"
+        className="smplfy-date-button smplfy-btn btn btn-light"
         aria-label="Open calendar"
         disabled={isDisabled}
         onClick={() => {
@@ -227,12 +227,12 @@ export default function InputFieldDate({
           pickerRef.current?.focus();
         }}
       >
-        <AppIcon name="calendar" className="smplfy-date-button__icon" />
+        <AppIcon name="calendar" />
       </button>
 
       <input
         ref={pickerRef}
-        className="smplfy-date-field__native-picker"
+        className="visually-hidden"
         type="date"
         tabIndex={-1}
         aria-hidden="true"

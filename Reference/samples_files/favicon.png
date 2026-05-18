@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" class="__meteor-css__" href="/3250f6d70b33c64332f8e4e0194e33db3618137a.css?meteor_css_resource=true">
+
+
+</head>
+<body>
+  <script type="text/javascript">__meteor_runtime_config__ = JSON.parse(decodeURIComponent("%7B%22meteorRelease%22%3A%22METEOR%402.16%22%2C%22gitCommitHash%22%3A%22733f35ca0ab07e968ef0a92d827ca77567ba6311%22%2C%22meteorEnv%22%3A%7B%22NODE_ENV%22%3A%22production%22%2C%22TEST_METADATA%22%3A%22%7B%7D%22%7D%2C%22PUBLIC_SETTINGS%22%3A%7B%22current_env%22%3A%22PRODUCTION%22%2C%22root_dir%22%3A%22%2FUsers%2Fcursedranger%2FDownloads%2Fathenapdf%2F%22%2C%22css_path%22%3A%22%2Fhome%2Fubuntu%2Fnodeapp%2Fiict_lims%2Fbundle%2Fprograms%2Fweb.browser%2Fapp%2Fmergedstylesheets.css%22%2C%22pdf_site_url%22%3A%22http%3A%2F%2Finternaldemo.cybitapps.in%3A3000%2Fpdf_files%2F%22%2C%22site_url%22%3A%22https%3A%2F%2Flims.iict.ac.in%22%2C%22app_user%22%3A40000%2C%22lims_url%22%3A%22http%3A%2F%2Fgrasimlims-env.eba-7fejrnbp.ap-south-1.elasticbeanstalk.com%22%2C%22header_width%22%3A%22675px%22%2C%22header_style%22%3A%22width%3A535px%3Bfont-family%3ARoboto%3Bmargin-left%3A30px%22%2C%22height_factor%22%3A%2220%22%7D%2C%22ROOT_URL%22%3A%22https%3A%2F%2Flims.iict.ac.in%22%2C%22ROOT_URL_PATH_PREFIX%22%3A%22%22%2C%22reactFastRefreshEnabled%22%3Atrue%2C%22autoupdate%22%3A%7B%22versions%22%3A%7B%22web.browser%22%3A%7B%22version%22%3A%22fe58bfe168b52684922cb0f2ac8a7b50df3aad74%22%2C%22versionRefreshable%22%3A%22e3a9821217f027959f2938e8c6403499ea638b81%22%2C%22versionNonRefreshable%22%3A%22da8c0b49a583e9cce06333c2aa8e85c5be263422%22%2C%22versionReplaceable%22%3A%22546ad99b9e4ff47b863328992536bd255ddc9e0e%22%7D%2C%22web.browser.legacy%22%3A%7B%22version%22%3A%22773c58dedc7b990a169372695249d8fe29b40fae%22%2C%22versionRefreshable%22%3A%22e3a9821217f027959f2938e8c6403499ea638b81%22%2C%22versionNonRefreshable%22%3A%2296060754c9a2d2360430c2672d61fbcf04db0bae%22%2C%22versionReplaceable%22%3A%22546ad99b9e4ff47b863328992536bd255ddc9e0e%22%7D%7D%2C%22autoupdateVersion%22%3Anull%2C%22autoupdateVersionRefreshable%22%3Anull%2C%22autoupdateVersionCordova%22%3Anull%2C%22appId%22%3A%22bz7ugvri631.ee55c67ybhnh%22%7D%2C%22appId%22%3A%22bz7ugvri631.ee55c67ybhnh%22%2C%22accountsConfigCalled%22%3Atrue%2C%22isModern%22%3Atrue%7D"))</script>
+
+  <script type="text/javascript" src="/593fc23b090f3966043e08de621e10111a04c5bb.js?meteor_js_resource=true"></script>
+
+
+</body>
+</html>

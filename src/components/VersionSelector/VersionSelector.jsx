@@ -94,7 +94,7 @@ export default function VersionSelector({
                 }
               }}
             >
-              <span className="smplfy-dropdown-item__label">{option.label}</span>
+              <span>{option.label}</span>
             </button>
           ))}
         </div>

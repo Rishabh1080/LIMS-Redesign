@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
-import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import SampleCard, { SampleCardViewToggle } from '../components/SampleCard/SampleCard';
@@ -59,6 +58,10 @@ const initialFilters = {
   reportingDate: '',
 };
 
+function joinClasses(...values) {
+  return values.filter(Boolean).join(' ');
+}
+
 function PageHeader({ onNewSample }) {
   return (
     <div className="page-header">
@@ -94,30 +97,30 @@ function SearchHero({ searchValue, onSearchChange, onOpenFilters, appliedFilters
     .filter((filter) => Boolean(filter.value));
 
   return (
-    <section className="search-hero">
+    <section className="smplfy-sample-search">
       <div className="container-fluid px-4">
         <div className="row justify-content-center">
           <div className="col-12">
-            <div className="row search-row justify-content-center align-items-center g-3">
+            <div className="row smplfy-sample-search-row justify-content-center align-items-center g-3">
               <div className="col-lg-6 col-xl-5">
-                <div className="search-shell d-flex align-items-center">
-                  <div className="search-field d-flex align-items-center flex-grow-1">
+                <div className="smplfy-sample-search-group input-group">
+                  <span className="input-group-text">
                     <AppIcon name="search" />
-                    <input
-                      className="workspace-search-input"
-                      type="text"
-                      value={searchValue}
-                      onChange={(event) => onSearchChange(event.target.value)}
-                      placeholder="Search Samples"
-                    />
-                  </div>
-                  <button className="btn search-submit" aria-label="Search samples">
+                  </span>
+                  <input
+                    className="smplfy-form-control form-control"
+                    type="text"
+                    value={searchValue}
+                    onChange={(event) => onSearchChange(event.target.value)}
+                    placeholder="Search Samples"
+                  />
+                  <button className="smplfy-btn btn btn-primary" aria-label="Search samples">
                     <AppIcon name="chevron-right" />
                   </button>
                 </div>
               </div>
               <div className="col-auto">
-                <button className="btn filter-trigger" onClick={onOpenFilters}>
+                <button className="smplfy-btn btn btn-primary" onClick={onOpenFilters}>
                   <AppIcon name="filter" />
                   <span>All Filters</span>
                 </button>
@@ -125,18 +128,16 @@ function SearchHero({ searchValue, onSearchChange, onOpenFilters, appliedFilters
             </div>
 
             {activeEntries.length ? (
-              <div className="workspace-filters-applied">
-                <div className="workspace-filters-applied__inner">
+              <div className="smplfy-sample-filter-list">
+                <div className="d-flex flex-wrap align-items-center gap-3">
                   {activeEntries.map((filter) => (
-                    <div className="workspace-filter-pill" key={filter.key}>
+                    <div className="smplfy-badge badge text-secondary bg-white border border-secondary-subtle" key={filter.key}>
                       <span>{`${filter.label}: ${filter.value}`}</span>
                       <button
-                        className="btn workspace-filter-pill__close"
+                        className="btn-close"
                         aria-label={`Remove ${filter.label} filter`}
                         onClick={() => onRemoveFilter(filter.key)}
-                      >
-                        <AppIcon name="close" />
-                      </button>
+                      />
                     </div>
                   ))}
                 </div>
@@ -149,40 +150,72 @@ function SearchHero({ searchValue, onSearchChange, onOpenFilters, appliedFilters
   );
 }
 
+function FilterControl({ filter, value, onChange }) {
+  const controlId = `sample-filter-${filter.key}`;
+
+  return (
+    <div className="smplfy-form-field">
+      <label className="smplfy-form-label form-label" htmlFor={controlId}>
+        {filter.label}
+      </label>
+      {filter.type === 'dropdown' ? (
+        <select
+          id={controlId}
+          className="smplfy-form-select form-select"
+          value={value}
+          onChange={(event) => onChange(filter.key, event.target.value)}
+        >
+          <option value="">{filter.placeholder}</option>
+          {filter.options.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+      ) : (
+        <input
+          id={controlId}
+          className="smplfy-form-control form-control"
+          type={filter.type === 'date' ? 'date' : 'text'}
+          value={value}
+          placeholder={filter.type === 'date' ? undefined : filter.placeholder}
+          onChange={(event) => onChange(filter.key, event.target.value)}
+        />
+      )}
+    </div>
+  );
+}
+
 function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
   return (
     <>
-      <div className={`workspace-filters-backdrop ${open ? 'is-visible' : ''}`} onClick={onCancel} />
-      <aside className={`workspace-filters-drawer ${open ? 'is-open' : ''}`}>
-        <div className="workspace-filters-drawer__header">
-          <h2>All Filters</h2>
-          <button className="btn workspace-filters-drawer__close" aria-label="Close filters" onClick={onCancel}>
-            <AppIcon name="close" />
-          </button>
+      <div className={joinClasses('smplfy-offcanvas-backdrop', 'offcanvas-backdrop', 'fade', open ? 'show' : '')} onClick={onCancel} />
+      <aside
+        className={joinClasses('smplfy-offcanvas', 'offcanvas', 'offcanvas-end', open ? 'show' : '')}
+        tabIndex={-1}
+        aria-hidden={open ? undefined : 'true'}
+        aria-modal={open ? 'true' : undefined}
+        aria-labelledby="sample-filters-title"
+      >
+        <div className="offcanvas-header">
+          <h2 id="sample-filters-title" className="offcanvas-title">All Filters</h2>
+          <button className="btn-close" aria-label="Close filters" onClick={onCancel} />
         </div>
 
-        <div className="workspace-filters-drawer__body">
+        <div className="offcanvas-body">
           {filterConfig.map((filter) => (
-            <FormElement
+            <FilterControl
               key={filter.key}
-              type={filter.type}
-              label={filter.label}
-              inputProps={{
-                state: draftFilters[filter.key] ? 'filled' : 'default',
-                value: draftFilters[filter.key],
-                placeholder: filter.placeholder,
-                options: filter.options,
-                onChange: (event) => onChange(filter.key, event.target.value),
-              }}
+              filter={filter}
+              value={draftFilters[filter.key]}
+              onChange={onChange}
             />
           ))}
         </div>
 
-        <div className="workspace-filters-drawer__footer">
-          <SecondaryButton className="workspace-filters-drawer__cancel" onClick={onCancel}>
+        <div className="smplfy-offcanvas-footer">
+          <SecondaryButton onClick={onCancel}>
             Cancel
           </SecondaryButton>
-          <button className="btn workspace-filters-drawer__apply" onClick={onApply}>
+          <button className="smplfy-btn btn btn-primary" onClick={onApply}>
             Apply
           </button>
         </div>
@@ -203,15 +236,15 @@ function SamplesPanel({
   const title = hasActiveQuery ? `${samples.length} results found` : 'Recent samples';
 
   return (
-    <section className="samples-panel">
+    <section className="smplfy-samples-panel">
       <div className="container-fluid px-0">
-        <div className="row align-items-center justify-content-between gx-0 panel-header gap-3">
+        <div className="row align-items-center justify-content-between gx-0 gap-3 pb-2">
           <div className="col-auto d-flex align-items-center gap-3 flex-wrap">
-            <div className="panel-title">{title}</div>
+            <h2 className="mb-0">{title}</h2>
             <SampleCardViewToggle value={viewMode} onChange={onViewModeChange} />
           </div>
           <div className="col-auto">
-            <button className="btn clear-link" onClick={onResetSearch}>
+            <button className="smplfy-btn btn btn-link p-0" onClick={onResetSearch}>
               Clear all
             </button>
           </div>
@@ -308,7 +341,7 @@ export default function SampleWorkspacePage({
       onSidebarCollapsedChange={onSidebarCollapsedChange}
       pageHeader={<PageHeader onNewSample={onNewSample} />}
     >
-      <main className="page-body">
+      <main className="d-flex flex-column">
         <SearchHero
           searchValue={searchValue}
           onSearchChange={setSearchValue}

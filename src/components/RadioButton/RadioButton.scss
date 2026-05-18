@@ -55,24 +55,20 @@
   transition: opacity var(--smplfy-form-check-motion-standard);
 }
 
-.smplfy-form-check-input.form-check-input[type='radio']:checked,
-.smplfy-form-check-input.form-check-input[type='radio'].is-selected {
+.smplfy-form-check-input.form-check-input[type='radio']:checked {
   color: var(--smplfy-form-check-color-selected);
   background-color: transparent;
 }
 
-.smplfy-form-check-input.form-check-input[type='radio']:checked::after,
-.smplfy-form-check-input.form-check-input[type='radio'].is-selected::after {
+.smplfy-form-check-input.form-check-input[type='radio']:checked::after {
   opacity: 1;
 }
 
-.smplfy-form-check-input.form-check-input[type='radio']:hover:not(:disabled),
-.smplfy-form-check-input.form-check-input[type='radio'][data-radio-state='hover']:not(:disabled) {
+.smplfy-form-check-input.form-check-input[type='radio']:hover:not(:disabled) {
   background-image: var(--smplfy-form-check-radio-hover-image);
 }
 
-.smplfy-form-check-input.form-check-input[type='radio']:active:not(:disabled),
-.smplfy-form-check-input.form-check-input[type='radio'][data-radio-state='focussed']:not(:disabled) {
+.smplfy-form-check-input.form-check-input[type='radio']:active:not(:disabled) {
   background-image: var(--smplfy-form-check-radio-active-image);
 }
 

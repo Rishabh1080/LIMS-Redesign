@@ -38,15 +38,15 @@ export default function LinkItem({
   const classNames = joinClasses(
     'smplfy-link',
     'link-primary',
+    normalizedState === 'onpress' && 'active',
     className,
   );
-  const stateProps = normalizedState === 'default' ? {} : { 'data-smplfy-state': normalizedState };
 
   if (href) {
     const resolvedRel = target === '_blank' ? rel ?? 'noreferrer' : rel;
 
     return (
-      <a className={classNames} href={href} target={target} rel={resolvedRel} {...stateProps} {...props}>
+      <a className={classNames} href={href} target={target} rel={resolvedRel} {...props}>
         <span>{resolvedLabel}</span>
         <AppIcon name="external-link" size={16} stroke={2} aria-hidden="true" />
       </a>
@@ -54,7 +54,7 @@ export default function LinkItem({
   }
 
   return (
-    <button type={type} className={classNames} {...stateProps} {...props}>
+    <button type={type} className={classNames} {...props}>
       <span>{resolvedLabel}</span>
       <AppIcon name="external-link" size={16} stroke={2} aria-hidden="true" />
     </button>

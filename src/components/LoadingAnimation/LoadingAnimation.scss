@@ -13,7 +13,7 @@
   grid-column: 1 / -1;
 }
 
-.smplfy-loading-screen__title {
+.smplfy-loading-screen > h2 {
   margin: var(--smplfy-button-space-0);
   color: var(--smplfy-loading-title-color);
   font-size: var(--smplfy-loading-title-font-size);

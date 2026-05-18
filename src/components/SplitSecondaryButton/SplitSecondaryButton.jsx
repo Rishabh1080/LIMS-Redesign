@@ -52,22 +52,22 @@ export default function SplitSecondaryButton({
   return (
     <div
       ref={rootRef}
-      className={joinClasses('smplfy-btn-group', 'btn-group', menuOpen ? 'is-menu-open' : '', className)}
+      className={joinClasses('smplfy-btn-group', 'btn-group', menuOpen && 'show', className)}
       {...props}
     >
       <button
         type="button"
-        className="smplfy-btn btn btn-primary smplfy-btn-group__primary"
+        className="smplfy-btn btn btn-primary"
         onClick={onPrimaryClick}
       >
-        <span className="smplfy-btn-group__icon" aria-hidden="true">
+        <span className="d-inline-flex align-items-center justify-content-center" aria-hidden="true">
           <AppIcon name={leftIcon} size={18} />
         </span>
         <span>{label}</span>
       </button>
       <button
         type="button"
-        className="smplfy-btn btn btn-primary dropdown-toggle dropdown-toggle-split smplfy-btn-group__secondary"
+        className="smplfy-btn btn btn-primary dropdown-toggle dropdown-toggle-split"
         onClick={(event) => {
           onSecondaryClick?.(event);
           setMenuOpen((current) => !current);
@@ -81,7 +81,7 @@ export default function SplitSecondaryButton({
 
       {menuOpen ? (
         <div
-          className="smplfy-dropdown-menu dropdown-menu show smplfy-btn-group__menu"
+          className="smplfy-dropdown-menu dropdown-menu show"
           role="menu"
           aria-label="Print actions"
         >

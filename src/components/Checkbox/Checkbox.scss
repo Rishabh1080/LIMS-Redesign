@@ -58,19 +58,16 @@
   transition: opacity var(--smplfy-form-check-motion-standard);
 }
 
-.smplfy-form-check-input.form-check-input[type='checkbox']:checked,
-.smplfy-form-check-input.form-check-input[type='checkbox'].is-checked {
+.smplfy-form-check-input.form-check-input[type='checkbox']:checked {
   color: var(--smplfy-form-check-color-selected);
 }
 
-.smplfy-form-check-input.form-check-input[type='checkbox']:checked::before,
-.smplfy-form-check-input.form-check-input[type='checkbox'].is-checked::before {
+.smplfy-form-check-input.form-check-input[type='checkbox']:checked::before {
   border-color: var(--smplfy-form-check-color-selected);
   background-color: var(--smplfy-form-check-color-selected);
 }
 
-.smplfy-form-check-input.form-check-input[type='checkbox']:checked::after,
-.smplfy-form-check-input.form-check-input[type='checkbox'].is-checked::after {
+.smplfy-form-check-input.form-check-input[type='checkbox']:checked::after {
   opacity: 1;
 }
 

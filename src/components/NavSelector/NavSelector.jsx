@@ -32,16 +32,15 @@ export default function NavSelector({
         'smplfy-nav-link',
         'nav-link',
         active && 'active',
+        normalizedSize === 'medium' && 'smplfy-nav-link-medium',
         className,
       )}
       aria-current={active ? 'page' : undefined}
-      data-smplfy-size={normalizedSize}
-      data-smplfy-has-badge={hasBadge ? 'true' : undefined}
       {...props}
     >
-      <span className="smplfy-nav-link__label">{resolvedLabel}</span>
+      <span className="d-inline-flex align-items-center">{resolvedLabel}</span>
       {hasBadge ? (
-        <Badge className="smplfy-nav-link__badge" tone="danger" size="small" shape="circle">
+        <Badge tone="danger" size="small" shape="circle">
           {normalizedCount}
         </Badge>
       ) : null}

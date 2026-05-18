@@ -66,8 +66,7 @@ export default function FormElement({
           id={messageId}
           className={`smplfy-form-feedback ${
             messageTone === 'error' ? 'invalid-feedback' : 'form-text'
-          }`}
-          data-smplfy-tone={messageTone}
+          } ${messageTone === 'warning' ? 'text-warning' : ''}`.trim()}
         >
           {message}
         </div>

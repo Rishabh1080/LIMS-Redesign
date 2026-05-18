@@ -21,22 +21,22 @@ export default function ToastNotification({
         'smplfy-toast',
         'toast',
         'show',
+        tone === 'error' && 'text-bg-danger',
+        state === 'gone' && 'smplfy-toast-gone',
         className,
       )}
       role="status"
       aria-live="polite"
-      data-smplfy-tone={tone}
-      data-smplfy-state={state}
       {...props}
     >
-      <div className="smplfy-toast__content">
-        <span className="smplfy-toast__icon" aria-hidden="true">
+      <div className="toast-body">
+        <span className="d-inline-flex align-items-center justify-content-center flex-shrink-0" aria-hidden="true">
           <AppIcon name={iconName} />
         </span>
         <span>{message}</span>
       </div>
 
-      <button className="btn smplfy-toast__close" aria-label="Dismiss notification" onClick={onClose}>
+      <button className="btn smplfy-toast-close" aria-label="Dismiss notification" onClick={onClose}>
         <AppIcon name="close" />
       </button>
     </div>

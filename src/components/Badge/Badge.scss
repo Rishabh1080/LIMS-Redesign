@@ -15,11 +15,7 @@
   text-align: center;
 }
 
-.smplfy-badge.rounded-pill {
-  border-radius: var(--bs-badge-border-radius);
-}
-
-.smplfy-badge[data-smplfy-size='small'] {
+.smplfy-badge.badge.rounded-circle {
   min-width: var(--smplfy-badge-size-sm);
   width: var(--smplfy-badge-size-sm);
   height: var(--smplfy-badge-size-sm);

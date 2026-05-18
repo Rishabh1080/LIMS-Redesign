@@ -54,16 +54,13 @@
   transform: scale(var(--smplfy-dropdown-item-active-scale));
 }
 
-.smplfy-dropdown-item__icon {
+.smplfy-dropdown-item.dropdown-item > .d-inline-flex {
   width: var(--smplfy-dropdown-item-icon-size);
   height: var(--smplfy-dropdown-item-icon-size);
   flex: 0 0 var(--smplfy-dropdown-item-icon-size);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.smplfy-dropdown-item__label {
+.smplfy-dropdown-item.dropdown-item > span:last-child {
   color: inherit;
   font-size: var(--smplfy-dropdown-item-font-size);
   line-height: var(--smplfy-dropdown-item-line-height);

@@ -123,7 +123,7 @@ export default function ParameterCircles({ parameters = [], className = '' }) {
   const sortedParameters = sortParametersByStatus(parameters);
 
   return (
-    <div className={`parameter-circles ${className}`.trim()}>
+    <div className={`smplfy-parameter-list ${className}`.trim()}>
       {sortedParameters.map((item, index) => {
         const visual = STATUS_VISUALS[item.status] ?? STATUS_VISUALS['Not allocated'];
         const Icon = visual.icon;
@@ -134,7 +134,7 @@ export default function ParameterCircles({ parameters = [], className = '' }) {
           <button
             key={item.id}
             type="button"
-            className={`parameter-circles__item ${isActive ? 'is-active' : ''}`}
+            className={`smplfy-parameter-item btn ${isActive ? 'active' : ''}`}
             style={{
               '--parameter-circle-color': visual.circleColor,
               '--parameter-icon-color': visual.iconColor,
@@ -149,16 +149,16 @@ export default function ParameterCircles({ parameters = [], className = '' }) {
             <Icon
               size={16}
               stroke={1.8}
-              className="parameter-circles__icon"
+              className="smplfy-parameter-icon"
               aria-hidden="true"
             />
             <span
               id={`${tooltipId}-${index}`}
-              className={`parameter-circles__tooltip ${isActive ? 'is-visible' : ''}`}
+              className={`smplfy-parameter-tooltip tooltip ${isActive ? 'show' : ''}`}
               role="tooltip"
             >
-              <span className="parameter-circles__tooltip-name">{item.name}</span>
-              <span className="parameter-circles__tooltip-status">{item.status}</span>
+              <span className="smplfy-parameter-tooltip-name">{item.name}</span>
+              <span className="smplfy-parameter-tooltip-status">{item.status}</span>
             </span>
           </button>
         );

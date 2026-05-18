@@ -21,11 +21,11 @@ export default function MenuActionItem({
       {...props}
     >
       {leftIcon ? (
-        <span className="smplfy-dropdown-item__icon" aria-hidden="true">
+        <span className="d-inline-flex align-items-center justify-content-center" aria-hidden="true">
           <AppIcon name={leftIcon} size={16} />
         </span>
       ) : null}
-      {label ? <span className="smplfy-dropdown-item__label">{label}</span> : null}
+      {label ? <span>{label}</span> : null}
     </button>
   );
 }

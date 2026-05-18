@@ -27,7 +27,6 @@ export default function Checkbox({
       className={joinClasses(
         'smplfy-form-check-input',
         'form-check-input',
-        checked && 'is-checked',
         className,
       )}
       onChange={(event) => {

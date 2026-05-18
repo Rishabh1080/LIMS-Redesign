@@ -1,5 +1,9 @@
 import './Stepper.scss';
 
+function joinClasses(...values) {
+  return values.filter(Boolean).join(' ');
+}
+
 function StepperItem({ label, state, position, onClick }) {
   const content = (
     <>
@@ -16,10 +20,14 @@ function StepperItem({ label, state, position, onClick }) {
 
   return (
     <li
-      className="smplfy-stepper-item"
-      data-smplfy-state={state}
-      data-smplfy-position={position}
-      data-smplfy-interactive={onClick ? 'true' : undefined}
+      className={joinClasses(
+        'smplfy-stepper-item',
+        state === 'active' && 'active',
+        state === 'completed' && 'smplfy-stepper-completed',
+        position === 'first' && 'first',
+        position === 'last' && 'last',
+        onClick && 'smplfy-stepper-interactive',
+      )}
     >
       {onClick ? (
         <button type="button" className="btn smplfy-stepper-item__button" onClick={onClick}>

@@ -41,16 +41,16 @@ export default function InputFieldSplitSelector({
         'smplfy-split-field',
         'input-group',
         isInvalid && 'is-invalid',
+        !isFilled && 'smplfy-form-empty',
+        state === 'hover' && 'smplfy-form-hover',
+        state === 'focused' && 'smplfy-form-focused',
         className,
       )}
-      data-filled={isFilled ? 'true' : 'false'}
-      data-field-state={isDisabled ? 'disabled' : state}
     >
       <input
         className={joinClasses(
           'smplfy-form-control',
           'form-control',
-          'smplfy-split-field__input',
           isInvalid && 'is-invalid',
         )}
         type="text"
@@ -71,12 +71,11 @@ export default function InputFieldSplitSelector({
         }}
         {...props}
       />
-      <div className="smplfy-split-field__unit">
+      <div className="input-group-text position-relative p-0">
         <select
           className={joinClasses(
             'smplfy-form-select',
             'form-select',
-            'smplfy-split-field__select',
             isInvalid && 'is-invalid',
           )}
           value={selectedUnit}
@@ -101,7 +100,7 @@ export default function InputFieldSplitSelector({
             </option>
           ))}
         </select>
-        <AppIcon name="chevron-down" className="smplfy-split-field__chevron" />
+        <AppIcon name="chevron-down" className="position-absolute top-50 translate-middle-y pe-none" />
       </div>
     </div>
   );

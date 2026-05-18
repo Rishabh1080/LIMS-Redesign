@@ -31,10 +31,11 @@ export default function InputFieldDropdown({
     <div
       className={joinClasses(
         'smplfy-select-field',
+        !isFilled && 'smplfy-form-empty',
+        state === 'hover' && 'smplfy-form-hover',
+        state === 'focused' && 'smplfy-form-focused',
         className,
       )}
-      data-filled={isFilled ? 'true' : 'false'}
-      data-field-state={state}
     >
       <select
         className={joinClasses(

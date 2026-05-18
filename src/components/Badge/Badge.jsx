@@ -13,7 +13,7 @@ export default function Badge({
   ...props
 }) {
   const bootstrapToneClass = tone === 'danger' ? 'text-bg-danger' : `text-bg-${tone}`;
-  const bootstrapShapeClass = shape === 'circle' || shape === 'pill' ? 'rounded-pill' : '';
+  const shapeClass = shape === 'circle' ? 'rounded-circle' : '';
 
   return (
     <span
@@ -21,11 +21,9 @@ export default function Badge({
         'smplfy-badge',
         'badge',
         bootstrapToneClass,
-        bootstrapShapeClass,
+        shapeClass,
         className,
       )}
-      data-smplfy-size={size}
-      data-smplfy-shape={shape}
       {...props}
     >
       {children}

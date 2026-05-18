@@ -29,7 +29,6 @@ export default function SearchResult({
   ...props
 }) {
   const normalizedState = normalizeState(state);
-  const stateProps = normalizedState === 'default' ? {} : { 'data-smplfy-state': normalizedState };
 
   return (
     <button
@@ -38,10 +37,10 @@ export default function SearchResult({
         'smplfy-list-group-item',
         'list-group-item',
         'list-group-item-action',
+        'smplfy-search-result',
+        normalizedState === 'pressed' && 'active',
         className,
       )}
-      data-smplfy-layout="search-result"
-      {...stateProps}
       {...props}
     >
       <span>{label}</span>

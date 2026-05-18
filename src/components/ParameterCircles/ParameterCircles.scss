@@ -1,4 +1,4 @@
-.parameter-circles {
+.smplfy-parameter-list {
   display: flex;
   flex-wrap: wrap;
   gap: var(--smplfy-parameter-gap);
@@ -6,16 +6,27 @@
   overflow: visible;
 }
 
-.parameter-circles__item {
+.smplfy-parameter-item.btn {
   --parameter-circle-color: var(--smplfy-primitive-neutral-400);
   --parameter-icon-color: var(--smplfy-primitive-neutral-900);
+  --bs-btn-padding-x: var(--smplfy-button-space-0);
+  --bs-btn-padding-y: var(--smplfy-button-space-0);
+  --bs-btn-border-width: var(--smplfy-button-space-0);
+  --bs-btn-border-radius: var(--smplfy-parameter-item-radius);
+  --bs-btn-bg: var(--parameter-circle-color);
+  --bs-btn-color: var(--parameter-icon-color);
+  --bs-btn-hover-bg: var(--parameter-circle-color);
+  --bs-btn-hover-color: var(--parameter-icon-color);
+  --bs-btn-active-bg: var(--parameter-circle-color);
+  --bs-btn-active-color: var(--parameter-icon-color);
+  --bs-btn-focus-box-shadow: none;
 
   position: relative;
   z-index: var(--smplfy-parameter-item-z-index);
   width: var(--smplfy-parameter-item-size);
+  min-width: var(--smplfy-parameter-item-size);
   height: var(--smplfy-parameter-item-size);
-  padding: var(--smplfy-button-space-0);
-  border: var(--smplfy-button-space-0);
+  min-height: var(--smplfy-parameter-item-size);
   border-radius: var(--smplfy-parameter-item-radius);
   display: inline-flex;
   align-items: center;
@@ -26,17 +37,17 @@
   overflow: visible;
 }
 
-.parameter-circles__item.is-active {
+.smplfy-parameter-item.btn.active {
   z-index: var(--smplfy-parameter-item-active-z-index);
 }
 
-.parameter-circles__icon {
+.smplfy-parameter-icon {
   display: block;
   position: relative;
   z-index: var(--smplfy-parameter-icon-z-index);
 }
 
-.parameter-circles__tooltip {
+.smplfy-parameter-tooltip.tooltip {
   position: absolute;
   left: 50%;
   bottom: calc(100% + var(--smplfy-parameter-tooltip-offset));
@@ -63,7 +74,7 @@
   box-shadow: var(--smplfy-parameter-tooltip-shadow);
 }
 
-.parameter-circles__tooltip::after {
+.smplfy-parameter-tooltip.tooltip::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -75,12 +86,12 @@
   transform: translateX(-50%);
 }
 
-.parameter-circles__tooltip.is-visible {
+.smplfy-parameter-tooltip.tooltip.show {
   opacity: 1;
   transform: translateX(-50%) translateY(var(--smplfy-button-space-0));
 }
 
-.parameter-circles__tooltip-name {
+.smplfy-parameter-tooltip-name {
   width: 100%;
   font-size: var(--smplfy-parameter-tooltip-name-font-size);
   line-height: var(--smplfy-parameter-tooltip-name-line-height);
@@ -88,7 +99,7 @@
   text-align: left;
 }
 
-.parameter-circles__tooltip-status {
+.smplfy-parameter-tooltip-status {
   width: 100%;
   font-size: var(--smplfy-parameter-tooltip-status-font-size);
   line-height: var(--smplfy-parameter-tooltip-status-line-height);
@@ -98,7 +109,7 @@
 }
 
 @media (max-width: 767.98px) {
-  .parameter-circles {
+  .smplfy-parameter-list {
     max-width: var(--smplfy-parameter-mobile-max-width);
   }
 }
