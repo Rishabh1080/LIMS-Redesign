@@ -60,9 +60,7 @@ export default function SplitSecondaryButton({
         className="smplfy-btn btn btn-primary"
         onClick={onPrimaryClick}
       >
-        <span className="d-inline-flex align-items-center justify-content-center" aria-hidden="true">
-          <AppIcon name={leftIcon} size={18} />
-        </span>
+        {leftIcon ? <AppIcon name={leftIcon} size={18} aria-hidden="true" /> : null}
         <span>{label}</span>
       </button>
       <button

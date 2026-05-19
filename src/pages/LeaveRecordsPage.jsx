@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
+import DataTable from '../components/DataTable';
 import { FormElement } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import './leave-records-page.scss';
 
 const defaultLeaveRecords = [
   {
@@ -83,11 +83,11 @@ function validateAttachment(file) {
 
 function LeaveRecordsHeader({ onAddRecord }) {
   return (
-    <section className="leave-records-page-header">
-      <div className="container-fluid h-100 px-0">
-        <div className="row h-100 align-items-center justify-content-between gx-0">
+    <section className="bg-white border-bottom px-4 py-3">
+      <div className="container-fluid px-0">
+        <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto">
-            <h1 className="leave-records-page-header__title">Leave Records</h1>
+            <h1 className="h5 mb-0 fw-semibold text-dark">Leave Records</h1>
           </div>
 
           <div className="col-auto">
@@ -122,11 +122,9 @@ function LeaveRecordsFormModal({
       titleIcon="leave-records"
       onClose={onCancel}
       size="md"
-      bodyClassName="leave-records-modal__body"
-      actionsClassName="leave-records-modal__actions"
       actions={
         <>
-          <SecondaryButton leftIcon="close" size="large" className="leave-records-modal__cancel" onClick={onCancel}>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton type="submit" form="leave-records-form" leftIcon="save">
@@ -137,14 +135,14 @@ function LeaveRecordsFormModal({
     >
       <form
         id="leave-records-form"
-        className="leave-records-modal__form"
+        className="d-flex flex-column gap-4"
         onSubmit={(event) => {
           event.preventDefault();
           onSubmit();
         }}
       >
-        <div className="leave-records-modal__grid">
-          <div className="leave-records-modal__field">
+        <div className="row g-3">
+          <div className="col-12 col-md-6">
             <FormElement
               type="date"
               label="From"
@@ -159,7 +157,7 @@ function LeaveRecordsFormModal({
             />
           </div>
 
-          <div className="leave-records-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="date"
               label="To"
@@ -175,7 +173,7 @@ function LeaveRecordsFormModal({
           </div>
         </div>
 
-        <div className="leave-records-modal__field leave-records-modal__field--full">
+        <div>
           <FormElement
             type="text"
             label="Remarks"
@@ -187,7 +185,7 @@ function LeaveRecordsFormModal({
           />
         </div>
 
-        <div className="leave-records-modal__field leave-records-modal__field--full">
+        <div>
           <FormElement
             type="file"
             label="File upload"
@@ -210,12 +208,12 @@ function LeaveRecordsFormModal({
 
 function LeaveRecordsEmptyState() {
   return (
-    <div className="leave-records-page__empty">
-      <div className="leave-records-page__empty-icon">
+    <div className="card-body d-flex flex-column align-items-center justify-content-center text-center py-5">
+      <div className="d-inline-flex align-items-center justify-content-center rounded-3 bg-primary-subtle text-primary mb-3 p-3 fw-semibold">
         <span>LR</span>
       </div>
-      <div className="leave-records-page__empty-title">No leave records</div>
-      <div className="leave-records-page__empty-copy">
+      <div className="fw-semibold text-dark">No leave records</div>
+      <div className="text-secondary mt-1">
         New records added through the primary action will appear here.
       </div>
     </div>
@@ -327,58 +325,46 @@ export default function LeaveRecordsPage({
       onSidebarCollapsedChange={onSidebarCollapsedChange}
       pageHeader={<LeaveRecordsHeader onAddRecord={openModal} />}
     >
-      <main className="leave-records-page">
+      <main className="bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0">
-          <div className="leave-records-page__count">{recordCountLabel}</div>
+          <div className="text-secondary fw-medium mb-3">{recordCountLabel}</div>
 
-          <section className="leave-records-table-card">
-            {visibleRecords.length ? (
-              <div className="leave-records-table-wrap">
-                <table className="leave-records-table">
-                  <thead>
-                    <tr>
-                      <th scope="col" className="leave-records-table__col--sr-no">
-                        Sr. No
-                      </th>
-                      <th scope="col" className="leave-records-table__col--employee-name">
-                        Employee name
-                      </th>
-                      <th scope="col" className="leave-records-table__col--from-date">
-                        From
-                      </th>
-                      <th scope="col" className="leave-records-table__col--to-date">
-                        To
-                      </th>
-                      <th scope="col" className="leave-records-table__col--actions">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {visibleRecords.map((record, index) => (
-                      <tr key={record.id}>
-                        <td className="leave-records-table__col--sr-no">{index + 1}</td>
-                        <td className="leave-records-table__col--employee-name">{record.employeeName}</td>
-                        <td className="leave-records-table__col--from-date">{record.fromDate}</td>
-                        <td className="leave-records-table__col--to-date">{record.toDate}</td>
-                        <td className="leave-records-table__col--actions">
-                          <SecondaryButton
-                            size="medium"
-                            leftIcon="external-link"
-                            onClick={() => onViewRecord?.(record.id)}
-                          >
-                            View
-                          </SecondaryButton>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
+          {visibleRecords.length ? (
+            <DataTable>
+              <thead>
+                <tr>
+                  <th scope="col">Sr. No</th>
+                  <th scope="col">Employee name</th>
+                  <th scope="col">From</th>
+                  <th scope="col">To</th>
+                  <th scope="col" className="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleRecords.map((record, index) => (
+                  <tr key={record.id}>
+                    <td className="text-nowrap">{index + 1}</td>
+                    <td>{record.employeeName}</td>
+                    <td className="text-nowrap">{record.fromDate}</td>
+                    <td className="text-nowrap">{record.toDate}</td>
+                    <td className="text-center">
+                      <SecondaryButton
+                        size="medium"
+                        leftIcon="external-link"
+                        onClick={() => onViewRecord?.(record.id)}
+                      >
+                        View
+                      </SecondaryButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          ) : (
+            <section className="smplfy-card card">
               <LeaveRecordsEmptyState />
-            )}
-          </section>
+            </section>
+          )}
         </div>
       </main>
 

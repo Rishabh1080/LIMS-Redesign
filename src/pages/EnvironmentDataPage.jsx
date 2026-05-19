@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
+import DataTable from '../components/DataTable';
 import { FormElement } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
@@ -83,11 +84,11 @@ function validateRelativeHumidity(value) {
 
 function EnvironmentDataHeader({ onAddDataLog }) {
   return (
-    <section className="environment-data-page-header">
-      <div className="container-fluid h-100 px-0">
-        <div className="row h-100 align-items-center justify-content-between gx-0">
+    <section className="smplfy-environment-data-header bg-white border-bottom">
+      <div className="container-fluid px-0">
+        <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto">
-            <h1 className="environment-data-page-header__title">Environment Data</h1>
+            <h1 className="h5 mb-0 fw-semibold text-dark">Environment Data</h1>
           </div>
 
           <div className="col-auto">
@@ -122,11 +123,9 @@ function EnvironmentDataFormModal({
       titleIcon="cloud-data"
       onClose={onCancel}
       size="md"
-      bodyClassName="environment-data-modal__body"
-      actionsClassName="environment-data-modal__actions"
       actions={
         <>
-          <SecondaryButton leftIcon="close" size="large" className="environment-data-modal__cancel" onClick={onCancel}>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton type="submit" form="environment-data-form" leftIcon="save">
@@ -137,13 +136,13 @@ function EnvironmentDataFormModal({
     >
       <form
         id="environment-data-form"
-        className="environment-data-modal__form"
+        className="d-flex flex-column gap-4"
         onSubmit={(event) => {
           event.preventDefault();
           onSubmit();
         }}
       >
-        <div className="environment-data-modal__field environment-data-modal__field--full">
+        <div>
           <FormElement
             type="text"
             mandatory
@@ -159,8 +158,8 @@ function EnvironmentDataFormModal({
             />
           </div>
 
-        <div className="environment-data-modal__grid">
-          <div className="environment-data-modal__field">
+        <div className="row g-3">
+          <div className="col-12 col-md-6">
             <FormElement
               type="text"
               label="Temperature"
@@ -175,7 +174,7 @@ function EnvironmentDataFormModal({
             />
           </div>
 
-          <div className="environment-data-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="text"
               label="Relative humidity"
@@ -191,7 +190,7 @@ function EnvironmentDataFormModal({
           </div>
         </div>
 
-        <div className="environment-data-modal__field environment-data-modal__field--full">
+        <div>
           <FormElement
             type="dropdown"
             label="Location"
@@ -210,12 +209,12 @@ function EnvironmentDataFormModal({
 
 function EnvironmentDataEmptyState() {
   return (
-    <div className="environment-data-page__empty">
-      <div className="environment-data-page__empty-icon">
+    <div className="card-body d-flex flex-column align-items-center justify-content-center text-center py-5">
+      <div className="d-inline-flex align-items-center justify-content-center rounded-3 bg-primary-subtle text-primary mb-3 p-3">
         <AppIcon name="cloud-data" size={24} />
       </div>
-      <div className="environment-data-page__empty-title">No environment data logs</div>
-      <div className="environment-data-page__empty-copy">
+      <div className="fw-semibold text-dark">No environment data logs</div>
+      <div className="text-secondary mt-1">
         New logs added through the primary action will appear here.
       </div>
     </div>
@@ -387,62 +386,48 @@ export default function EnvironmentDataPage({
       onSidebarCollapsedChange={onSidebarCollapsedChange}
       pageHeader={<EnvironmentDataHeader onAddDataLog={openModal} />}
     >
-      <main className="environment-data-page">
+      <main className="smplfy-environment-data-page bg-body-tertiary min-vh-100">
         <div className="container-fluid px-0">
-          <div className="environment-data-page__count">{logCountLabel}</div>
+          <div className="smplfy-environment-data-count text-secondary fw-medium mb-3">{logCountLabel}</div>
 
-          <section className="environment-data-table-card">
-            {visibleLogs.length ? (
-              <div className="environment-data-table-wrap">
-                <table className="environment-data-table">
-                  <thead>
-                    <tr>
-                      <th scope="col" className="environment-data-table__col--recorded-by">
-                        Recorded By
-                      </th>
-                      <th scope="col" className="environment-data-table__col--recorded-at">
-                        Recorded At
-                      </th>
-                      <th scope="col" className="environment-data-table__col--temperature">
-                        Temperature
-                      </th>
-                      <th scope="col" className="environment-data-table__col--humidity">
-                        Relative Humidity
-                      </th>
-                      <th scope="col" className="environment-data-table__col--location">
-                        Location
-                      </th>
-                      <th scope="col" className="environment-data-table__col--actions">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {visibleLogs.map((log) => (
-                      <tr key={log.id}>
-                        <td className="environment-data-table__col--recorded-by">{log.recordedBy}</td>
-                        <td className="environment-data-table__col--recorded-at">{log.recordedAt}</td>
-                        <td className="environment-data-table__col--temperature">{log.temperature}</td>
-                        <td className="environment-data-table__col--humidity">{log.humidity}</td>
-                        <td className="environment-data-table__col--location">{log.location}</td>
-                        <td className="environment-data-table__col--actions">
-                          <PrimaryButton
-                            styleVariant="destructive"
-                            size="small"
-                            leftIcon="trash"
-                            aria-label={`Delete environment log recorded by ${log.recordedBy} at ${log.recordedAt}`}
-                            onClick={() => handleDeleteLog(log.id)}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
+          {visibleLogs.length ? (
+            <DataTable className="smplfy-environment-data-table">
+              <thead>
+                <tr>
+                  <th scope="col">Recorded By</th>
+                  <th scope="col">Recorded At</th>
+                  <th scope="col">Temperature</th>
+                  <th scope="col">Relative Humidity</th>
+                  <th scope="col">Location</th>
+                  <th scope="col" className="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleLogs.map((log) => (
+                  <tr key={log.id}>
+                    <td className="text-nowrap">{log.recordedBy}</td>
+                    <td className="text-nowrap">{log.recordedAt}</td>
+                    <td className="text-nowrap">{log.temperature}</td>
+                    <td className="text-nowrap">{log.humidity}</td>
+                    <td>{log.location}</td>
+                    <td className="text-center">
+                      <PrimaryButton
+                        styleVariant="destructive"
+                        size="small"
+                        leftIcon="trash"
+                        aria-label={`Delete environment log recorded by ${log.recordedBy} at ${log.recordedAt}`}
+                        onClick={() => handleDeleteLog(log.id)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          ) : (
+            <section className="smplfy-environment-data-empty smplfy-card card">
               <EnvironmentDataEmptyState />
-            )}
-          </section>
+            </section>
+          )}
         </div>
       </main>
 

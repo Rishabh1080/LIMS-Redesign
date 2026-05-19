@@ -1,369 +1,82 @@
-.instrument-details-page-header {
-  height: 72px;
-  padding: 16px 24px;
-  background: #fff;
-  border-bottom: 1px solid #d1d5db;
-  display: flex;
-  align-items: center;
+.smplfy-instrument-details-header {
+  --bs-border-color: var(--smplfy-primitive-neutral-400);
+
+  min-height: 72px;
 }
 
-.instrument-details-page-header__title {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: 20px;
-  line-height: 1.2;
-  font-weight: 600;
+.smplfy-instrument-details-page {
+  --bs-tertiary-bg: var(--page-bg);
+}
+
+.smplfy-instrument-details-summary-card.card,
+.smplfy-instrument-details-qr-card.card,
+.smplfy-instrument-details-records-card.card {
+  --bs-card-bg: var(--surface);
+  --bs-card-border-color: var(--border-card);
+  --bs-card-border-radius: 12px;
+}
+
+.smplfy-instrument-details-summary-card.card {
+  --bs-card-spacer-y: 16px;
+  --bs-card-spacer-x: 24px;
+}
+
+.smplfy-instrument-details-summary-card h2 {
   letter-spacing: -0.03em;
 }
 
-.instrument-details-back {
-  width: 36px;
-  min-width: 36px;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.instrument-details-page {
-  min-height: 100%;
-  padding: 24px;
-  background: var(--page-bg);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Summary row */
-.instrument-details-summary {
-  display: flex;
-  gap: 16px;
-  align-items: stretch;
-}
-
-.instrument-details-info-card {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 16px 24px;
-  border: 1px solid var(--border-card);
-  border-radius: 12px;
-  background: var(--surface);
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.instrument-details-info-card__content {
-  flex: 0 0 60%;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.instrument-details-info-card__title {
-  margin: 0;
-  font-size: 32px;
-  line-height: 39px;
-  font-weight: 400;
-  letter-spacing: -0.03em;
-  color: var(--text-primary);
-}
-
-.instrument-details-info-card__description {
-  margin: 0;
+.smplfy-instrument-details-summary-card p,
+.smplfy-instrument-details-summary-card .text-secondary {
   font-size: 14px;
   line-height: 1.4;
   letter-spacing: -0.02em;
-  color: #4b5662;
 }
 
-.instrument-details-info-card__meta {
-  flex: 0 0 40%;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.smplfy-instrument-details-qr-card.card {
+  width: 304px;
 }
 
-.instrument-details-meta-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.instrument-details-meta-label {
-  font-size: 14px;
-  line-height: 17px;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  color: #4b5662;
-  min-width: 88px;
-}
-
-.instrument-details-meta-value {
-  font-size: 14px;
-  line-height: 17px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #4b5662;
-}
-
-.instrument-details-qr-card {
-  flex: 0 0 304px;
+.smplfy-instrument-details-qr-card.card .card-body {
   padding: 16px 80px;
-  border: 1px solid var(--border-card);
-  border-radius: 12px;
-  background: var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.instrument-details-qr-placeholder {
-  width: 144px;
-  height: 144px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Records card */
-.instrument-details-records-card {
-  border: 1px solid var(--border-card);
-  border-radius: 12px;
-  background: var(--surface);
+.smplfy-instrument-details-records-card.card {
   overflow: hidden;
 }
 
-.instrument-details-tabs {
-  display: flex;
-  align-items: stretch;
-  height: 51px;
-  border-bottom: 1px solid var(--border-card);
-  padding: 0 24px;
-  overflow-x: auto;
-  scrollbar-width: none;
+.smplfy-instrument-details-records-card .card-header {
+  border-color: var(--border-card);
 }
 
-.instrument-details-tabs::-webkit-scrollbar {
-  display: none;
+.smplfy-instrument-details-records-card .nav-tabs {
+  min-height: 51px;
 }
 
-.instrument-details-records-header {
-  padding: 16px 24px 8px;
-}
+.smplfy-instrument-details-records-card .card-body {
+  --smplfy-table-radius: 8px;
+  --smplfy-table-head-padding-y: 10px;
+  --smplfy-table-cell-padding-y: 12px;
+  --smplfy-table-cell-padding-x: 12px;
 
-.instrument-details-records-count {
-  font-size: 14px;
-  line-height: 1.2;
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  color: var(--text-primary);
-}
-
-/* Table */
-.instrument-details-table-wrapper {
-  padding: 0 24px 24px;
-}
-
-.instrument-details-table {
-  border: 1px solid #e6e8eb;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.instrument-details-table__head,
-.instrument-details-table__row {
-  display: grid;
-  grid-template-columns: 48px 120px 100px 140px 140px 120px 100px minmax(0, 1fr);
-}
-
-.instrument-details-table__head {
-  min-height: 36px;
-  background: #f5f7fa;
-  color: #6d737e;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 500;
-}
-
-.instrument-details-table__head span,
-.instrument-details-table__row span {
-  min-height: 36px;
-  padding: 0 12px;
-  display: flex;
-  align-items: center;
-  border-right: 1px solid #e6e8eb;
-  font-size: 14px;
-  line-height: 17px;
-}
-
-.instrument-details-table__head span {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 500;
-  color: #6d737e;
-}
-
-.instrument-details-table__head span:last-child,
-.instrument-details-table__row span:last-child {
-  border-right: 0;
-}
-
-.instrument-details-table__body {
-  display: flex;
-  flex-direction: column;
-}
-
-.instrument-details-table__row {
-  min-height: 44px;
-  background: #fff;
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.instrument-details-table__row + .instrument-details-table__row {
-  border-top: 1px solid #e6e8eb;
+  padding: 16px 24px 24px;
 }
 
 @media (max-width: 1199.98px) {
-  .instrument-details-qr-card {
-    flex: 0 0 220px;
-    padding: 16px 40px;
+  .smplfy-instrument-details-qr-card.card {
+    width: 220px;
+  }
+
+  .smplfy-instrument-details-qr-card.card .card-body {
+    padding-inline: 40px;
   }
 }
 
 @media (max-width: 991.98px) {
-  .instrument-details-summary {
-    flex-direction: column;
+  .smplfy-instrument-details-qr-card.card {
+    width: 100%;
   }
 
-  .instrument-details-qr-card {
-    flex: 0 0 auto;
+  .smplfy-instrument-details-qr-card.card .card-body {
     padding: 24px;
   }
-
-  .instrument-details-table-wrapper {
-    overflow-x: auto;
-  }
-
-  .instrument-details-table {
-    min-width: 900px;
-  }
-}
-
-/* Toast notification */
-.instrument-created-toast {
-  position: fixed;
-  left: 24px;
-  bottom: 24px;
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-  transition:
-    opacity 260ms cubic-bezier(0.2, 0, 0, 1),
-    transform 260ms cubic-bezier(0.2, 0, 0, 1);
-  z-index: 1200;
-}
-
-.instrument-created-toast.smplfy-toast--gone {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(calc(100% + 24px));
-}
-
-/* New Service Modal */
-.new-service-modal__form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.new-service-modal__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 24px;
-}
-
-.new-service-modal__field {
-  min-width: 0;
-}
-
-.new-service-modal__field--full {
-  grid-column: 1 / -1;
-}
-
-.new-service-modal__label-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 8px;
-  min-height: 14px;
-}
-
-.new-service-modal__label {
-  color: var(--smplfy-field-label-color);
-  font-family: var(--smplfy-field-font-family);
-  font-size: 14px;
-  line-height: 1.2;
-  font-weight: 500;
-}
-
-.new-service-modal__required {
-  color: var(--smplfy-field-required-color);
-  font-size: 14px;
-  line-height: 1;
-}
-
-.new-service-modal__type-selector {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  min-height: 40px;
-  padding: 4px;
-  border: 1px solid #e6e8eb;
-  border-radius: 8px;
-  background: #f5f6f7;
-  box-sizing: border-box;
-}
-
-.new-service-modal__type-option {
-  --nav-selector-height: 32px;
-  --nav-selector-padding-x: 12px;
-  --nav-selector-text-color: #6c737f;
-  --nav-selector-bg: transparent;
-  --nav-selector-border-color: transparent;
-  --nav-selector-border-width: 0;
-
-  flex: 1 1 0;
-  min-width: 0;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-
-.new-service-modal__type-option::after {
-  display: none;
-}
-
-.new-service-modal__type-option:not(.is-active):hover,
-.new-service-modal__type-option:not(.is-active):focus-visible,
-.new-service-modal__type-option:not(.is-active):active {
-  --nav-selector-text-color: #1b2127;
-  --nav-selector-bg: transparent;
-  --nav-selector-border-color: transparent;
-  --nav-selector-border-width: 0;
-}
-
-.new-service-modal__type-option.is-active,
-.new-service-modal__type-option.is-active:hover,
-.new-service-modal__type-option.is-active:focus-visible {
-  --nav-selector-text-color: #1b2127;
-  --nav-selector-bg: #ffffff;
-  --nav-selector-border-color: transparent;
-  --nav-selector-border-width: 0;
-
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.08);
 }

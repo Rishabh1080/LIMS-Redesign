@@ -56,8 +56,8 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
                   key={item.key}
                   className={`sidebar-link btn text-start ${
                     item.key === activeNav ? 'is-active' : ''
-                  } ${badgeCounts[item.badgeKey] ? 'sidebar-link--with-badge' : ''} ${
-                    collapsed && badgeCounts[item.badgeKey] ? 'sidebar-link--with-dot' : ''
+                  } ${badgeCounts[item.badgeKey] ? 'smplfy-sidebar-link-with-badge' : ''} ${
+                    collapsed && badgeCounts[item.badgeKey] ? 'smplfy-sidebar-link-with-dot' : ''
                   }`}
                   aria-label={item.opensInNewTab ? `${item.label} (opens in a new tab)` : item.label}
                   onClick={() => {
@@ -65,22 +65,22 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
                     onItemClick?.();
                   }}
                 >
-                  <span className="sidebar-link__icon-wrap">
+                  <span className="smplfy-sidebar-link-icon">
                     <AppIcon name={item.icon} size={20} />
-                    {collapsed && badgeCounts[item.badgeKey] ? <span className="sidebar-link__dot" /> : null}
+                    {collapsed && badgeCounts[item.badgeKey] ? <span className="smplfy-sidebar-link-dot" /> : null}
                   </span>
                   <span className="sidebar-link-text">{item.label}</span>
                   {badgeCounts[item.badgeKey] && !collapsed ? (
-                    <Badge className="sidebar-link__badge" tone="danger" size="small" shape="circle">
+                    <Badge className="smplfy-sidebar-link-badge" tone="danger" size="small" shape="circle">
                       {badgeCounts[item.badgeKey]}
                     </Badge>
                   ) : null}
                   {item.opensInNewTab && !collapsed ? (
-                    <span className="sidebar-link__external" aria-hidden="true">
+                    <span className="smplfy-sidebar-link-external" aria-hidden="true">
                       <AppIcon name="external-link" size={14} stroke={2} />
                     </span>
                   ) : null}
-                  <span className="sidebar-link__tooltip" role="tooltip">
+                  <span className="smplfy-sidebar-link-tooltip" role="tooltip">
                     {item.opensInNewTab ? `${item.label} - opens in a new tab` : item.label}
                   </span>
                 </button>
@@ -120,15 +120,15 @@ function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], on
                   <AppIcon name="home" />
                 </button>
 
-                {breadcrumbs.length ? <span className="header-breadcrumb__divider">{'>'}</span> : null}
+                {breadcrumbs.length ? <span className="smplfy-header-breadcrumb-divider">{'>'}</span> : null}
 
                 {breadcrumbs.map((crumb, index) => (
-                  <div className="header-breadcrumb__item" key={`${crumb.label}-${index}`}>
+                  <div className="smplfy-header-breadcrumb-item" key={`${crumb.label}-${index}`}>
                     {crumb.current ? (
-                      <span className="header-breadcrumb__text is-current">{crumb.label}</span>
+                      <span className="smplfy-header-breadcrumb-text is-current">{crumb.label}</span>
                     ) : (
                       <button
-                        className="btn header-breadcrumb__text"
+                        className="btn smplfy-header-breadcrumb-text"
                         onClick={() => onNavigate?.(crumb.key)}
                       >
                         {crumb.label}
@@ -136,7 +136,7 @@ function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], on
                     )}
 
                     {index < breadcrumbs.length - 1 ? (
-                      <span className="header-breadcrumb__divider">{'>'}</span>
+                      <span className="smplfy-header-breadcrumb-divider">{'>'}</span>
                     ) : null}
                   </div>
                 ))}

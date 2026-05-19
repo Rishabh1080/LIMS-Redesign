@@ -1,142 +1,114 @@
-.finalised-report-page-header {
-  height: 72px;
+.smplfy-finalised-report-header {
+  min-height: 72px;
   padding: 16px 24px;
-  background: #fff;
-  border-bottom: 1px solid #d1d5db;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
-.finalised-report-page-header__title-wrap,
-.finalised-report-page-header__actions {
-  display: flex;
-  align-items: center;
+.smplfy-finalised-report-header-title,
+.smplfy-finalised-report-header-actions {
   gap: 12px;
 }
 
-.finalised-report-page-header__back {
+.smplfy-finalised-report-header-back.smplfy-btn.btn {
   width: 32px;
-  padding: 0;
+  padding-inline: 0;
 }
 
-.finalised-report-page-header h1 {
-  margin: 0;
-  color: #1c2126;
+.smplfy-finalised-report-header h1 {
+  color: var(--smplfy-primitive-neutral-800);
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;
   letter-spacing: -0.03em;
 }
 
-.finalised-report-page-header__version {
-  min-width: 118px;
+.smplfy-finalised-report-page {
+  padding: 24px;
+  background: var(--smplfy-primitive-neutral-200);
 }
 
-.finalised-report-page {
-  min-height: 100%;
-  padding: 24px;
-  background: #f5f6f7;
-  display: grid;
+.smplfy-finalised-report-grid {
+  --bs-gutter-x: 16px;
+  --bs-gutter-y: 0;
+
+  display: grid !important;
   grid-template-columns: 280px minmax(0, 1fr);
   gap: 16px;
-  align-items: stretch;
+  margin: 0;
 }
 
-.finalised-report-sidebar {
+.smplfy-finalised-report-sidebar {
+  gap: 12px !important;
+  width: auto;
+  max-width: none;
+  padding: 0;
+}
+
+.smplfy-finalised-report-preview {
+  width: auto;
+  max-width: none;
+  min-width: 0;
+  padding: 0;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
-.finalised-report-group {
-  border: 1px solid #dfe4ea;
+.smplfy-finalised-report-group.card,
+.smplfy-finalised-report-preview-card.card {
+  border-color: var(--smplfy-primitive-neutral-300);
   border-radius: 16px;
-  background: #fff;
-  overflow: hidden;
 }
 
-.finalised-report-group__header {
+.smplfy-finalised-report-preview-card.card {
   width: 100%;
+  flex: 1 1 auto;
+}
+
+.smplfy-finalised-report-group-header.smplfy-btn.btn {
   min-height: 60px;
   padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-align: left;
-  color: #1c2126;
+  border: 0;
+  background: var(--smplfy-primitive-neutral-100);
+  color: var(--smplfy-primitive-neutral-800);
   font-size: 14px;
   line-height: 18px;
   font-weight: 600;
 }
 
-.finalised-report-group__title {
-  color: #1c2126;
+.smplfy-finalised-report-group-header:not(.btn) {
+  min-height: 60px;
+  padding: 16px 16px 8px;
+  gap: 0 !important;
+  color: var(--smplfy-primitive-neutral-800);
   font-size: 14px;
   line-height: 18px;
   font-weight: 600;
 }
 
-.finalised-report-group__subtitle {
-  margin-top: 8px;
-  color: #4d5561;
-  font-size: 14px;
-  line-height: 17px;
-  font-weight: 400;
-}
-
-.finalised-report-group__rows {
-  margin: 0 8px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  overflow: hidden;
+.smplfy-finalised-report-group-copy {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.finalised-report-group__rows .smplfy-list-group-item {
+.smplfy-finalised-report-group-list {
+  margin: 8px 8px 8px;
+  border-color: var(--smplfy-primitive-neutral-400) !important;
+  border-radius: 12px !important;
+}
+
+.smplfy-finalised-report-group-list .smplfy-list-group-item.list-group-item {
   width: 100%;
-  border-width: 0 0 1px;
 }
 
-.finalised-report-group__rows .smplfy-list-group-item:last-child {
-  border-bottom-width: 0;
-}
-
-.finalised-report-group__rows .smplfy-list-group-item.active:first-child {
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
-.finalised-report-group__rows .smplfy-list-group-item.active:last-child {
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-
-.finalised-report-preview {
-  display: flex;
-  min-height: 0;
-}
-
-.finalised-report-preview__placeholder {
-  flex: 1 1 auto;
+.smplfy-finalised-report-preview-card.card .card-body {
   min-height: 100%;
-  background: #fff;
-  border: 1px solid #dfe4ea;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #6d737e;
+  padding: 24px;
+  color: var(--smplfy-primitive-neutral-600);
   font-size: 14px;
   line-height: 20px;
-  font-weight: 500;
-  border-radius: 16px;
-  padding: 24px;
 }
 
 @media (max-width: 1200px) {
-  .finalised-report-page {
+  .smplfy-finalised-report-grid {
     grid-template-columns: 1fr;
   }
 }

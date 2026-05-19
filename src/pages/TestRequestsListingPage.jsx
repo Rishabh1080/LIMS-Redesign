@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import Checkbox from '../components/Checkbox/Checkbox';
 import AppChrome from '../components/AppChrome/AppChrome';
-import AppIcon from '../components/AppIcon';
+import DataTable from '../components/DataTable';
 import { FormElement, InputFieldDropdown, ToastNotification } from '../components/FormControls';
+import Modal from '../components/Modal/Modal';
 import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
@@ -195,12 +196,10 @@ function buildJobRows(viewMode) {
 
 function PageHeader({ onBack }) {
   return (
-    <section className="tr-listing-page-header">
-      <div className="tr-listing-page-header__title-wrap">
-        <SecondaryButton size="medium" className="tr-listing-page-header__back" aria-label="Go back" onClick={onBack}>
-          <AppIcon name="chevron-left" />
-        </SecondaryButton>
-        <h1>All Test Requests</h1>
+    <section className="smplfy-tr-listing-header bg-white border-bottom">
+      <div className="d-flex align-items-center gap-3">
+        <SecondaryButton size="medium" className="smplfy-tr-listing-header-back" leftIcon="chevron-left" aria-label="Go back" onClick={onBack} />
+        <h1 className="h5 mb-0 fw-semibold text-dark">All Test Requests</h1>
       </div>
     </section>
   );
@@ -225,124 +224,111 @@ function AllocationModal({
   }
 
   const table = allocationTableByTab[activeTab];
-  const gridClass = `tr-allocation-table tr-allocation-table--${activeTab}`;
 
   return (
-    <div className="tr-allocation-modal" role="dialog" aria-modal="true" aria-labelledby="tr-allocation-title">
-      <div className="tr-allocation-modal__backdrop" onClick={onCancel} />
-      <div className="tr-allocation-modal__card">
-        <div className="tr-allocation-modal__header">
-          <div className="tr-allocation-modal__title-row">
-            <AppIcon name="user-plus" size={24} className="tr-allocation-modal__title-icon" />
-            <h2 id="tr-allocation-title">Allocate Test Request</h2>
-          </div>
-          <button className="tr-allocation-modal__close btn" aria-label="Close modal" onClick={onCancel}>
-            <AppIcon name="close" size={24} />
-          </button>
-        </div>
-
-        <div className="tr-allocation-modal__body">
-          <div className="tr-allocation-modal__main">
-            <div className="tr-allocation-modal__details">
-              <div className="tr-allocation-modal__detail-row">
-                <div className="tr-allocation-modal__detail-label">Test Parameter</div>
-                <div className="tr-allocation-modal__detail-value">{details.parameter}</div>
-              </div>
-              <div className="tr-allocation-modal__detail-row">
-                <div className="tr-allocation-modal__detail-label">MoA</div>
-                <div className="tr-allocation-modal__detail-value">{details.moa}</div>
-              </div>
-              <div className="tr-allocation-modal__detail-row">
-                <div className="tr-allocation-modal__detail-label">Template</div>
-                <div className="tr-allocation-modal__detail-value">{details.template}</div>
-              </div>
-            </div>
-
-            <div className="tr-allocation-modal__tabs-section">
-              <div className="tr-allocation-modal__tabs">
-                {allocationTabs.map((tab) => (
-                  <NavSelector
-                    key={tab.key}
-                    size="medium"
-                    className="tr-allocation-modal__tab"
-                    active={activeTab === tab.key}
-                    onClick={() => onTabChange(tab.key)}
-                  >
-                    {tab.label}
-                  </NavSelector>
-                ))}
-              </div>
-
-              <div className="tr-allocation-modal__table-wrap">
-              <div className={`${gridClass} tr-allocation-table__head`}>
-                {table.columns.map((column) => (
-                  <div key={column}>{column}</div>
-                ))}
-              </div>
-              <div className="tr-allocation-modal__table-body">
-                {table.rows.map((row, rowIndex) => (
-                  <div className={`${gridClass} tr-allocation-table__row`} key={`${activeTab}-${rowIndex}`}>
-                    {row.map((cell, cellIndex) => (
-                      <div
-                        key={`${activeTab}-${rowIndex}-${cellIndex}`}
-                        className={cell === 'Link' ? 'tr-allocation-table__link' : ''}
-                      >
-                        {cell}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-            </div>
-          </div>
-
-          <div className="tr-allocation-modal__side">
-            <div className="tr-allocation-modal__form">
-              <FormElement
-                type="dropdown"
-                label="Allocate to"
-                inputProps={{
-                  value: allocateTo,
-                  placeholder: 'Select person',
-                  options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-                  onChange: (event) => onAllocateToChange(event.target.value),
-                }}
-              />
-              <FormElement
-                type="dropdown"
-                label="Reviewer"
-                inputProps={{
-                  value: reviewer,
-                  placeholder: 'Select person',
-                  options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-                  onChange: (event) => onReviewerChange(event.target.value),
-                }}
-              />
-              <FormElement
-                type="dropdown"
-                label="Instrument"
-                inputProps={{
-                  value: instrument,
-                  placeholder: 'Select Instrument',
-                  options: ['Instrument A', 'Instrument B', 'Instrument C'],
-                  onChange: (event) => onInstrumentChange(event.target.value),
-                }}
-              />
-            </div>
-
-            <div className="tr-allocation-modal__actions">
-          <SecondaryButton leftIcon="close" size="large" className="tr-allocation-modal__cancel" onClick={onCancel}>
+    <Modal
+      open={open}
+      title="Allocate Test Request"
+      titleId="tr-allocation-title"
+      titleIcon="user-plus"
+      onClose={onCancel}
+      size="xl"
+      actionsClassName="justify-content-between"
+      actions={
+        <>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
-              <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>
-                Allocate
-              </PrimaryButton>
-            </div>
+          <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>
+            Allocate
+          </PrimaryButton>
+        </>
+      }
+    >
+      <div className="row g-4">
+        <div className="col-12 col-xl-8">
+          <dl className="row g-2 mb-4">
+            <dt className="col-sm-3 text-secondary fw-medium">Test Parameter</dt>
+            <dd className="col-sm-9 mb-0 fw-semibold text-dark">{details.parameter}</dd>
+            <dt className="col-sm-3 text-secondary fw-medium">MoA</dt>
+            <dd className="col-sm-9 mb-0 fw-semibold text-dark">{details.moa}</dd>
+            <dt className="col-sm-3 text-secondary fw-medium">Template</dt>
+            <dd className="col-sm-9 mb-0 fw-semibold text-dark">{details.template}</dd>
+          </dl>
+
+          <div className="nav nav-pills mb-3" role="tablist" aria-label="Allocation resources">
+            {allocationTabs.map((tab) => (
+              <NavSelector
+                key={tab.key}
+                size="medium"
+                active={activeTab === tab.key}
+                onClick={() => onTabChange(tab.key)}
+              >
+                {tab.label}
+              </NavSelector>
+            ))}
           </div>
+
+          <DataTable>
+            <thead>
+              <tr>
+                {table.columns.map((column) => (
+                  <th scope="col" key={column}>{column}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {table.rows.map((row, rowIndex) => (
+                <tr key={`${activeTab}-${rowIndex}`}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={`${activeTab}-${rowIndex}-${cellIndex}`}>
+                      {cell === 'Link' ? (
+                        <button type="button" className="smplfy-link link-primary btn btn-link p-0 text-start text-decoration-none">
+                          Link
+                        </button>
+                      ) : cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </DataTable>
+        </div>
+
+        <div className="col-12 col-xl-4 d-flex flex-column gap-3">
+          <FormElement
+            type="dropdown"
+            label="Allocate to"
+            inputProps={{
+              value: allocateTo,
+              placeholder: 'Select person',
+              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+              onChange: (event) => onAllocateToChange(event.target.value),
+            }}
+          />
+          <FormElement
+            type="dropdown"
+            label="Reviewer"
+            inputProps={{
+              value: reviewer,
+              placeholder: 'Select person',
+              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+              onChange: (event) => onReviewerChange(event.target.value),
+            }}
+          />
+          <FormElement
+            type="dropdown"
+            label="Instrument"
+            inputProps={{
+              value: instrument,
+              placeholder: 'Select Instrument',
+              options: ['Instrument A', 'Instrument B', 'Instrument C'],
+              onChange: (event) => onInstrumentChange(event.target.value),
+            }}
+          />
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
 
@@ -361,74 +347,62 @@ function JobAllocationModal({
   }
 
   return (
-    <div className="tr-job-allocation-modal" role="dialog" aria-modal="true" aria-labelledby="tr-job-allocation-title">
-      <div className="tr-job-allocation-modal__backdrop" onClick={onCancel} />
-      <div className="tr-job-allocation-modal__card">
-        <div className="tr-job-allocation-modal__header">
-          <div className="tr-job-allocation-modal__title-row">
-            <AppIcon name="user-plus" size={24} className="tr-job-allocation-modal__title-icon" />
-            <h2 id="tr-job-allocation-title">Allocate Job</h2>
-          </div>
-          <button className="tr-job-allocation-modal__close btn" aria-label="Close modal" onClick={onCancel}>
-            <AppIcon name="close" size={24} />
-          </button>
-        </div>
-
-        <div className="tr-job-allocation-modal__body">
-          <div className="tr-job-allocation-modal__job-row">
-            <span className="tr-job-allocation-modal__job-label">Job ID:</span>
-            <span className="tr-job-allocation-modal__job-value">{jobId}</span>
-          </div>
-
-          <div className="tr-job-allocation-modal__fields">
-            <FormElement
-              type="dropdown"
-              label="Allocate to"
-              inputProps={{
-                value: allocateTo,
-                placeholder: 'Select person',
-                options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-                onChange: (event) => onAllocateToChange(event.target.value),
-              }}
-            />
-            <FormElement
-              type="dropdown"
-              label="Reviewer"
-              inputProps={{
-                value: reviewer,
-                placeholder: 'Select person',
-                options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-                onChange: (event) => onReviewerChange(event.target.value),
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="tr-job-allocation-modal__actions">
-          <SecondaryButton
-            leftIcon="close"
-            size="large"
-            className="tr-job-allocation-modal__cancel"
-            onClick={onCancel}
-          >
+    <Modal
+      open={open}
+      title="Allocate Job"
+      titleId="tr-job-allocation-title"
+      titleIcon="user-plus"
+      onClose={onCancel}
+      size="md"
+      actionsClassName="justify-content-between"
+      actions={
+        <>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>
             Allocate
           </PrimaryButton>
+        </>
+      }
+    >
+      <div className="d-flex flex-column gap-3">
+        <div className="d-flex align-items-center gap-2">
+          <span className="text-secondary fw-medium">Job ID:</span>
+          <span className="text-dark fw-semibold">{jobId}</span>
         </div>
+
+        <FormElement
+          type="dropdown"
+          label="Allocate to"
+          inputProps={{
+            value: allocateTo,
+            placeholder: 'Select person',
+            options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+            onChange: (event) => onAllocateToChange(event.target.value),
+          }}
+        />
+        <FormElement
+          type="dropdown"
+          label="Reviewer"
+          inputProps={{
+            value: reviewer,
+            placeholder: 'Select person',
+            options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+            onChange: (event) => onReviewerChange(event.target.value),
+          }}
+        />
       </div>
-    </div>
+    </Modal>
   );
 }
 
 function InlineSelect({ label, placeholder, value, onChange, options, error = false }) {
   return (
-    <div className="tr-inline-select">
-      <label className="tr-inline-select__label">{label}</label>
+    <div className="d-flex align-items-center gap-2">
+      <label className="form-label mb-0 text-secondary fw-medium text-nowrap">{label}</label>
       <InputFieldDropdown
         state={error ? 'error' : value ? 'filled' : 'default'}
-        className="tr-inline-select__field"
         value={value}
         placeholder={placeholder}
         options={options}
@@ -454,9 +428,10 @@ function RequestsCardSelection({
   readOnly = false,
 }) {
   return (
-    <section className="tr-card tr-card--requests tr-card--selection">
-      <div className="tr-card__selection-header">
-        <div className="tr-card__selection-controls">
+    <section className="smplfy-tr-listing-card smplfy-card card border-0">
+      <div className="card-body">
+        <div className="smplfy-tr-listing-selection-header d-flex align-items-center justify-content-between gap-3 border-bottom">
+        <div className="smplfy-tr-listing-selection-controls d-flex align-items-center gap-3 flex-wrap">
           {readOnly ? null : (
             <>
               <InlineSelect
@@ -480,11 +455,10 @@ function RequestsCardSelection({
         </div>
 
         {readOnly ? null : (
-          <div className="tr-card__selection-actions">
+          <div className="smplfy-tr-listing-selection-actions d-flex align-items-center gap-2 flex-wrap">
             <SecondaryButton
               leftIcon="close"
               size="large"
-              className="tr-selection-cancel"
               onClick={() => onCreateJobModeChange(false)}
             >
               Cancel
@@ -496,59 +470,65 @@ function RequestsCardSelection({
         )}
       </div>
 
-      <div className="tr-grid tr-grid--selection tr-grid--head">
-        <div className="tr-selection-checkbox-head">
-          <Checkbox
-            checked={
-              requests.some((row) => !row.allocated) &&
-              selectedRequestIds.length === requests.filter((row) => !row.allocated).length
-            }
-            ariaLabel="Select all test requests"
-            onChange={(nextChecked) => {
-              requests.forEach((row) => {
-                if (!row.allocated) {
-                  onToggleRequest(row.id, nextChecked);
-                }
-              });
-            }}
-          />
-        </div>
-        <div>Test Request ID</div>
-        <div>Parameter</div>
-        <div>Test Method</div>
-        <div>Product</div>
-        <div>Age</div>
-        <div>Target Reporting Date</div>
-      </div>
-
-      <div className="tr-card__rows">
-        {requests.map((row) => (
-          <div className="tr-grid tr-grid--selection tr-grid--row tr-grid--selection-row" key={row.id + row.parameter}>
-            <div className="tr-selection-checkbox-cell">
-              <Checkbox
-                checked={selectedRequestIds.includes(row.id)}
-                disabled={row.allocated}
-                ariaLabel={`Select ${row.id}`}
-                onChange={(nextChecked) => onToggleRequest(row.id, nextChecked)}
-              />
-            </div>
-            <a
-              href="/"
-              className="tr-link"
-              onClick={(event) => {
-                event.preventDefault();
-                onOpenTrDetails?.(row.id, row.status);
-              }}
-            >
-              {row.id}
-            </a>
-            <div className="tr-cell--truncate">{row.parameter}</div>
-            <div className="tr-cell--truncate">{row.testMethod}</div>
-            <div>{row.product}</div>
-            <div>{row.age}</div>
-            <div>{getDateOnly(row.reportingDate)}</div>
-          </div>
-        ))}
+        <DataTable>
+          <thead>
+            <tr>
+              <th scope="col" className="text-center">
+                <Checkbox
+                  checked={
+                    requests.some((row) => !row.allocated) &&
+                    selectedRequestIds.length === requests.filter((row) => !row.allocated).length
+                  }
+                  ariaLabel="Select all test requests"
+                  onChange={(nextChecked) => {
+                    requests.forEach((row) => {
+                      if (!row.allocated) {
+                        onToggleRequest(row.id, nextChecked);
+                      }
+                    });
+                  }}
+                />
+              </th>
+              <th scope="col">Test Request ID</th>
+              <th scope="col">Parameter</th>
+              <th scope="col">Test Method</th>
+              <th scope="col">Product</th>
+              <th scope="col">Age</th>
+              <th scope="col">Target Reporting Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requests.map((row) => (
+              <tr key={row.id + row.parameter}>
+                <td className="text-center">
+                  <Checkbox
+                    checked={selectedRequestIds.includes(row.id)}
+                    disabled={row.allocated}
+                    ariaLabel={`Select ${row.id}`}
+                    onChange={(nextChecked) => onToggleRequest(row.id, nextChecked)}
+                  />
+                </td>
+                <td className="text-nowrap">
+                  <a
+                    href="/"
+                    className="smplfy-link link-primary p-0"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      onOpenTrDetails?.(row.id, row.status);
+                    }}
+                  >
+                    <span>{row.id}</span>
+                  </a>
+                </td>
+                <td className="text-nowrap">{row.parameter}</td>
+                <td className="text-nowrap">{row.testMethod}</td>
+                <td className="text-nowrap">{row.product}</td>
+                <td className="text-nowrap">{row.age}</td>
+                <td className="text-nowrap">{getDateOnly(row.reportingDate)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </DataTable>
       </div>
     </section>
   );
@@ -630,9 +610,9 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
   }
 
   return (
-    <section className="tr-card tr-card--requests">
-      <div className="tr-card__header">
-        <div className="tr-card__title">{requests.length} Test Requests</div>
+    <section className="smplfy-tr-listing-card smplfy-card card border-0">
+      <div className="card-header bg-transparent d-flex align-items-center justify-content-between gap-3">
+        <div className="fw-medium">{requests.length} Test Requests</div>
         {readOnly ? null : (
           <PrimaryButton leftIcon="plus" onClick={() => onCreateJobModeChange(true)}>
             Create Job
@@ -640,57 +620,58 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
         )}
       </div>
 
-      <div className="row gx-0 flex-nowrap tr-table-row tr-table-row--head">
-        <div className="col-auto tr-table-cell tr-table-cell--request-id">Test Request ID</div>
-        <div className="col-auto tr-table-cell tr-table-cell--status">Status</div>
-        <div className="col tr-table-cell tr-table-cell--truncate">Parameter</div>
-        <div className="col tr-table-cell tr-table-cell--truncate">Test Method</div>
-        <div className="col tr-table-cell tr-table-cell--truncate">Product</div>
-        <div className="col tr-table-cell tr-table-cell--truncate">Age</div>
-        <div className="col tr-table-cell tr-table-cell--truncate">Target Reporting Date</div>
-        <div className="col-auto tr-table-cell tr-table-cell--actions">
-          <div className="tr-actions-shell">Action</div>
-        </div>
-      </div>
-
-      <div className="tr-card__rows">
-        {requests.map((row) => (
-          <div className="row gx-0 flex-nowrap tr-table-row tr-table-row--body" key={row.id + row.parameter}>
-            <div className="col-auto tr-table-cell tr-table-cell--request-id">
-              <a
-                href="/"
-                className="tr-link"
-                onClick={(event) => {
-                  event.preventDefault();
-                  onOpenTrDetails?.(row.id, row.status);
-                }}
-              >
-                {row.id}
-              </a>
-            </div>
-            <div className="col-auto tr-table-cell tr-table-cell--status">
-              <div className="tr-request-status-cell">
-                <StatusPill
-                  color={getStatusPresentation('testRequest', row.status).color}
-                  styleType={getStatusPresentation('testRequest', row.status).styleType}
-                >
-                  {getStatusPresentation('testRequest', row.status).label}
-                </StatusPill>
-              </div>
-            </div>
-            <div className="col tr-table-cell tr-table-cell--truncate">{row.parameter}</div>
-            <div className="col tr-table-cell tr-table-cell--truncate">{row.testMethod}</div>
-            <div className="col tr-table-cell tr-table-cell--truncate">{row.product}</div>
-            <div className="col tr-table-cell tr-table-cell--truncate">{row.age}</div>
-            <div className="col tr-table-cell tr-table-cell--truncate">{getDateOnly(row.reportingDate)}</div>
-            <div className="col-auto tr-table-cell tr-table-cell--actions">
-              <div className="tr-actions-shell tr-request-actions">
-                {!readOnly && !row.allocated ? <AllocateTestRequestButton size="medium" onClick={() => onAllocate(row)} /> : null}
-                <ViewTestRequestButton size="medium" iconOnly={!row.allocated} />
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="card-body">
+        <DataTable>
+          <thead>
+            <tr>
+              <th scope="col">Test Request ID</th>
+              <th scope="col">Status</th>
+              <th scope="col">Parameter</th>
+              <th scope="col">Test Method</th>
+              <th scope="col">Product</th>
+              <th scope="col">Age</th>
+              <th scope="col">Target Reporting Date</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requests.map((row) => (
+              <tr key={row.id + row.parameter}>
+                <td className="text-nowrap">
+                  <a
+                    href="/"
+                    className="smplfy-link link-primary p-0"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      onOpenTrDetails?.(row.id, row.status);
+                    }}
+                  >
+                    <span>{row.id}</span>
+                  </a>
+                </td>
+                <td className="text-nowrap">
+                  <StatusPill
+                    color={getStatusPresentation('testRequest', row.status).color}
+                    styleType={getStatusPresentation('testRequest', row.status).styleType}
+                  >
+                    {getStatusPresentation('testRequest', row.status).label}
+                  </StatusPill>
+                </td>
+                <td className="text-nowrap">{row.parameter}</td>
+                <td className="text-nowrap">{row.testMethod}</td>
+                <td className="text-nowrap">{row.product}</td>
+                <td className="text-nowrap">{row.age}</td>
+                <td className="text-nowrap">{getDateOnly(row.reportingDate)}</td>
+                <td className="text-nowrap">
+                  <div className="d-flex align-items-center gap-2 flex-nowrap">
+                    {!readOnly && !row.allocated ? <AllocateTestRequestButton size="medium" onClick={() => onAllocate(row)} /> : null}
+                    <ViewTestRequestButton size="medium" iconOnly={!row.allocated} />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </DataTable>
       </div>
     </section>
   );
@@ -698,58 +679,59 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
 
 function JobsCard({ jobs, onAllocate, onOpenTrDetails, readOnly = false }) {
   return (
-    <section className="tr-card tr-card--jobs">
-      <div className="tr-card__header tr-card__header--simple">
-        <div className="tr-card__title">{jobs.length} Jobs</div>
+    <section className="smplfy-tr-listing-card smplfy-card card border-0">
+      <div className="card-header bg-transparent d-flex align-items-center">
+        <div className="fw-medium">{jobs.length} Jobs</div>
       </div>
 
-      <div className="row gx-0 flex-nowrap tr-table-row tr-table-row--head">
-        <div className="col-auto tr-table-cell tr-table-cell--request-id">Test Request ID</div>
-        <div className="col-auto tr-table-cell tr-table-cell--status">Status</div>
-        <div className="col tr-table-cell tr-table-cell--truncate">Product</div>
-        <div className="col tr-table-cell tr-table-cell--truncate">Age</div>
-        <div className="col tr-table-cell tr-table-cell--truncate">Target Reporting Date</div>
-        <div className="col-auto tr-table-cell tr-table-cell--actions">
-          <div className="tr-actions-shell">Action</div>
-        </div>
-      </div>
-
-      <div className="tr-card__rows">
-        {jobs.map((row, index) => (
-          <div className="row gx-0 flex-nowrap tr-table-row tr-table-row--body" key={row.status + index}>
-            <div className="col-auto tr-table-cell tr-table-cell--request-id">
-              <a
-                href="/"
-                className="tr-link"
-                onClick={(event) => {
-                  event.preventDefault();
-                  onOpenTrDetails?.(row.id, row.status);
-                }}
-              >
-                {row.id}
-              </a>
-            </div>
-            <div className="col-auto tr-table-cell tr-table-cell--status">
-              <div className="tr-job-status-cell">
-                <StatusPill
-                  color={getStatusPresentation('testRequest', row.status).color}
-                  styleType={getStatusPresentation('testRequest', row.status).styleType}
-                >
-                  {getStatusPresentation('testRequest', row.status).label}
-                </StatusPill>
-              </div>
-            </div>
-            <div className="col tr-table-cell tr-table-cell--truncate">{row.product}</div>
-            <div className="col tr-table-cell tr-table-cell--truncate">{row.age}</div>
-            <div className="col tr-table-cell tr-table-cell--truncate">{getDateOnly(row.reportingDate)}</div>
-            <div className="col-auto tr-table-cell tr-table-cell--actions">
-              <div className="tr-actions-shell tr-job-actions">
-                {!readOnly && row.action === 'allocate' ? <AllocateTestRequestButton size="medium" onClick={() => onAllocate(row)} /> : null}
-                <ViewTestRequestButton size="medium" />
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="card-body">
+        <DataTable>
+          <thead>
+            <tr>
+              <th scope="col">Test Request ID</th>
+              <th scope="col">Status</th>
+              <th scope="col">Product</th>
+              <th scope="col">Age</th>
+              <th scope="col">Target Reporting Date</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {jobs.map((row, index) => (
+              <tr key={row.status + index}>
+                <td className="text-nowrap">
+                  <a
+                    href="/"
+                    className="smplfy-link link-primary p-0"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      onOpenTrDetails?.(row.id, row.status);
+                    }}
+                  >
+                    <span>{row.id}</span>
+                  </a>
+                </td>
+                <td className="text-nowrap">
+                  <StatusPill
+                    color={getStatusPresentation('testRequest', row.status).color}
+                    styleType={getStatusPresentation('testRequest', row.status).styleType}
+                  >
+                    {getStatusPresentation('testRequest', row.status).label}
+                  </StatusPill>
+                </td>
+                <td className="text-nowrap">{row.product}</td>
+                <td className="text-nowrap">{row.age}</td>
+                <td className="text-nowrap">{getDateOnly(row.reportingDate)}</td>
+                <td className="text-nowrap">
+                  <div className="d-flex align-items-center gap-2 flex-nowrap">
+                    {!readOnly && row.action === 'allocate' ? <AllocateTestRequestButton size="medium" onClick={() => onAllocate(row)} /> : null}
+                    <ViewTestRequestButton size="medium" />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </DataTable>
       </div>
     </section>
   );
@@ -850,7 +832,6 @@ export default function TestRequestsListingPage({
   };
 
   const handleOpenJobAllocation = (row) => {
-    console.log('handleOpenJobAllocation called with:', row);
     if (readOnly) {
       return;
     }
@@ -868,7 +849,6 @@ export default function TestRequestsListingPage({
     setReviewer('');
     setInstrument('');
     setAllocationModalOpen(true);
-    console.log('Modal should be open now');
   };
 
   const handleSubmitAllocation = () => {
@@ -938,7 +918,7 @@ export default function TestRequestsListingPage({
       onSidebarCollapsedChange={onSidebarCollapsedChange}
       pageHeader={<PageHeader onBack={onBack} />}
     >
-      <main className="tr-listing-page">
+      <main className="smplfy-tr-listing-page bg-body-tertiary min-vh-100 d-flex flex-column gap-3">
         {requests.length > 0 ? (
         <RequestsCard
           requests={requests}
@@ -958,7 +938,7 @@ export default function TestRequestsListingPage({
         state={toastVisible ? 'default' : 'gone'}
         tone={toastTone}
         message={toastMessage}
-        className="tr-job-created-toast"
+        className="position-fixed bottom-0 start-0 m-4"
         onClose={() => setToastVisible(false)}
       />
 

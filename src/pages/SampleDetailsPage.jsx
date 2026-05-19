@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import AppIcon from '../components/AppIcon';
 import AppChrome from '../components/AppChrome/AppChrome';
+import DataTable from '../components/DataTable';
 import Modal from '../components/Modal/Modal';
 import { FormElement, ToastNotification } from '../components/FormControls';
 import MoreActionButton from '../components/MoreActionButton';
@@ -101,48 +102,36 @@ function DetailsHeader({
   const statusPresentation = getStatusPresentation('sample', sampleStatus);
 
   return (
-    <section className="sample-details-page-header">
-      <div className="sample-details-page-header__row">
-        <div className="sample-details-page-header__breadcrumbs">
-          <AppIcon name="home" />
-          <AppIcon name="chevron-right" />
-          <span>All Samples</span>
-          <AppIcon name="chevron-right" />
-          <span className="is-current">{sampleId}</span>
-        </div>
-      </div>
-
-      <div className="sample-details-page-header__row is-main">
-        <div className="sample-details-page-header__title-block">
+    <section className="smplfy-sample-details-header bg-white border-bottom">
+      <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+        <div className="smplfy-sample-details-title-block d-flex align-items-start gap-3">
           <SecondaryButton
             size="medium"
-            className="sample-details-page-header__back"
+            leftIcon="chevron-left"
+            className="smplfy-sample-details-header-back"
             aria-label="Go back"
             onClick={onBack}
-          >
-            <AppIcon name="chevron-left" />
-          </SecondaryButton>
+          />
 
-          <div className="sample-details-page-header__title-copy">
-            <div className="sample-details-page-header__title-row">
-              <h1>{sampleId}</h1>
+          <div className="d-flex flex-column">
+            <div className="smplfy-sample-details-title-row d-flex align-items-center gap-2">
+              <h1 className="h5 mb-0 fw-semibold text-dark">{sampleId}</h1>
               <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
                 {statusPresentation.label}
               </StatusPill>
             </div>
-            <div className="sample-details-page-header__timestamp">
+            <div className="smplfy-sample-details-timestamp d-inline-flex gap-2 text-secondary fw-medium mt-2">
               <span>{date}</span>
               <span>{time}</span>
             </div>
           </div>
         </div>
 
-        <div className="sample-details-page-header__cta-group">
+        <div className="smplfy-sample-details-header-actions d-flex align-items-center gap-3 flex-wrap">
           {isCompleted ? (
             <>
               <PrimaryButton
                 leftIcon="file-text"
-                className="sample-details-page-header__primary"
                 onClick={onOpenCoaReport}
               >
                 COA Report
@@ -150,25 +139,31 @@ function DetailsHeader({
               <SecondaryButton
                 leftIcon="clipboard-text"
                 size="large"
-                className="sample-details-page-header__secondary"
                 onClick={onOpenTestRequests}
               >
                 Test Requests
               </SecondaryButton>
             </>
           ) : isUnderAnalysis ? (
-            <PrimaryButton
-              leftIcon="workspace"
-              className="sample-details-page-header__primary"
-              onClick={onOpenTestRequests}
-            >
-              Test Requests
-            </PrimaryButton>
+            <>
+              <PrimaryButton
+                leftIcon="file-text"
+                onClick={onOpenCoaReport}
+              >
+                COA Report
+              </PrimaryButton>
+              <SecondaryButton
+                leftIcon="workspace"
+                size="large"
+                onClick={onOpenTestRequests}
+              >
+                Test Requests
+              </SecondaryButton>
+            </>
           ) : reviewRequested ? null : (
             <>
               <PrimaryButton
                 leftIcon="check"
-                className="sample-details-page-header__primary"
                 onClick={onRequestReview}
               >
                 Send for Review
@@ -177,7 +172,6 @@ function DetailsHeader({
                 <SecondaryButton
                   leftIcon="edit"
                   size="large"
-                  className="sample-details-page-header__secondary"
                   onClick={onEditSample}
                 >
                   Edit
@@ -185,7 +179,7 @@ function DetailsHeader({
               ) : null}
             </>
           )}
-          <MoreActionButton className="sample-details-page-header__more" items={sampleHeaderActionItems} />
+          <MoreActionButton items={sampleHeaderActionItems} />
         </div>
       </div>
     </section>
@@ -196,8 +190,8 @@ function BarcodeBlock() {
   let x = 0;
 
   return (
-    <div className="sample-report-card__barcode-block" aria-hidden="true">
-      <svg className="sample-report-card__barcode" viewBox="0 0 320 52" role="img" focusable="false">
+    <div className="smplfy-sample-report-barcode d-flex flex-column align-items-end gap-1 mb-2" aria-hidden="true">
+      <svg width="320" height="52" viewBox="0 0 320 52" role="img" focusable="false">
         <rect x="0" y="0" width="320" height="52" fill="#fff" />
         {barcodePattern.map((width, index) => {
           const isBar = index % 2 === 0;
@@ -211,7 +205,7 @@ function BarcodeBlock() {
           return <rect key={`${index}-${width}`} x={currentX} y="4" width={width} height="40" rx="0.5" fill="#1c2126" />;
         })}
       </svg>
-      <div className="sample-report-card__barcode-code">a3642e1ecc4c4ec4d5272292</div>
+      <div className="smplfy-sample-report-barcode-code small text-dark fw-medium">a3642e1ecc4c4ec4d5272292</div>
     </div>
   );
 }
@@ -219,16 +213,16 @@ function BarcodeBlock() {
 function ProductSectionRows({ section }) {
   return (
     <>
-      <tr className="sample-report-card__product-row">
-        <td className="sample-report-card__product-cell" rowSpan={4}>
+      <tr>
+        <td className="fw-semibold" rowSpan={4}>
           {section.product}
         </td>
         <td rowSpan={4}>{section.sampleQty}</td>
         <td rowSpan={4}>{section.sampleSize}</td>
         <td rowSpan={4}>{section.quality}</td>
-        <td className="sample-report-card__image-cell" rowSpan={4}>
+        <td className="text-center" rowSpan={4}>
           <button
-            className="sample-report-card__image-button"
+            className="smplfy-sample-report-image-button smplfy-btn btn btn-primary"
             type="button"
             aria-label={`Download image for ${section.product}`}
           >
@@ -263,28 +257,21 @@ function ProductSectionRows({ section }) {
 
 function SampleReportCard() {
   return (
-    <section className="sample-report-card">
+    <section className="smplfy-sample-report-card smplfy-card card shadow-sm">
+      <div className="card-body">
       <BarcodeBlock />
 
-      <div className="sample-report-card__section">
-        <h2 className="sample-report-card__section-title">Product Data</h2>
+      <div className="smplfy-sample-report-section">
+        <h2 className="smplfy-sample-report-title h5 text-center text-decoration-underline mb-3">Product Data</h2>
 
-        <div className="sample-report-card__table-wrap">
-          <table className="sample-report-card__table sample-report-card__table--product">
-            <colgroup>
-              <col className="sample-report-card__col sample-report-card__col--product" />
-              <col className="sample-report-card__col sample-report-card__col--qty" />
-              <col className="sample-report-card__col sample-report-card__col--size" />
-              <col className="sample-report-card__col sample-report-card__col--quality" />
-              <col className="sample-report-card__col sample-report-card__col--image" />
-            </colgroup>
+          <DataTable className="smplfy-sample-report-table table-bordered">
             <thead>
               <tr>
-                <th>Product</th>
-                <th>Sample Qty.</th>
-                <th>Sample Size</th>
-                <th>Quality</th>
-                <th>Image</th>
+                <th scope="col">Product</th>
+                <th scope="col">Sample Qty.</th>
+                <th scope="col">Sample Size</th>
+                <th scope="col">Quality</th>
+                <th scope="col">Image</th>
               </tr>
             </thead>
             <tbody>
@@ -292,28 +279,23 @@ function SampleReportCard() {
                 <ProductSectionRows key={`${section.product}-${section.description}`} section={section} />
               ))}
             </tbody>
-          </table>
-        </div>
+          </DataTable>
 
-        <div className="sample-report-card__table-wrap sample-report-card__table-wrap--compact">
-          <table className="sample-report-card__table sample-report-card__table--summary">
-            <colgroup>
-              <col className="sample-report-card__col sample-report-card__col--summary-product" />
-              <col className="sample-report-card__col sample-report-card__col--summary-image" />
-            </colgroup>
+        <div className="smplfy-sample-report-table-compact mt-3">
+          <DataTable className="smplfy-sample-report-table smplfy-sample-report-table-summary table-bordered">
             <thead>
               <tr>
-                <th>Product</th>
-                <th>Image</th>
+                <th scope="col">Product</th>
+                <th scope="col">Image</th>
               </tr>
             </thead>
             <tbody>
               {imageSummaryRows.map((product, index) => (
                 <tr key={`${product}-${index}`}>
                   <td>{product}</td>
-                  <td className="sample-report-card__summary-image-cell">
+                  <td className="text-center">
                     <button
-                      className="sample-report-card__image-button"
+                      className="smplfy-sample-report-image-button smplfy-btn btn btn-primary"
                       type="button"
                       aria-label={`Download image for ${product}`}
                     >
@@ -332,31 +314,22 @@ function SampleReportCard() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </DataTable>
         </div>
       </div>
 
-      <div className="sample-report-card__section sample-report-card__section--parameter">
-        <h2 className="sample-report-card__section-title">Parameter Data</h2>
+      <div className="smplfy-sample-report-section mt-4">
+        <h2 className="smplfy-sample-report-title h5 text-center text-decoration-underline mb-3">Parameter Data</h2>
 
-        <div className="sample-report-card__table-wrap">
-          <table className="sample-report-card__table sample-report-card__table--parameter">
-            <colgroup>
-              <col className="sample-report-card__col sample-report-card__col--parameter-product" />
-              <col className="sample-report-card__col sample-report-card__col--parameter-name" />
-              <col className="sample-report-card__col sample-report-card__col--parameter-method" />
-              <col className="sample-report-card__col sample-report-card__col--parameter-size" />
-              <col className="sample-report-card__col sample-report-card__col--parameter-charges" />
-              <col className="sample-report-card__col sample-report-card__col--parameter-time" />
-            </colgroup>
+          <DataTable className="smplfy-sample-report-table table-bordered">
             <thead>
               <tr>
-                <th>Product</th>
-                <th>Parameter</th>
-                <th>Test Method</th>
-                <th>Size</th>
-                <th>Charges</th>
-                <th>Est. Time</th>
+                <th scope="col">Product</th>
+                <th scope="col">Parameter</th>
+                <th scope="col">Test Method</th>
+                <th scope="col">Size</th>
+                <th scope="col">Charges</th>
+                <th scope="col">Est. Time</th>
               </tr>
             </thead>
             <tbody>
@@ -371,8 +344,8 @@ function SampleReportCard() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+          </DataTable>
+      </div>
       </div>
     </section>
   );
@@ -387,11 +360,9 @@ function ReviewRequestModal({ open, sendTo, comments, onSendToChange, onComments
       titleIcon="user"
       onClose={onCancel}
       size="md"
-      bodyClassName="review-request-modal__body"
-      actionsClassName="review-request-modal__actions"
       actions={
         <>
-          <SecondaryButton leftIcon="close" size="large" className="review-request-modal__cancel" onClick={onCancel}>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton leftIcon="send" onClick={onSubmit}>
@@ -400,8 +371,9 @@ function ReviewRequestModal({ open, sendTo, comments, onSendToChange, onComments
         </>
       }
     >
-      <div className="review-request-modal__grid">
-        <div className="review-request-modal__field">
+      <div className="d-flex flex-column gap-4">
+      <div className="row g-3">
+        <div className="col-12 col-md-6">
           <FormElement
             type="dropdown"
             label="Current state"
@@ -413,7 +385,7 @@ function ReviewRequestModal({ open, sendTo, comments, onSendToChange, onComments
           />
         </div>
 
-        <div className="review-request-modal__field">
+        <div className="col-12 col-md-6">
           <FormElement
             type="dropdown"
             label="Send to"
@@ -427,7 +399,7 @@ function ReviewRequestModal({ open, sendTo, comments, onSendToChange, onComments
         </div>
       </div>
 
-      <div className="review-request-modal__field review-request-modal__field--full">
+      <div>
         <FormElement
           type="text"
           label="Comments"
@@ -437,6 +409,7 @@ function ReviewRequestModal({ open, sendTo, comments, onSendToChange, onComments
             onChange: (event) => onCommentsChange(event.target.value),
           }}
         />
+      </div>
       </div>
     </Modal>
   );
@@ -562,9 +535,9 @@ export default function SampleDetailsPage({
         />
       }
     >
-      <main className="sample-details-page__content">
-        <div className="sample-details-page__body">
-          <div className="sample-details-page__report-stack">
+      <main className="smplfy-sample-details-page bg-body-tertiary min-vh-100">
+        <div className="smplfy-sample-details-body d-flex flex-column gap-3">
+          <div className="smplfy-sample-details-report-stack d-flex flex-column gap-3">
             <SampleReportCard />
           </div>
         </div>
@@ -583,7 +556,7 @@ export default function SampleDetailsPage({
       <ToastNotification
         state={toastVisible ? 'default' : 'gone'}
         message={toastMessage}
-        className="sample-created-toast"
+        className="position-fixed bottom-0 start-0 m-4"
         onClose={() => setToastVisible(false)}
       />
     </AppChrome>

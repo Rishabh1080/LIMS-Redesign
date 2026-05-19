@@ -120,7 +120,10 @@ function SearchHero({ searchValue, onSearchChange, onOpenFilters, appliedFilters
                 </div>
               </div>
               <div className="col-auto">
-                <button className="smplfy-btn btn btn-primary" onClick={onOpenFilters}>
+                <button
+                  className="smplfy-btn btn btn-link text-secondary text-decoration-none border-0 bg-transparent shadow-none"
+                  onClick={onOpenFilters}
+                >
                   <AppIcon name="filter" />
                   <span>All Filters</span>
                 </button>

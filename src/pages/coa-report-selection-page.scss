@@ -1,165 +1,115 @@
-.coa-report-page-header {
-  height: 72px;
+.smplfy-coa-report-header {
+  min-height: 72px;
   padding: 16px 24px;
-  background: #fff;
-  border-bottom: 1px solid #d1d5db;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
-.coa-report-page-header__title-wrap {
-  display: flex;
-  align-items: center;
+.smplfy-coa-report-header-title,
+.smplfy-coa-report-header-actions {
   gap: 12px;
 }
 
-.coa-report-page-header__back {
+.smplfy-coa-report-header-back.smplfy-btn.btn {
   width: 32px;
-  padding: 0;
+  padding-inline: 0;
 }
 
-.coa-report-page-header h1 {
-  margin: 0;
-  color: #1c2126;
+.smplfy-coa-report-header h1 {
+  color: var(--smplfy-primitive-neutral-800);
   font-size: 16px;
   line-height: 24px;
   font-weight: 600;
   letter-spacing: -0.03em;
 }
 
-.coa-report-page-header__actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.coa-report-page {
+.smplfy-coa-report-page {
   padding: 24px;
-  background: #f5f6f7;
+  background: var(--smplfy-primitive-neutral-200);
 }
 
-.coa-report-panel {
+.smplfy-coa-report-panel.card {
   width: 1166px;
   max-width: 100%;
   min-height: 589px;
-  margin: 0 auto;
   padding: 24px 24px 32px;
-  border: 1px solid #e6e8eb;
+  border-color: var(--smplfy-primitive-neutral-300);
   border-radius: 16px;
-  background: #fff;
   box-shadow:
     0 18px 48px rgba(15, 23, 42, 0.06),
-    0 6px 16px rgba(15, 23, 42, 0.04);
+    0 6px 16px rgba(15, 23, 42, 0.04) !important;
 }
 
-.coa-report-panel__title {
-  color: #1c2126;
+.smplfy-coa-report-panel-title {
+  color: var(--smplfy-primitive-neutral-800);
   font-size: 18px;
   line-height: 23px;
-  font-weight: 600;
   letter-spacing: -0.03em;
 }
 
-.coa-report-panel__body {
+.smplfy-coa-report-panel-body {
   margin-top: 79px;
-  display: grid;
-  grid-template-columns: 329px minmax(0, 661px);
-  gap: 16px;
-  align-items: stretch;
 }
 
-.coa-report-panel__options {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.smplfy-coa-report-options {
+  max-width: 329px;
 }
 
-.coa-report-panel__templates {
-  height: 100%;
-  min-height: 100%;
-  border: 1px solid #d1d5db;
-  border-radius: 16px;
-  background: #fff;
+.smplfy-coa-report-templates-col {
+  max-width: 661px;
+}
+
+.smplfy-coa-report-templates.card {
   padding: 24px;
-  display: flex;
-  flex-direction: column;
+  border-color: var(--smplfy-primitive-neutral-400);
+  border-radius: 16px;
 }
 
-.coa-report-panel__placeholder {
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #4d5561;
+.smplfy-coa-report-placeholder,
+.smplfy-coa-report-templates-title {
+  color: var(--smplfy-primitive-neutral-700);
   font-size: 14px;
   line-height: 21px;
   font-weight: 400;
 }
 
-.coa-report-panel__placeholder-emphasis {
-  font-weight: 600;
+.smplfy-coa-report-templates-list {
+  gap: 14px !important;
+  margin-top: 24px !important;
 }
 
-.coa-report-panel__templates-title {
-  color: #4d5561;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 400;
-}
-
-.coa-report-panel__templates-list {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.coa-template-row {
-  display: grid;
-  grid-template-columns: 200px 344px;
+.smplfy-coa-template-row {
   gap: 19px;
-  align-items: center;
 }
 
-.coa-template-row__label {
-  color: #1c2126;
+.smplfy-coa-template-label {
+  max-width: 200px;
+  color: var(--smplfy-primitive-neutral-800);
   font-size: 14px;
   line-height: 18px;
-  font-weight: 500;
 }
 
-.coa-template-row__field {
-  width: 344px;
+.smplfy-coa-template-field {
+  max-width: 344px;
 }
 
 @media (max-width: 991.98px) {
-  .coa-report-page-header {
-    height: auto;
-    gap: 12px;
+  .smplfy-coa-report-header {
+    align-items: stretch !important;
     flex-direction: column;
-    align-items: stretch;
+    min-height: auto;
   }
 
-  .coa-report-page-header__actions {
+  .smplfy-coa-report-header-actions {
     justify-content: flex-end;
   }
 
-  .coa-report-panel__body {
+  .smplfy-coa-report-panel-body {
     margin-top: 32px;
-    grid-template-columns: 1fr;
   }
 
-  .coa-report-panel__options .smplfy-card {
-    width: 100%;
-  }
-
-  .coa-template-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .coa-template-row__field {
-    width: 100%;
+  .smplfy-coa-report-options,
+  .smplfy-coa-report-templates-col,
+  .smplfy-coa-template-label,
+  .smplfy-coa-template-field {
+    max-width: 100%;
   }
 }

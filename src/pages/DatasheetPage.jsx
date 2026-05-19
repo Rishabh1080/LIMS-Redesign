@@ -8,21 +8,20 @@ import './datasheet-page.scss';
 
 function PageHeader({ datasheetId, loading, onBack, onRefresh, onSave }) {
   return (
-    <section className="datasheet-page-header">
-      <div className="datasheet-page-header__title-wrap">
-        <SecondaryButton size="medium" className="datasheet-page-header__back" aria-label="Go back" onClick={onBack}>
+    <section className="smplfy-datasheet-header d-flex align-items-center justify-content-between gap-3 bg-white border-bottom flex-wrap">
+      <div className="smplfy-datasheet-header-title d-flex align-items-center gap-3 min-w-0">
+        <SecondaryButton size="medium" className="smplfy-datasheet-header-back px-0" aria-label="Go back" onClick={onBack}>
           <AppIcon name="chevron-left" />
         </SecondaryButton>
-        <h1>{datasheetId}</h1>
+        <h1 className="h5 fw-semibold text-body mb-0">{datasheetId}</h1>
       </div>
 
-      <div className="datasheet-page-header__actions">
-        <SecondaryButton leftIcon="calendar" className="datasheet-page-header__action">
+      <div className="smplfy-datasheet-header-actions d-flex align-items-center gap-3 flex-wrap">
+        <SecondaryButton leftIcon="calendar">
           Calculate
         </SecondaryButton>
         <SecondaryButton
           size="large"
-          className="datasheet-page-header__refresh"
           aria-label="Refresh datasheet"
           disabled={loading}
           onClick={onRefresh}
@@ -87,11 +86,13 @@ export default function DatasheetPage({
         />
       }
     >
-      <main className="datasheet-page">
+      <main className="smplfy-datasheet-page d-flex bg-body-tertiary min-vh-100">
         {loadingRefresh ? (
           <LoadingAnimation title="Refreshing datasheet" />
         ) : (
-          <div className="datasheet-page__placeholder">Template content will be added here</div>
+          <div className="smplfy-datasheet-placeholder smplfy-card card flex-fill align-items-center justify-content-center text-center text-secondary">
+            Template content will be added here
+          </div>
         )}
       </main>
     </AppChrome>

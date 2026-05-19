@@ -8,13 +8,13 @@ function StepperItem({ label, state, position, onClick }) {
   const content = (
     <>
       {position !== 'first' ? (
-        <span className="smplfy-stepper-item__connector smplfy-stepper-item__connector--before" />
+        <span className="smplfy-stepper-connector smplfy-stepper-connector-before" />
       ) : null}
       {position !== 'last' ? (
-        <span className="smplfy-stepper-item__connector smplfy-stepper-item__connector--after" />
+        <span className="smplfy-stepper-connector smplfy-stepper-connector-after" />
       ) : null}
-      <span className="smplfy-stepper-item__indicator" />
-      <span className="smplfy-stepper-item__label">{label}</span>
+      <span className="smplfy-stepper-indicator" />
+      <span className="smplfy-stepper-label">{label}</span>
     </>
   );
 
@@ -30,7 +30,7 @@ function StepperItem({ label, state, position, onClick }) {
       )}
     >
       {onClick ? (
-        <button type="button" className="btn smplfy-stepper-item__button" onClick={onClick}>
+        <button type="button" className="btn smplfy-stepper-button" onClick={onClick}>
           {content}
         </button>
       ) : (

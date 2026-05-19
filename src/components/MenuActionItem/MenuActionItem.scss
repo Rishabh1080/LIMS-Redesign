@@ -1,6 +1,6 @@
 .smplfy-dropdown-menu.dropdown-menu {
   --bs-dropdown-min-width: var(--smplfy-dropdown-menu-min-width);
-  --bs-dropdown-padding-x: var(--smplfy-button-space-0);
+  --bs-dropdown-padding-x: var(--smplfy-dropdown-menu-padding);
   --bs-dropdown-padding-y: var(--smplfy-dropdown-menu-padding);
   --bs-dropdown-border-width: var(--smplfy-dropdown-menu-border-width);
   --bs-dropdown-border-color: var(--smplfy-dropdown-menu-border);
@@ -24,8 +24,8 @@
 }
 
 .smplfy-dropdown-item.dropdown-item {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
+  min-width: max-content;
   min-height: var(--smplfy-dropdown-item-min-height);
   padding:
     var(--smplfy-dropdown-item-padding-y)

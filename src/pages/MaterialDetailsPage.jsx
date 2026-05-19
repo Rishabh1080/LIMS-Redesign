@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
+import DataTable from '../components/DataTable';
 import { FormElement, ToastNotification } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import NavSelector from '../components/NavSelector';
@@ -37,7 +38,6 @@ function TransactionModal({ open, materialName, values, errors, onChange, onBlur
       titleIcon="refresh"
       onClose={onCancel}
       size="md"
-      bodyClassName="materials-transaction-modal__body"
       actions={
         <>
           <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>Cancel</SecondaryButton>
@@ -47,44 +47,46 @@ function TransactionModal({ open, materialName, values, errors, onChange, onBlur
     >
       <form
         id="material-details-transaction-form"
-        className="materials-transaction-modal__form"
+        className="d-flex flex-column gap-3"
         onSubmit={(e) => { e.preventDefault(); onSubmit(); }}
       >
-        <div className="materials-transaction-modal__type-selector" role="tablist">
+        <div className="nav nav-pills p-1 bg-body-tertiary border rounded" role="tablist" aria-label="Transaction type">
           {transactionTypeOptions.map((option) => (
-            <button
+            <NavSelector
               key={option.key}
               type="button"
+              size="medium"
               role="tab"
               aria-selected={values.type === option.key}
-              className={['materials-transaction-modal__type-option', values.type === option.key ? 'is-active' : ''].filter(Boolean).join(' ')}
+              active={values.type === option.key}
+              className="flex-fill"
               onClick={() => onChange('type', option.key)}
             >
               {option.label}
-            </button>
+            </NavSelector>
           ))}
         </div>
-        <div className="materials-transaction-modal__grid">
-          <div className="materials-transaction-modal__field">
+        <div className="row g-3">
+          <div className="col-12 col-md-6">
             <FormElement type="text" mandatory label="Quantity" message={errors.quantity} messageTone="error"
               inputProps={{ value: values.quantity, placeholder: 'eg.', onChange: (e) => onChange('quantity', e.target.value), onBlur: () => onBlur('quantity', values.quantity) }} />
           </div>
-          <div className="materials-transaction-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement type="text" mandatory label="Cost" message={errors.cost} messageTone="error"
               inputProps={{ value: values.cost, placeholder: 'eg.', onChange: (e) => onChange('cost', e.target.value), onBlur: () => onBlur('cost', values.cost) }} />
           </div>
           {isIn ? (
-            <div className="materials-transaction-modal__field">
+            <div className="col-12 col-md-6">
               <FormElement type="date" label="Expiry Date"
                 inputProps={{ value: values.expiryDate, placeholder: 'DD/MM/YYYY', onChange: (e) => onChange('expiryDate', e.target.value) }} />
             </div>
           ) : (
-            <div className="materials-transaction-modal__field">
+            <div className="col-12 col-md-6">
               <FormElement type="dropdown" mandatory label="Supplier" message={errors.supplier} messageTone="error"
                 inputProps={{ value: values.supplier, placeholder: 'Select a supplier', options: supplierOptions, onChange: (e) => onChange('supplier', e.target.value), onBlur: () => onBlur('supplier', values.supplier) }} />
             </div>
           )}
-          <div className="materials-transaction-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement type="text" mandatory label="Batch/Serial No." message={errors.batchSerialNumber} messageTone="error"
               inputProps={{ value: values.batchSerialNumber, placeholder: 'eg.', onChange: (e) => onChange('batchSerialNumber', e.target.value), onBlur: () => onBlur('batchSerialNumber', values.batchSerialNumber) }} />
           </div>
@@ -96,17 +98,16 @@ function TransactionModal({ open, materialName, values, errors, onChange, onBlur
 
 function MaterialDetailsHeader({ materialName, onBack, onNewTransaction }) {
   return (
-    <section className="material-details-page-header">
-      <div className="container-fluid h-100 px-0">
-        <div className="row h-100 align-items-center justify-content-between gx-0">
+    <section className="smplfy-material-details-header bg-white border-bottom px-4 py-3">
+      <div className="container-fluid px-0">
+        <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto d-flex align-items-center gap-3">
             <SecondaryButton
               leftIcon="chevron-left"
-              className="material-details-back"
               onClick={onBack}
               aria-label="Go back"
             />
-            <h1 className="material-details-page-header__title">{materialName}</h1>
+            <h1 className="h5 mb-0 fw-semibold text-dark">{materialName}</h1>
           </div>
           <div className="col-auto d-flex align-items-center gap-3">
             <SecondaryButton leftIcon="printer">
@@ -124,12 +125,12 @@ function MaterialDetailsHeader({ materialName, onBack, onNewTransaction }) {
 
 function StatBlock({ value, unit, label }) {
   return (
-    <div className="material-details-stat">
-      <div className="material-details-stat__value-row">
-        <span className="material-details-stat__value">{value}</span>
-        <span className="material-details-stat__unit">{unit}</span>
+    <div className="d-flex flex-column align-items-start gap-1">
+      <div className="d-flex align-items-end gap-2 py-2">
+        <span className="display-5 lh-1 mb-0 fw-normal text-dark">{value}</span>
+        <span className="small text-secondary pb-1">{unit}</span>
       </div>
-      <span className="material-details-stat__label">{label}</span>
+      <span className="small text-secondary">{label}</span>
     </div>
   );
 }
@@ -231,74 +232,83 @@ export default function MaterialDetailsPage({
         />
       }
     >
-      <main className="material-details-page">
-        <div className="container-fluid px-0 d-flex flex-column" style={{ gap: '16px' }}>
+      <main className="smplfy-material-details-page bg-body-tertiary p-4 min-vh-100">
+        <div className="container-fluid px-0 d-flex flex-column gap-3">
 
-          <div className="material-details-summary">
-            <div className="material-details-info-card">
-              <div className="material-details-info-card__content">
-                <h2 className="material-details-info-card__title">{materialName}</h2>
-                <div className="material-details-info-card__key-row">
-                  <span className="material-details-meta-label">Unique Key:</span>
-                  <span className="material-details-meta-value">{uniqueKey}</span>
+          <div className="row g-2 align-items-stretch">
+            <div className="col-12 col-xl">
+              <div className="smplfy-card card smplfy-material-details-summary-card h-100">
+                <div className="card-body row g-0 align-items-center">
+                  <div className="col-12 col-lg-6 px-3">
+                    <h2 className="fs-2 fw-normal lh-sm mb-2 text-dark">{materialName}</h2>
+                    <div className="d-flex align-items-center gap-2 mb-2">
+                      <span className="text-secondary">Unique Key:</span>
+                      <span className="fw-bold text-secondary">{uniqueKey}</span>
+                    </div>
+                    <p className="mb-0 text-secondary">{description}</p>
+                  </div>
+                  <div className="smplfy-material-details-stats col-12 col-lg-6 d-flex align-items-center justify-content-around gap-3 flex-wrap">
+                    <StatBlock value={currentQty} unit={unit} label="Current Quantity" />
+                    <StatBlock value={minQty} unit={unit} label="Min Quantity" />
+                  </div>
                 </div>
-                <p className="material-details-info-card__description">{description}</p>
-              </div>
-              <div className="material-details-info-card__stats">
-                <StatBlock value={currentQty} unit={unit} label="Current Quantity" />
-                <StatBlock value={minQty} unit={unit} label="Min Quantity" />
               </div>
             </div>
 
-            <div className="material-details-qr-card">
-              <img src={qrCode} alt="QR Code" width={120} height={120} />
+            <div className="col-12 col-xl-auto">
+              <div className="smplfy-card card smplfy-material-details-qr-card h-100">
+                <div className="card-body d-flex align-items-center justify-content-center">
+                  <img src={qrCode} alt="QR Code" width={120} height={120} />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="material-details-records-card">
-            <div className="material-details-tabs">
-              {tabs.map((tab) => (
-                <NavSelector
-                  key={tab.key}
-                  active={activeTab === tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                >
-                  {tab.label}
-                </NavSelector>
-              ))}
-            </div>
-
-            <div className="material-details-records-header">
-              <span className="material-details-records-count">{filteredRecords.length} Transactions</span>
-            </div>
-
-            <div className="material-details-table-wrapper">
-              <div className="material-details-table">
-                <div className="material-details-table__head">
-                  <span>Sr.</span>
-                  <span>Type</span>
-                  <span>Quantity</span>
-                  <span>Supplier/Batch</span>
-                  <span>Transaction Date</span>
-                  <span>Expiry Date</span>
-                  <span>Cost(s)</span>
-                  <span>By</span>
-                </div>
-                <div className="material-details-table__body">
-                  {filteredRecords.map((record, index) => (
-                    <div className="material-details-table__row" key={record.id}>
-                      <span>{index + 1}</span>
-                      <span>{record.type}</span>
-                      <span>{record.quantity}</span>
-                      <span>{record.supplierBatch}</span>
-                      <span>{record.transactionDate}</span>
-                      <span>{record.expiryDate}</span>
-                      <span>{record.cost}</span>
-                      <span>{record.by}</span>
-                    </div>
-                  ))}
-                </div>
+          <div className="smplfy-card card smplfy-material-details-records-card">
+            <div className="card-header bg-transparent p-0">
+              <div className="nav nav-tabs px-4 border-0">
+                {tabs.map((tab) => (
+                  <NavSelector
+                    key={tab.key}
+                    active={activeTab === tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    {tab.label}
+                  </NavSelector>
+                ))}
               </div>
+            </div>
+
+            <div className="card-body">
+              <div className="fw-medium text-dark mb-3">{filteredRecords.length} Transactions</div>
+              <DataTable>
+                <thead>
+                  <tr>
+                    <th scope="col">Sr.</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Supplier/Batch</th>
+                    <th scope="col">Transaction Date</th>
+                    <th scope="col">Expiry Date</th>
+                    <th scope="col">Cost(s)</th>
+                    <th scope="col">By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRecords.map((record, index) => (
+                    <tr key={record.id}>
+                      <td>{index + 1}</td>
+                      <td>{record.type}</td>
+                      <td>{record.quantity}</td>
+                      <td>{record.supplierBatch}</td>
+                      <td>{record.transactionDate}</td>
+                      <td>{record.expiryDate}</td>
+                      <td>{record.cost}</td>
+                      <td>{record.by}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </DataTable>
             </div>
           </div>
 
@@ -319,7 +329,7 @@ export default function MaterialDetailsPage({
       <ToastNotification
         state={toastVisible ? 'default' : 'gone'}
         message={toastMessage}
-        className="material-created-toast"
+        className="position-fixed bottom-0 start-0 m-4"
         onClose={() => setToastVisible(false)}
       />
     </AppChrome>

@@ -1,13 +1,10 @@
 .smplfy-btn-group.btn-group {
   position: relative;
-  width: var(--smplfy-split-button-width);
-  height: var(--smplfy-split-button-height);
-  border-radius: var(--smplfy-split-button-radius);
   display: inline-flex;
-  box-shadow: var(--smplfy-split-button-outline-shadow);
 }
 
-.smplfy-btn-group .smplfy-btn {
+.smplfy-btn-group.btn-group > .smplfy-btn:has(+ .dropdown-toggle-split),
+.smplfy-btn-group.btn-group > .dropdown-toggle-split.smplfy-btn {
   --bs-btn-border-width: var(--smplfy-button-space-0);
   --smplfy-button-current-height: var(--smplfy-split-button-height);
   --smplfy-button-current-gap: var(--smplfy-split-button-gap);
@@ -19,7 +16,7 @@
   box-shadow: none;
 }
 
-.smplfy-btn-group.btn-group > .smplfy-btn:first-child {
+.smplfy-btn-group.btn-group > .smplfy-btn:has(+ .dropdown-toggle-split) {
   width: var(--smplfy-split-button-primary-width);
   padding:
     var(--smplfy-split-button-padding-y)
@@ -28,6 +25,10 @@
   border-start-end-radius: var(--smplfy-button-space-0);
   border-end-start-radius: var(--smplfy-split-button-radius);
   border-end-end-radius: var(--smplfy-button-space-0);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--smplfy-split-button-gap);
 }
 
 .smplfy-btn-group.btn-group > .dropdown-toggle-split.smplfy-btn {
@@ -43,17 +44,6 @@
 
 .smplfy-btn-group.btn-group > .dropdown-toggle-split::after {
   display: none;
-}
-
-.smplfy-btn-group.btn-group > .smplfy-btn:first-child > .d-inline-flex {
-  width: var(--smplfy-split-button-icon-size);
-  height: var(--smplfy-split-button-icon-size);
-  flex: 0 0 var(--smplfy-split-button-icon-size);
-}
-
-.smplfy-btn-group.btn-group > .smplfy-btn:first-child > .d-inline-flex > svg {
-  width: var(--smplfy-split-button-icon-size);
-  height: var(--smplfy-split-button-icon-size);
 }
 
 .smplfy-btn-group.btn-group > .dropdown-menu {

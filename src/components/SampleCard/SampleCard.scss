@@ -137,52 +137,6 @@
   flex: 0 0 var(--smplfy-sample-card-parameters-summary-width);
 }
 
-.smplfy-sample-view-toggle.btn-group {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--smplfy-sample-card-view-toggle-padding);
-  border-radius: var(--smplfy-sample-card-view-toggle-radius);
-  background: var(--smplfy-sample-card-view-toggle-bg);
-  border: var(--smplfy-card-border-width) solid var(--smplfy-sample-card-view-toggle-border);
-  gap: var(--smplfy-sample-card-view-toggle-gap);
-}
-
-.smplfy-sample-view-toggle.btn-group .smplfy-btn.btn {
-  --smplfy-button-current-height: var(--smplfy-sample-card-view-toggle-button-height);
-  --smplfy-button-current-icon-size: var(--smplfy-sample-card-view-toggle-icon-size);
-  --bs-btn-padding-x: var(--smplfy-button-space-0);
-  --bs-btn-padding-y: var(--smplfy-button-space-0);
-  --bs-btn-color: var(--smplfy-primitive-neutral-700);
-  --bs-btn-bg: transparent;
-  --bs-btn-border-width: var(--smplfy-button-space-0);
-  --bs-btn-border-color: transparent;
-  --bs-btn-border-radius: var(--smplfy-sample-card-view-toggle-button-radius);
-  --bs-btn-hover-color: var(--smplfy-primitive-neutral-800);
-  --bs-btn-hover-bg: transparent;
-  --bs-btn-hover-border-color: transparent;
-  --bs-btn-active-color: var(--smplfy-primitive-blue-600);
-  --bs-btn-active-bg: var(--smplfy-primitive-neutral-100);
-  --bs-btn-active-border-color: transparent;
-  --bs-btn-active-shadow: var(--smplfy-sample-card-view-toggle-active-shadow);
-  --bs-btn-focus-box-shadow: none;
-
-  width: var(--smplfy-sample-card-view-toggle-button-width);
-  min-width: var(--smplfy-sample-card-view-toggle-button-width);
-  height: var(--smplfy-sample-card-view-toggle-button-height);
-  min-height: var(--smplfy-sample-card-view-toggle-button-height);
-  transition:
-    background-color var(--smplfy-field-transition),
-    color var(--smplfy-field-transition),
-    box-shadow var(--smplfy-field-transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.smplfy-sample-view-toggle.btn-group .smplfy-btn.btn.active {
-  box-shadow: var(--smplfy-sample-card-view-toggle-active-shadow);
-}
-
 @media (max-width: 1199.98px) {
   .smplfy-sample-card-layout {
     grid-template-columns: repeat(2, minmax(0, 1fr));

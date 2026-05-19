@@ -1,6 +1,6 @@
 import AppChrome from '../components/AppChrome/AppChrome';
+import DataTable from '../components/DataTable';
 import SecondaryButton from '../components/SecondaryButton';
-import './trainings-page.scss';
 
 export const defaultTrainings = [
   {
@@ -42,11 +42,11 @@ export const defaultTrainings = [
 
 function TrainingsHeader() {
   return (
-    <section className="trainings-page-header">
-      <div className="container-fluid h-100 px-0">
-        <div className="row h-100 align-items-center gx-0">
+    <section className="bg-white border-bottom px-4 py-3">
+      <div className="container-fluid px-0">
+        <div className="row align-items-center gx-0">
           <div className="col-auto">
-            <h1 className="trainings-page-header__title">Trainings</h1>
+            <h1 className="h5 mb-0 fw-semibold text-dark">Trainings</h1>
           </div>
         </div>
       </div>
@@ -72,33 +72,34 @@ export default function TrainingsPage({
       sidebarBadgeCounts={sidebarBadgeCounts}
       pageHeader={<TrainingsHeader />}
     >
-      <main className="trainings-page">
+      <main className="bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0">
-          <section className="trainings-listing">
-            <div className="trainings-listing__legend trainings-listing__grid">
-              <div className="trainings-listing__cell trainings-listing__cell--name">Name</div>
-              <div className="trainings-listing__cell trainings-listing__cell--description">Description</div>
-              <div className="trainings-listing__cell trainings-listing__cell--start-date">Start Date</div>
-              <div className="trainings-listing__cell trainings-listing__cell--end-date">End Date</div>
-              <div className="trainings-listing__cell trainings-listing__cell--actions">Actions</div>
-            </div>
-
-            <div className="trainings-listing__rows">
+          <DataTable>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
               {trainings.map((training) => (
-                <article className="trainings-listing__row trainings-listing__grid" key={training.id}>
-                  <div className="trainings-listing__cell trainings-listing__cell--name">
-                    <span className="trainings-listing__name">{training.name}</span>
-                  </div>
-                  <div className="trainings-listing__cell trainings-listing__cell--description">
+                <tr key={training.id}>
+                  <td>
+                    <span className="text-primary fw-semibold">{training.name}</span>
+                  </td>
+                  <td>
                     {training.description}
-                  </div>
-                  <div className="trainings-listing__cell trainings-listing__cell--start-date">
+                  </td>
+                  <td className="text-nowrap">
                     {training.startDate}
-                  </div>
-                  <div className="trainings-listing__cell trainings-listing__cell--end-date">
+                  </td>
+                  <td className="text-nowrap">
                     {training.endDate}
-                  </div>
-                  <div className="trainings-listing__cell trainings-listing__cell--actions trainings-listing__actions">
+                  </td>
+                  <td className="text-nowrap">
                     <SecondaryButton
                       size="medium"
                       leftIcon="external-link"
@@ -106,11 +107,11 @@ export default function TrainingsPage({
                     >
                       View
                     </SecondaryButton>
-                  </div>
-                </article>
+                  </td>
+                </tr>
               ))}
-            </div>
-          </section>
+            </tbody>
+          </DataTable>
         </div>
       </main>
     </AppChrome>

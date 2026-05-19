@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
+import DataTable from '../components/DataTable';
 import { FormElement, ToastNotification } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
+import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import './materials-page.scss';
 
 const defaultMaterials = [
   {
@@ -100,11 +101,11 @@ function formatDate(date = new Date()) {
 
 function MaterialsHeader({ onNewMaterial }) {
   return (
-    <section className="materials-page-header">
-      <div className="container-fluid h-100 px-0">
-        <div className="row h-100 align-items-center justify-content-between gx-0">
+    <section className="bg-white border-bottom px-4 py-3">
+      <div className="container-fluid px-0">
+        <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto">
-            <h1 className="materials-page-header__title">Material Management</h1>
+            <h1 className="h5 mb-0 fw-semibold text-dark">Material Management</h1>
           </div>
 
           <div className="col-auto">
@@ -139,11 +140,9 @@ function MaterialsFormModal({
       titleIcon="materials"
       onClose={onCancel}
       size="md"
-      bodyClassName="materials-modal__body"
-      actionsClassName="materials-modal__actions"
       actions={
         <>
-          <SecondaryButton leftIcon="close" size="large" className="materials-modal__cancel" onClick={onCancel}>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton type="submit" form="materials-form" leftIcon="save">
@@ -154,13 +153,13 @@ function MaterialsFormModal({
     >
       <form
         id="materials-form"
-        className="materials-modal__form"
+        className="d-flex flex-column gap-4"
         onSubmit={(event) => {
           event.preventDefault();
           onSubmit();
         }}
       >
-        <div className="materials-modal__field materials-modal__field--full">
+        <div>
           <FormElement
             type="text"
             mandatory
@@ -176,8 +175,8 @@ function MaterialsFormModal({
           />
         </div>
 
-        <div className="materials-modal__grid">
-          <div className="materials-modal__field">
+        <div className="row g-3">
+          <div className="col-12 col-md-6">
             <FormElement
               type="text"
               mandatory
@@ -193,7 +192,7 @@ function MaterialsFormModal({
             />
           </div>
 
-          <div className="materials-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="dropdown"
               mandatory
@@ -210,7 +209,7 @@ function MaterialsFormModal({
             />
           </div>
 
-          <div className="materials-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="text"
               mandatory
@@ -226,7 +225,7 @@ function MaterialsFormModal({
             />
           </div>
 
-          <div className="materials-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="text"
               mandatory
@@ -243,7 +242,7 @@ function MaterialsFormModal({
           </div>
         </div>
 
-        <div className="materials-modal__field materials-modal__field--full">
+        <div>
           <FormElement
             type="text"
             label="Description"
@@ -283,13 +282,11 @@ function MaterialTransactionModal({
       titleIcon="refresh"
       onClose={onCancel}
       size="md"
-      bodyClassName="materials-transaction-modal__body"
       actions={
         <>
           <SecondaryButton
             leftIcon="close"
             size="large"
-            className="materials-transaction-modal__cancel"
             onClick={onCancel}
           >
             Cancel
@@ -302,32 +299,34 @@ function MaterialTransactionModal({
     >
       <form
         id="materials-transaction-form"
-        className="materials-transaction-modal__form"
+        className="d-flex flex-column gap-4"
         onSubmit={(event) => {
           event.preventDefault();
           onSubmit();
         }}
       >
-        <div className="materials-transaction-modal__type-selector" role="tablist" aria-label="Transaction type">
+        <div className="nav nav-pills p-1 bg-body-tertiary border rounded" role="tablist" aria-label="Transaction type">
           {transactionTypeOptions.map((option) => {
             const isActive = values.type === option.key;
             return (
-              <button
+              <NavSelector
                 key={option.key}
                 type="button"
+                size="medium"
                 role="tab"
                 aria-selected={isActive}
-                className={['materials-transaction-modal__type-option', isActive ? 'is-active' : ''].filter(Boolean).join(' ')}
+                active={isActive}
+                className="flex-fill"
                 onClick={() => onChange('type', option.key)}
               >
                 {option.label}
-              </button>
+              </NavSelector>
             );
           })}
         </div>
 
-        <div className="materials-transaction-modal__grid">
-          <div className="materials-transaction-modal__field">
+        <div className="row g-3">
+          <div className="col-12 col-md-6">
             <FormElement
               type="text"
               mandatory
@@ -343,7 +342,7 @@ function MaterialTransactionModal({
             />
           </div>
 
-          <div className="materials-transaction-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="text"
               mandatory
@@ -360,7 +359,7 @@ function MaterialTransactionModal({
           </div>
 
           {isIn ? (
-            <div className="materials-transaction-modal__field">
+            <div className="col-12 col-md-6">
               <FormElement
                 type="date"
                 label="Expiry Date"
@@ -372,7 +371,7 @@ function MaterialTransactionModal({
               />
             </div>
           ) : (
-            <div className="materials-transaction-modal__field">
+            <div className="col-12 col-md-6">
               <FormElement
                 type="dropdown"
                 mandatory
@@ -390,7 +389,7 @@ function MaterialTransactionModal({
             </div>
           )}
 
-          <div className="materials-transaction-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="text"
               mandatory
@@ -407,7 +406,7 @@ function MaterialTransactionModal({
           </div>
 
           {isIn ? (
-            <div className="materials-transaction-modal__field materials-transaction-modal__field--full">
+            <div className="col-12">
               <FormElement
                 type="text"
                 label="Make/Supplier"
@@ -626,7 +625,7 @@ export default function MaterialsPage({
       onSidebarCollapsedChange={onSidebarCollapsedChange}
       pageHeader={<MaterialsHeader onNewMaterial={openModal} />}
     >
-      <main className="materials-page">
+      <main className="bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0">
           <MaterialsFormModal
             open={modalOpen}
@@ -647,69 +646,69 @@ export default function MaterialsPage({
             onCancel={closeTransactionModal}
             onSubmit={handleTransactionSubmit}
           />
-          <section className="materials-listing">
-            <div className="materials-listing__legend materials-listing__grid">
-              <div className="materials-listing__cell materials-listing__cell--name">Name</div>
-              <div className="materials-listing__cell materials-listing__cell--description">Description</div>
-              <div className="materials-listing__cell materials-listing__cell--key">Key</div>
-              <div className="materials-listing__cell materials-listing__cell--created">Created</div>
-              <div className="materials-listing__cell materials-listing__cell--actions">Action</div>
-            </div>
-
-            <div className="materials-listing__rows">
+          <DataTable>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Key</th>
+                <th scope="col">Created</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
               {visibleMaterials.map((material) => (
-                <article className="materials-listing__row materials-listing__grid" key={material.id}>
-                  <div className="materials-listing__cell materials-listing__cell--name">
+                <tr key={material.id}>
+                  <td>
                     <a
                       href="/"
-                      className="materials-listing__link"
+                      className="smplfy-link link-primary p-0"
                       onClick={(event) => { event.preventDefault(); onOpenMaterial?.(material.id, material.name); }}
                     >
-                      {material.name}
+                      <span>{material.name}</span>
                     </a>
-                  </div>
-                  <div className="materials-listing__cell materials-listing__cell--description">
+                  </td>
+                  <td>
                     {material.description}
-                  </div>
-                  <div className="materials-listing__cell materials-listing__cell--key">{material.key}</div>
-                  <div className="materials-listing__cell materials-listing__cell--created">{material.created}</div>
-                  <div className="materials-listing__cell materials-listing__cell--actions materials-listing__actions">
-                    <SecondaryButton
-                      size="medium"
-                      leftIcon="edit"
-                      className="materials-listing__action-button"
-                      onClick={() => onEditMaterial?.(material.id)}
-                    >
-                      Edit
-                    </SecondaryButton>
-                    <SecondaryButton
-                      size="medium"
-                      leftIcon="trash"
-                      className="materials-listing__action-button"
-                      onClick={() => onDeleteMaterial?.(material.id)}
-                    >
-                      Delete
-                    </SecondaryButton>
-                    <PrimaryButton
-                      size="medium"
-                      className="materials-listing__action-button materials-listing__action-button--primary"
-                      leftIcon="plus"
-                      onClick={() => openTransactionModal(material)}
-                    >
-                      New Transaction
-                    </PrimaryButton>
-                  </div>
-                </article>
+                  </td>
+                  <td className="text-nowrap">{material.key}</td>
+                  <td className="text-nowrap">{material.created}</td>
+                  <td className="text-nowrap">
+                    <div className="d-flex align-items-center gap-2 flex-nowrap">
+                      <SecondaryButton
+                        size="medium"
+                        leftIcon="edit"
+                        onClick={() => onEditMaterial?.(material.id)}
+                      >
+                        Edit
+                      </SecondaryButton>
+                      <SecondaryButton
+                        size="medium"
+                        leftIcon="trash"
+                        onClick={() => onDeleteMaterial?.(material.id)}
+                      >
+                        Delete
+                      </SecondaryButton>
+                      <PrimaryButton
+                        size="medium"
+                        leftIcon="plus"
+                        onClick={() => openTransactionModal(material)}
+                      >
+                        New Transaction
+                      </PrimaryButton>
+                    </div>
+                  </td>
+                </tr>
               ))}
-            </div>
-          </section>
+            </tbody>
+          </DataTable>
         </div>
       </main>
 
       <ToastNotification
         state={toastVisible ? 'default' : 'gone'}
         message={toastMessage}
-        className="material-created-toast"
+        className="position-fixed bottom-0 start-0 m-4"
         onClose={() => setToastVisible(false)}
       />
     </AppChrome>

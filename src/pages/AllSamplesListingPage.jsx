@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import AppIcon from '../components/AppIcon';
 import AppChrome from '../components/AppChrome/AppChrome';
 import Checkbox from '../components/Checkbox/Checkbox';
+import DataTable from '../components/DataTable';
 import { FormElement, ToastNotification } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import NavSelector from '../components/NavSelector';
@@ -119,15 +120,15 @@ function ListingTabs({ activeTab, onTabChange }) {
   const rightTabs = sampleCategories.filter((tab) => tab.group === 'right');
 
   return (
-    <section className="all-samples-tabs">
-      <div className="container-fluid h-100 px-4">
-        <div className="row h-100 gx-0 align-items-stretch flex-nowrap">
+    <section className="smplfy-all-samples-tabs bg-white border-bottom">
+      <div className="container-fluid px-4">
+        <div className="row gx-0 align-items-stretch flex-nowrap">
           <div className="col">
-            <div className="all-samples-tabs__group">
+            <div className="smplfy-all-samples-tabs-group nav nav-tabs flex-nowrap overflow-auto border-0">
               {leftTabs.map((tab) => (
                 <NavSelector
                   key={tab.key}
-                  className="all-samples-tabs__item"
+                  className="text-nowrap smplfy-all-samples-tab"
                   active={activeTab === tab.key}
                   onClick={() => onTabChange(tab.key)}
                 >
@@ -138,11 +139,11 @@ function ListingTabs({ activeTab, onTabChange }) {
           </div>
 
           <div className="col-auto ms-auto">
-            <div className="all-samples-tabs__group is-right">
+            <div className="smplfy-all-samples-tabs-group nav nav-tabs flex-nowrap justify-content-end border-0">
               {rightTabs.map((tab) => (
                 <NavSelector
                   key={tab.key}
-                  className="all-samples-tabs__item"
+                  className="text-nowrap smplfy-all-samples-tab"
                   active={activeTab === tab.key}
                   onClick={() => onTabChange(tab.key)}
                 >
@@ -162,35 +163,37 @@ function ListingSearch({ activeTab, searchValue, onSearchChange, onOpenFilters, 
     sampleCategories.find((tab) => tab.key === activeTab)?.label ?? 'All Samples';
 
   return (
-    <section className="all-samples-search">
-      <div className="container-fluid px-4 h-100">
+    <section className="smplfy-all-samples-search bg-white">
+      <div className="container-fluid px-4">
         <div className="row h-100 align-items-center gx-3">
-          <div className="col">
-            <div className="all-samples-search__toolbar">
-              <div className="all-samples-search__left">
-                <div className="all-samples-search__shell">
-                  <div className="all-samples-search__field">
-                    <AppIcon name="search" />
-                    <input
-                      className="all-samples-search__input"
-                      type="text"
-                      value={searchValue}
-                      onChange={(event) => onSearchChange(event.target.value)}
-                      placeholder={`Search in ${activeCategoryLabel}`}
-                    />
-                  </div>
-                  <button className="btn all-samples-search__submit" aria-label="Search samples">
-                    <AppIcon name="chevron-right" />
-                  </button>
-                </div>
-                <button className="btn all-samples-search__filters" onClick={onOpenFilters}>
-                  <AppIcon name="filter" />
-                  <span>All Filters</span>
-                </button>
-              </div>
-              <div className="all-samples-search__right">{actions}</div>
+          <div className="col-xl-5 col-lg-6 col-12">
+            <div className="smplfy-all-samples-search-group input-group flex-nowrap">
+              <span className="input-group-text text-secondary">
+                <AppIcon name="search" />
+              </span>
+              <input
+                className="smplfy-form-control form-control"
+                type="text"
+                value={searchValue}
+                onChange={(event) => onSearchChange(event.target.value)}
+                placeholder={`Search in ${activeCategoryLabel}`}
+              />
+              <button className="smplfy-btn btn btn-primary" aria-label="Search samples">
+                <AppIcon name="chevron-right" />
+              </button>
             </div>
           </div>
+          <div className="col-auto">
+            <button
+              type="button"
+              className="smplfy-btn btn btn-link text-secondary text-decoration-none border-0 bg-transparent shadow-none"
+              onClick={onOpenFilters}
+            >
+                  <AppIcon name="filter" />
+                  <span>All Filters</span>
+            </button>
+          </div>
+          {actions ? <div className="col d-flex justify-content-end">{actions}</div> : null}
         </div>
       </div>
     </section>
@@ -219,19 +222,18 @@ function ActiveFilterPills({ appliedFilters, onRemoveFilter }) {
   }
 
   return (
-    <section className="all-samples-filters-applied">
+    <section className="smplfy-all-samples-filter-pills bg-white">
       <div className="container-fluid px-4">
-        <div className="all-samples-filters-applied__inner">
+        <div className="d-flex flex-wrap gap-2 pb-2">
         {activeEntries.map((filter) => (
-          <div className="all-samples-filter-pill" key={filter.key}>
+          <div className="smplfy-badge badge text-secondary bg-white border border-secondary-subtle d-inline-flex align-items-center gap-2" key={filter.key}>
             <span>{`${filter.label}: ${filter.value}`}</span>
             <button
-              className="btn all-samples-filter-pill__close"
+              type="button"
+              className="btn-close"
               aria-label={`Remove ${filter.label} filter`}
               onClick={() => onRemoveFilter(filter.key)}
-            >
-              <AppIcon name="close" />
-            </button>
+            />
           </div>
         ))}
         </div>
@@ -241,18 +243,20 @@ function ActiveFilterPills({ appliedFilters, onRemoveFilter }) {
 }
 
 function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
+  if (!open) {
+    return null;
+  }
+
   return (
     <>
-      <div className={`all-samples-filters-backdrop ${open ? 'is-visible' : ''}`} onClick={onCancel} />
-      <aside className={`all-samples-filters-drawer ${open ? 'is-open' : ''}`}>
-        <div className="all-samples-filters-drawer__header">
-          <h2>All Filters</h2>
-          <button className="btn all-samples-filters-drawer__close" aria-label="Close filters" onClick={onCancel}>
-            <AppIcon name="close" />
-          </button>
+      <div className="smplfy-all-samples-offcanvas-backdrop offcanvas-backdrop fade show" onClick={onCancel} />
+      <aside className="smplfy-all-samples-offcanvas offcanvas offcanvas-end show" tabIndex="-1" role="dialog" aria-modal="true" aria-labelledby="all-samples-filters-title">
+        <div className="offcanvas-header border-bottom">
+          <h2 className="offcanvas-title h5 mb-0" id="all-samples-filters-title">All Filters</h2>
+          <button type="button" className="btn-close" aria-label="Close filters" onClick={onCancel} />
         </div>
 
-        <div className="all-samples-filters-drawer__body">
+        <div className="offcanvas-body d-flex flex-column gap-3">
           {filterConfig.map((filter) => (
             <FormElement
               key={filter.key}
@@ -269,11 +273,11 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
           ))}
         </div>
 
-        <div className="all-samples-filters-drawer__footer">
-          <SecondaryButton className="all-samples-filters-drawer__cancel" onClick={onCancel}>
+        <div className="smplfy-all-samples-offcanvas-footer d-flex justify-content-between gap-3 border-top">
+          <SecondaryButton onClick={onCancel}>
             Cancel
           </SecondaryButton>
-          <button className="btn all-samples-filters-drawer__apply" onClick={onApply}>
+          <button type="button" className="smplfy-btn btn btn-primary" onClick={onApply}>
             Apply
           </button>
         </div>
@@ -284,15 +288,15 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
 
 function ListingBody({ samples, onOpenSample, onEditSample, viewMode, onViewModeChange }) {
   return (
-    <main className="all-samples-page">
+    <main className="smplfy-all-samples-page bg-body-tertiary flex-grow-1">
       <div className="container-fluid px-4">
-        <div className="all-samples-page__content">
-          <div className="all-samples-page__header">
+        <div className="w-100">
+          <div className="smplfy-all-samples-page-header d-flex align-items-center justify-content-between gap-3 flex-wrap text-secondary fw-medium">
             <span>{samples.length} Total Samples</span>
             <SampleCardViewToggle value={viewMode} onChange={onViewModeChange} />
           </div>
 
-          <div className="all-samples-page__list">
+          <div className="smplfy-all-samples-list d-flex flex-column">
             {samples.length ? (
               samples.map((sample, index) => {
                 const { extraMetaFields, extraDateFields } = getSampleDisplayExtras(sample);
@@ -311,7 +315,11 @@ function ListingBody({ samples, onOpenSample, onEditSample, viewMode, onViewMode
                 );
               })
             ) : (
-              <div className="all-samples-page__empty">No samples found for this view.</div>
+              <div className="smplfy-card card">
+                <div className="card-body d-flex align-items-center justify-content-center text-secondary fw-medium">
+                  No samples found for this view.
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -331,77 +339,80 @@ function RetainedListing({
   const allSelected = Boolean(samples.length) && selectedIds.length === samples.length;
 
   return (
-    <main className="all-samples-page all-samples-page--retained">
+    <main className="smplfy-all-samples-page bg-body-tertiary flex-grow-1">
       <div className="container-fluid px-4">
-        <div className="retained-samples">
-          <div className="retained-samples__legend retained-samples__grid">
-            <div className="retained-samples__checkbox-cell retained-samples__checkbox-cell--legend">
-              <Checkbox
-                checked={allSelected}
-                ariaLabel="Select all retained samples"
-                onChange={onToggleAll}
-              />
-            </div>
-            <div className="retained-samples__cell retained-samples__cell--id retained-samples__cell--legend">Remnant ID</div>
-            <div className="retained-samples__cell retained-samples__cell--meta retained-samples__cell--legend">Tested At</div>
-            <div className="retained-samples__cell retained-samples__cell--meta retained-samples__cell--legend">Tested By</div>
-            <div className="retained-samples__cell retained-samples__cell--meta retained-samples__cell--legend">Retention Date</div>
-            <div className="retained-samples__cell retained-samples__cell--action retained-samples__cell--legend">Action</div>
-          </div>
-
-          <div className="retained-samples__rows">
-            {samples.length ? (
-              samples.map((sample) => (
-                <article className="retained-samples__row retained-samples__grid" key={sample.id}>
-                  <div className="retained-samples__checkbox-cell">
+        <div className="pt-4">
+          {samples.length ? (
+            <DataTable>
+              <thead>
+                <tr>
+                  <th scope="col" className="text-center">
                     <Checkbox
-                      checked={selectedIds.includes(sample.id)}
-                      ariaLabel={`Select ${sample.remnantId ?? sample.id}`}
-                      onChange={(nextChecked) => onToggleSample(sample.id, nextChecked)}
+                      checked={allSelected}
+                      ariaLabel="Select all retained samples"
+                      onChange={onToggleAll}
                     />
-                  </div>
-                  <div className="retained-samples__cell retained-samples__cell--id">
-                    <a
-                      href="/"
-                      className="retained-samples__link"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        onOpenSample?.(sample.id, {
-                          sourcePage: 'all-samples',
-                          sampleStatus: sample.status,
-                          createdOn: sample.createdOn,
-                        });
-                      }}
-                    >
-                      {sample.remnantId ?? sample.id}
-                    </a>
-                  </div>
-                  <div className="retained-samples__cell retained-samples__cell--meta">{sample.testedAt}</div>
-                  <div className="retained-samples__cell retained-samples__cell--meta">{sample.testedBy}</div>
-                  <div className="retained-samples__cell retained-samples__cell--meta">{sample.retentionDate}</div>
-                  <div className="retained-samples__cell retained-samples__cell--action retained-samples__actions">
-                    <SecondaryButton
-                      size="medium"
-                      leftIcon="trash"
-                      className="retained-samples__action-button"
-                      onClick={() => onOpenDisposeModal([sample])}
-                    >
-                      Dispose
-                    </SecondaryButton>
-                    <SecondaryButton
-                      size="medium"
-                      leftIcon="send"
-                      className="retained-samples__action-button"
-                    >
-                      Send for IQC
-                    </SecondaryButton>
-                  </div>
-                </article>
-              ))
-            ) : (
-              <div className="all-samples-page__empty">No samples found for this view.</div>
-            )}
-          </div>
+                  </th>
+                  <th scope="col">Remnant ID</th>
+                  <th scope="col">Tested At</th>
+                  <th scope="col">Tested By</th>
+                  <th scope="col">Retention Date</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {samples.map((sample) => (
+                  <tr key={sample.id}>
+                    <td className="text-center">
+                      <Checkbox
+                        checked={selectedIds.includes(sample.id)}
+                        ariaLabel={`Select ${sample.remnantId ?? sample.id}`}
+                        onChange={(nextChecked) => onToggleSample(sample.id, nextChecked)}
+                      />
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="smplfy-link link-primary btn btn-link p-0 text-start text-decoration-none"
+                        onClick={() =>
+                          onOpenSample?.(sample.id, {
+                            sourcePage: 'all-samples',
+                            sampleStatus: sample.status,
+                            createdOn: sample.createdOn,
+                          })
+                        }
+                      >
+                        {sample.remnantId ?? sample.id}
+                      </button>
+                    </td>
+                    <td>{sample.testedAt}</td>
+                    <td>{sample.testedBy}</td>
+                    <td>{sample.retentionDate}</td>
+                    <td>
+                      <div className="d-flex align-items-center gap-2 flex-wrap">
+                        <SecondaryButton
+                          size="medium"
+                          leftIcon="trash"
+                          onClick={() => onOpenDisposeModal([sample])}
+                        >
+                          Dispose
+                        </SecondaryButton>
+                        <SecondaryButton size="medium" leftIcon="send">
+                          Send for IQC
+                        </SecondaryButton>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          ) : (
+            <div className="smplfy-card card">
+              <div className="card-body d-flex align-items-center justify-content-center text-secondary fw-medium">
+                No samples found for this view.
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </main>
@@ -410,78 +421,69 @@ function RetainedListing({
 
 function DisposedListing({ samples, onOpenSample }) {
   return (
-    <main className="all-samples-page all-samples-page--disposed">
+    <main className="smplfy-all-samples-page bg-body-tertiary flex-grow-1">
       <div className="container-fluid px-4">
-        <div className="disposed-samples">
-          <div className="disposed-samples__legend disposed-samples__grid">
-            <div className="disposed-samples__cell disposed-samples__cell--id disposed-samples__cell--legend">
-              Remnant ID
+        <div className="pt-4">
+          {samples.length ? (
+            <DataTable>
+              <thead>
+                <tr>
+                  <th scope="col">Remnant ID</th>
+                  <th scope="col">Tested At</th>
+                  <th scope="col">Retention Date</th>
+                  <th scope="col">Disposal Date</th>
+                  <th scope="col">Disposal Remarks</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {samples.map((sample) => (
+                  <tr key={sample.id}>
+                    <td>
+                      <button
+                        type="button"
+                        className="smplfy-link link-primary btn btn-link p-0 text-start text-decoration-none"
+                        onClick={() =>
+                          onOpenSample?.(sample.id, {
+                            sourcePage: 'all-samples',
+                            sampleStatus: sample.status,
+                            createdOn: sample.createdOn,
+                          })
+                        }
+                      >
+                        {sample.remnantId ?? sample.id}
+                      </button>
+                    </td>
+                    <td>{sample.testedAt}</td>
+                    <td>{sample.retentionDate}</td>
+                    <td>{sample.disposalDate}</td>
+                    <td>{sample.disposalRemarks}</td>
+                    <td>
+                      <SecondaryButton
+                        size="medium"
+                        leftIcon="arrow-up-right"
+                        onClick={() =>
+                          onOpenSample?.(sample.id, {
+                            sourcePage: 'all-samples',
+                            sampleStatus: sample.status,
+                            createdOn: sample.createdOn,
+                          })
+                        }
+                      >
+                        Open
+                      </SecondaryButton>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+          ) : (
+            <div className="smplfy-card card">
+              <div className="card-body d-flex align-items-center justify-content-center text-secondary fw-medium">
+                No samples found for this view.
+              </div>
             </div>
-            <div className="disposed-samples__cell disposed-samples__cell--meta disposed-samples__cell--legend">
-              Tested At
-            </div>
-            <div className="disposed-samples__cell disposed-samples__cell--meta disposed-samples__cell--legend">
-              Retention Date
-            </div>
-            <div className="disposed-samples__cell disposed-samples__cell--meta disposed-samples__cell--legend">
-              Disposal Date
-            </div>
-            <div className="disposed-samples__cell disposed-samples__cell--remarks disposed-samples__cell--legend">
-              Disposal Remarks
-            </div>
-            <div className="disposed-samples__cell disposed-samples__cell--action disposed-samples__cell--legend">
-              Action
-            </div>
-          </div>
-
-          <div className="disposed-samples__rows">
-            {samples.length ? (
-              samples.map((sample) => (
-                <article className="disposed-samples__row disposed-samples__grid" key={sample.id}>
-                  <div className="disposed-samples__cell disposed-samples__cell--id">
-                    <a
-                      href="/"
-                      className="disposed-samples__link"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        onOpenSample?.(sample.id, {
-                          sourcePage: 'all-samples',
-                          sampleStatus: sample.status,
-                          createdOn: sample.createdOn,
-                        });
-                      }}
-                    >
-                      {sample.remnantId ?? sample.id}
-                    </a>
-                  </div>
-                  <div className="disposed-samples__cell disposed-samples__cell--meta">{sample.testedAt}</div>
-                  <div className="disposed-samples__cell disposed-samples__cell--meta">{sample.retentionDate}</div>
-                  <div className="disposed-samples__cell disposed-samples__cell--meta">{sample.disposalDate}</div>
-                  <div className="disposed-samples__cell disposed-samples__cell--remarks">
-                    {sample.disposalRemarks}
-                  </div>
-                  <div className="disposed-samples__cell disposed-samples__cell--action disposed-samples__actions">
-                    <SecondaryButton
-                      size="medium"
-                      leftIcon="arrow-up-right"
-                      className="disposed-samples__action-button"
-                      onClick={() =>
-                        onOpenSample?.(sample.id, {
-                          sourcePage: 'all-samples',
-                          sampleStatus: sample.status,
-                          createdOn: sample.createdOn,
-                        })
-                      }
-                    >
-                      Open
-                    </SecondaryButton>
-                  </div>
-                </article>
-              ))
-            ) : (
-              <div className="all-samples-page__empty">No samples found for this view.</div>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </main>
@@ -502,18 +504,6 @@ function DisposeSamplesModal({
     disposeCount === 1 ? 'sample' : 'samples'
   }. This action cannot be undone.`;
 
-  const handleTableWheel = (event) => {
-    const element = event.currentTarget;
-    const { scrollTop, scrollHeight, clientHeight } = element;
-    const deltaY = event.deltaY;
-    const atTop = scrollTop <= 0;
-    const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
-
-    if ((deltaY < 0 && atTop) || (deltaY > 0 && atBottom)) {
-      event.preventDefault();
-    }
-  };
-
   return (
     <Modal
       open={open}
@@ -522,11 +512,11 @@ function DisposeSamplesModal({
       titleIcon="trash"
       onClose={onCancel}
       size="lg"
-      bodyClassName="dispose-samples-modal__body"
-      actionsClassName="dispose-samples-modal__actions"
+      bodyClassName="pt-3 pb-4"
+      actionsClassName="justify-content-between"
       actions={
         <>
-          <SecondaryButton leftIcon="close" size="large" className="dispose-samples-modal__cancel" onClick={onCancel}>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton leftIcon="trash" styleVariant="destructive" onClick={onSubmit}>
@@ -535,34 +525,36 @@ function DisposeSamplesModal({
         </>
       }
     >
-      <div className="dispose-samples-modal__content">
-        <div className="dispose-samples-modal__alert">
-          <span className="dispose-samples-modal__alert-icon" aria-hidden="true">
+      <div className="d-flex flex-column gap-4">
+        <div className="alert alert-danger d-flex align-items-center gap-3 mb-0" role="alert">
+          <span className="d-inline-flex align-items-center justify-content-center flex-shrink-0" aria-hidden="true">
             <AppIcon name="alert-circle" size={24} />
           </span>
           <span>{message}</span>
         </div>
 
-        <div className="dispose-samples-modal__table">
-          <div className="dispose-samples-modal__table-head">
-            <span>Sr.</span>
-            <span>Remnant ID</span>
-            <span>Tested At</span>
-            <span>Retention Date</span>
-          </div>
-          <div className="dispose-samples-modal__table-body" onWheel={handleTableWheel}>
+        <DataTable className="table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Sr.</th>
+              <th scope="col">Remnant ID</th>
+              <th scope="col">Tested At</th>
+              <th scope="col">Retention Date</th>
+            </tr>
+          </thead>
+          <tbody>
             {samples.map((sample, index) => (
-              <div className="dispose-samples-modal__table-row" key={sample.id}>
-                <span>{index + 1}</span>
-                <span>{sample.remnantId ?? sample.id}</span>
-                <span>{sample.testedAt}</span>
-                <span>{sample.retentionDate}</span>
-              </div>
+              <tr key={sample.id}>
+                <td>{index + 1}</td>
+                <td>{sample.remnantId ?? sample.id}</td>
+                <td>{sample.testedAt}</td>
+                <td>{sample.retentionDate}</td>
+              </tr>
             ))}
-          </div>
-        </div>
+          </tbody>
+        </DataTable>
 
-        <div className="dispose-samples-modal__field">
+        <div>
           <FormElement
             type="text"
             mandatory
@@ -842,7 +834,7 @@ export default function AllSamplesListingPage({
         key={toastMessage}
         state={toastVisible ? 'default' : 'gone'}
         message={toastMessage}
-        className="retained-samples__toast"
+        className="position-fixed bottom-0 start-0 m-4"
         onClose={() => setToastVisible(false)}
       />
     </AppChrome>

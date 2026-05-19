@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import LoadingAnimation from '../components/LoadingAnimation/LoadingAnimation';
@@ -15,16 +15,6 @@ const reportRows = [
   { key: 'etp-feed-water', label: 'ETP Feed Water', hasNabl: true },
 ];
 
-const reportGroupDefinitions = [
-  {
-    id: 'product-wise',
-    title: 'Product Wise Reports (3)',
-    rows: reportRows,
-  },
-  { id: 'consolidated', title: 'Consolidated Reports (3)', rows: reportRows },
-  { id: 'parameter-wise', title: 'Parameter Wise Reports (3)', rows: reportRows },
-];
-
 const versionOptions = [
   { value: 'v1-23-feb-2026', label: 'V1 - 23 Feb 2026' },
   { value: 'v2-03-mar-2026', label: 'V2 - 03 Mar 2026' },
@@ -33,24 +23,21 @@ const versionOptions = [
 
 function PageHeader({ reportId, version, loading, onBack, onFinalize, onVersionChange }) {
   return (
-    <section className="temp-report-page-header">
-      <div className="temp-report-page-header__title-wrap">
-        <SecondaryButton size="medium" className="temp-report-page-header__back" aria-label="Go back" onClick={onBack}>
-          <AppIcon name="chevron-left" />
-        </SecondaryButton>
-        <h1>{reportId}</h1>
+    <section className="smplfy-temp-report-header bg-white border-bottom d-flex align-items-center justify-content-between gap-3 flex-wrap">
+      <div className="smplfy-temp-report-header-title d-flex align-items-center gap-3">
+        <SecondaryButton size="medium" className="smplfy-temp-report-header-back" leftIcon="chevron-left" aria-label="Go back" onClick={onBack} />
+        <h1 className="h6 mb-0 fw-semibold text-dark">{reportId}</h1>
         <VersionSelector
           value={version}
           options={versionOptions}
           disabled={loading}
-          className="temp-report-page-header__version"
           onChange={onVersionChange}
         />
       </div>
 
-      <div className="temp-report-page-header__actions">
+      <div className="smplfy-temp-report-header-actions d-flex align-items-center gap-3 flex-wrap">
         <SplitSecondaryButton label="Print" leftIcon="file-text" />
-        <SecondaryButton leftIcon="file-text" className="temp-report-page-header__finalize" onClick={onFinalize}>
+        <SecondaryButton leftIcon="file-text" onClick={onFinalize}>
           Finalize
         </SecondaryButton>
         <MoreActionButton />
@@ -71,26 +58,18 @@ export default function TempReportPage({
 }) {
   const refreshTimerRef = useRef(0);
   const finalizeTimerRef = useRef(0);
-  const reportGroups = useMemo(
-    () =>
-      reportGroupDefinitions.map((group) => ({
-        ...group,
-        rows: group.rows.map((row) => ({
-          ...row,
-          id: `${group.id}-${row.key}`,
-        })),
-      })),
-    [],
-  );
-  const [expandedGroupId, setExpandedGroupId] = useState(reportGroups[0]?.id ?? '');
-  const [selectedReportId, setSelectedReportId] = useState(reportGroups[0]?.rows[0]?.id ?? '');
+  const productReportRows = reportRows.map((row) => ({
+    ...row,
+    id: `product-wise-${row.key}`,
+  }));
+  const [selectedReportId, setSelectedReportId] = useState(productReportRows[0]?.id ?? '');
   const [selectedVersion, setSelectedVersion] = useState(versionOptions[0]?.value ?? '');
   const [loadingVersion, setLoadingVersion] = useState(false);
   const [loadingFinalize, setLoadingFinalize] = useState(false);
   const sourceLabel = sourcePage === 'all-samples' ? 'All Samples' : 'Samples Workspace';
   const activeNav = sourcePage === 'all-samples' ? 'all-samples' : 'samples-workspace';
   const selectedReport =
-    reportGroups.flatMap((group) => group.rows).find((row) => row.id === selectedReportId) ?? reportGroups[0]?.rows[0];
+    productReportRows.find((row) => row.id === selectedReportId) ?? productReportRows[0];
   const selectedVersionLabel =
     versionOptions.find((option) => option.value === selectedVersion)?.label ?? versionOptions[0]?.label;
 
@@ -106,8 +85,7 @@ export default function TempReportPage({
     setLoadingVersion(true);
     refreshTimerRef.current = window.setTimeout(() => {
       setSelectedVersion(version);
-      setExpandedGroupId(reportGroups[0]?.id ?? '');
-      setSelectedReportId(reportGroups[0]?.rows[0]?.id ?? '');
+      setSelectedReportId(productReportRows[0]?.id ?? '');
       setLoadingVersion(false);
     }, 1200);
   };
@@ -142,61 +120,45 @@ export default function TempReportPage({
         />
       }
     >
-      <main className="temp-report-page">
+      <main className="smplfy-temp-report-page bg-body-tertiary min-vh-100">
         {loadingVersion || loadingFinalize ? (
           <LoadingAnimation
             title={loadingFinalize ? 'Finalising report' : 'Refreshing report version'}
           />
         ) : (
-          <>
-            <aside className="temp-report-sidebar">
-              {reportGroups.map((group) => (
-                <section className={`temp-report-group ${group.id === expandedGroupId ? 'is-expanded' : ''}`} key={group.id}>
-                  <button
-                    type="button"
-                    className="temp-report-group__header"
-                    onClick={() => {
-                      setExpandedGroupId(group.id);
-                      setSelectedReportId(group.rows[0]?.id ?? '');
-                    }}
-                    aria-expanded={group.id === expandedGroupId}
-                  >
-                    <div className="temp-report-group__header-copy">
-                      <div className="temp-report-group__title">{group.title}</div>
-                      {group.id === expandedGroupId ? (
-                        <div className="temp-report-group__subtitle">Select a report to view</div>
-                      ) : null}
-                    </div>
-                    <AppIcon
-                      name="chevron-down"
-                      className="temp-report-group__chevron"
-                    />
-                  </button>
+          <div className="smplfy-temp-report-grid row g-3 align-items-stretch">
+            <aside className="smplfy-temp-report-sidebar col-12 col-xl-3 d-flex flex-column gap-3">
+              <section className="smplfy-temp-report-group smplfy-card card overflow-hidden">
+                <div className="smplfy-temp-report-group-header w-100 d-flex align-items-center justify-content-between text-start">
+                  <div className="smplfy-temp-report-group-copy">
+                    <div className="fw-semibold text-dark">Product Wise Reports (3)</div>
+                    <div className="text-secondary fw-normal mt-1">Select a report to view</div>
+                  </div>
+                </div>
 
-                  {group.id === expandedGroupId ? (
-                    <div className="temp-report-group__rows">
-                      {group.rows.map((row) => (
-                        <ReportSelector
-                          key={row.id}
-                          label={row.label}
-                          state={row.id === selectedReportId ? 'active' : 'default'}
-                          hasNabl={row.hasNabl}
-                          onClick={() => setSelectedReportId(row.id)}
-                        />
-                      ))}
-                    </div>
-                  ) : null}
-                </section>
-              ))}
+                <div className="smplfy-temp-report-group-list list-group list-group-flush border rounded overflow-hidden">
+                  {productReportRows.map((row) => (
+                    <ReportSelector
+                      key={row.id}
+                      label={row.label}
+                      state={row.id === selectedReportId ? 'active' : 'default'}
+                      hasNabl={row.hasNabl}
+                      onClick={() => setSelectedReportId(row.id)}
+                    />
+                  ))}
+                </div>
+              </section>
             </aside>
 
-            <section className="temp-report-preview">
-              <div className="temp-report-preview__placeholder">
+            <section className="smplfy-temp-report-preview col-12 col-xl-9">
+              <div className="smplfy-temp-report-preview-card smplfy-card card h-100">
+                <div className="card-body d-flex align-items-center justify-content-center text-center text-secondary fw-medium">
                 Template content for {selectedReport?.label ?? 'the selected report'} in {selectedVersionLabel} shows
                 up in this container
+                </div>
               </div>
             </section>
-          </>
+          </div>
         )}
       </main>
     </AppChrome>

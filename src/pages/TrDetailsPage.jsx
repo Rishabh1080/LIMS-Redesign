@@ -37,33 +37,32 @@ function RemnantModal({ open, onCancel, onSubmit }) {
   }
 
   return (
-    <div className="remnant-modal__backdrop" role="presentation" onClick={onCancel}>
-      <div
-        className="remnant-modal__card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="remnant-modal-title"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="remnant-modal__header">
-          <h2 id="remnant-modal-title">Remnant available?</h2>
-          <button type="button" className="btn remnant-modal__close" aria-label="Close modal" onClick={onCancel}>
-            <AppIcon name="close" />
-          </button>
-        </div>
-        <p className="remnant-modal__copy">
-          If there&apos;s any sample left after testing, select Yes. Otherwise, select Not available.
-        </p>
-        <div className="remnant-modal__actions">
-          <PrimaryButton styleVariant="red" className="remnant-modal__action" onClick={() => onSubmit(false)}>
+    <Modal
+      open={open}
+      title="Remnant available?"
+      titleId="remnant-modal-title"
+      onClose={onCancel}
+      size="md"
+      actionsClassName="d-grid gap-3"
+      actions={
+        <div className="row g-3 w-100">
+          <div className="col-sm-6">
+            <PrimaryButton styleVariant="red" className="w-100" onClick={() => onSubmit(false)}>
             Not Available
-          </PrimaryButton>
-          <PrimaryButton styleVariant="positive" className="remnant-modal__action" onClick={() => onSubmit(true)}>
+            </PrimaryButton>
+          </div>
+          <div className="col-sm-6">
+            <PrimaryButton styleVariant="positive" className="w-100" onClick={() => onSubmit(true)}>
             Yes, Available
-          </PrimaryButton>
+            </PrimaryButton>
+          </div>
         </div>
-      </div>
-    </div>
+      }
+    >
+      <p className="text-secondary mb-0">
+        If there&apos;s any sample left after testing, select Yes. Otherwise, select Not available.
+      </p>
+    </Modal>
   );
 }
 
@@ -80,11 +79,11 @@ function AddMethodModal({ open, requestId, draftValue, onDraftChange, onCancel, 
       titleIcon="plus"
       onClose={onCancel}
       size="md"
-      bodyClassName="add-method-modal__body"
-      actionsClassName="add-method-modal__actions"
+      bodyClassName="pt-0"
+      actionsClassName="d-flex justify-content-between w-100"
       actions={
         <>
-          <SecondaryButton leftIcon="close" size="large" className="add-method-modal__cancel" onClick={onCancel}>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton type="submit" form="add-method-form" leftIcon="plus" disabled={!draftValue}>
@@ -95,15 +94,15 @@ function AddMethodModal({ open, requestId, draftValue, onDraftChange, onCancel, 
     >
       <form
         id="add-method-form"
-        className="add-method-modal__form"
+        className="d-grid gap-3"
         onSubmit={(event) => {
           event.preventDefault();
           onSubmit();
         }}
       >
-        <div className="add-method-modal__request-id">
-          <span className="add-method-modal__request-id-label">Test Request ID:</span>
-          <span className="add-method-modal__request-id-value">{requestId}</span>
+        <div className="d-flex align-items-baseline gap-2 mt-2 pt-2 text-secondary">
+          <span>Test Request ID:</span>
+          <span className="fw-bold text-body">{requestId}</span>
         </div>
 
         <FormElement
@@ -141,26 +140,26 @@ function PageHeader({
       };
 
   return (
-    <section className="tr-details-page-header">
-      <div className="tr-details-page-header__title-wrap">
-        <SecondaryButton size="medium" className="tr-details-page-header__back" aria-label="Go back" onClick={onBack}>
+    <section className="smplfy-tr-details-header d-flex align-items-start justify-content-between gap-3 bg-white border-bottom flex-wrap">
+      <div className="smplfy-tr-details-header-title d-flex align-items-start gap-3 min-w-0">
+        <SecondaryButton size="medium" className="smplfy-tr-details-header-back px-0 flex-shrink-0" aria-label="Go back" onClick={onBack}>
           <AppIcon name="chevron-left" />
         </SecondaryButton>
-        <div className="tr-details-page-header__title-copy">
-          <div className="tr-details-page-header__title-row">
-            <h1>{requestId}</h1>
+        <div className="d-flex flex-column min-w-0">
+          <div className="smplfy-tr-details-title-row d-flex align-items-center gap-3 flex-wrap">
+            <h1 className="h5 fw-semibold text-body mb-0">{requestId}</h1>
             <StatusPill color={resolvedStatusPresentation.color} styleType={resolvedStatusPresentation.styleType}>
               {resolvedStatusPresentation.label}
             </StatusPill>
           </div>
-          <div className="tr-details-page-header__timestamp">
+          <div className="smplfy-tr-details-timestamp d-inline-flex gap-3 mt-2 text-secondary fw-medium">
             <span>06/03/2026</span>
             <span>10:13</span>
           </div>
         </div>
       </div>
 
-      <div className="tr-details-page-header__actions">
+      <div className="smplfy-tr-details-header-actions d-flex align-items-center gap-3 flex-wrap">
         {isSubmitted ? (
           <PrimaryButton leftIcon="printer">Print</PrimaryButton>
         ) : isReadyForReview ? (
@@ -311,23 +310,21 @@ export default function TrDetailsPage({
         />
       }
     >
-      <main className={`tr-details-page ${methods.length > 1 ? '' : 'tr-details-page--single-method'}`.trim()}>
+      <main className={`smplfy-tr-details-page bg-body-tertiary min-vh-100 ${methods.length > 1 ? '' : 'smplfy-tr-details-page-single'}`}>
         {methods.length > 1 ? (
-          <>
-            <aside className="tr-details-methods-sidebar">
-              <section className="tr-details-methods-group is-expanded">
+          <div className="smplfy-tr-details-grid row g-3 h-100">
+            <aside className="col-xl-3 col-12">
+              <section className="smplfy-tr-details-methods smplfy-card card overflow-hidden">
                 <button
                   type="button"
-                  className="tr-details-methods-group__header"
+                  className="smplfy-tr-details-methods-header btn w-100 d-flex align-items-center justify-content-between text-start bg-white border-0 fw-semibold"
                   aria-expanded="true"
                 >
-                  <div className="tr-details-methods-group__header-copy">
-                    <div className="tr-details-methods-group__title">Test Methods ({methods.length})</div>
-                  </div>
-                  <AppIcon name="chevron-down" className="tr-details-methods-group__chevron" />
+                  <span>Test Methods ({methods.length})</span>
+                  <AppIcon name="chevron-down" />
                 </button>
 
-                <div className="tr-details-methods-group__rows">
+                <div className="smplfy-tr-details-methods-list list-group list-group-flush m-2 border rounded-3 overflow-hidden">
                   {methods.map((method) => (
                     <ReportSelector
                       key={method.id}
@@ -341,15 +338,15 @@ export default function TrDetailsPage({
               </section>
             </aside>
 
-            <section className="tr-details-page__content">
-              <div className="tr-details-page__placeholder">
+            <section className="col-xl-9 col-12 d-flex">
+              <div className="smplfy-tr-details-placeholder smplfy-card card flex-fill align-items-center justify-content-center text-center text-secondary">
                 Template content will be added here
               </div>
             </section>
-          </>
+          </div>
         ) : (
-          <section className="tr-details-page__content">
-            <div className="tr-details-page__placeholder">
+          <section className="d-flex h-100">
+            <div className="smplfy-tr-details-placeholder smplfy-card card flex-fill align-items-center justify-content-center text-center text-secondary">
               Template content will be added here
             </div>
           </section>
@@ -377,7 +374,7 @@ export default function TrDetailsPage({
       <ToastNotification
         state={toastVisible ? 'default' : 'gone'}
         message={toastMessage}
-        className="tr-details-page__toast"
+        className="position-fixed bottom-0 start-0 m-4"
         onClose={() => setToastVisible(false)}
       />
     </AppChrome>

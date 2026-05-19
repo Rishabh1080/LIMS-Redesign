@@ -1,217 +1,82 @@
-.test-requests-home-tabs {
+.smplfy-test-requests-home-tabs {
   height: 51px;
-  background: #fff;
-  border-bottom: 1px solid #d1d5db;
 }
 
-.test-requests-home-tabs__group {
-  display: flex;
-  align-items: stretch;
+.smplfy-test-requests-home-tabs-group {
   min-width: 0;
-  overflow-x: auto;
   scrollbar-width: none;
 }
 
-.test-requests-home-tabs__group::-webkit-scrollbar {
+.smplfy-test-requests-home-tabs-group::-webkit-scrollbar {
   display: none;
 }
 
-.test-requests-home-tabs__item {
-  white-space: nowrap;
-}
-
-.test-requests-home-page {
-  flex: 1 1 auto;
-  background: #f5f6f7;
+.smplfy-test-requests-home-page {
   padding: 20px 0 24px;
+  background: var(--smplfy-primitive-neutral-200);
 }
 
-.test-requests-home-table {
-  --trh-id-col: 184px;
-  --trh-status-col: 156px;
-  --trh-date-col: 176px;
-  --trh-age-col: 96px;
-  --trh-actions-col: 420px;
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 4px;
+.smplfy-test-requests-home-page .table-responsive:has(> .smplfy-test-requests-home-table) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
-.test-requests-home-legend {
-  display: grid;
-  grid-template-columns:
-    var(--trh-id-col)
-    var(--trh-status-col)
-    minmax(0, 1.35fr)
-    var(--trh-date-col)
-    var(--trh-age-col)
-    var(--trh-actions-col);
-  gap: 0;
-  width: 100%;
-  min-width: 0;
-  padding: 0 0 12px;
-  color: #6d737e;
-  font-size: 12px;
-  line-height: 16px;
+.smplfy-test-requests-home-table.table {
+  --smplfy-table-min-width: 1040px;
+  --smplfy-table-head-bg: transparent;
+  --smplfy-table-border: transparent;
+  --smplfy-table-hover-bg: transparent;
+  --smplfy-table-cell-padding-y: 12px;
+  --smplfy-table-cell-padding-x: 20px;
+  --smplfy-table-head-padding-y: 0;
+  --smplfy-table-link-font-size: 16px;
+  --smplfy-table-link-font-weight: 600;
+
+  border-collapse: separate;
+  border-spacing: 0 12px;
+}
+
+.smplfy-test-requests-home-table.table thead th {
+  color: var(--smplfy-primitive-neutral-600);
+  background: transparent;
   font-weight: 500;
-}
-
-.test-requests-home-legend.no-status {
-  grid-template-columns:
-    var(--trh-id-col)
-    minmax(0, 1fr)
-    var(--trh-date-col)
-    var(--trh-age-col)
-    var(--trh-actions-col);
-  min-width: 0;
-}
-
-.test-requests-home-legend__item {
-  min-width: 0;
-  padding: 0 20px;
   white-space: nowrap;
 }
 
-.test-requests-home-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.test-requests-home-card {
+.smplfy-test-requests-home-table.table tbody tr {
   min-height: 66px;
-  border: 1px solid #e6e8eb;
-  border-radius: 14px;
-  background: #fff;
-  display: grid;
-  grid-template-columns:
-    var(--trh-id-col)
-    var(--trh-status-col)
-    minmax(0, 1.35fr)
-    var(--trh-date-col)
-    var(--trh-age-col)
-    var(--trh-actions-col);
-  width: 100%;
-  min-width: 0;
-  align-items: center;
 }
 
-.test-requests-home-card.no-status {
-  grid-template-columns:
-    var(--trh-id-col)
-    minmax(0, 1fr)
-    var(--trh-date-col)
-    var(--trh-age-col)
-    var(--trh-actions-col);
-  min-width: 0;
-}
-
-.test-requests-home-card__cell {
-  min-width: 0;
-  padding: 0 20px;
-  color: #1c2126;
+.smplfy-test-requests-home-table.table tbody td {
+  height: 66px;
+  border-top: 1px solid var(--smplfy-primitive-neutral-300);
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+  background: var(--smplfy-primitive-neutral-100);
+  color: var(--smplfy-primitive-neutral-800);
   font-size: 14px;
   line-height: 18px;
   font-weight: 500;
 }
 
-.test-requests-home-card__cell.is-id,
-.test-requests-home-card__cell.is-status,
-.test-requests-home-card__cell.is-product,
-.test-requests-home-card__cell.is-date,
-.test-requests-home-card__cell.is-age,
-.test-requests-home-card__cell.is-actions {
-  display: flex;
-  align-items: center;
+.smplfy-test-requests-home-table.table tbody td:first-child {
+  border-left: 1px solid var(--smplfy-primitive-neutral-300);
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
 }
 
-.test-requests-home-card__cell.is-product,
-.test-requests-home-card__cell.is-status,
-.test-requests-home-card__cell.is-date,
-.test-requests-home-card__cell.is-age {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.smplfy-test-requests-home-table.table tbody td:last-child {
+  border-right: 1px solid var(--smplfy-primitive-neutral-300);
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
 }
 
-.test-requests-home-card__cell.is-actions {
-  align-self: stretch;
-}
-
-.test-requests-home-card__link {
-  padding: 0;
-  background: transparent;
-  text-align: left;
-  font-size: 16px;
-  line-height: 19px;
-}
-
-.test-requests-home-card__cell.is-status .tr-request-status-cell .smplfy-badge.badge.border {
-  max-width: 100%;
-}
-
-.test-requests-home-card__cell.is-date,
-.test-requests-home-card__cell.is-age {
-  justify-content: flex-start;
-}
-
-.test-requests-home-card__cell.is-status .tr-request-status-cell {
-  min-width: 0;
-  max-width: 100%;
-}
-
-.test-requests-home-card__cell.is-actions .tr-request-actions {
-  min-width: 0;
-  width: 100%;
-}
-
-.test-requests-home-card__cell.is-actions .tr-request-actions {
-  justify-content: flex-start;
-  align-items: center;
-  flex-wrap: nowrap;
-  gap: 8px;
-}
-
-.test-requests-home-card__cell.is-actions .smplfy-btn {
-  flex: 0 0 auto;
-}
-
-.test-request-approval-modal__body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.test-request-approval-modal__detail-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.test-request-approval-modal__detail-label {
-  color: #6d737e;
-  font-size: 14px;
-  line-height: 17px;
-  font-weight: 500;
-  flex: 0 0 auto;
-}
-
-.test-request-approval-modal__detail-value {
-  color: #1c2126;
-  font-size: 14px;
-  line-height: 17px;
-  font-weight: 600;
-  text-align: right;
-}
-
-.test-request-approval-modal__actions {
-  justify-content: space-between;
+.smplfy-test-requests-home-table.table tbody tr:hover td {
+  background: var(--smplfy-primitive-neutral-100);
 }
 
 @media (max-width: 1199.98px) {
-  .test-requests-home-card__cell {
-    padding: 0 16px;
+  .smplfy-test-requests-home-table.table {
+    --smplfy-table-cell-padding-x: 16px;
   }
 }

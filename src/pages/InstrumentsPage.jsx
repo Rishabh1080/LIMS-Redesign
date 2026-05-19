@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
+import DataTable from '../components/DataTable';
 import { ToastNotification } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import './instruments-page.scss';
 
 const defaultInstruments = [
   { id: 'inst-001', name: 'Stabinger Viscometer', lastServiceOn: '14/04/2026', calibrated: 'Yes', nextServiceOn: '14/10/2026' },
@@ -15,11 +15,11 @@ const defaultInstruments = [
 
 function InstrumentsHeader({ onNewInstrument, onCalibrationSchedule }) {
   return (
-    <section className="instruments-page-header">
-      <div className="container-fluid h-100 px-0">
-        <div className="row h-100 align-items-center justify-content-between gx-0">
+    <section className="bg-white border-bottom px-4 py-3">
+      <div className="container-fluid px-0">
+        <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto">
-            <h1 className="instruments-page-header__title">Instrument Management</h1>
+            <h1 className="h5 mb-0 fw-semibold text-dark">Instrument Management</h1>
           </div>
           <div className="col-auto d-flex align-items-center gap-3">
             <SecondaryButton leftIcon="calendar" onClick={onCalibrationSchedule}>
@@ -79,60 +79,61 @@ export default function InstrumentsPage({
         />
       }
     >
-      <main className="instruments-page">
+      <main className="bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0">
-          <section className="instruments-listing">
-            <div className="instruments-listing__legend instruments-listing__grid">
-              <div className="instruments-listing__cell instruments-listing__cell--name">Name</div>
-              <div className="instruments-listing__cell instruments-listing__cell--last-service">Last Service on</div>
-              <div className="instruments-listing__cell instruments-listing__cell--calibrated">Calibrated?</div>
-              <div className="instruments-listing__cell instruments-listing__cell--next-service">Next Service on</div>
-              <div className="instruments-listing__cell instruments-listing__cell--actions">Action</div>
-            </div>
-
-            <div className="instruments-listing__rows">
+          <DataTable>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Last Service on</th>
+                <th scope="col">Calibrated?</th>
+                <th scope="col">Next Service on</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
               {visibleInstruments.map((instrument) => (
-                <article className="instruments-listing__row instruments-listing__grid" key={instrument.id}>
-                  <div className="instruments-listing__cell instruments-listing__cell--name">
+                <tr key={instrument.id}>
+                  <td>
                     <a
                       href="/"
-                      className="instruments-listing__link"
+                      className="smplfy-link link-primary p-0"
                       onClick={(e) => { e.preventDefault(); onOpenInstrument?.(instrument.id, instrument.name); }}
                     >
-                      {instrument.name}
+                      <span>{instrument.name}</span>
                     </a>
-                  </div>
-                  <div className="instruments-listing__cell instruments-listing__cell--last-service">
+                  </td>
+                  <td className="text-nowrap">
                     {instrument.lastServiceOn}
-                  </div>
-                  <div className="instruments-listing__cell instruments-listing__cell--calibrated">
+                  </td>
+                  <td className="text-nowrap">
                     {instrument.calibrated}
-                  </div>
-                  <div className="instruments-listing__cell instruments-listing__cell--next-service">
+                  </td>
+                  <td className="text-nowrap">
                     {instrument.nextServiceOn}
-                  </div>
-                  <div className="instruments-listing__cell instruments-listing__cell--actions instruments-listing__actions">
-                    <SecondaryButton
-                      size="medium"
-                      leftIcon="edit"
-                      className="instruments-listing__action-button"
-                      onClick={() => onEditInstrument?.(instrument.id)}
-                    >
-                      Edit
-                    </SecondaryButton>
-                    <SecondaryButton
-                      size="medium"
-                      leftIcon="trash"
-                      className="instruments-listing__action-button"
-                      onClick={() => onDeleteInstrument?.(instrument.id)}
-                    >
-                      Delete
-                    </SecondaryButton>
-                  </div>
-                </article>
+                  </td>
+                  <td className="text-nowrap">
+                    <div className="d-flex align-items-center gap-2 flex-nowrap">
+                      <SecondaryButton
+                        size="medium"
+                        leftIcon="edit"
+                        onClick={() => onEditInstrument?.(instrument.id)}
+                      >
+                        Edit
+                      </SecondaryButton>
+                      <SecondaryButton
+                        size="medium"
+                        leftIcon="trash"
+                        onClick={() => onDeleteInstrument?.(instrument.id)}
+                      >
+                        Delete
+                      </SecondaryButton>
+                    </div>
+                  </td>
+                </tr>
               ))}
-            </div>
-          </section>
+            </tbody>
+          </DataTable>
         </div>
       </main>
 

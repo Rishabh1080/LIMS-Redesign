@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
+import DataTable from '../components/DataTable';
 import MoreActionButton from '../components/MoreActionButton';
 import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
@@ -63,17 +64,17 @@ function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
       }
     >
       <form
-        className="new-service-modal__form"
+        className="d-flex flex-column gap-3"
         onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
       >
-        <div className="new-service-modal__grid">
-          <div className="new-service-modal__field new-service-modal__field--full">
-            <div className="new-service-modal__label-row">
-              <span className="new-service-modal__label">Type of Service</span>
-              <span className="new-service-modal__required">*</span>
+        <div className="row g-3">
+          <div className="col-12">
+            <div className="d-inline-flex align-items-center gap-1 mb-2">
+              <span className="form-label mb-0">Type of Service</span>
+              <span className="text-danger">*</span>
             </div>
 
-            <div className="new-service-modal__type-selector" role="tablist" aria-label="Type of Service">
+            <div className="nav nav-pills p-1 bg-body-tertiary border rounded" role="tablist" aria-label="Type of Service">
               {serviceTypeOptions.map((option) => {
                 const isActive = draft.serviceType === option;
 
@@ -83,7 +84,7 @@ function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
                     type="button"
                     size="medium"
                     active={isActive}
-                    className="new-service-modal__type-option"
+                    className="flex-fill"
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => update('serviceType', option)}
@@ -94,7 +95,7 @@ function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
               })}
             </div>
           </div>
-          <div className="new-service-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="text"
               label="Vendor"
@@ -105,7 +106,7 @@ function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
               }}
             />
           </div>
-          <div className="new-service-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="date"
               mandatory
@@ -119,7 +120,7 @@ function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
               }}
             />
           </div>
-          <div className="new-service-modal__field">
+          <div className="col-12 col-md-6">
             <FormElement
               type="file"
               label="Attachments"
@@ -164,17 +165,16 @@ function InstrumentDetailsHeader({ instrumentName, onBack, onEditInstrument, onN
   ];
 
   return (
-    <section className="instrument-details-page-header">
-      <div className="container-fluid h-100 px-0">
-        <div className="row h-100 align-items-center justify-content-between gx-0">
+    <section className="smplfy-instrument-details-header bg-white border-bottom px-4 py-3">
+      <div className="container-fluid px-0">
+        <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto d-flex align-items-center gap-3">
             <SecondaryButton
               leftIcon="chevron-left"
-              className="instrument-details-back"
               onClick={onBack}
               aria-label="Go back"
             />
-            <h1 className="instrument-details-page-header__title">{instrumentName}</h1>
+            <h1 className="h5 mb-0 fw-semibold text-dark">{instrumentName}</h1>
           </div>
           <div className="col-auto d-flex align-items-center gap-3">
             <PrimaryButton leftIcon="plus" onClick={onNewService}>
@@ -260,85 +260,92 @@ export default function InstrumentDetailsPage({
         />
       }
     >
-      <main className="instrument-details-page">
-        <div className="container-fluid px-0 d-flex flex-column" style={{ gap: '16px' }}>
-          <div className="instrument-details-summary">
-            <div className="instrument-details-info-card">
-              <div className="instrument-details-info-card__content">
-                <h2 className="instrument-details-info-card__title">{instrumentName}</h2>
-                <p className="instrument-details-info-card__description">{description}</p>
-              </div>
-              <div className="instrument-details-info-card__meta">
-                <div className="instrument-details-meta-row">
-                  <span className="instrument-details-meta-label">Make:</span>
-                  <span className="instrument-details-meta-value">{make}</span>
-                </div>
-                <div className="instrument-details-meta-row">
-                  <span className="instrument-details-meta-label">Unique Key:</span>
-                  <span className="instrument-details-meta-value">{uniqueKey}</span>
-                </div>
-                <div className="instrument-details-meta-row">
-                  <span className="instrument-details-meta-label">Model No:</span>
-                  <span className="instrument-details-meta-value">{modelNo}</span>
-                </div>
-                <div className="instrument-details-meta-row">
-                  <span className="instrument-details-meta-label">Serial No:</span>
-                  <span className="instrument-details-meta-value">{serialNo}</span>
+      <main className="smplfy-instrument-details-page bg-body-tertiary p-4 min-vh-100">
+        <div className="container-fluid px-0 d-flex flex-column gap-3">
+          <div className="row g-3 align-items-stretch">
+            <div className="col-12 col-xl">
+              <div className="smplfy-card card smplfy-instrument-details-summary-card h-100">
+                <div className="card-body row g-4 align-items-center">
+                  <div className="col-12 col-lg-7">
+                    <h2 className="fs-2 fw-normal lh-sm mb-2 text-dark">{instrumentName}</h2>
+                    <p className="mb-0 text-secondary">{description}</p>
+                  </div>
+                  <div className="col-12 col-lg-5 d-flex flex-column gap-2">
+                    <div className="d-flex align-items-center gap-2">
+                      <span className="text-secondary">Make:</span>
+                      <span className="fw-bold text-secondary">{make}</span>
+                    </div>
+                    <div className="d-flex align-items-center gap-2">
+                      <span className="text-secondary">Unique Key:</span>
+                      <span className="fw-bold text-secondary">{uniqueKey}</span>
+                    </div>
+                    <div className="d-flex align-items-center gap-2">
+                      <span className="text-secondary">Model No:</span>
+                      <span className="fw-bold text-secondary">{modelNo}</span>
+                    </div>
+                    <div className="d-flex align-items-center gap-2">
+                      <span className="text-secondary">Serial No:</span>
+                      <span className="fw-bold text-secondary">{serialNo}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="instrument-details-qr-card">
-              <div className="instrument-details-qr-placeholder">
-                <img src={qrCode} alt="QR Code" width={120} height={120} />
+            <div className="col-12 col-xl-auto">
+              <div className="smplfy-card card smplfy-instrument-details-qr-card h-100">
+                <div className="card-body d-flex align-items-center justify-content-center">
+                  <img src={qrCode} alt="QR Code" width={120} height={120} />
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="instrument-details-records-card">
-            <div className="instrument-details-tabs">
-              {tabs.map((tab) => (
-                <NavSelector
-                  key={tab.key}
-                  active={activeTab === tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                >
-                  {tab.label}
-                </NavSelector>
-              ))}
-            </div>
-
-            <div className="instrument-details-records-header">
-              <span className="instrument-details-records-count">{records.length} Records</span>
-            </div>
-
-            <div className="instrument-details-table-wrapper">
-              <div className="instrument-details-table">
-                <div className="instrument-details-table__head">
-                  <span>Sr</span>
-                  <span>Type</span>
-                  <span>Quantity</span>
-                  <span>Supplier/Batch</span>
-                  <span>Transaction Date</span>
-                  <span>Expiry Date</span>
-                  <span>Cost(s)</span>
-                  <span>By</span>
-                </div>
-                <div className="instrument-details-table__body">
-                  {records.map((record, index) => (
-                    <div className="instrument-details-table__row" key={record.id}>
-                      <span>{index + 1}</span>
-                      <span>{record.type}</span>
-                      <span>{record.quantity}</span>
-                      <span>{record.supplierBatch}</span>
-                      <span>{record.transactionDate}</span>
-                      <span>{record.expiryDate}</span>
-                      <span>{record.cost}</span>
-                      <span>{record.by}</span>
-                    </div>
-                  ))}
-                </div>
+          <div className="smplfy-card card smplfy-instrument-details-records-card">
+            <div className="card-header bg-transparent p-0">
+              <div className="nav nav-tabs px-4 border-0">
+                {tabs.map((tab) => (
+                  <NavSelector
+                    key={tab.key}
+                    active={activeTab === tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    {tab.label}
+                  </NavSelector>
+                ))}
               </div>
+            </div>
+
+            <div className="card-body">
+              <div className="fw-medium text-dark mb-3">{records.length} Records</div>
+              <DataTable>
+                <thead>
+                  <tr>
+                    <th scope="col">Sr</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Supplier/Batch</th>
+                    <th scope="col">Transaction Date</th>
+                    <th scope="col">Expiry Date</th>
+                    <th scope="col">Cost(s)</th>
+                    <th scope="col">By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.map((record, index) => (
+                    <tr key={record.id}>
+                      <td>{index + 1}</td>
+                      <td>{record.type}</td>
+                      <td>{record.quantity}</td>
+                      <td>{record.supplierBatch}</td>
+                      <td>{record.transactionDate}</td>
+                      <td>{record.expiryDate}</td>
+                      <td>{record.cost}</td>
+                      <td>{record.by}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </DataTable>
             </div>
           </div>
         </div>
@@ -361,7 +368,7 @@ export default function InstrumentDetailsPage({
       <ToastNotification
         state={toastVisible ? 'default' : 'gone'}
         message={toastMessage}
-        className="instrument-created-toast"
+        className="position-fixed bottom-0 start-0 m-4"
         onClose={() => setToastVisible(false)}
       />
     </AppChrome>

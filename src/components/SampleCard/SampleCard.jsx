@@ -97,7 +97,7 @@ export function SampleCardViewToggle({ value, onChange, className = '' }) {
   ];
 
   return (
-    <div className={joinClasses('smplfy-btn-group', 'btn-group', 'smplfy-sample-view-toggle', className)} role="group" aria-label="Sample card view">
+    <div className={joinClasses('smplfy-btn-group', 'btn-group', className)} role="group" aria-label="Sample card view">
       {options.map(({ value: optionValue, label, Icon }) => (
         <button
           key={optionValue}

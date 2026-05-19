@@ -4,7 +4,6 @@ import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import Stepper from '../components/Stepper/Stepper';
-import './new-instrument-page.scss';
 
 const wizardSteps = [
   'Basic Details',
@@ -128,9 +127,11 @@ function StepRail({ currentStep, mode, title, onStepChange }) {
   }));
 
   return (
-    <aside className={`new-instrument-rail ${mode === 'edit' ? 'new-instrument-rail--edit' : ''}`.trim()}>
-      <div className={`new-instrument-rail__heading ${mode === 'edit' ? 'new-instrument-rail__heading--edit' : ''}`.trim()}>
-        <h1 className="new-instrument-rail__title">{mode === 'edit' ? title : 'New Instrument'}</h1>
+    <aside className="col-lg-3 text-bg-dark p-4">
+      <div className="mb-3">
+        <h1 className={mode === 'edit' ? 'h6 fw-bold mb-0' : 'h4 fw-medium mb-0'}>
+          {mode === 'edit' ? title : 'New Instrument'}
+        </h1>
       </div>
       <Stepper items={items} onItemClick={onStepChange} />
     </aside>
@@ -139,31 +140,31 @@ function StepRail({ currentStep, mode, title, onStepChange }) {
 
 function TopBar({ parentLabel, currentLabel, onBack }) {
   return (
-    <header className="new-instrument-topbar">
-      <div className="new-instrument-topbar__breadcrumbs">
-        <button className="new-instrument-topbar__crumb new-instrument-topbar__crumb-button is-home" aria-label="Go home" onClick={onBack}>
+    <header className="d-flex align-items-center justify-content-between gap-3 px-4 py-2 bg-white border-bottom flex-wrap">
+      <div className="d-inline-flex align-items-center gap-2 text-secondary fw-medium">
+        <button className="btn btn-link text-secondary text-decoration-none p-0 border-0" aria-label="Go home" onClick={onBack}>
           <AppIcon name="home" />
         </button>
         <AppIcon name="chevron-right" />
-        <button className="new-instrument-topbar__crumb new-instrument-topbar__crumb-button" onClick={onBack}>
+        <button className="btn btn-link text-secondary text-decoration-none p-0 border-0" onClick={onBack}>
           {parentLabel}
         </button>
         <AppIcon name="chevron-right" />
-        <span className="new-instrument-topbar__crumb is-current">{currentLabel}</span>
+        <span className="text-body fw-semibold">{currentLabel}</span>
       </div>
-      <div className="new-instrument-topbar__actions">
-        <div className="new-instrument-topbar__pill">
+      <div className="d-flex align-items-center gap-2 flex-wrap">
+        <div className="smplfy-btn btn btn-outline-success">
           <AppIcon name="activity" />
           <span>No Active Alerts</span>
         </div>
-        <button className="smplfy-btn btn btn-outline-secondary new-instrument-topbar__chip">
+        <button className="smplfy-btn btn btn-outline-secondary">
           <AppIcon name="phone" />
           <span>+91-6358273804</span>
         </button>
-        <button className="smplfy-btn btn btn-outline-secondary new-instrument-topbar__icon" aria-label="Notifications">
+        <button className="smplfy-btn btn btn-outline-secondary" aria-label="Notifications">
           <AppIcon name="bell" />
         </button>
-        <button className="smplfy-btn btn btn-outline-secondary new-instrument-topbar__avatar">DC</button>
+        <button className="smplfy-btn btn btn-outline-secondary">DC</button>
       </div>
     </header>
   );
@@ -171,7 +172,7 @@ function TopBar({ parentLabel, currentLabel, onBack }) {
 
 function BasicDetailsSection({ formValues, fieldErrors, onFieldChange }) {
   return (
-    <div className="container-fluid new-instrument-form__content">
+    <div className="container-fluid p-4 p-lg-5">
       <div className="row g-4">
         <div className="col-12">
           <FormElement
@@ -243,7 +244,7 @@ function MaintenanceScheduleSection({
   onFieldChange,
 }) {
   return (
-    <div className="container-fluid new-instrument-form__content">
+    <div className="container-fluid p-4 p-lg-5">
       <div className="row g-4">
         <div className="col-lg-6">
           <FormElement
@@ -353,7 +354,7 @@ function BreakdownDetailsSection({ formValues, fieldErrors, onFieldChange }) {
 
 function AdditionalDetailsSection({ formValues, onFieldChange }) {
   return (
-    <div className="container-fluid new-instrument-form__content">
+    <div className="container-fluid p-4 p-lg-5">
       <div className="row g-4">
         <div className="col-lg-6">
           <FormElement
@@ -395,8 +396,8 @@ function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel, mode 
 
   if (mode === 'edit') {
     return (
-      <div className="new-instrument-card__footer">
-        <SecondaryButton className="new-instrument-cancel" leftIcon="close" onClick={onCancel}>
+      <div className="d-flex align-items-center justify-content-between gap-3 p-4 border-top bg-white flex-wrap">
+        <SecondaryButton leftIcon="close" onClick={onCancel}>
           Cancel
         </SecondaryButton>
         <PrimaryButton leftIcon="save" onClick={onComplete}>
@@ -407,8 +408,8 @@ function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel, mode 
   }
 
   return (
-    <div className="new-instrument-card__footer">
-      <SecondaryButton className="new-instrument-cancel" leftIcon="chevron-left" onClick={handlePrevClick}>
+    <div className="d-flex align-items-center justify-content-between gap-3 p-4 border-top bg-white flex-wrap">
+      <SecondaryButton leftIcon="chevron-left" onClick={handlePrevClick}>
         {prevLabel}
       </SecondaryButton>
       {isLast ? (
@@ -434,11 +435,11 @@ function InstrumentForm({ currentStep, formValues, fieldErrors, onFieldChange, o
   ];
 
   return (
-    <section className="new-instrument-card">
-      <div className="new-instrument-card__body">
+    <section className="smplfy-card card shadow mx-auto overflow-hidden w-100 h-100">
+      <div className="row g-0 h-100">
         <StepRail currentStep={currentStep} mode={mode} title={title} onStepChange={onStepChange} />
-        <div className="new-instrument-form">
-          <div className="new-instrument-form__stage">{sections[currentStep]}</div>
+        <div className="col d-flex flex-column overflow-hidden">
+          <div className="flex-fill overflow-auto">{sections[currentStep]}</div>
           <WizardFooter currentStep={currentStep} onPrev={onPrev} onNext={onNext} onComplete={onComplete} onCancel={onCancel} mode={mode} />
         </div>
       </div>
@@ -496,9 +497,9 @@ export default function NewInstrumentPage({
   };
 
   return (
-    <div className="new-instrument-page">
+    <div className="vh-100 bg-body-tertiary d-flex flex-column">
       <TopBar parentLabel={parentLabel} currentLabel={currentCrumbLabel} onBack={onBack} />
-      <main className="new-instrument-page__content">
+      <main className="flex-fill p-4 p-lg-5 d-flex overflow-auto">
         <InstrumentForm
           currentStep={currentStep}
           formValues={formValues}

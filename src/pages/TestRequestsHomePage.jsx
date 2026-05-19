@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
-import AppIcon from '../components/AppIcon';
+import DataTable from '../components/DataTable';
 import { FormElement, ToastNotification } from '../components/FormControls';
 import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
@@ -14,7 +14,6 @@ import {
   getTestRequestsForTab,
   testRequestsHomeTabs,
 } from '../data/testRequestsHomeData';
-import './test-requests-listing-page.scss';
 import './test-requests-home-page.scss';
 
 const allocationTabs = [
@@ -67,138 +66,125 @@ function AllocationModal({
   }
 
   const table = allocationTableByTab[activeTab];
-  const gridClass = `tr-allocation-table tr-allocation-table--${activeTab}`;
 
   return (
-    <div className="tr-allocation-modal" role="dialog" aria-modal="true" aria-labelledby="tr-allocation-title">
-      <div className="tr-allocation-modal__backdrop" onClick={onCancel} />
-      <div className="tr-allocation-modal__card">
-        <div className="tr-allocation-modal__header">
-          <div className="tr-allocation-modal__title-row">
-            <AppIcon name="user-plus" size={24} className="tr-allocation-modal__title-icon" />
-            <h2 id="tr-allocation-title">Allocate Test Request</h2>
+    <Modal
+      open={open}
+      title="Allocate Test Request"
+      titleId="tr-allocation-title"
+      titleIcon="user-plus"
+      onClose={onCancel}
+      size="xl"
+      actionsClassName="justify-content-between"
+      actions={
+        <>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
+            Cancel
+          </SecondaryButton>
+          <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>
+            Allocate
+          </PrimaryButton>
+        </>
+      }
+    >
+      <div className="row g-4">
+        <div className="col-12 col-xl-8">
+          <dl className="row g-2 mb-4">
+            <dt className="col-sm-3 text-secondary fw-medium">Test Parameter</dt>
+            <dd className="col-sm-9 mb-0 fw-semibold text-dark">{details.parameter}</dd>
+            <dt className="col-sm-3 text-secondary fw-medium">MoA</dt>
+            <dd className="col-sm-9 mb-0 fw-semibold text-dark">{details.moa}</dd>
+            <dt className="col-sm-3 text-secondary fw-medium">Template</dt>
+            <dd className="col-sm-9 mb-0 fw-semibold text-dark">{details.template}</dd>
+          </dl>
+
+          <div className="nav nav-pills mb-3" role="tablist" aria-label="Allocation resources">
+            {allocationTabs.map((tab) => (
+              <NavSelector
+                key={tab.key}
+                size="medium"
+                active={activeTab === tab.key}
+                onClick={() => onTabChange(tab.key)}
+              >
+                {tab.label}
+              </NavSelector>
+            ))}
           </div>
-          <button className="tr-allocation-modal__close btn" aria-label="Close modal" onClick={onCancel}>
-            <AppIcon name="close" size={24} />
-          </button>
+
+          <DataTable>
+            <thead>
+              <tr>
+                {table.columns.map((column) => (
+                  <th scope="col" key={column}>{column}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {table.rows.map((row, rowIndex) => (
+                <tr key={`${activeTab}-${rowIndex}`}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={`${activeTab}-${rowIndex}-${cellIndex}`}>
+                      {cell === 'Link' ? (
+                        <button type="button" className="smplfy-link link-primary btn btn-link p-0 text-start text-decoration-none">
+                          Link
+                        </button>
+                      ) : cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </DataTable>
         </div>
 
-        <div className="tr-allocation-modal__body">
-          <div className="tr-allocation-modal__main">
-            <div className="tr-allocation-modal__details">
-              <div className="tr-allocation-modal__detail-row">
-                <div className="tr-allocation-modal__detail-label">Test Parameter</div>
-                <div className="tr-allocation-modal__detail-value">{details.parameter}</div>
-              </div>
-              <div className="tr-allocation-modal__detail-row">
-                <div className="tr-allocation-modal__detail-label">MoA</div>
-                <div className="tr-allocation-modal__detail-value">{details.moa}</div>
-              </div>
-              <div className="tr-allocation-modal__detail-row">
-                <div className="tr-allocation-modal__detail-label">Template</div>
-                <div className="tr-allocation-modal__detail-value">{details.template}</div>
-              </div>
-            </div>
-
-            <div className="tr-allocation-modal__tabs-section">
-              <div className="tr-allocation-modal__tabs">
-                {allocationTabs.map((tab) => (
-                  <NavSelector
-                    key={tab.key}
-                    size="medium"
-                    className="tr-allocation-modal__tab"
-                    active={activeTab === tab.key}
-                    onClick={() => onTabChange(tab.key)}
-                  >
-                    {tab.label}
-                  </NavSelector>
-                ))}
-              </div>
-
-              <div className="tr-allocation-modal__table-wrap">
-                <div className={`${gridClass} tr-allocation-table__head`}>
-                  {table.columns.map((column) => (
-                    <div key={column}>{column}</div>
-                  ))}
-                </div>
-                <div className="tr-allocation-modal__table-body">
-                  {table.rows.map((row, rowIndex) => (
-                    <div className={`${gridClass} tr-allocation-table__row`} key={`${activeTab}-${rowIndex}`}>
-                      {row.map((cell, cellIndex) => (
-                        <div
-                          key={`${activeTab}-${rowIndex}-${cellIndex}`}
-                          className={cell === 'Link' ? 'tr-allocation-table__link' : ''}
-                        >
-                          {cell}
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="tr-allocation-modal__side">
-            <div className="tr-allocation-modal__form">
-              <FormElement
-                type="dropdown"
-                label="Allocate to"
-                inputProps={{
-                  value: allocateTo,
-                  placeholder: 'Select person',
-                  options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-                  onChange: (event) => onAllocateToChange(event.target.value),
-                }}
-              />
-              <FormElement
-                type="dropdown"
-                label="Reviewer"
-                inputProps={{
-                  value: reviewer,
-                  placeholder: 'Select person',
-                  options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-                  onChange: (event) => onReviewerChange(event.target.value),
-                }}
-              />
-              <FormElement
-                type="dropdown"
-                label="Instrument"
-                inputProps={{
-                  value: instrument,
-                  placeholder: 'Select Instrument',
-                  options: ['Instrument A', 'Instrument B', 'Instrument C'],
-                  onChange: (event) => onInstrumentChange(event.target.value),
-                }}
-              />
-            </div>
-
-            <div className="tr-allocation-modal__actions">
-              <SecondaryButton leftIcon="close" size="large" className="tr-allocation-modal__cancel" onClick={onCancel}>
-                Cancel
-              </SecondaryButton>
-              <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>
-                Allocate
-              </PrimaryButton>
-            </div>
-          </div>
+        <div className="col-12 col-xl-4 d-flex flex-column gap-3">
+          <FormElement
+            type="dropdown"
+            label="Allocate to"
+            inputProps={{
+              value: allocateTo,
+              placeholder: 'Select person',
+              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+              onChange: (event) => onAllocateToChange(event.target.value),
+            }}
+          />
+          <FormElement
+            type="dropdown"
+            label="Reviewer"
+            inputProps={{
+              value: reviewer,
+              placeholder: 'Select person',
+              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+              onChange: (event) => onReviewerChange(event.target.value),
+            }}
+          />
+          <FormElement
+            type="dropdown"
+            label="Instrument"
+            inputProps={{
+              value: instrument,
+              placeholder: 'Select Instrument',
+              options: ['Instrument A', 'Instrument B', 'Instrument C'],
+              onChange: (event) => onInstrumentChange(event.target.value),
+            }}
+          />
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
 
 function TestRequestsHomeHeader({ activeTab, countsByTab, onTabChange }) {
   return (
-    <section className="test-requests-home-tabs">
-      <div className="container-fluid h-100 px-4">
-        <div className="row h-100 gx-0 align-items-stretch flex-nowrap">
+    <section className="smplfy-test-requests-home-tabs bg-white border-bottom">
+      <div className="container-fluid px-4">
+        <div className="row gx-0 align-items-stretch flex-nowrap">
           <div className="col">
-            <div className="test-requests-home-tabs__group">
+            <div className="smplfy-test-requests-home-tabs-group nav nav-tabs flex-nowrap overflow-auto border-0">
               {testRequestsHomeTabs.map((tab) => (
                 <NavSelector
                   key={tab.key}
-                  className="test-requests-home-tabs__item"
+                  className="smplfy-test-requests-home-tab text-nowrap"
                   active={activeTab === tab.key}
                   count={tab.key === 'all-test-requests' ? undefined : countsByTab[tab.key]}
                   onClick={() => onTabChange(tab.key)}
@@ -258,8 +244,7 @@ function ApprovalActionModal({ action, requestId, onClose, onSubmit }) {
       titleIcon={isPositiveAction ? 'check' : 'close'}
       onClose={onClose}
       size="md"
-      bodyClassName="test-request-approval-modal__body"
-      actionsClassName="test-request-approval-modal__actions"
+      actionsClassName="justify-content-between"
       actions={
         <>
           <SecondaryButton leftIcon="close" size="large" onClick={onClose}>
@@ -275,9 +260,10 @@ function ApprovalActionModal({ action, requestId, onClose, onSubmit }) {
         </>
       }
     >
-      <div className="test-request-approval-modal__detail-row">
-        <div className="test-request-approval-modal__detail-label">Test Request ID</div>
-        <div className="test-request-approval-modal__detail-value">{requestId}</div>
+      <div className="d-flex flex-column gap-3">
+      <div className="d-flex align-items-center justify-content-between gap-3">
+        <div className="text-secondary fw-medium">Test Request ID</div>
+        <div className="text-dark fw-semibold text-end">{requestId}</div>
       </div>
       <FormElement
         type="text"
@@ -307,40 +293,43 @@ function ApprovalActionModal({ action, requestId, onClose, onSubmit }) {
           }}
         />
       ) : null}
+      </div>
     </Modal>
   );
 }
 
-function TestRequestHomeCard({ row, showStatus, showApprovalActions, onAllocate, onView, onPositiveAction, onReject }) {
+function TestRequestHomeRow({ row, showStatus, showApprovalActions, onAllocate, onView, onPositiveAction, onReject }) {
   const statusPresentation = getStatusPresentation('testRequest', row.status);
   const positiveActionLabel = row.approvalAction === 'approve' ? 'Approve' : 'Review';
 
   return (
-    <article className={`test-requests-home-card ${showStatus ? 'has-status' : 'no-status'}`}>
-      <div className="test-requests-home-card__cell is-id">
-        <button type="button" className="tr-link test-requests-home-card__link" onClick={() => onView(row)}>
+    <tr>
+      <td>
+        <button
+          type="button"
+          className="smplfy-link link-primary btn btn-link p-0 text-start text-decoration-none"
+          onClick={() => onView(row)}
+        >
           {row.id}
         </button>
-      </div>
+      </td>
 
       {showStatus ? (
-        <div className="test-requests-home-card__cell is-status">
-          <div className="tr-request-status-cell">
+        <td>
             <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
               {statusPresentation.label}
             </StatusPill>
-          </div>
-        </div>
+        </td>
       ) : null}
 
-      <div className="test-requests-home-card__cell is-product">{row.product}</div>
+      <td>{row.product}</td>
 
-      <div className="test-requests-home-card__cell is-date">{row.reportingDate}</div>
+      <td className="text-nowrap">{row.reportingDate}</td>
 
-      <div className="test-requests-home-card__cell is-age">{row.age}</div>
+      <td className="text-nowrap">{row.age}</td>
 
-      <div className="test-requests-home-card__cell is-actions">
-        <div className="tr-request-actions">
+      <td className="text-nowrap">
+        <div className="d-flex align-items-center gap-2 flex-nowrap">
           {row.action === 'allocate' ? <AllocateTestRequestButton size="medium" onClick={() => onAllocate(row)} /> : null}
           <ViewTestRequestButton size="medium" onClick={() => onView(row)} />
           {showApprovalActions ? (
@@ -360,32 +349,33 @@ function TestRequestHomeCard({ row, showStatus, showApprovalActions, onAllocate,
               styleVariant="destructive"
               onClick={() => onReject(row)}
             >
-              Reject
-            </PrimaryButton>
+            Reject
+          </PrimaryButton>
           ) : null}
         </div>
-      </div>
-    </article>
+      </td>
+    </tr>
   );
 }
 
 function TestRequestsHomeBody({ rows, showStatus, activeTab, onAllocate, onView, onPositiveAction, onReject }) {
   return (
-    <main className="test-requests-home-page">
+    <main className="smplfy-test-requests-home-page bg-body-tertiary flex-grow-1">
       <div className="container-fluid px-4">
-        <div className="test-requests-home-table">
-          <div className={`test-requests-home-legend ${showStatus ? 'has-status' : 'no-status'}`}>
-            <div className="test-requests-home-legend__item is-id">Test Request ID</div>
-            {showStatus ? <div className="test-requests-home-legend__item is-status">Status</div> : null}
-            <div className="test-requests-home-legend__item is-product">Product</div>
-            <div className="test-requests-home-legend__item is-date">Target Reporting Date</div>
-            <div className="test-requests-home-legend__item is-age">Age</div>
-            <div className="test-requests-home-legend__item is-actions">Actions</div>
-          </div>
-
-          <div className="test-requests-home-list">
+        <DataTable className="smplfy-test-requests-home-table">
+          <thead>
+            <tr>
+              <th scope="col">Test Request ID</th>
+              {showStatus ? <th scope="col">Status</th> : null}
+              <th scope="col">Product</th>
+              <th scope="col">Target Reporting Date</th>
+              <th scope="col">Age</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
             {rows.map((row) => (
-              <TestRequestHomeCard
+              <TestRequestHomeRow
                 key={row.id}
                 row={row}
                 showStatus={showStatus}
@@ -396,8 +386,8 @@ function TestRequestsHomeBody({ rows, showStatus, activeTab, onAllocate, onView,
                 onReject={onReject}
               />
             ))}
-          </div>
-        </div>
+          </tbody>
+        </DataTable>
       </div>
     </main>
   );
@@ -539,7 +529,7 @@ export default function TestRequestsHomePage({
         state={toastVisible ? 'default' : 'gone'}
         tone={toastTone}
         message={toastMessage}
-        className="tr-job-created-toast"
+        className="position-fixed bottom-0 start-0 m-4"
         onClose={() => setToastVisible(false)}
       />
       

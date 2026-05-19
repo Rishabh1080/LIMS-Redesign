@@ -1,7 +1,7 @@
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
+import DataTable from '../components/DataTable';
 import SecondaryButton from '../components/SecondaryButton';
-import './training-attendance-page.scss';
 
 const defaultAttendanceRows = [
   { id: 'attendance-001', date: '05/04/2026', inTime: '09:30 AM', outTime: '11:00 AM' },
@@ -13,19 +13,19 @@ const defaultAttendanceRows = [
 
 function AttendanceHeader({ title, onBack }) {
   return (
-    <section className="training-attendance-page-header">
-      <div className="training-attendance-page-header__title-wrap">
+    <section className="bg-white border-bottom d-flex align-items-center justify-content-between px-4 py-3">
+      <div className="d-flex align-items-start gap-3">
         <SecondaryButton
           size="medium"
-          className="training-attendance-page-header__back"
+          className="p-0 flex-shrink-0"
           aria-label="Go back"
           onClick={onBack}
         >
           <AppIcon name="chevron-left" />
         </SecondaryButton>
-        <div className="training-attendance-page-header__copy">
-          <h1>{title}</h1>
-          <p>Attendance Schedule</p>
+        <div className="d-flex flex-column gap-2">
+          <h1 className="h5 mb-0 fw-semibold text-dark">{title}</h1>
+          <p className="mb-0 text-secondary fw-medium">Attendance Schedule</p>
         </div>
       </div>
     </section>
@@ -54,33 +54,34 @@ export default function TrainingAttendancePage({
       sidebarBadgeCounts={sidebarBadgeCounts}
       pageHeader={<AttendanceHeader title={trainingName} onBack={onBack} />}
     >
-      <main className="training-attendance-page">
+      <main className="bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0">
-          <section className="training-attendance-listing">
-            <div className="training-attendance-listing__legend training-attendance-listing__grid">
-              <div className="training-attendance-listing__cell training-attendance-listing__cell--sr">Sr No.</div>
-              <div className="training-attendance-listing__cell training-attendance-listing__cell--date">Date</div>
-              <div className="training-attendance-listing__cell training-attendance-listing__cell--in-time">In Time</div>
-              <div className="training-attendance-listing__cell training-attendance-listing__cell--out-time">Out Time</div>
-              <div className="training-attendance-listing__cell training-attendance-listing__cell--actions">Action</div>
-            </div>
-
-            <div className="training-attendance-listing__rows">
+          <DataTable>
+            <thead>
+              <tr>
+                <th scope="col">Sr No.</th>
+                <th scope="col">Date</th>
+                <th scope="col">In Time</th>
+                <th scope="col">Out Time</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
               {attendanceRows.map((row, index) => (
-                <article className="training-attendance-listing__row training-attendance-listing__grid" key={row.id}>
-                  <div className="training-attendance-listing__cell training-attendance-listing__cell--sr">{index + 1}</div>
-                  <div className="training-attendance-listing__cell training-attendance-listing__cell--date">{row.date}</div>
-                  <div className="training-attendance-listing__cell training-attendance-listing__cell--in-time">{row.inTime}</div>
-                  <div className="training-attendance-listing__cell training-attendance-listing__cell--out-time">{row.outTime}</div>
-                  <div className="training-attendance-listing__cell training-attendance-listing__cell--actions training-attendance-listing__actions">
+                <tr key={row.id}>
+                  <td>{index + 1}</td>
+                  <td>{row.date}</td>
+                  <td>{row.inTime}</td>
+                  <td>{row.outTime}</td>
+                  <td>
                     <SecondaryButton size="medium" leftIcon="check">
                       Mark Attendance
                     </SecondaryButton>
-                  </div>
-                </article>
+                  </td>
+                </tr>
               ))}
-            </div>
-          </section>
+            </tbody>
+          </DataTable>
         </div>
       </main>
     </AppChrome>

@@ -6,7 +6,6 @@ import SecondaryButton from '../components/SecondaryButton';
 import { allSamplesDb } from '../data/samplesDb';
 import { requestCategories, requestSections, requestsForMeBySection } from '../data/requestsForMeData';
 import { allTestRequestBuckets } from '../data/testRequestsHomeData';
-import './dashboard-page.scss';
 
 const dashboardModules = [
   {
@@ -119,16 +118,16 @@ function groupRowsIntoColumns(rows) {
 
 function ModuleTabs({ activeModuleKey, onChange }) {
   return (
-    <section className="dashboard-tabs">
-      <div className="container-fluid h-100 px-0">
-        <div className="dashboard-tabs__rail">
+    <section className="bg-white border-bottom">
+      <div className="container-fluid px-4">
+        <div className="nav nav-tabs flex-nowrap overflow-auto border-0">
           {dashboardModules.map((module) => (
             <NavSelector
               key={module.key}
               active={module.key === activeModuleKey}
               onClick={() => onChange(module.key)}
             >
-              <span className="dashboard-tabs__label">
+              <span className="d-inline-flex align-items-center gap-2">
                 <AppIcon name={module.icon} size={16} />
                 <span>{module.label}</span>
               </span>
@@ -142,18 +141,16 @@ function ModuleTabs({ activeModuleKey, onChange }) {
 
 function PrimaryCard({ module, onNavigate }) {
   return (
-    <article className="dashboard-surface dashboard-primary-card">
-      <div className="dashboard-primary-card__lead">
-        <div className="dashboard-primary-card__icon">
+    <section className="smplfy-card card h-100">
+      <div className="card-body d-flex align-items-center justify-content-between gap-3 flex-wrap">
+        <div className="d-inline-flex align-items-center gap-3">
           <AppIcon name={module.icon} size={22} />
+          <div>
+            <h1 className="h4 mb-1 text-dark">{module.title}</h1>
+            <p className="mb-0 text-secondary">{module.description}</p>
+          </div>
         </div>
-        <div className="dashboard-primary-card__copy">
-          <h1>{module.title}</h1>
-          <p>{module.description}</p>
-        </div>
-      </div>
 
-      <div className="dashboard-primary-card__actions">
         <SecondaryButton
           size="medium"
           rightIcon="external-link"
@@ -162,7 +159,7 @@ function PrimaryCard({ module, onNavigate }) {
           {module.actionLabel}
         </SecondaryButton>
       </div>
-    </article>
+    </section>
   );
 }
 
@@ -170,16 +167,16 @@ function MetricCard({ title, actionTarget, rows, onNavigate }) {
   const [leftRows, rightRows] = groupRowsIntoColumns(rows);
 
   return (
-    <article className="dashboard-surface dashboard-metric-card">
-      <div className="dashboard-metric-card__header">
-        <div className="dashboard-metric-card__title-row">
+    <section className="smplfy-card card h-100">
+      <div className="card-header bg-transparent d-flex align-items-center justify-content-between gap-3">
+        <div className="d-inline-flex align-items-center gap-2">
           <AppIcon name="workspace" size={18} />
-          <h2>{title}</h2>
+          <h2 className="h6 mb-0 fw-semibold text-dark">{title}</h2>
         </div>
 
         <button
           type="button"
-          className="btn dashboard-metric-card__icon-button"
+          className="smplfy-btn btn btn-outline-secondary"
           aria-label={`Go to ${title}`}
           onClick={() => onNavigate?.(actionTarget)}
         >
@@ -187,26 +184,28 @@ function MetricCard({ title, actionTarget, rows, onNavigate }) {
         </button>
       </div>
 
-      <div className="dashboard-metric-card__body">
-        <div className="dashboard-metric-card__column">
+      <div className="card-body">
+        <div className="row g-0">
+        <div className="col-12 col-md-6 d-flex flex-column gap-3 pe-md-4">
           {leftRows.map((row) => (
-            <div className="dashboard-metric-card__stat" key={row.label}>
-              <span className="dashboard-metric-card__label">{row.label}</span>
-              <span className="dashboard-metric-card__value">{row.value}</span>
+            <div className="d-flex align-items-center justify-content-between gap-3" key={row.label}>
+              <span className="text-dark">{row.label}</span>
+              <span className="fw-semibold text-dark">{row.value}</span>
             </div>
           ))}
         </div>
 
-        <div className="dashboard-metric-card__column">
+        <div className="col-12 col-md-6 d-flex flex-column gap-3 ps-md-4 border-start">
           {rightRows.map((row) => (
-            <div className="dashboard-metric-card__stat" key={row.label}>
-              <span className="dashboard-metric-card__label">{row.label}</span>
-              <span className="dashboard-metric-card__value">{row.value}</span>
+            <div className="d-flex align-items-center justify-content-between gap-3" key={row.label}>
+              <span className="text-dark">{row.label}</span>
+              <span className="fw-semibold text-dark">{row.value}</span>
             </div>
           ))}
         </div>
+        </div>
       </div>
-    </article>
+    </section>
   );
 }
 
@@ -218,28 +217,29 @@ function AlertsPanel({ items, filterKey, onFilterChange, onNavigate }) {
   }, {});
 
   return (
-    <aside className="dashboard-surface dashboard-alerts">
-      <div className="dashboard-alerts__header">
-        <div className="dashboard-alerts__title-row">
+    <aside className="smplfy-card card h-100">
+      <div className="card-header bg-transparent d-flex align-items-center justify-content-between gap-3">
+        <div className="d-inline-flex align-items-center gap-2">
           <AppIcon name="alert-circle" size={18} />
-          <h2>Alerts</h2>
+          <h2 className="h6 mb-0 fw-semibold text-dark">Alerts</h2>
         </div>
 
         <button
           type="button"
-          className="btn dashboard-metric-card__icon-button"
+          className="smplfy-btn btn btn-outline-secondary"
           aria-label="Go to Requests for Me"
         >
           <AppIcon name="external-link" size={16} />
         </button>
       </div>
 
-      <div className="dashboard-alerts__filters">
+      <div className="card-body d-flex flex-column gap-3">
+      <div className="d-flex align-items-center gap-2 flex-wrap">
         {alertFilterOptions.map((option) => (
           <button
             key={option.key}
             type="button"
-            className={`btn dashboard-alerts__filter ${filterKey === option.key ? 'is-active' : ''}`}
+            className={`smplfy-btn btn ${filterKey === option.key ? 'btn-primary' : 'btn-outline-secondary'}`}
             onClick={() => onFilterChange(option.key)}
           >
             {option.label}
@@ -247,28 +247,28 @@ function AlertsPanel({ items, filterKey, onFilterChange, onNavigate }) {
         ))}
       </div>
 
-      <div className="dashboard-alerts__groups">
         {Object.entries(groupedItems).map(([groupName, groupItems]) => (
-          <section className="dashboard-alerts__group" key={groupName}>
-            <div className="dashboard-alerts__group-title">
+          <section key={groupName}>
+            <div className="d-flex align-items-center gap-2 text-secondary small fw-medium mb-2">
               <span>{groupName}</span>
+              <span className="border-top flex-grow-1" />
             </div>
 
-            <div className="dashboard-alerts__list">
+            <div className="list-group list-group-flush">
               {groupItems.map((item) => (
-                <div className="dashboard-alerts__item" key={item.id}>
-                  <div className="dashboard-alerts__item-icon">
+                <div className="list-group-item d-flex align-items-start gap-2 px-0" key={item.id}>
+                  <div className="d-inline-flex align-items-center justify-content-center text-secondary pt-1">
                     <AppIcon name={item.icon} size={14} />
                   </div>
-                  <div className="dashboard-alerts__item-copy">
-                    <div className="dashboard-alerts__item-title">{item.title}</div>
-                    <div className="dashboard-alerts__item-detail">{item.detail}</div>
+                  <div className="flex-grow-1 overflow-hidden">
+                    <div className="text-dark fw-medium text-truncate">{item.title}</div>
+                    <div className="text-secondary small text-truncate">{item.detail}</div>
                   </div>
-                  <div className="dashboard-alerts__item-trailing">
-                    <div className="dashboard-alerts__item-time">{item.time}</div>
+                  <div className="d-inline-flex align-items-center gap-2 ms-auto">
+                    <div className="text-secondary small text-nowrap">{item.time}</div>
                     <button
                       type="button"
-                      className="btn dashboard-metric-card__icon-button dashboard-alerts__item-action"
+                      className="smplfy-btn btn btn-outline-secondary"
                       aria-label={`Open ${item.group}`}
                       onClick={() =>
                         onNavigate?.('requests-for-me', {
@@ -676,34 +676,32 @@ export default function DashboardPage({
       sidebarBadgeCounts={sidebarBadgeCounts}
       pageHeader={<ModuleTabs activeModuleKey={activeModuleKey} onChange={setActiveModuleKey} />}
     >
-      <main className="dashboard-page">
+      <main className="bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0">
-          <section className="dashboard-layout">
-            <div className="dashboard-layout__main">
-              <div className="dashboard-layout__primary">
+          <section className="row g-3 align-items-start">
+            <div className="col-12 col-xl-9 d-flex flex-column gap-3">
                 <PrimaryCard module={activeModule} onNavigate={onNavigate} />
-              </div>
 
-              <div className="dashboard-layout__cards">
-                <div className="dashboard-layout__card dashboard-layout__card--a">
+              <div className="row g-3">
+                <div className="col-12 col-lg-6">
                   <MetricCard {...moduleCards[0]} onNavigate={onNavigate} />
                 </div>
 
-                <div className="dashboard-layout__card dashboard-layout__card--b">
+                <div className="col-12 col-lg-6">
                   <MetricCard {...moduleCards[1]} onNavigate={onNavigate} />
                 </div>
 
-                <div className="dashboard-layout__card dashboard-layout__card--c">
+                <div className="col-12 col-lg-6">
                   <MetricCard {...moduleCards[2]} onNavigate={onNavigate} />
                 </div>
 
-                <div className="dashboard-layout__card dashboard-layout__card--d">
+                <div className="col-12 col-lg-6">
                   <MetricCard {...moduleCards[3]} onNavigate={onNavigate} />
                 </div>
               </div>
             </div>
 
-            <div className="dashboard-layout__alerts">
+            <div className="col-12 col-xl-3">
               <AlertsPanel
                 items={alertItems}
                 filterKey={alertFilterKey}

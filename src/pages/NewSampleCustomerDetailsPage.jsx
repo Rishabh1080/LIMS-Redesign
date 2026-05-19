@@ -4,7 +4,6 @@ import AppIcon from '../components/AppIcon';
 import Checkbox from '../components/Checkbox/Checkbox';
 import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
-import './new-sample-customer-details.scss';
 
 const wizardSteps = [
   'Customer Details',
@@ -326,36 +325,36 @@ function getFieldInputProps(field, formValues, onFieldChange, hasError, onFieldF
 
 function TopBar({ parentLabel, currentLabel, onBack }) {
   return (
-    <header className="new-sample-topbar">
-      <div className="new-sample-topbar__breadcrumbs">
+    <header className="d-flex align-items-center justify-content-between gap-3 px-4 py-2 bg-white border-bottom flex-wrap">
+      <div className="d-inline-flex align-items-center gap-2 text-secondary fw-medium flex-wrap">
         <button
-          className="new-sample-topbar__crumb new-sample-topbar__crumb-button is-home"
+          className="btn btn-link text-secondary text-decoration-none p-0 border-0"
           aria-label={`Go to ${parentLabel}`}
           onClick={onBack}
         >
           <AppIcon name="home" />
         </button>
         <AppIcon name="chevron-right" />
-        <button className="new-sample-topbar__crumb new-sample-topbar__crumb-button" onClick={onBack}>
+        <button className="btn btn-link text-secondary text-decoration-none p-0 border-0" onClick={onBack}>
           {parentLabel}
         </button>
         <AppIcon name="chevron-right" />
-        <span className="new-sample-topbar__crumb is-current">{currentLabel}</span>
+        <span className="text-body fw-semibold">{currentLabel}</span>
       </div>
 
-      <div className="new-sample-topbar__actions">
-        <div className="new-sample-topbar__pill">
+      <div className="d-flex align-items-center gap-2 flex-wrap">
+        <div className="smplfy-btn btn btn-outline-success">
           <AppIcon name="activity" />
           <span>No Active Alerts</span>
         </div>
-        <button className="smplfy-btn btn btn-outline-secondary new-sample-topbar__chip">
+        <button className="smplfy-btn btn btn-outline-secondary">
           <AppIcon name="phone" />
           <span>+91-6358273804</span>
         </button>
-        <button className="smplfy-btn btn btn-outline-secondary new-sample-topbar__icon" aria-label="Notifications">
+        <button className="smplfy-btn btn btn-outline-secondary" aria-label="Notifications">
           <AppIcon name="bell" />
         </button>
-        <button className="smplfy-btn btn btn-outline-secondary new-sample-topbar__avatar">DC</button>
+        <button className="smplfy-btn btn btn-outline-secondary">DC</button>
       </div>
     </header>
   );
@@ -363,9 +362,9 @@ function TopBar({ parentLabel, currentLabel, onBack }) {
 
 function PageHeader({ title, mode, formId }) {
   return (
-    <section className="new-sample-page-header">
-      <div className="new-sample-page-header__title-wrap">
-        <h1>{title}</h1>
+    <section className="d-flex align-items-center justify-content-between gap-3 px-4 py-3 bg-white border-bottom flex-wrap">
+      <div>
+        <h1 className="h6 fw-semibold text-body mb-0">{title}</h1>
       </div>
       <PrimaryButton type="submit" form={formId} leftIcon="save">
         {mode === 'edit' ? 'Save Changes' : 'Save Sample'}
@@ -376,11 +375,11 @@ function PageHeader({ title, mode, formId }) {
 
 function FormSection({ id, title, children }) {
   return (
-    <section className="new-sample-section" aria-labelledby={`${id}-title`}>
-      <header className="new-sample-section__header">
-        <h2 id={`${id}-title`}>{title}</h2>
+    <section className="smplfy-card card overflow-hidden" aria-labelledby={`${id}-title`}>
+      <header className="card-header bg-white px-4 py-3">
+        <h2 className="h5 fw-semibold text-body mb-0" id={`${id}-title`}>{title}</h2>
       </header>
-      <div className="new-sample-section__body">
+      <div className="card-body p-0">
         {children}
       </div>
     </section>
@@ -390,7 +389,7 @@ function FormSection({ id, title, children }) {
 function CustomerDetailsSection({ formValues, fieldErrors, onFieldChange, onFieldFocus, onFieldBlur }) {
   return (
     <FormSection id="new-sample-customer-details" title="Customer Details">
-      <div className="container-fluid new-sample-form__content">
+      <div className="container-fluid p-4">
         <div className="row g-4">
           <div className="col-lg-6">
             <FormElement
@@ -429,8 +428,8 @@ function CustomerDetailsSection({ formValues, fieldErrors, onFieldChange, onFiel
           </div>
 
           <div className="col-12">
-            <div className="new-sample-customer-row">
-              <div className="new-sample-customer-row__field">
+            <div className="d-flex align-items-end gap-3">
+              <div className="flex-fill">
                 <FormElement
                   type="dropdown"
                   mandatory
@@ -447,7 +446,7 @@ function CustomerDetailsSection({ formValues, fieldErrors, onFieldChange, onFiel
                   )}
                 />
               </div>
-              <PrimaryButton className="new-sample-add-button" aria-label="Add customer" leftIcon="plus" />
+              <PrimaryButton aria-label="Add customer" leftIcon="plus" />
             </div>
           </div>
 
@@ -477,7 +476,7 @@ function CustomerDetailsSection({ formValues, fieldErrors, onFieldChange, onFiel
 function BasicDetailsSection({ formValues, fieldErrors, onFieldChange, onFieldFocus, onFieldBlur }) {
   return (
     <FormSection id="new-sample-basic-details" title="Basic Details">
-      <div className="container-fluid new-sample-form__content">
+      <div className="container-fluid p-4">
         <div className="row g-4">
           {stepFields[1].map((field) => (
             <div className="col-lg-6" key={field.key}>
@@ -515,15 +514,15 @@ function ProductDetailsSection({
 }) {
   return (
     <FormSection id="new-sample-product-details" title="Product Details">
-      <div className="container-fluid new-sample-form__content new-sample-form__content--product">
-        <div className="new-sample-product-head">
-          <div className="new-sample-product-head__title">
-            <span className="new-sample-product-head__index">1</span>
+      <div className="container-fluid p-4">
+        <div className="d-flex align-items-center justify-content-between gap-3 mb-4">
+          <div className="d-inline-flex align-items-center gap-2 h5 fw-semibold text-body mb-0">
+            <span className="smplfy-badge badge text-bg-primary rounded-circle d-inline-flex align-items-center justify-content-center">1</span>
             <span>Product 1</span>
           </div>
 
           <button
-            className="smplfy-btn btn btn-outline-danger new-sample-product-head__delete"
+            className="smplfy-btn btn btn-outline-danger btn-sm"
             type="button"
             aria-label="Delete product"
           >
@@ -680,91 +679,115 @@ function ProductDetailsSection({
           </div>
         </div>
 
-        <div className="new-sample-parameter-row">
-          <h3>Parameter Data</h3>
-          <button className="new-sample-parameter-link btn" type="button">Auto-fill parameters</button>
+        <div className="d-flex align-items-center justify-content-between gap-3 mt-4 mb-3 flex-wrap">
+          <h3 className="h5 fw-semibold text-body mb-0">Parameter Data</h3>
+          <button className="smplfy-btn btn btn-link p-0 text-decoration-underline" type="button">Auto-fill parameters</button>
         </div>
 
-        <div className="new-sample-parameter-table">
-          <div className="new-sample-parameter-table__header">
-            <div className="new-sample-parameter-checkbox-cell">
-              <Checkbox
-                checked={parameterFormRows.length > 0 && parameterFormRows.every((row) => row.checked)}
-                ariaLabel="Select all parameters"
-                onChange={(nextChecked) => {
-                  parameterFormRows.forEach((_, index) => {
-                    onParameterRowChange(index, 'checked', nextChecked);
-                  });
-                }}
-              />
-            </div>
-            <div>Parameter</div>
-            <div>Test Method</div>
-            <div>Req. Size</div>
-            <div>Charges</div>
-            <div>Est. Time</div>
-            <button
-              className="smplfy-btn btn btn-outline-danger new-sample-product-head__delete"
-              type="button"
-              aria-label="Delete parameter group"
-            >
-              <AppIcon name="trash" />
-            </button>
-          </div>
+        <div className="table-responsive">
+          <table className="smplfy-table table table-borderless align-middle mb-0">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <Checkbox
+                    checked={parameterFormRows.length > 0 && parameterFormRows.every((row) => row.checked)}
+                    ariaLabel="Select all parameters"
+                    onChange={(nextChecked) => {
+                      parameterFormRows.forEach((_, index) => {
+                        onParameterRowChange(index, 'checked', nextChecked);
+                      });
+                    }}
+                  />
+                </th>
+                <th scope="col">Parameter</th>
+                <th scope="col">Test Method</th>
+                <th scope="col">Req. Size</th>
+                <th scope="col">Charges</th>
+                <th scope="col">Est. Time</th>
+                <th scope="col">
+                  <button
+                    className="smplfy-btn btn btn-outline-danger btn-sm"
+                    type="button"
+                    aria-label="Delete parameter group"
+                  >
+                    <AppIcon name="trash" />
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {parameterFormRows.map((row, index) => (
+                <tr key={`${row.parameter}-${index}`}>
+                  <td>
+                    <Checkbox
+                      checked={row.checked}
+                      ariaLabel={`Select ${row.parameter}`}
+                      onChange={(nextChecked) => onParameterRowChange(index, 'checked', nextChecked)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="smplfy-form-control form-control"
+                      aria-label="Parameter"
+                      value={row.parameter}
+                      onChange={(event) => onParameterRowChange(index, 'parameter', event.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="smplfy-form-control form-control"
+                      aria-label="Test method"
+                      value={row.method}
+                      onChange={(event) => onParameterRowChange(index, 'method', event.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="smplfy-form-control form-control"
+                      aria-label="Required size"
+                      value={row.size}
+                      onChange={(event) => onParameterRowChange(index, 'size', event.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="smplfy-form-control form-control"
+                      aria-label="Charges"
+                      value={row.charges}
+                      onChange={(event) => onParameterRowChange(index, 'charges', event.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="smplfy-form-control form-control"
+                      aria-label="Estimated time"
+                      value={row.time}
+                      onChange={(event) => onParameterRowChange(index, 'time', event.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <button
+                      className="smplfy-btn btn btn-outline-danger btn-sm"
+                      type="button"
+                      aria-label={`Delete ${row.parameter}`}
+                    >
+                      <AppIcon name="trash" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-          {parameterFormRows.map((row, index) => (
-            <div className="new-sample-parameter-table__row" key={`${row.parameter}-${index}`}>
-              <div className="new-sample-parameter-checkbox-cell">
-                <Checkbox
-                  checked={row.checked}
-                  ariaLabel={`Select ${row.parameter}`}
-                  onChange={(nextChecked) => onParameterRowChange(index, 'checked', nextChecked)}
-                />
-              </div>
-              <input
-                className="new-sample-parameter-input"
-                value={row.parameter}
-                onChange={(event) => onParameterRowChange(index, 'parameter', event.target.value)}
-              />
-              <input
-                className="new-sample-parameter-input"
-                value={row.method}
-                onChange={(event) => onParameterRowChange(index, 'method', event.target.value)}
-              />
-              <input
-                className="new-sample-parameter-input"
-                value={row.size}
-                onChange={(event) => onParameterRowChange(index, 'size', event.target.value)}
-              />
-              <input
-                className="new-sample-parameter-input"
-                value={row.charges}
-                onChange={(event) => onParameterRowChange(index, 'charges', event.target.value)}
-              />
-              <input
-                className="new-sample-parameter-input"
-                value={row.time}
-                onChange={(event) => onParameterRowChange(index, 'time', event.target.value)}
-              />
-              <button
-                className="smplfy-btn btn btn-outline-danger new-sample-product-head__delete"
-                type="button"
-                aria-label={`Delete ${row.parameter}`}
-              >
-                <AppIcon name="trash" />
-              </button>
-            </div>
-          ))}
-
-          <button className="smplfy-btn btn btn-outline-secondary new-sample-outline-action" type="button">
+          <button className="smplfy-btn btn btn-outline-secondary w-100 mt-2" type="button">
             <AppIcon name="plus" />
             <span>Add New Parameter</span>
           </button>
         </div>
 
-        <div className="new-sample-product-divider" />
+        <hr className="my-4" />
 
-        <button className="smplfy-btn btn btn-outline-secondary new-sample-outline-action new-sample-outline-action--large" type="button">
+        <button className="smplfy-btn btn btn-outline-secondary w-100 py-3" type="button">
           <AppIcon name="plus" />
           <span>Add New Product</span>
         </button>
@@ -776,7 +799,7 @@ function ProductDetailsSection({
 function AdditionalDetailsSection({ formValues, fieldErrors, onFieldChange, onFieldFocus, onFieldBlur }) {
   return (
     <FormSection id="new-sample-additional-details" title="Additional Details">
-      <div className="container-fluid new-sample-form__content">
+      <div className="container-fluid p-4">
         <div className="row g-4">
           {stepFields[3].map((field) => (
             <div className="col-lg-6" key={field.key}>
@@ -817,13 +840,13 @@ function CustomerForm({
   return (
     <form
       id={formId}
-      className="new-sample-form"
+      className="container-xl"
       onSubmit={(event) => {
         event.preventDefault();
         onComplete();
       }}
     >
-      <div className="new-sample-form__sections">
+      <div className="d-grid gap-3">
         <CustomerDetailsSection
           formValues={formValues}
           fieldErrors={fieldErrors}
@@ -1157,10 +1180,10 @@ export default function NewSampleCustomerDetailsPage({
   };
 
   return (
-    <div className="new-sample-page" data-sample-form-variant={formVariant}>
+    <div className="vh-100 bg-body-tertiary d-flex flex-column">
       <TopBar parentLabel={parentLabel} currentLabel={currentCrumbLabel} onBack={handleCancel} />
       <PageHeader title={currentCrumbLabel} mode={mode} formId={formId} />
-      <main className="new-sample-page__content">
+      <main className="flex-fill overflow-auto px-4 py-4 pb-5">
         <CustomerForm
           formId={formId}
           formValues={formValues}
