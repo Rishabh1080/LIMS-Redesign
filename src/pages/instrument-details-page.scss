@@ -1,82 +1,90 @@
-.smplfy-instrument-details-header {
-  --bs-border-color: var(--smplfy-primitive-neutral-400);
-
-  min-height: 72px;
-}
-
 .smplfy-instrument-details-page {
   --bs-tertiary-bg: var(--page-bg);
+  --smplfy-instrument-details-card-bg: var(--surface);
+  --smplfy-instrument-details-card-border: var(--border-card);
+  --smplfy-instrument-details-summary-padding-y: 16px;
+  --smplfy-instrument-details-summary-padding-x: 24px;
+  --smplfy-instrument-details-copy-font-size: 14px;
+  --smplfy-instrument-details-copy-line-height: 1.4;
+  --smplfy-instrument-details-copy-letter-spacing: -0.02em;
+  --smplfy-instrument-details-title-letter-spacing: -0.03em;
+  --smplfy-instrument-details-qr-width: 304px;
+  --smplfy-instrument-details-qr-width-tablet: 220px;
+  --smplfy-instrument-details-qr-padding-block: 16px;
+  --smplfy-instrument-details-qr-padding-inline: 80px;
+  --smplfy-instrument-details-qr-padding-inline-tablet: 40px;
+  --smplfy-instrument-details-table-radius: 8px;
+  --smplfy-instrument-details-table-head-padding-y: 10px;
+  --smplfy-instrument-details-table-cell-padding-y: 12px;
+  --smplfy-instrument-details-table-cell-padding-x: 12px;
+  --smplfy-instrument-details-records-body-padding: 16px 24px 24px;
+  --smplfy-instrument-details-tabs-height: 51px;
 }
 
-.smplfy-instrument-details-summary-card.card,
-.smplfy-instrument-details-qr-card.card,
-.smplfy-instrument-details-records-card.card {
-  --bs-card-bg: var(--surface);
-  --bs-card-border-color: var(--border-card);
-  --bs-card-border-radius: 12px;
+.smplfy-instrument-details-page .smplfy-card.card {
+  --bs-card-bg: var(--smplfy-instrument-details-card-bg);
+  --bs-card-border-color: var(--smplfy-instrument-details-card-border);
 }
 
-.smplfy-instrument-details-summary-card.card {
-  --bs-card-spacer-y: 16px;
-  --bs-card-spacer-x: 24px;
+.smplfy-instrument-details-page .row:first-child .col-xl > .smplfy-card.card {
+  --bs-card-spacer-y: var(--smplfy-instrument-details-summary-padding-y);
+  --bs-card-spacer-x: var(--smplfy-instrument-details-summary-padding-x);
 }
 
-.smplfy-instrument-details-summary-card h2 {
-  letter-spacing: -0.03em;
+.smplfy-instrument-details-page .row:first-child .col-xl > .smplfy-card.card h2 {
+  letter-spacing: var(--smplfy-instrument-details-title-letter-spacing);
 }
 
-.smplfy-instrument-details-summary-card p,
-.smplfy-instrument-details-summary-card .text-secondary {
-  font-size: 14px;
-  line-height: 1.4;
-  letter-spacing: -0.02em;
+.smplfy-instrument-details-page .row:first-child .col-xl > .smplfy-card.card p,
+.smplfy-instrument-details-page .row:first-child .col-xl > .smplfy-card.card .text-secondary {
+  font-size: var(--smplfy-instrument-details-copy-font-size);
+  line-height: var(--smplfy-instrument-details-copy-line-height);
+  letter-spacing: var(--smplfy-instrument-details-copy-letter-spacing);
 }
 
-.smplfy-instrument-details-qr-card.card {
-  width: 304px;
+.smplfy-instrument-details-page .row:first-child .col-xl-auto > .smplfy-card.card {
+  width: var(--smplfy-instrument-details-qr-width);
 }
 
-.smplfy-instrument-details-qr-card.card .card-body {
-  padding: 16px 80px;
+.smplfy-instrument-details-page .row:first-child .col-xl-auto > .smplfy-card.card .card-body {
+  padding:
+    var(--smplfy-instrument-details-qr-padding-block)
+    var(--smplfy-instrument-details-qr-padding-inline);
 }
 
-.smplfy-instrument-details-records-card.card {
-  overflow: hidden;
+.smplfy-instrument-details-page > .container-fluid > .smplfy-card.card .card-header {
+  border-color: var(--smplfy-instrument-details-card-border);
 }
 
-.smplfy-instrument-details-records-card .card-header {
-  border-color: var(--border-card);
+.smplfy-instrument-details-page > .container-fluid > .smplfy-card.card .nav-tabs {
+  min-height: var(--smplfy-instrument-details-tabs-height);
 }
 
-.smplfy-instrument-details-records-card .nav-tabs {
-  min-height: 51px;
-}
+.smplfy-instrument-details-page > .container-fluid > .smplfy-card.card .card-body {
+  --smplfy-table-radius: var(--smplfy-instrument-details-table-radius);
+  --smplfy-table-head-padding-y: var(--smplfy-instrument-details-table-head-padding-y);
+  --smplfy-table-cell-padding-y: var(--smplfy-instrument-details-table-cell-padding-y);
+  --smplfy-table-cell-padding-x: var(--smplfy-instrument-details-table-cell-padding-x);
 
-.smplfy-instrument-details-records-card .card-body {
-  --smplfy-table-radius: 8px;
-  --smplfy-table-head-padding-y: 10px;
-  --smplfy-table-cell-padding-y: 12px;
-  --smplfy-table-cell-padding-x: 12px;
-
-  padding: 16px 24px 24px;
+  padding: var(--smplfy-instrument-details-records-body-padding);
 }
 
 @media (max-width: 1199.98px) {
-  .smplfy-instrument-details-qr-card.card {
-    width: 220px;
+  .smplfy-instrument-details-page .row:first-child .col-xl-auto > .smplfy-card.card {
+    width: var(--smplfy-instrument-details-qr-width-tablet);
   }
 
-  .smplfy-instrument-details-qr-card.card .card-body {
-    padding-inline: 40px;
+  .smplfy-instrument-details-page .row:first-child .col-xl-auto > .smplfy-card.card .card-body {
+    padding-inline: var(--smplfy-instrument-details-qr-padding-inline-tablet);
   }
 }
 
 @media (max-width: 991.98px) {
-  .smplfy-instrument-details-qr-card.card {
+  .smplfy-instrument-details-page .row:first-child .col-xl-auto > .smplfy-card.card {
     width: 100%;
   }
 
-  .smplfy-instrument-details-qr-card.card .card-body {
-    padding: 24px;
+  .smplfy-instrument-details-page .row:first-child .col-xl-auto > .smplfy-card.card .card-body {
+    padding: var(--smplfy-modal-body-padding);
   }
 }

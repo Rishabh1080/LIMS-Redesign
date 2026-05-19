@@ -84,7 +84,7 @@ function validateRelativeHumidity(value) {
 
 function EnvironmentDataHeader({ onAddDataLog }) {
   return (
-    <section className="smplfy-environment-data-header bg-white border-bottom">
+    <section className="bg-white border-bottom px-4 py-3">
       <div className="container-fluid px-0">
         <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto">
@@ -386,12 +386,12 @@ export default function EnvironmentDataPage({
       onSidebarCollapsedChange={onSidebarCollapsedChange}
       pageHeader={<EnvironmentDataHeader onAddDataLog={openModal} />}
     >
-      <main className="smplfy-environment-data-page bg-body-tertiary min-vh-100">
+      <main className="smplfy-environment-data-page bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0">
-          <div className="smplfy-environment-data-count text-secondary fw-medium mb-3">{logCountLabel}</div>
+          <div className="text-secondary fw-medium mb-3">{logCountLabel}</div>
 
           {visibleLogs.length ? (
-            <DataTable className="smplfy-environment-data-table">
+            <DataTable>
               <thead>
                 <tr>
                   <th scope="col">Recorded By</th>
@@ -424,7 +424,7 @@ export default function EnvironmentDataPage({
               </tbody>
             </DataTable>
           ) : (
-            <section className="smplfy-environment-data-empty smplfy-card card">
+            <section className="smplfy-card card">
               <EnvironmentDataEmptyState />
             </section>
           )}

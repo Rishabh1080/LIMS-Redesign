@@ -233,8 +233,8 @@ function RequestDetailsModal({ request, onClose }) {
       titleId="request-details-title"
       size="xl"
       onClose={onClose}
-      cardClassName="smplfy-request-modal-card"
-      bodyClassName="smplfy-request-modal-body"
+      cardClassName="smplfy-request-modal"
+      bodyClassName="p-0 d-flex overflow-hidden"
       titleExtra={
         <div className="smplfy-state-transition">
           <StatusBadge presentation={sourceState} />
@@ -243,35 +243,35 @@ function RequestDetailsModal({ request, onClose }) {
         </div>
       }
     >
-      <div className="smplfy-request-modal-main">
-        <div className="smplfy-request-modal-summary">
-          <div className="smplfy-request-modal-summary-row">
-            <div className="smplfy-request-modal-summary-label">Request by</div>
-            <div className="smplfy-request-modal-summary-value">{request.requestedByName}</div>
+      <section className="d-flex flex-column flex-grow-1 overflow-hidden border-end">
+        <dl className="m-0 d-flex flex-column gap-3 border-bottom flex-shrink-0">
+          <div className="row g-0 align-items-center">
+            <dt className="col-auto mb-0">Request by</dt>
+            <dd className="col mb-0">{request.requestedByName}</dd>
           </div>
-          <div className="smplfy-request-modal-summary-row">
-            <div className="smplfy-request-modal-summary-label">Requested on</div>
-            <div className="smplfy-request-modal-summary-value">{request.requestedOn}</div>
+          <div className="row g-0 align-items-center">
+            <dt className="col-auto mb-0">Requested on</dt>
+            <dd className="col mb-0">{request.requestedOn}</dd>
           </div>
-          <div className="smplfy-request-modal-summary-row">
-            <div className="smplfy-request-modal-summary-label">Comment</div>
-            <div className="smplfy-request-modal-summary-value">
+          <div className="row g-0 align-items-center">
+            <dt className="col-auto mb-0">Comment</dt>
+            <dd className="col mb-0">
               {normalizeRetentionLabel(request.comments)}
-            </div>
+            </dd>
           </div>
-        </div>
+        </dl>
 
-        <div className="smplfy-request-modal-body-grid">
-          <div className="smplfy-request-modal-section-head">
-            <div className="smplfy-nav-link nav-link active smplfy-request-modal-tab">Everyone Needs to approve</div>
-            <div className="smplfy-request-modal-responded">6/12 Responded</div>
-            <SecondaryButton size="small" className="smplfy-request-modal-remind">
+        <div className="flex-grow-1 overflow-auto">
+          <div className="d-flex align-items-center gap-3 flex-wrap pb-3">
+            <div className="smplfy-nav-link nav-link active">Everyone Needs to approve</div>
+            <div className="fw-medium">6/12 Responded</div>
+            <SecondaryButton size="small" className="ms-auto">
               Remind All
             </SecondaryButton>
           </div>
 
-          <div className="smplfy-request-modal-table-wrap table-responsive">
-            <table className="smplfy-table table mb-0 align-middle">
+          <div className="table-responsive overflow-hidden">
+            <table className="smplfy-table table table-bordered mb-0 align-middle">
               <thead>
                 <tr>
                   <th scope="col">Sr.</th>
@@ -297,11 +297,11 @@ function RequestDetailsModal({ request, onClose }) {
             </table>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="smplfy-request-modal-sidebar">
-        <div className="smplfy-request-modal-sidebar-form">
-          <label className="smplfy-form-label form-label" htmlFor="request-comment">
+      <aside className="d-flex flex-column justify-content-between flex-shrink-0 overflow-hidden">
+        <div className="d-flex flex-column gap-4">
+          <label className="smplfy-form-label form-label mb-0" htmlFor="request-comment">
             Comment <span className="text-danger">*</span>
           </label>
           <input
@@ -316,15 +316,15 @@ function RequestDetailsModal({ request, onClose }) {
           />
           {commentError ? <div className="smplfy-form-feedback invalid-feedback d-block">{commentError}</div> : null}
         </div>
-        <div className="smplfy-request-modal-actions">
-          <PrimaryButton styleVariant="destructive" size="large" className="smplfy-request-modal-action" onClick={handleAction} leftIcon="close">
+        <div className="modal-footer border-top d-flex align-items-center justify-content-between">
+          <PrimaryButton styleVariant="destructive" size="large" onClick={handleAction} leftIcon="close">
             Reject
           </PrimaryButton>
-          <PrimaryButton styleVariant="positive" size="large" className="smplfy-request-modal-action" onClick={handleAction} leftIcon="check">
+          <PrimaryButton styleVariant="positive" size="large" onClick={handleAction} leftIcon="check">
             Approve
           </PrimaryButton>
         </div>
-      </div>
+      </aside>
     </Modal>
   );
 }

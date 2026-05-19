@@ -1,61 +1,56 @@
-.smplfy-environment-data-header {
-  min-height: 72px;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-}
-
-.smplfy-environment-data-header h1 {
-  color: var(--smplfy-primitive-neutral-800);
-  font-size: 20px;
-  line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-}
-
 .smplfy-environment-data-page {
-  padding: 24px;
-  background: var(--smplfy-primitive-neutral-200);
+  --bs-tertiary-bg: var(--smplfy-primitive-neutral-200);
+  --smplfy-environment-data-count-margin-bottom: 12px;
+  --smplfy-environment-data-table-radius: 16px;
+  --smplfy-environment-data-table-min-width: 920px;
+  --smplfy-environment-data-table-min-width-tablet: 860px;
+  --smplfy-environment-data-table-head-bg: #f8fafc;
+  --smplfy-environment-data-table-shadow: 0 1px 2px rgba(28, 33, 38, 0.04);
+  --smplfy-environment-data-table-cell-padding-y: 16px;
+  --smplfy-environment-data-table-cell-padding-x: 20px;
+  --smplfy-environment-data-table-head-padding-y: 14px;
+  --smplfy-environment-data-empty-min-height: 260px;
+  --smplfy-environment-data-empty-padding: 40px 24px;
 }
 
-.smplfy-environment-data-count {
-  margin-bottom: 12px !important;
+.smplfy-environment-data-page > .container-fluid > .text-secondary.fw-medium {
+  margin-bottom: var(--smplfy-environment-data-count-margin-bottom) !important;
   color: var(--smplfy-primitive-neutral-600);
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
 }
 
-.smplfy-environment-data-page .table-responsive:has(> .smplfy-environment-data-table) {
+.smplfy-environment-data-page .table-responsive:has(> .smplfy-table.table) {
   border: 1px solid var(--smplfy-primitive-neutral-300);
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(28, 33, 38, 0.04);
+  border-radius: var(--smplfy-environment-data-table-radius);
+  box-shadow: var(--smplfy-environment-data-table-shadow);
 }
 
-.smplfy-environment-data-table.table {
-  --smplfy-table-min-width: 920px;
-  --smplfy-table-head-bg: #f8fafc;
-  --smplfy-table-cell-padding-y: 16px;
-  --smplfy-table-cell-padding-x: 20px;
-  --smplfy-table-head-padding-y: 14px;
+.smplfy-environment-data-page .smplfy-table.table {
+  --smplfy-table-min-width: var(--smplfy-environment-data-table-min-width);
+  --smplfy-table-head-bg: var(--smplfy-environment-data-table-head-bg);
+  --smplfy-table-cell-padding-y: var(--smplfy-environment-data-table-cell-padding-y);
+  --smplfy-table-cell-padding-x: var(--smplfy-environment-data-table-cell-padding-x);
+  --smplfy-table-head-padding-y: var(--smplfy-environment-data-table-head-padding-y);
 }
 
-.smplfy-environment-data-empty.card {
+.smplfy-environment-data-page .smplfy-card.card {
   border-color: var(--smplfy-primitive-neutral-300);
-  border-radius: 16px;
+  border-radius: var(--smplfy-environment-data-table-radius);
 }
 
-.smplfy-environment-data-empty .card-body {
-  min-height: 260px;
-  padding: 40px 24px;
+.smplfy-environment-data-page .smplfy-card.card .card-body {
+  min-height: var(--smplfy-environment-data-empty-min-height);
+  padding: var(--smplfy-environment-data-empty-padding);
 }
 
 @media (max-width: 991.98px) {
   .smplfy-environment-data-page {
-    padding-top: 20px;
+    padding-top: 20px !important;
   }
 
-  .smplfy-environment-data-table.table {
-    --smplfy-table-min-width: 860px;
+  .smplfy-environment-data-page .smplfy-table.table {
+    --smplfy-table-min-width: var(--smplfy-environment-data-table-min-width-tablet);
   }
 }

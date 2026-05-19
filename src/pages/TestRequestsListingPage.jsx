@@ -234,34 +234,33 @@ function AllocationModal({
       onClose={onCancel}
       size="xl"
       cardClassName="smplfy-tr-allocation-modal-dialog"
-      bodyClassName="smplfy-tr-allocation-modal-body"
+      bodyClassName="p-0 overflow-hidden"
     >
-      <div className="smplfy-tr-allocation-layout">
-        <div className="smplfy-tr-allocation-main">
-          <div className="smplfy-tr-allocation-details">
-            <dl className="mb-0">
-              <div className="smplfy-tr-allocation-detail-row">
-                <dt>Test Parameter</dt>
-                <dd>{details.parameter}</dd>
+      <div className="h-100 d-flex overflow-hidden">
+        <section className="d-flex flex-column flex-grow-1 overflow-hidden border-end">
+          <div>
+            <dl className="mb-0 d-grid">
+              <div className="row g-0 align-items-start">
+                <dt className="col-auto mb-0">Test Parameter</dt>
+                <dd className="col mb-0">{details.parameter}</dd>
               </div>
-              <div className="smplfy-tr-allocation-detail-row">
-                <dt>MoA</dt>
-                <dd>{details.moa}</dd>
+              <div className="row g-0 align-items-start">
+                <dt className="col-auto mb-0">MoA</dt>
+                <dd className="col mb-0">{details.moa}</dd>
               </div>
-              <div className="smplfy-tr-allocation-detail-row">
-                <dt>Template</dt>
-                <dd>{details.template}</dd>
+              <div className="row g-0 align-items-start">
+                <dt className="col-auto mb-0">Template</dt>
+                <dd className="col mb-0">{details.template}</dd>
               </div>
             </dl>
           </div>
 
-          <div className="smplfy-tr-allocation-tabs-section">
-            <div className="smplfy-tr-allocation-tabs nav nav-tabs border-0" role="tablist" aria-label="Allocation resources">
+          <div className="d-flex flex-column flex-grow-1 overflow-hidden border-top">
+            <div className="nav nav-tabs border-0 flex-shrink-0" role="tablist" aria-label="Allocation resources">
               {allocationTabs.map((tab) => (
                 <NavSelector
                   key={tab.key}
                   size="medium"
-                  className="smplfy-tr-allocation-tab"
                   active={activeTab === tab.key}
                   onClick={() => onTabChange(tab.key)}
                 >
@@ -270,7 +269,7 @@ function AllocationModal({
               ))}
             </div>
 
-            <div className="smplfy-tr-allocation-table-wrap">
+            <div className="flex-grow-1 overflow-auto">
               <DataTable className={`smplfy-tr-allocation-table smplfy-tr-allocation-table-${activeTab}`}>
                 <thead>
                   <tr>
@@ -297,10 +296,10 @@ function AllocationModal({
               </DataTable>
             </div>
           </div>
-        </div>
+        </section>
 
-        <aside className="smplfy-tr-allocation-side">
-          <div className="smplfy-tr-allocation-form">
+        <aside className="d-flex flex-column justify-content-between flex-shrink-0 overflow-hidden">
+          <div className="d-flex flex-column gap-4 overflow-hidden">
             <FormElement
               type="dropdown"
               label="Allocate to"
@@ -333,8 +332,8 @@ function AllocationModal({
             />
           </div>
 
-          <div className="smplfy-tr-allocation-actions">
-            <SecondaryButton leftIcon="close" size="large" className="smplfy-tr-allocation-cancel" onClick={onCancel}>
+          <div className="modal-footer border-top d-flex align-items-center justify-content-between">
+            <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
               Cancel
             </SecondaryButton>
             <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>

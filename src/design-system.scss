@@ -1276,6 +1276,13 @@
   color: var(--smplfy-primitive-blue-500) !important;
 }
 
+.smplfy-card.card {
+  --bs-card-bg: var(--smplfy-card-bg);
+  --bs-card-border-width: var(--smplfy-card-border-width);
+  --bs-card-border-color: var(--smplfy-primitive-neutral-300);
+  --bs-card-border-radius: var(--smplfy-card-radius);
+}
+
 .smplfy-list-group-item.list-group-item {
   --bs-list-group-item-padding-x: var(--smplfy-list-group-item-padding-x);
   --bs-list-group-item-padding-y: var(--smplfy-list-group-item-padding-y);

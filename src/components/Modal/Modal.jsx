@@ -42,20 +42,20 @@ export default function Modal({
 
   return (
     <div className="smplfy-modal modal show d-block" role="dialog" aria-modal="true" aria-labelledby={titleId}>
-      <div className="smplfy-modal-backdrop modal-backdrop show" onClick={onClose} />
-      <div className={joinClasses('smplfy-modal-dialog modal-dialog modal-dialog-centered', sizeClass, cardClassName)}>
-        <div className={joinClasses('smplfy-modal-content modal-content', cardClassName, className)}>
-          <div className="smplfy-modal-header modal-header">
-            <div className="smplfy-modal-title-row">
-              {titleIcon ? <AppIcon name={titleIcon} size={24} className="smplfy-modal-title-icon" /> : null}
-              <h2 className="smplfy-modal-title modal-title" id={titleId}>{title}</h2>
-              {titleExtra ? <div className="smplfy-modal-title-extra">{titleExtra}</div> : null}
+      <div className="modal-backdrop show" onClick={onClose} />
+      <div className={joinClasses('modal-dialog modal-dialog-centered', sizeClass, cardClassName)}>
+        <div className={joinClasses('modal-content', className)}>
+          <div className="modal-header">
+            <div className="d-flex align-items-center gap-2 flex-grow-1 min-w-0">
+              {titleIcon ? <AppIcon name={titleIcon} size={24} className="flex-shrink-0" /> : null}
+              <h2 className="modal-title" id={titleId}>{title}</h2>
+              {titleExtra ? <div className="ms-2">{titleExtra}</div> : null}
             </div>
 
             {showCloseButton ? (
               <button
                 type="button"
-                className="smplfy-modal-close btn-close"
+                className="btn-close"
                 aria-label={closeLabel}
                 onClick={onClose}
               >
@@ -64,9 +64,9 @@ export default function Modal({
             ) : null}
           </div>
 
-          <div className={joinClasses('smplfy-modal-body modal-body', bodyClassName)}>{children}</div>
+          <div className={joinClasses('modal-body', bodyClassName)}>{children}</div>
 
-          {actions ? <div className={joinClasses('smplfy-modal-footer modal-footer', actionsClassName)}>{actions}</div> : null}
+          {actions ? <div className={joinClasses('modal-footer', actionsClassName)}>{actions}</div> : null}
         </div>
       </div>
     </div>

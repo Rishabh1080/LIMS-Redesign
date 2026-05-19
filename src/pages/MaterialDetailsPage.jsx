@@ -98,7 +98,7 @@ function TransactionModal({ open, materialName, values, errors, onChange, onBlur
 
 function MaterialDetailsHeader({ materialName, onBack, onNewTransaction }) {
   return (
-    <section className="smplfy-material-details-header bg-white border-bottom px-4 py-3">
+    <section className="bg-white border-bottom px-4 py-3">
       <div className="container-fluid px-0">
         <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto d-flex align-items-center gap-3">
@@ -237,7 +237,7 @@ export default function MaterialDetailsPage({
 
           <div className="row g-2 align-items-stretch">
             <div className="col-12 col-xl">
-              <div className="smplfy-card card smplfy-material-details-summary-card h-100">
+              <div className="smplfy-card card h-100">
                 <div className="card-body row g-0 align-items-center">
                   <div className="col-12 col-lg-6 px-3">
                     <h2 className="fs-2 fw-normal lh-sm mb-2 text-dark">{materialName}</h2>
@@ -247,7 +247,7 @@ export default function MaterialDetailsPage({
                     </div>
                     <p className="mb-0 text-secondary">{description}</p>
                   </div>
-                  <div className="smplfy-material-details-stats col-12 col-lg-6 d-flex align-items-center justify-content-around gap-3 flex-wrap">
+                  <div className="col-12 col-lg-6 d-flex align-items-center justify-content-around gap-3 flex-wrap">
                     <StatBlock value={currentQty} unit={unit} label="Current Quantity" />
                     <StatBlock value={minQty} unit={unit} label="Min Quantity" />
                   </div>
@@ -256,7 +256,7 @@ export default function MaterialDetailsPage({
             </div>
 
             <div className="col-12 col-xl-auto">
-              <div className="smplfy-card card smplfy-material-details-qr-card h-100">
+              <div className="smplfy-card card h-100">
                 <div className="card-body d-flex align-items-center justify-content-center">
                   <img src={qrCode} alt="QR Code" width={120} height={120} />
                 </div>
@@ -264,7 +264,7 @@ export default function MaterialDetailsPage({
             </div>
           </div>
 
-          <div className="smplfy-card card smplfy-material-details-records-card">
+          <div className="smplfy-card card overflow-hidden">
             <div className="card-header bg-transparent p-0">
               <div className="nav nav-tabs px-4 border-0">
                 {tabs.map((tab) => (

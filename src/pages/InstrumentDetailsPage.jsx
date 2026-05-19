@@ -165,7 +165,7 @@ function InstrumentDetailsHeader({ instrumentName, onBack, onEditInstrument, onN
   ];
 
   return (
-    <section className="smplfy-instrument-details-header bg-white border-bottom px-4 py-3">
+    <section className="bg-white border-bottom px-4 py-3">
       <div className="container-fluid px-0">
         <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto d-flex align-items-center gap-3">
@@ -264,7 +264,7 @@ export default function InstrumentDetailsPage({
         <div className="container-fluid px-0 d-flex flex-column gap-3">
           <div className="row g-3 align-items-stretch">
             <div className="col-12 col-xl">
-              <div className="smplfy-card card smplfy-instrument-details-summary-card h-100">
+              <div className="smplfy-card card h-100">
                 <div className="card-body row g-4 align-items-center">
                   <div className="col-12 col-lg-7">
                     <h2 className="fs-2 fw-normal lh-sm mb-2 text-dark">{instrumentName}</h2>
@@ -293,7 +293,7 @@ export default function InstrumentDetailsPage({
             </div>
 
             <div className="col-12 col-xl-auto">
-              <div className="smplfy-card card smplfy-instrument-details-qr-card h-100">
+              <div className="smplfy-card card h-100">
                 <div className="card-body d-flex align-items-center justify-content-center">
                   <img src={qrCode} alt="QR Code" width={120} height={120} />
                 </div>
@@ -301,7 +301,7 @@ export default function InstrumentDetailsPage({
             </div>
           </div>
 
-          <div className="smplfy-card card smplfy-instrument-details-records-card">
+          <div className="smplfy-card card overflow-hidden">
             <div className="card-header bg-transparent p-0">
               <div className="nav nav-tabs px-4 border-0">
                 {tabs.map((tab) => (
