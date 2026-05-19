@@ -4,6 +4,9 @@ import AppIcon from '../components/AppIcon';
 import Checkbox from '../components/Checkbox/Checkbox';
 import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
+import SecondaryButton from '../components/SecondaryButton';
+import Stepper from '../components/Stepper/Stepper';
+import './new-sample-customer-details-page.scss';
 
 const wizardSteps = [
   'Customer Details',
@@ -325,7 +328,7 @@ function getFieldInputProps(field, formValues, onFieldChange, hasError, onFieldF
 
 function TopBar({ parentLabel, currentLabel, onBack }) {
   return (
-    <header className="d-flex align-items-center justify-content-between gap-3 px-4 py-2 bg-white border-bottom flex-wrap">
+    <header className="smplfy-new-sample-topbar d-flex align-items-center justify-content-between gap-3 bg-white border-bottom flex-wrap">
       <div className="d-inline-flex align-items-center gap-2 text-secondary fw-medium flex-wrap">
         <button
           className="btn btn-link text-secondary text-decoration-none p-0 border-0"
@@ -373,15 +376,33 @@ function PageHeader({ title, mode, formId }) {
   );
 }
 
+function StepRail({ currentStep, title, mode, onStepChange }) {
+  const items = wizardSteps.map((label, index) => ({
+    label,
+    state: mode === 'edit'
+      ? 'completed'
+      : index < currentStep
+        ? 'completed'
+        : index === currentStep
+          ? 'active'
+          : 'default',
+  }));
+
+  return (
+    <aside className={`smplfy-new-sample-rail ${mode === 'edit' ? 'smplfy-new-sample-rail-edit' : ''}`.trim()}>
+      <div className={`smplfy-new-sample-rail-heading ${mode === 'edit' ? 'smplfy-new-sample-rail-heading-edit' : ''}`.trim()}>
+        <h1 className="smplfy-new-sample-rail-title">{title}</h1>
+      </div>
+      <Stepper items={items} onItemClick={onStepChange} />
+    </aside>
+  );
+}
+
 function FormSection({ id, title, children }) {
   return (
-    <section className="smplfy-card card overflow-hidden" aria-labelledby={`${id}-title`}>
-      <header className="card-header bg-white px-4 py-3">
-        <h2 className="h5 fw-semibold text-body mb-0" id={`${id}-title`}>{title}</h2>
-      </header>
-      <div className="card-body p-0">
-        {children}
-      </div>
+    <section className="smplfy-new-sample-form-section" aria-labelledby={`${id}-title`}>
+      <h2 className="visually-hidden" id={`${id}-title`}>{title}</h2>
+      {children}
     </section>
   );
 }
@@ -828,55 +849,105 @@ function AdditionalDetailsSection({ formValues, fieldErrors, onFieldChange, onFi
 
 function CustomerForm({
   formId,
+  currentStep,
   formValues,
   fieldErrors,
   onFieldChange,
   onFieldFocus,
   onFieldBlur,
+  onPrev,
+  onNext,
   onComplete,
+  onCancel,
+  mode,
+  sampleTitle,
+  onStepChange,
   parameterFormRows,
   onParameterRowChange,
 }) {
+  const sections = [
+    <CustomerDetailsSection
+      key="customer"
+      formValues={formValues}
+      fieldErrors={fieldErrors}
+      onFieldChange={onFieldChange}
+      onFieldFocus={onFieldFocus}
+      onFieldBlur={onFieldBlur}
+    />,
+    <BasicDetailsSection
+      key="basic"
+      formValues={formValues}
+      fieldErrors={fieldErrors}
+      onFieldChange={onFieldChange}
+      onFieldFocus={onFieldFocus}
+      onFieldBlur={onFieldBlur}
+    />,
+    <ProductDetailsSection
+      key="product"
+      formValues={formValues}
+      fieldErrors={fieldErrors}
+      onFieldChange={onFieldChange}
+      onFieldFocus={onFieldFocus}
+      onFieldBlur={onFieldBlur}
+      parameterFormRows={parameterFormRows}
+      onParameterRowChange={onParameterRowChange}
+    />,
+    <AdditionalDetailsSection
+      key="additional"
+      formValues={formValues}
+      fieldErrors={fieldErrors}
+      onFieldChange={onFieldChange}
+      onFieldFocus={onFieldFocus}
+      onFieldBlur={onFieldBlur}
+    />,
+  ];
+  const prevLabel = currentStep > 0 ? wizardSteps[currentStep - 1] : 'Cancel';
+  const isLast = currentStep === wizardSteps.length - 1;
+  const handlePrevClick = currentStep > 0 ? onPrev : onCancel;
+
   return (
     <form
       id={formId}
-      className="container-xl"
+      className="smplfy-new-sample-card smplfy-card card"
       onSubmit={(event) => {
         event.preventDefault();
         onComplete();
       }}
     >
-      <div className="d-grid gap-3">
-        <CustomerDetailsSection
-          formValues={formValues}
-          fieldErrors={fieldErrors}
-          onFieldChange={onFieldChange}
-          onFieldFocus={onFieldFocus}
-          onFieldBlur={onFieldBlur}
+      <div className="smplfy-new-sample-card-body">
+        <StepRail
+          currentStep={currentStep}
+          title={sampleTitle}
+          mode={mode}
+          onStepChange={mode === 'edit' ? onStepChange : undefined}
         />
-        <BasicDetailsSection
-          formValues={formValues}
-          fieldErrors={fieldErrors}
-          onFieldChange={onFieldChange}
-          onFieldFocus={onFieldFocus}
-          onFieldBlur={onFieldBlur}
-        />
-        <ProductDetailsSection
-          formValues={formValues}
-          fieldErrors={fieldErrors}
-          onFieldChange={onFieldChange}
-          onFieldFocus={onFieldFocus}
-          onFieldBlur={onFieldBlur}
-          parameterFormRows={parameterFormRows}
-          onParameterRowChange={onParameterRowChange}
-        />
-        <AdditionalDetailsSection
-          formValues={formValues}
-          fieldErrors={fieldErrors}
-          onFieldChange={onFieldChange}
-          onFieldFocus={onFieldFocus}
-          onFieldBlur={onFieldBlur}
-        />
+
+        <div className="smplfy-new-sample-form">
+          <div className="smplfy-new-sample-form-stage">{sections[currentStep]}</div>
+          <div className="smplfy-new-sample-card-footer">
+            <SecondaryButton
+              className="smplfy-new-sample-cancel"
+              leftIcon={currentStep > 0 ? 'chevron-left' : 'close'}
+              onClick={handlePrevClick}
+            >
+              {prevLabel}
+            </SecondaryButton>
+
+            {mode === 'edit' ? (
+              <PrimaryButton leftIcon="save" onClick={onComplete}>
+                Save Changes
+              </PrimaryButton>
+            ) : isLast ? (
+              <PrimaryButton leftIcon="save" onClick={onComplete}>
+                Save Sample
+              </PrimaryButton>
+            ) : (
+              <PrimaryButton rightIcon="chevron-right" onClick={onNext}>
+                Next
+              </PrimaryButton>
+            )}
+          </div>
+        </div>
       </div>
     </form>
   );
@@ -895,7 +966,7 @@ export default function NewSampleCustomerDetailsPage({
     SAMPLE_FORM_EXPERIMENT_FLAG,
     'form-a',
   );
-  const currentStep = 0;
+  const [currentStep, setCurrentStep] = useState(0);
   const [formValues, setFormValues] = useState(mode === 'edit' ? buildEditFormValues(sample) : initialFormValues);
   const [parameterFormRows, setParameterFormRows] = useState(buildParameterFormRows(mode));
   const [fieldErrors, setFieldErrors] = useState({});
@@ -968,6 +1039,7 @@ export default function NewSampleCustomerDetailsPage({
     outcomeRef.current = null;
     fieldChangeCountsRef.current = {};
     fieldFocusStateRef.current = {};
+    setCurrentStep(0);
     setFormValues(mode === 'edit' ? buildEditFormValues(sample) : initialFormValues);
     setParameterFormRows(buildParameterFormRows(mode));
     setFieldErrors({});
@@ -1148,6 +1220,17 @@ export default function NewSampleCustomerDetailsPage({
     onComplete?.();
   };
 
+  const handleNext = () => {
+    // Validation is temporarily disabled.
+    // if (!validateStep(currentStep)) {
+    //   return;
+    // }
+
+    captureHesitationIfNeeded('next');
+    lastInteractionAtRef.current = getNow();
+    setCurrentStep((step) => Math.min(wizardSteps.length - 1, step + 1));
+  };
+
   const handleCancel = () => {
     outcomeRef.current = 'cancelled';
     captureFormEvent('sample_form_cancelled', {
@@ -1180,18 +1263,30 @@ export default function NewSampleCustomerDetailsPage({
   };
 
   return (
-    <div className="vh-100 bg-body-tertiary d-flex flex-column">
+    <div className="smplfy-new-sample-page bg-body-tertiary d-flex flex-column">
       <TopBar parentLabel={parentLabel} currentLabel={currentCrumbLabel} onBack={handleCancel} />
-      <PageHeader title={currentCrumbLabel} mode={mode} formId={formId} />
-      <main className="flex-fill overflow-auto px-4 py-4 pb-5">
+      <main className="smplfy-new-sample-page-content">
         <CustomerForm
           formId={formId}
+          currentStep={currentStep}
           formValues={formValues}
           fieldErrors={fieldErrors}
           onFieldChange={handleFieldChange}
           onFieldFocus={handleFieldFocus}
           onFieldBlur={handleFieldBlur}
+          onPrev={() => {
+            lastInteractionAtRef.current = getNow();
+            setCurrentStep((step) => Math.max(0, step - 1));
+          }}
+          onNext={handleNext}
           onComplete={handleComplete}
+          onCancel={handleCancel}
+          mode={mode}
+          sampleTitle={sampleTitle}
+          onStepChange={(stepIndex) => {
+            lastInteractionAtRef.current = getNow();
+            setCurrentStep(stepIndex);
+          }}
           parameterFormRows={parameterFormRows}
           onParameterRowChange={handleParameterRowChange}
         />

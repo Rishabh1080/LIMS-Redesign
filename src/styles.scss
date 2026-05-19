@@ -479,6 +479,11 @@ button.smplfy-header-breadcrumb-text:active {
   z-index: 35;
 }
 
+.lims-page-header-slot > section,
+.lims-page-header-slot > section > .d-flex.justify-content-between {
+  align-items: center !important;
+}
+
 .page-header {
   height: 60px;
   flex: 0 0 60px;

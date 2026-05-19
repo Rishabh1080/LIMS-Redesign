@@ -13,6 +13,7 @@ import './tr-details-page.scss';
 const toastMessageByKey = {
   'datasheet-updated': 'datasheet updated successfully.',
   'method-added': 'new method added successfully.',
+  'tr-submitted': 'Test request sent for review successfully.',
 };
 
 const methodOptions = [
@@ -43,23 +44,21 @@ function RemnantModal({ open, onCancel, onSubmit }) {
       titleId="remnant-modal-title"
       onClose={onCancel}
       size="md"
-      actionsClassName="d-grid gap-3"
+      cardClassName="smplfy-remnant-modal-dialog"
+      className="smplfy-remnant-modal"
+      actionsClassName="smplfy-remnant-modal-actions"
       actions={
-        <div className="row g-3 w-100">
-          <div className="col-sm-6">
-            <PrimaryButton styleVariant="red" className="w-100" onClick={() => onSubmit(false)}>
+        <>
+          <PrimaryButton styleVariant="red" className="smplfy-remnant-modal-action w-100" onClick={() => onSubmit(false)}>
             Not Available
-            </PrimaryButton>
-          </div>
-          <div className="col-sm-6">
-            <PrimaryButton styleVariant="positive" className="w-100" onClick={() => onSubmit(true)}>
+          </PrimaryButton>
+          <PrimaryButton styleVariant="positive" className="smplfy-remnant-modal-action w-100" onClick={() => onSubmit(true)}>
             Yes, Available
-            </PrimaryButton>
-          </div>
-        </div>
+          </PrimaryButton>
+        </>
       }
     >
-      <p className="text-secondary mb-0">
+      <p className="smplfy-remnant-modal-copy text-secondary mb-0">
         If there&apos;s any sample left after testing, select Yes. Otherwise, select Not available.
       </p>
     </Modal>
@@ -140,8 +139,8 @@ function PageHeader({
       };
 
   return (
-    <section className="smplfy-tr-details-header d-flex align-items-start justify-content-between gap-3 bg-white border-bottom flex-wrap">
-      <div className="smplfy-tr-details-header-title d-flex align-items-start gap-3 min-w-0">
+    <section className="smplfy-tr-details-header d-flex align-items-center justify-content-between gap-3 bg-white border-bottom flex-wrap">
+      <div className="smplfy-tr-details-header-title d-flex align-items-center gap-3 min-w-0">
         <SecondaryButton size="medium" className="smplfy-tr-details-header-back px-0 flex-shrink-0" aria-label="Go back" onClick={onBack}>
           <AppIcon name="chevron-left" />
         </SecondaryButton>
@@ -233,7 +232,6 @@ export default function TrDetailsPage({
 
   useEffect(() => {
     if (!initialToast) {
-      setToastVisible(false);
       return undefined;
     }
 

@@ -421,7 +421,7 @@
   --smplfy-dropdown-item-motion-standard: var(--smplfy-field-transition);
   --smplfy-dropdown-item-motion-press: var(--smplfy-button-motion-press);
 
-  --smplfy-modal-z-index: 60;
+  --smplfy-modal-z-index: 1055;
   --smplfy-modal-backdrop-z-index: 0;
   --smplfy-modal-backdrop-bg: rgba(28, 33, 38, 0.28);
   --smplfy-modal-backdrop-filter: blur(2px);
@@ -800,6 +800,7 @@
   --smplfy-toast-font-weight: 500;
   --smplfy-toast-icon-size: 16px;
   --smplfy-toast-close-margin-start: 12px;
+  --smplfy-toast-z-index: 1100;
 
   /* Button foundation tokens */
   --smplfy-button-space-0: 0;

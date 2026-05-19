@@ -353,6 +353,7 @@
   display: inline-flex;
   align-items: flex-start;
   justify-content: space-between;
+  z-index: var(--smplfy-toast-z-index);
   transition:
     opacity var(--smplfy-toast-motion-standard),
     transform var(--smplfy-toast-motion-standard);

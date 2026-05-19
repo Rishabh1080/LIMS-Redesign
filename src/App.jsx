@@ -478,7 +478,7 @@ export default function App() {
     setTrDetailsState((current) => ({
       ...current,
       workflowStage: 'submitted',
-      initialToast: null,
+      initialToast: 'tr-submitted',
       remnantAvailable,
     }));
   };

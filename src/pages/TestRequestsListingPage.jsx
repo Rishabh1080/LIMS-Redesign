@@ -233,100 +233,115 @@ function AllocationModal({
       titleIcon="user-plus"
       onClose={onCancel}
       size="xl"
-      actionsClassName="justify-content-between"
-      actions={
-        <>
-          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
-            Cancel
-          </SecondaryButton>
-          <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>
-            Allocate
-          </PrimaryButton>
-        </>
-      }
+      cardClassName="smplfy-tr-allocation-modal-dialog"
+      bodyClassName="smplfy-tr-allocation-modal-body"
     >
-      <div className="row g-4">
-        <div className="col-12 col-xl-8">
-          <dl className="row g-2 mb-4">
-            <dt className="col-sm-3 text-secondary fw-medium">Test Parameter</dt>
-            <dd className="col-sm-9 mb-0 fw-semibold text-dark">{details.parameter}</dd>
-            <dt className="col-sm-3 text-secondary fw-medium">MoA</dt>
-            <dd className="col-sm-9 mb-0 fw-semibold text-dark">{details.moa}</dd>
-            <dt className="col-sm-3 text-secondary fw-medium">Template</dt>
-            <dd className="col-sm-9 mb-0 fw-semibold text-dark">{details.template}</dd>
-          </dl>
-
-          <div className="nav nav-pills mb-3" role="tablist" aria-label="Allocation resources">
-            {allocationTabs.map((tab) => (
-              <NavSelector
-                key={tab.key}
-                size="medium"
-                active={activeTab === tab.key}
-                onClick={() => onTabChange(tab.key)}
-              >
-                {tab.label}
-              </NavSelector>
-            ))}
+      <div className="smplfy-tr-allocation-layout">
+        <div className="smplfy-tr-allocation-main">
+          <div className="smplfy-tr-allocation-details">
+            <dl className="mb-0">
+              <div className="smplfy-tr-allocation-detail-row">
+                <dt>Test Parameter</dt>
+                <dd>{details.parameter}</dd>
+              </div>
+              <div className="smplfy-tr-allocation-detail-row">
+                <dt>MoA</dt>
+                <dd>{details.moa}</dd>
+              </div>
+              <div className="smplfy-tr-allocation-detail-row">
+                <dt>Template</dt>
+                <dd>{details.template}</dd>
+              </div>
+            </dl>
           </div>
 
-          <DataTable>
-            <thead>
-              <tr>
-                {table.columns.map((column) => (
-                  <th scope="col" key={column}>{column}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {table.rows.map((row, rowIndex) => (
-                <tr key={`${activeTab}-${rowIndex}`}>
-                  {row.map((cell, cellIndex) => (
-                    <td key={`${activeTab}-${rowIndex}-${cellIndex}`}>
-                      {cell === 'Link' ? (
-                        <button type="button" className="smplfy-link link-primary btn btn-link p-0 text-start text-decoration-none">
-                          Link
-                        </button>
-                      ) : cell}
-                    </td>
-                  ))}
-                </tr>
+          <div className="smplfy-tr-allocation-tabs-section">
+            <div className="smplfy-tr-allocation-tabs nav nav-tabs border-0" role="tablist" aria-label="Allocation resources">
+              {allocationTabs.map((tab) => (
+                <NavSelector
+                  key={tab.key}
+                  size="medium"
+                  className="smplfy-tr-allocation-tab"
+                  active={activeTab === tab.key}
+                  onClick={() => onTabChange(tab.key)}
+                >
+                  {tab.label}
+                </NavSelector>
               ))}
-            </tbody>
-          </DataTable>
+            </div>
+
+            <div className="smplfy-tr-allocation-table-wrap">
+              <DataTable className={`smplfy-tr-allocation-table smplfy-tr-allocation-table-${activeTab}`}>
+                <thead>
+                  <tr>
+                    {table.columns.map((column) => (
+                      <th scope="col" key={column}>{column}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {table.rows.map((row, rowIndex) => (
+                    <tr key={`${activeTab}-${rowIndex}`}>
+                      {row.map((cell, cellIndex) => (
+                        <td key={`${activeTab}-${rowIndex}-${cellIndex}`}>
+                          {cell === 'Link' ? (
+                            <button type="button" className="smplfy-link link-primary btn btn-link p-0 text-start text-decoration-none">
+                              Link
+                            </button>
+                          ) : cell}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </DataTable>
+            </div>
+          </div>
         </div>
 
-        <div className="col-12 col-xl-4 d-flex flex-column gap-3">
-          <FormElement
-            type="dropdown"
-            label="Allocate to"
-            inputProps={{
-              value: allocateTo,
-              placeholder: 'Select person',
-              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-              onChange: (event) => onAllocateToChange(event.target.value),
-            }}
-          />
-          <FormElement
-            type="dropdown"
-            label="Reviewer"
-            inputProps={{
-              value: reviewer,
-              placeholder: 'Select person',
-              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-              onChange: (event) => onReviewerChange(event.target.value),
-            }}
-          />
-          <FormElement
-            type="dropdown"
-            label="Instrument"
-            inputProps={{
-              value: instrument,
-              placeholder: 'Select Instrument',
-              options: ['Instrument A', 'Instrument B', 'Instrument C'],
-              onChange: (event) => onInstrumentChange(event.target.value),
-            }}
-          />
-        </div>
+        <aside className="smplfy-tr-allocation-side">
+          <div className="smplfy-tr-allocation-form">
+            <FormElement
+              type="dropdown"
+              label="Allocate to"
+              inputProps={{
+                value: allocateTo,
+                placeholder: 'Select person',
+                options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+                onChange: (event) => onAllocateToChange(event.target.value),
+              }}
+            />
+            <FormElement
+              type="dropdown"
+              label="Reviewer"
+              inputProps={{
+                value: reviewer,
+                placeholder: 'Select person',
+                options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+                onChange: (event) => onReviewerChange(event.target.value),
+              }}
+            />
+            <FormElement
+              type="dropdown"
+              label="Instrument"
+              inputProps={{
+                value: instrument,
+                placeholder: 'Select Instrument',
+                options: ['Instrument A', 'Instrument B', 'Instrument C'],
+                onChange: (event) => onInstrumentChange(event.target.value),
+              }}
+            />
+          </div>
+
+          <div className="smplfy-tr-allocation-actions">
+            <SecondaryButton leftIcon="close" size="large" className="smplfy-tr-allocation-cancel" onClick={onCancel}>
+              Cancel
+            </SecondaryButton>
+            <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>
+              Allocate
+            </PrimaryButton>
+          </div>
+        </aside>
       </div>
     </Modal>
   );
@@ -354,10 +369,12 @@ function JobAllocationModal({
       titleIcon="user-plus"
       onClose={onCancel}
       size="md"
-      actionsClassName="justify-content-between"
+      cardClassName="smplfy-tr-job-allocation-modal-dialog"
+      bodyClassName="smplfy-tr-job-allocation-modal-body"
+      actionsClassName="smplfy-tr-job-allocation-actions justify-content-between"
       actions={
         <>
-          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
+          <SecondaryButton leftIcon="close" size="large" className="smplfy-tr-job-allocation-cancel" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>
@@ -366,32 +383,34 @@ function JobAllocationModal({
         </>
       }
     >
-      <div className="d-flex flex-column gap-3">
-        <div className="d-flex align-items-center gap-2">
-          <span className="text-secondary fw-medium">Job ID:</span>
-          <span className="text-dark fw-semibold">{jobId}</span>
+      <div className="smplfy-tr-job-allocation-content">
+        <div className="smplfy-tr-job-allocation-job-row">
+          <span className="smplfy-tr-job-allocation-job-label">Job ID:</span>
+          <span className="smplfy-tr-job-allocation-job-value">{jobId}</span>
         </div>
 
-        <FormElement
-          type="dropdown"
-          label="Allocate to"
-          inputProps={{
-            value: allocateTo,
-            placeholder: 'Select person',
-            options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-            onChange: (event) => onAllocateToChange(event.target.value),
-          }}
-        />
-        <FormElement
-          type="dropdown"
-          label="Reviewer"
-          inputProps={{
-            value: reviewer,
-            placeholder: 'Select person',
-            options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-            onChange: (event) => onReviewerChange(event.target.value),
-          }}
-        />
+        <div className="smplfy-tr-job-allocation-fields">
+          <FormElement
+            type="dropdown"
+            label="Allocate to"
+            inputProps={{
+              value: allocateTo,
+              placeholder: 'Select person',
+              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+              onChange: (event) => onAllocateToChange(event.target.value),
+            }}
+          />
+          <FormElement
+            type="dropdown"
+            label="Reviewer"
+            inputProps={{
+              value: reviewer,
+              placeholder: 'Select person',
+              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+              onChange: (event) => onReviewerChange(event.target.value),
+            }}
+          />
+        </div>
       </div>
     </Modal>
   );
@@ -470,7 +489,7 @@ function RequestsCardSelection({
         )}
       </div>
 
-        <DataTable>
+        <DataTable className="smplfy-tr-listing-table smplfy-tr-listing-table-selection">
           <thead>
             <tr>
               <th scope="col" className="text-center">
@@ -614,14 +633,14 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
       <div className="card-header bg-transparent d-flex align-items-center justify-content-between gap-3">
         <div className="fw-medium">{requests.length} Test Requests</div>
         {readOnly ? null : (
-          <PrimaryButton leftIcon="plus" onClick={() => onCreateJobModeChange(true)}>
+          <PrimaryButton leftIcon="plus" size="large" onClick={() => onCreateJobModeChange(true)}>
             Create Job
           </PrimaryButton>
         )}
       </div>
 
       <div className="card-body">
-        <DataTable>
+        <DataTable className="smplfy-tr-listing-table smplfy-tr-listing-table-requests">
           <thead>
             <tr>
               <th scope="col">Test Request ID</th>
@@ -685,7 +704,7 @@ function JobsCard({ jobs, onAllocate, onOpenTrDetails, readOnly = false }) {
       </div>
 
       <div className="card-body">
-        <DataTable>
+        <DataTable className="smplfy-tr-listing-table smplfy-tr-listing-table-jobs">
           <thead>
             <tr>
               <th scope="col">Test Request ID</th>
