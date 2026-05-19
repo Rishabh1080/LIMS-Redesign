@@ -97,13 +97,13 @@ function SearchHero({ searchValue, onSearchChange, onOpenFilters, appliedFilters
     .filter((filter) => Boolean(filter.value));
 
   return (
-    <section className="smplfy-sample-search">
+    <section>
       <div className="container-fluid px-4">
         <div className="row justify-content-center">
           <div className="col-12">
-            <div className="row smplfy-sample-search-row justify-content-center align-items-center g-3">
+            <div className="row justify-content-center align-items-center g-3">
               <div className="col-lg-6 col-xl-5">
-                <div className="smplfy-sample-search-group input-group">
+                <div className="input-group">
                   <span className="input-group-text">
                     <AppIcon name="search" />
                   </span>
@@ -131,7 +131,7 @@ function SearchHero({ searchValue, onSearchChange, onOpenFilters, appliedFilters
             </div>
 
             {activeEntries.length ? (
-              <div className="smplfy-sample-filter-list">
+              <div>
                 <div className="d-flex flex-wrap align-items-center gap-3">
                   {activeEntries.map((filter) => (
                     <div className="smplfy-badge badge text-secondary bg-white border border-secondary-subtle" key={filter.key}>
@@ -190,7 +190,7 @@ function FilterControl({ filter, value, onChange }) {
 function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
   return (
     <>
-      <div className={joinClasses('smplfy-offcanvas-backdrop', 'offcanvas-backdrop', 'fade', open ? 'show' : '')} onClick={onCancel} />
+      <div className={joinClasses('offcanvas-backdrop', 'fade', open ? 'show' : '')} onClick={onCancel} />
       <aside
         className={joinClasses('smplfy-offcanvas', 'offcanvas', 'offcanvas-end', open ? 'show' : '')}
         tabIndex={-1}
@@ -214,7 +214,7 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
           ))}
         </div>
 
-        <div className="smplfy-offcanvas-footer">
+        <div className="d-flex align-items-center justify-content-between">
           <SecondaryButton onClick={onCancel}>
             Cancel
           </SecondaryButton>
@@ -239,7 +239,7 @@ function SamplesPanel({
   const title = hasActiveQuery ? `${samples.length} results found` : 'Recent samples';
 
   return (
-    <section className="smplfy-samples-panel">
+    <section>
       <div className="container-fluid px-0">
         <div className="row align-items-center justify-content-between gx-0 gap-3 pb-2">
           <div className="col-auto d-flex align-items-center gap-3 flex-wrap">
@@ -344,7 +344,7 @@ export default function SampleWorkspacePage({
       onSidebarCollapsedChange={onSidebarCollapsedChange}
       pageHeader={<PageHeader onNewSample={onNewSample} />}
     >
-      <main className="d-flex flex-column">
+      <main className="smplfy-sample-workspace-page d-flex flex-column">
         <SearchHero
           searchValue={searchValue}
           onSearchChange={setSearchValue}

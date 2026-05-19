@@ -23,11 +23,10 @@ const versionOptions = [
 
 function PageHeader({ reportId, version, loading, onBack, onVersionChange }) {
   return (
-    <section className="smplfy-finalised-report-header bg-white border-bottom d-flex align-items-center justify-content-between gap-3 flex-wrap">
-      <div className="smplfy-finalised-report-header-title d-flex align-items-center gap-3">
+    <section className="bg-white border-bottom d-flex align-items-center justify-content-between gap-3 flex-wrap px-4 py-3">
+      <div className="d-flex align-items-center gap-3">
         <SecondaryButton
           size="medium"
-          className="smplfy-finalised-report-header-back"
           leftIcon="chevron-left"
           aria-label="Go back"
           onClick={onBack}
@@ -41,7 +40,7 @@ function PageHeader({ reportId, version, loading, onBack, onVersionChange }) {
         />
       </div>
 
-      <div className="smplfy-finalised-report-header-actions d-flex align-items-center gap-3 flex-wrap">
+      <div className="d-flex align-items-center gap-3 flex-wrap">
         <SplitSecondaryButton label="Print" leftIcon="file-text" />
         <SecondaryButton leftIcon="edit">
           Edit Parameters
@@ -114,21 +113,21 @@ export default function FinalisedReportPage({
         />
       }
     >
-      <main className="smplfy-finalised-report-page bg-body-tertiary min-vh-100">
+      <main className="smplfy-finalised-report-page bg-body-tertiary p-4 min-vh-100">
         {loadingVersion ? (
           <LoadingAnimation title="Refreshing report version" />
         ) : (
           <div className="smplfy-finalised-report-grid row g-3 align-items-stretch">
-            <aside className="smplfy-finalised-report-sidebar col-12 col-xl-3 d-flex flex-column gap-3">
-              <section className="smplfy-finalised-report-group smplfy-card card overflow-hidden">
-                <div className="smplfy-finalised-report-group-header w-100 d-flex align-items-center justify-content-between text-start">
-                  <div className="smplfy-finalised-report-group-copy">
+            <aside className="col-12 col-xl-3 d-flex flex-column gap-3">
+              <section className="smplfy-card card overflow-hidden">
+                <div className="w-100 d-flex align-items-center justify-content-between text-start">
+                  <div className="d-flex flex-column">
                     <div className="fw-semibold text-dark">Product Wise Reports (3)</div>
                     <div className="text-secondary fw-normal mt-1">Select a report to view</div>
                   </div>
                 </div>
 
-                <div className="smplfy-finalised-report-group-list list-group list-group-flush border rounded overflow-hidden">
+                <div className="list-group list-group-flush border rounded overflow-hidden">
                   {reportRows.map((row) => (
                     <ReportSelector
                       key={row.id}
@@ -142,8 +141,8 @@ export default function FinalisedReportPage({
               </section>
             </aside>
 
-            <section className="smplfy-finalised-report-preview col-12 col-xl-9">
-              <div className="smplfy-finalised-report-preview-card smplfy-card card h-100">
+            <section className="col-12 col-xl-9">
+              <div className="smplfy-card card h-100">
                 <div className="card-body d-flex align-items-center justify-content-center text-center text-secondary fw-medium">
                 Template content for {selectedReport?.label ?? 'the selected report'} in {selectedVersionLabel} shows
                 up in this container

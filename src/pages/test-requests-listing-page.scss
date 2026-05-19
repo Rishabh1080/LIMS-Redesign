@@ -5,7 +5,7 @@
   align-items: center;
 }
 
-.smplfy-tr-listing-header-back.smplfy-btn.btn {
+.smplfy-tr-listing-header .smplfy-btn.btn[aria-label="Go back"] {
   width: 32px;
   padding-inline: 0;
 }
@@ -24,16 +24,16 @@
   background: var(--smplfy-primitive-neutral-200);
 }
 
-.smplfy-tr-listing-card.card {
+.smplfy-tr-listing-page > .smplfy-card.card {
   border-radius: 8px;
   padding: 0;
 }
 
-.smplfy-tr-listing-card > .card-header {
+.smplfy-tr-listing-page > .smplfy-card.card > .card-header {
   --bs-card-cap-bg: transparent;
 
-  min-height: 100px;
-  padding: 0 24px;
+  min-height: auto;
+  padding: 24px;
   margin-bottom: 0;
   border-bottom-color: var(--smplfy-primitive-neutral-300);
   display: flex;
@@ -42,33 +42,33 @@
   gap: 12px;
 }
 
-.smplfy-tr-listing-card > .card-header:not(:has(.smplfy-btn)) {
-  min-height: 66px;
-  padding-right: 24px;
+.smplfy-tr-listing-page > .smplfy-card.card > .card-header:not(:has(.smplfy-btn)) {
+  padding-block: 18px;
 }
 
-.smplfy-tr-listing-card > .card-header > .smplfy-btn.btn {
+.smplfy-tr-listing-page > .smplfy-card.card > .card-header > .smplfy-btn.btn {
   align-self: center;
 }
 
-.smplfy-tr-listing-card > .card-body {
+.smplfy-tr-listing-page > .smplfy-card.card > .card-body {
   padding: 16px 24px 24px;
 }
 
-.smplfy-tr-listing-card > .card-header + .card-body {
+.smplfy-tr-listing-page > .smplfy-card.card > .card-header + .card-body {
   padding-top: 0;
 }
 
-.smplfy-tr-listing-card .table-responsive:has(> .smplfy-tr-listing-table.table) {
+.smplfy-tr-listing-page > .smplfy-card.card .table-responsive:has(> .smplfy-table.table) {
   border: 0;
   border-radius: 0;
   background: transparent;
 }
 
-.smplfy-tr-listing-table.smplfy-table.table {
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table {
   --smplfy-table-min-width: 0;
   --smplfy-table-head-bg: transparent;
   --smplfy-table-hover-bg: transparent;
+  --smplfy-table-border: transparent;
   --smplfy-table-cell-padding-y: 0;
   --smplfy-table-cell-padding-x: 8px;
   --smplfy-table-head-padding-y: 8px;
@@ -85,105 +85,141 @@
   table-layout: fixed;
 }
 
-.smplfy-tr-listing-table.smplfy-table.table th,
-.smplfy-tr-listing-table.smplfy-table.table td {
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table th,
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table td {
+  border-bottom-color: transparent;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.03em;
 }
 
-.smplfy-tr-listing-table.smplfy-table.table thead th {
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table thead th {
   height: 28px;
   background: transparent;
   color: var(--smplfy-primitive-neutral-600);
   letter-spacing: -0.03em;
 }
 
-.smplfy-tr-listing-table.smplfy-table.table tbody td {
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table tbody td {
   height: 41px;
 }
 
-.smplfy-tr-listing-table.smplfy-table.table th:first-child,
-.smplfy-tr-listing-table.smplfy-table.table td:first-child {
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table th:first-child,
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table td:first-child {
   padding-left: 0;
 }
 
-.smplfy-tr-listing-table.smplfy-table.table th:last-child,
-.smplfy-tr-listing-table.smplfy-table.table td:last-child {
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table th:last-child,
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table td:last-child {
   width: 164px;
   padding-right: 0;
   overflow: visible;
 }
 
-.smplfy-tr-listing-table.smplfy-table.table td:last-child > .d-flex {
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table td:last-child > .d-flex {
   width: 164px;
 }
 
-.smplfy-tr-listing-table-requests.smplfy-table.table th:nth-child(1),
-.smplfy-tr-listing-table-requests.smplfy-table.table td:nth-child(1) {
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(1),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(1) {
   width: 21%;
 }
 
-.smplfy-tr-listing-table-requests.smplfy-table.table th:nth-child(2),
-.smplfy-tr-listing-table-requests.smplfy-table.table td:nth-child(2) {
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(2),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(2) {
   width: 180px;
 }
 
-.smplfy-tr-listing-table-requests.smplfy-table.table th:nth-child(3),
-.smplfy-tr-listing-table-requests.smplfy-table.table td:nth-child(3),
-.smplfy-tr-listing-table-requests.smplfy-table.table th:nth-child(4),
-.smplfy-tr-listing-table-requests.smplfy-table.table td:nth-child(4) {
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(4),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(4) {
   width: 15%;
 }
 
-.smplfy-tr-listing-table-requests.smplfy-table.table th:nth-child(5),
-.smplfy-tr-listing-table-requests.smplfy-table.table td:nth-child(5) {
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(5),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(5) {
   width: 9%;
 }
 
-.smplfy-tr-listing-table-requests.smplfy-table.table th:nth-child(6),
-.smplfy-tr-listing-table-requests.smplfy-table.table td:nth-child(6) {
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(6),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(6) {
   width: 8%;
 }
 
-.smplfy-tr-listing-table-requests.smplfy-table.table th:nth-child(7),
-.smplfy-tr-listing-table-requests.smplfy-table.table td:nth-child(7) {
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(7),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(7) {
   width: 11%;
 }
 
-.smplfy-tr-listing-table-jobs.smplfy-table.table th:nth-child(1),
-.smplfy-tr-listing-table-jobs.smplfy-table.table td:nth-child(1) {
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(1),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(1) {
+  width: 48px;
+  padding-inline: 0;
+  text-align: center;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(2),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(2) {
+  width: 22%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(4),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(4) {
+  width: 16%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(5),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(5) {
+  width: 11%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(6),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(6) {
+  width: 8%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(7),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(7) {
+  width: 14%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(1),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(1) {
   width: 18%;
 }
 
-.smplfy-tr-listing-table-jobs.smplfy-table.table th:nth-child(2),
-.smplfy-tr-listing-table-jobs.smplfy-table.table td:nth-child(2) {
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(2),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(2) {
   width: 190px;
 }
 
-.smplfy-tr-listing-table-jobs.smplfy-table.table th:nth-child(3),
-.smplfy-tr-listing-table-jobs.smplfy-table.table td:nth-child(3) {
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(3) {
   width: 16%;
 }
 
-.smplfy-tr-listing-table-jobs.smplfy-table.table th:nth-child(4),
-.smplfy-tr-listing-table-jobs.smplfy-table.table td:nth-child(4),
-.smplfy-tr-listing-table-jobs.smplfy-table.table th:nth-child(5),
-.smplfy-tr-listing-table-jobs.smplfy-table.table td:nth-child(5) {
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(4),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(4),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(5),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(5) {
   width: 16%;
 }
 
-.smplfy-tr-listing-selection-header {
+.smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child {
   min-height: 56px;
   padding-bottom: 16px;
   margin-bottom: 16px;
   border-bottom-color: var(--smplfy-primitive-neutral-300);
 }
 
-.smplfy-tr-listing-selection-controls {
+.smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child > .d-flex:first-child {
   gap: 16px !important;
 }
 
-.smplfy-tr-listing-selection-actions {
+.smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child > .d-flex:last-child {
   gap: 8px !important;
 }
 
@@ -277,8 +313,8 @@
   border-radius: 10px;
 }
 
-.smplfy-tr-allocation-table.smplfy-table.table {
-  --smplfy-table-min-width: 982px;
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table {
+  --smplfy-table-min-width: 0;
   --smplfy-table-head-bg: var(--smplfy-primitive-neutral-100);
   --smplfy-table-hover-bg: var(--smplfy-primitive-neutral-100);
   --smplfy-table-head-padding-y: 7px;
@@ -290,18 +326,20 @@
   --smplfy-table-cell-font-size: 14px;
   --smplfy-table-cell-line-height: 17px;
   --smplfy-table-cell-font-weight: 500;
+
+  width: 100%;
+  table-layout: fixed;
 }
 
-.smplfy-tr-allocation-table-analyst.smplfy-table.table {
-  --smplfy-table-min-width: 1181px;
-}
-
-.smplfy-tr-allocation-table.smplfy-table.table > :not(caption) > * > * {
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table > :not(caption) > * > * {
   height: 34px;
-  white-space: nowrap;
+  letter-spacing: -0.03em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
-.smplfy-tr-allocation-table.smplfy-table.table thead th {
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table thead th {
   height: 31px;
 }
 
@@ -324,69 +362,46 @@
   min-width: 88px;
 }
 
-.modal-dialog.smplfy-tr-job-allocation-modal-dialog {
+.modal-dialog.smplfy-tr-job-allocation-modal {
   --smplfy-modal-custom-width: 544px;
 }
 
-.modal-dialog.smplfy-tr-job-allocation-modal-dialog > .modal-content {
+.modal-dialog.smplfy-tr-job-allocation-modal > .modal-content {
   min-height: 328px;
 }
 
-.modal-dialog.smplfy-tr-job-allocation-modal-dialog > .modal-content .modal-header {
+.modal-dialog.smplfy-tr-job-allocation-modal > .modal-content .modal-header {
   min-height: 82px;
   padding: 24px;
 }
 
-.modal-dialog.smplfy-tr-job-allocation-modal-dialog > .modal-content .modal-title {
+.modal-dialog.smplfy-tr-job-allocation-modal > .modal-content .modal-title {
   font-size: 22px;
   line-height: 27px;
   font-weight: 500;
 }
 
-.modal-body.smplfy-tr-job-allocation-modal-body {
-  padding: 24px !important;
-}
-
-.smplfy-tr-job-allocation-content {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.smplfy-tr-job-allocation-job-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.smplfy-tr-job-allocation-job-label,
-.smplfy-tr-job-allocation-job-value {
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-body .d-flex.align-items-center > span {
   font-size: 14px;
   line-height: 17px;
   letter-spacing: -0.03em;
 }
 
-.smplfy-tr-job-allocation-job-label {
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-body .d-flex.align-items-center > span:first-child {
   color: var(--smplfy-primitive-neutral-600);
   font-weight: 400;
 }
 
-.smplfy-tr-job-allocation-job-value {
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-body .d-flex.align-items-center > span:last-child {
   color: var(--smplfy-primitive-neutral-800);
   font-weight: 600;
 }
 
-.smplfy-tr-job-allocation-fields {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.modal-footer.smplfy-tr-job-allocation-actions {
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-footer {
   padding: 24px;
 }
 
-.smplfy-tr-job-allocation-cancel.smplfy-btn.btn {
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-footer > .smplfy-btn.btn:first-child {
   min-width: 88px;
 }
 
@@ -418,17 +433,17 @@
     padding: 12px;
   }
 
-  .smplfy-tr-listing-selection-header {
+  .smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child {
     align-items: stretch !important;
     flex-direction: column;
   }
 
-  .smplfy-tr-listing-selection-controls {
+  .smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child > .d-flex:first-child {
     align-items: stretch !important;
     flex-direction: column;
   }
 
-  .smplfy-tr-listing-selection-actions {
+  .smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child > .d-flex:last-child {
     justify-content: flex-end;
   }
 
@@ -476,7 +491,4 @@
     overflow-x: auto;
   }
 
-  .smplfy-tr-job-allocation-fields {
-    grid-template-columns: 1fr;
-  }
 }

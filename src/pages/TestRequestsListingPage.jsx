@@ -198,7 +198,7 @@ function PageHeader({ onBack }) {
   return (
     <section className="smplfy-tr-listing-header bg-white border-bottom">
       <div className="d-flex align-items-center gap-3">
-        <SecondaryButton size="medium" className="smplfy-tr-listing-header-back" leftIcon="chevron-left" aria-label="Go back" onClick={onBack} />
+        <SecondaryButton size="medium" leftIcon="chevron-left" aria-label="Go back" onClick={onBack} />
         <h1 className="h5 mb-0 fw-semibold text-dark">All Test Requests</h1>
       </div>
     </section>
@@ -270,7 +270,7 @@ function AllocationModal({
             </div>
 
             <div className="flex-grow-1 overflow-auto">
-              <DataTable className={`smplfy-tr-allocation-table smplfy-tr-allocation-table-${activeTab}`}>
+              <DataTable>
                 <thead>
                   <tr>
                     {table.columns.map((column) => (
@@ -368,12 +368,12 @@ function JobAllocationModal({
       titleIcon="user-plus"
       onClose={onCancel}
       size="md"
-      cardClassName="smplfy-tr-job-allocation-modal-dialog"
-      bodyClassName="smplfy-tr-job-allocation-modal-body"
-      actionsClassName="smplfy-tr-job-allocation-actions justify-content-between"
+      cardClassName="smplfy-tr-job-allocation-modal"
+      bodyClassName="p-4"
+      actionsClassName="justify-content-between"
       actions={
         <>
-          <SecondaryButton leftIcon="close" size="large" className="smplfy-tr-job-allocation-cancel" onClick={onCancel}>
+          <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
           <PrimaryButton leftIcon="user-plus" onClick={onSubmit}>
@@ -382,33 +382,37 @@ function JobAllocationModal({
         </>
       }
     >
-      <div className="smplfy-tr-job-allocation-content">
-        <div className="smplfy-tr-job-allocation-job-row">
-          <span className="smplfy-tr-job-allocation-job-label">Job ID:</span>
-          <span className="smplfy-tr-job-allocation-job-value">{jobId}</span>
+      <div className="d-flex flex-column gap-4">
+        <div className="d-flex align-items-center gap-2">
+          <span className="text-secondary">Job ID:</span>
+          <span className="text-dark fw-semibold">{jobId}</span>
         </div>
 
-        <div className="smplfy-tr-job-allocation-fields">
-          <FormElement
-            type="dropdown"
-            label="Allocate to"
-            inputProps={{
-              value: allocateTo,
-              placeholder: 'Select person',
-              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-              onChange: (event) => onAllocateToChange(event.target.value),
-            }}
-          />
-          <FormElement
-            type="dropdown"
-            label="Reviewer"
-            inputProps={{
-              value: reviewer,
-              placeholder: 'Select person',
-              options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
-              onChange: (event) => onReviewerChange(event.target.value),
-            }}
-          />
+        <div className="row g-3">
+          <div className="col-12 col-md-6">
+            <FormElement
+              type="dropdown"
+              label="Allocate to"
+              inputProps={{
+                value: allocateTo,
+                placeholder: 'Select person',
+                options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+                onChange: (event) => onAllocateToChange(event.target.value),
+              }}
+            />
+          </div>
+          <div className="col-12 col-md-6">
+            <FormElement
+              type="dropdown"
+              label="Reviewer"
+              inputProps={{
+                value: reviewer,
+                placeholder: 'Select person',
+                options: ['Universal Admin', 'Technical Manager', 'Quality Team'],
+                onChange: (event) => onReviewerChange(event.target.value),
+              }}
+            />
+          </div>
         </div>
       </div>
     </Modal>
@@ -446,10 +450,10 @@ function RequestsCardSelection({
   readOnly = false,
 }) {
   return (
-    <section className="smplfy-tr-listing-card smplfy-card card border-0">
+    <section className="smplfy-card card border-0">
       <div className="card-body">
-        <div className="smplfy-tr-listing-selection-header d-flex align-items-center justify-content-between gap-3 border-bottom">
-        <div className="smplfy-tr-listing-selection-controls d-flex align-items-center gap-3 flex-wrap">
+        <div className="d-flex align-items-center justify-content-between gap-3 border-bottom">
+        <div className="d-flex align-items-center gap-3 flex-wrap">
           {readOnly ? null : (
             <>
               <InlineSelect
@@ -473,7 +477,7 @@ function RequestsCardSelection({
         </div>
 
         {readOnly ? null : (
-          <div className="smplfy-tr-listing-selection-actions d-flex align-items-center gap-2 flex-wrap">
+          <div className="d-flex align-items-center gap-2 flex-wrap">
             <SecondaryButton
               leftIcon="close"
               size="large"
@@ -488,7 +492,7 @@ function RequestsCardSelection({
         )}
       </div>
 
-        <DataTable className="smplfy-tr-listing-table smplfy-tr-listing-table-selection">
+        <DataTable>
           <thead>
             <tr>
               <th scope="col" className="text-center">
@@ -628,7 +632,7 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
   }
 
   return (
-    <section className="smplfy-tr-listing-card smplfy-card card border-0">
+    <section className="smplfy-card card border-0">
       <div className="card-header bg-transparent d-flex align-items-center justify-content-between gap-3">
         <div className="fw-medium">{requests.length} Test Requests</div>
         {readOnly ? null : (
@@ -639,7 +643,7 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
       </div>
 
       <div className="card-body">
-        <DataTable className="smplfy-tr-listing-table smplfy-tr-listing-table-requests">
+        <DataTable>
           <thead>
             <tr>
               <th scope="col">Test Request ID</th>
@@ -697,13 +701,13 @@ function RequestsCard({ requests, createJobMode, onCreateJobModeChange, onCreate
 
 function JobsCard({ jobs, onAllocate, onOpenTrDetails, readOnly = false }) {
   return (
-    <section className="smplfy-tr-listing-card smplfy-card card border-0">
+    <section className="smplfy-card card border-0">
       <div className="card-header bg-transparent d-flex align-items-center">
         <div className="fw-medium">{jobs.length} Jobs</div>
       </div>
 
       <div className="card-body">
-        <DataTable className="smplfy-tr-listing-table smplfy-tr-listing-table-jobs">
+        <DataTable>
           <thead>
             <tr>
               <th scope="col">Test Request ID</th>

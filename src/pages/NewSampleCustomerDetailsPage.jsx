@@ -328,7 +328,7 @@ function getFieldInputProps(field, formValues, onFieldChange, hasError, onFieldF
 
 function TopBar({ parentLabel, currentLabel, onBack }) {
   return (
-    <header className="smplfy-new-sample-topbar d-flex align-items-center justify-content-between gap-3 bg-white border-bottom flex-wrap">
+    <header className="d-flex align-items-center justify-content-between gap-3 bg-white border-bottom flex-wrap">
       <div className="d-inline-flex align-items-center gap-2 text-secondary fw-medium flex-wrap">
         <button
           className="btn btn-link text-secondary text-decoration-none p-0 border-0"
@@ -389,9 +389,9 @@ function StepRail({ currentStep, title, mode, onStepChange }) {
   }));
 
   return (
-    <aside className={`smplfy-new-sample-rail ${mode === 'edit' ? 'smplfy-new-sample-rail-edit' : ''}`.trim()}>
-      <div className={`smplfy-new-sample-rail-heading ${mode === 'edit' ? 'smplfy-new-sample-rail-heading-edit' : ''}`.trim()}>
-        <h1 className="smplfy-new-sample-rail-title">{title}</h1>
+    <aside>
+      <div>
+        <h1 className={mode === 'edit' ? 'h6 fw-bold mb-0' : 'h4 fw-medium mb-0'}>{title}</h1>
       </div>
       <Stepper items={items} onItemClick={onStepChange} />
     </aside>
@@ -400,7 +400,7 @@ function StepRail({ currentStep, title, mode, onStepChange }) {
 
 function FormSection({ id, title, children }) {
   return (
-    <section className="smplfy-new-sample-form-section" aria-labelledby={`${id}-title`}>
+    <section aria-labelledby={`${id}-title`}>
       <h2 className="visually-hidden" id={`${id}-title`}>{title}</h2>
       {children}
     </section>
@@ -908,13 +908,13 @@ function CustomerForm({
   return (
     <form
       id={formId}
-      className="smplfy-new-sample-card smplfy-card card"
+      className="smplfy-card card"
       onSubmit={(event) => {
         event.preventDefault();
         onComplete();
       }}
     >
-      <div className="smplfy-new-sample-card-body">
+      <div className="d-grid h-100">
         <StepRail
           currentStep={currentStep}
           title={sampleTitle}
@@ -922,11 +922,10 @@ function CustomerForm({
           onStepChange={mode === 'edit' ? onStepChange : undefined}
         />
 
-        <div className="smplfy-new-sample-form">
-          <div className="smplfy-new-sample-form-stage">{sections[currentStep]}</div>
-          <div className="smplfy-new-sample-card-footer">
+        <div className="d-flex flex-column overflow-hidden">
+          <div className="flex-fill overflow-auto">{sections[currentStep]}</div>
+          <div className="d-flex align-items-center justify-content-between gap-3 p-4 border-top bg-white flex-wrap">
             <SecondaryButton
-              className="smplfy-new-sample-cancel"
               leftIcon={currentStep > 0 ? 'chevron-left' : 'close'}
               onClick={handlePrevClick}
             >
@@ -1265,7 +1264,7 @@ export default function NewSampleCustomerDetailsPage({
   return (
     <div className="smplfy-new-sample-page bg-body-tertiary d-flex flex-column">
       <TopBar parentLabel={parentLabel} currentLabel={currentCrumbLabel} onBack={handleCancel} />
-      <main className="smplfy-new-sample-page-content">
+      <main>
         <CustomerForm
           formId={formId}
           currentStep={currentStep}

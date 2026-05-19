@@ -104,30 +104,30 @@ function DetailsHeader({
   return (
     <section className="smplfy-sample-details-header bg-white border-bottom">
       <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
-        <div className="smplfy-sample-details-title-block d-flex align-items-start gap-3">
+        <div className="d-flex align-items-start gap-3">
           <SecondaryButton
             size="medium"
             leftIcon="chevron-left"
-            className="smplfy-sample-details-header-back"
+            className="px-0 flex-shrink-0"
             aria-label="Go back"
             onClick={onBack}
           />
 
           <div className="d-flex flex-column">
-            <div className="smplfy-sample-details-title-row d-flex align-items-center gap-2">
+            <div className="d-flex align-items-center gap-2">
               <h1 className="h5 mb-0 fw-semibold text-dark">{sampleId}</h1>
               <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
                 {statusPresentation.label}
               </StatusPill>
             </div>
-            <div className="smplfy-sample-details-timestamp d-inline-flex gap-2 text-secondary fw-medium mt-2">
+            <div className="d-inline-flex gap-2 text-secondary fw-medium mt-2">
               <span>{date}</span>
               <span>{time}</span>
             </div>
           </div>
         </div>
 
-        <div className="smplfy-sample-details-header-actions d-flex align-items-center gap-3 flex-wrap">
+        <div className="d-flex align-items-center gap-3 flex-wrap">
           {isCompleted ? (
             <>
               <PrimaryButton
@@ -535,9 +535,9 @@ export default function SampleDetailsPage({
         />
       }
     >
-      <main className="smplfy-sample-details-page bg-body-tertiary min-vh-100">
-        <div className="smplfy-sample-details-body d-flex flex-column gap-3">
-          <div className="smplfy-sample-details-report-stack d-flex flex-column gap-3">
+      <main className="smplfy-sample-details-page bg-body-tertiary p-4 min-vh-100">
+        <div className="d-flex flex-column gap-3">
+          <div className="d-flex flex-column gap-3">
             <SampleReportCard />
           </div>
         </div>

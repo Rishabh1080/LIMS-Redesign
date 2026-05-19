@@ -13,6 +13,10 @@ export default function ToastNotification({
   onClose,
   ...props
 }) {
+  if (state === 'gone') {
+    return null;
+  }
+
   const iconName = tone === 'error' ? 'alert-circle' : 'checks';
 
   return (
@@ -22,7 +26,6 @@ export default function ToastNotification({
         'toast',
         'show',
         tone === 'error' && 'text-bg-danger',
-        state === 'gone' && 'smplfy-toast-gone',
         className,
       )}
       role="status"

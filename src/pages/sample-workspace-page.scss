@@ -1,10 +1,10 @@
-.smplfy-sample-search {
+.smplfy-sample-workspace-page > section:first-child {
   min-height: var(--smplfy-sample-workspace-search-min-height);
   padding: var(--smplfy-sample-workspace-search-padding-y) 0;
   background: var(--smplfy-sample-workspace-search-bg);
 }
 
-.smplfy-sample-search-row {
+.smplfy-sample-workspace-page > section:first-child .row.justify-content-center.align-items-center {
   max-width: var(--smplfy-sample-workspace-content-max-width);
   margin: 0 auto;
   padding:
@@ -12,7 +12,7 @@
     var(--smplfy-sample-workspace-search-row-padding-x);
 }
 
-.smplfy-sample-search-group.input-group {
+.smplfy-sample-workspace-page > section:first-child .input-group {
   width: 100%;
   max-width: var(--smplfy-sample-workspace-search-group-max-width);
   height: var(--smplfy-sample-workspace-search-group-height);
@@ -24,14 +24,14 @@
   flex-wrap: nowrap;
 }
 
-.smplfy-sample-search-group.input-group .input-group-text {
+.smplfy-sample-workspace-page > section:first-child .input-group .input-group-text {
   padding: 0 0 0 var(--smplfy-sample-workspace-search-icon-padding-left);
   border: 0;
   background: transparent;
   color: var(--smplfy-primitive-neutral-600);
 }
 
-.smplfy-sample-search-group.input-group .smplfy-form-control.form-control {
+.smplfy-sample-workspace-page > section:first-child .input-group .smplfy-form-control.form-control {
   min-width: 0;
   height: 100%;
   min-height: 0;
@@ -50,11 +50,11 @@
   box-shadow: none;
 }
 
-.smplfy-sample-search-group.input-group .smplfy-form-control.form-control::placeholder {
+.smplfy-sample-workspace-page > section:first-child .input-group .smplfy-form-control.form-control::placeholder {
   color: var(--smplfy-primitive-neutral-600);
 }
 
-.smplfy-sample-search-group.input-group .smplfy-btn.btn {
+.smplfy-sample-workspace-page > section:first-child .input-group .smplfy-btn.btn {
   --smplfy-button-current-height: var(--smplfy-sample-workspace-search-action-size);
   --smplfy-button-current-icon-size: var(--smplfy-sample-card-view-toggle-icon-size);
 
@@ -63,18 +63,18 @@
   border-radius: 0;
 }
 
-.smplfy-sample-search .col-auto > .smplfy-btn.btn {
+.smplfy-sample-workspace-page > section:first-child .col-auto > .smplfy-btn.btn {
   --smplfy-button-current-height: var(--smplfy-sample-workspace-search-action-size);
   --smplfy-button-current-icon-size: var(--smplfy-sample-card-view-toggle-icon-size);
 }
 
-.smplfy-sample-filter-list {
+.smplfy-sample-workspace-page > section:first-child .col-12 > div:not(.row) {
   max-width: var(--smplfy-sample-workspace-content-max-width);
   margin: var(--smplfy-sample-workspace-filter-list-margin-top) auto 0;
   padding: 0 var(--smplfy-sample-workspace-filter-list-padding-x);
 }
 
-.smplfy-sample-filter-list .smplfy-badge.badge {
+.smplfy-sample-workspace-page > section:first-child .smplfy-badge.badge {
   min-height: var(--smplfy-sample-workspace-filter-badge-height);
   padding:
     var(--smplfy-sample-workspace-filter-badge-padding-y)
@@ -89,7 +89,7 @@
   font-weight: 500;
 }
 
-.smplfy-sample-filter-list .smplfy-badge.badge .btn-close {
+.smplfy-sample-workspace-page > section:first-child .smplfy-badge.badge .btn-close {
   --bs-btn-close-opacity: 1;
   --bs-btn-close-hover-opacity: 1;
   --bs-btn-close-focus-shadow: none;
@@ -100,7 +100,7 @@
   background-size: var(--smplfy-sample-workspace-filter-badge-close-bg-size) auto;
 }
 
-.smplfy-offcanvas-backdrop.offcanvas-backdrop {
+.smplfy-sample-workspace-page ~ .offcanvas-backdrop.offcanvas-backdrop {
   position: fixed;
   inset: 0;
   background: var(--smplfy-sample-workspace-offcanvas-backdrop-bg);
@@ -111,7 +111,7 @@
   z-index: var(--smplfy-sample-workspace-offcanvas-backdrop-z-index);
 }
 
-.smplfy-offcanvas-backdrop.offcanvas-backdrop.show {
+.smplfy-sample-workspace-page ~ .offcanvas-backdrop.offcanvas-backdrop.show {
   opacity: 1;
   pointer-events: auto;
 }
@@ -218,7 +218,7 @@
   box-shadow: var(--smplfy-field-shadow-focused);
 }
 
-.smplfy-offcanvas-footer {
+.smplfy-offcanvas.offcanvas > .d-flex:last-child {
   padding-top: var(--smplfy-sample-workspace-offcanvas-footer-padding-top);
   border-top: var(--smplfy-card-border-width) solid var(--smplfy-primitive-neutral-300);
   display: flex;
@@ -227,33 +227,33 @@
   gap: var(--smplfy-sample-workspace-offcanvas-footer-gap);
 }
 
-.smplfy-offcanvas-footer .smplfy-btn.btn {
+.smplfy-offcanvas.offcanvas > .d-flex:last-child .smplfy-btn.btn {
   min-height: var(--smplfy-button-height-md);
   border-radius: var(--smplfy-field-radius);
   font-size: var(--smplfy-nav-link-font-size);
   font-weight: 500;
 }
 
-.smplfy-offcanvas-footer .smplfy-btn.btn-primary {
+.smplfy-offcanvas.offcanvas > .d-flex:last-child .smplfy-btn.btn-primary {
   --smplfy-button-current-height: var(--smplfy-button-height-md);
 
   min-width: var(--smplfy-sample-workspace-offcanvas-submit-min-width);
 }
 
-.smplfy-samples-panel {
+.smplfy-sample-workspace-page > section:last-child {
   min-height: var(--smplfy-sample-workspace-panel-min-height);
   padding: var(--smplfy-sample-workspace-panel-padding);
   background: var(--smplfy-primitive-neutral-200);
 }
 
-.smplfy-samples-panel h2 {
+.smplfy-sample-workspace-page > section:last-child h2 {
   font-size: var(--smplfy-nav-link-font-size);
   line-height: var(--smplfy-nav-link-line-height);
   font-weight: var(--smplfy-nav-link-font-weight);
   color: var(--smplfy-primitive-neutral-700);
 }
 
-.smplfy-samples-panel .btn-link {
+.smplfy-sample-workspace-page > section:last-child .btn-link {
   --smplfy-button-current-height: auto;
   --bs-btn-color: var(--smplfy-primitive-neutral-700);
   --bs-btn-hover-color: var(--smplfy-primitive-neutral-700);
@@ -269,51 +269,51 @@
 }
 
 @media (max-width: 1199.98px) {
-  .smplfy-sample-search-row {
+  .smplfy-sample-workspace-page > section:first-child .row.justify-content-center.align-items-center {
     padding-left: var(--smplfy-sample-workspace-search-row-padding-x-tablet);
     padding-right: var(--smplfy-sample-workspace-search-row-padding-x-tablet);
   }
 
-  .smplfy-sample-search-group.input-group {
+  .smplfy-sample-workspace-page > section:first-child .input-group {
     max-width: none;
   }
 }
 
 @media (max-width: 767.98px) {
-  .smplfy-sample-search {
+  .smplfy-sample-workspace-page > section:first-child {
     min-height: auto;
     padding: var(--smplfy-sample-workspace-search-padding-y-mobile) 0;
   }
 
-  .smplfy-sample-search-row {
+  .smplfy-sample-workspace-page > section:first-child .row.justify-content-center.align-items-center {
     padding:
       var(--smplfy-sample-workspace-search-row-padding-y-mobile)
       var(--smplfy-sample-workspace-search-row-padding-x-mobile);
   }
 
-  .smplfy-sample-search-group.input-group {
+  .smplfy-sample-workspace-page > section:first-child .input-group {
     height: var(--smplfy-sample-workspace-search-group-height-mobile);
   }
 
-  .smplfy-sample-search-group.input-group .input-group-text {
+  .smplfy-sample-workspace-page > section:first-child .input-group .input-group-text {
     padding-left: var(--smplfy-sample-workspace-search-icon-padding-left-mobile);
   }
 
-  .smplfy-sample-search-group.input-group .smplfy-btn.btn {
+  .smplfy-sample-workspace-page > section:first-child .input-group .smplfy-btn.btn {
     --smplfy-button-current-height: var(--smplfy-sample-workspace-search-action-size-mobile);
 
     width: var(--smplfy-sample-workspace-search-action-size-mobile);
     min-width: var(--smplfy-sample-workspace-search-action-size-mobile);
   }
 
-  .smplfy-sample-search .col-auto > .smplfy-btn.btn {
+  .smplfy-sample-workspace-page > section:first-child .col-auto > .smplfy-btn.btn {
     --smplfy-button-current-height: var(--smplfy-sample-workspace-search-action-size-mobile);
 
     width: 100%;
     justify-content: center;
   }
 
-  .smplfy-sample-filter-list {
+  .smplfy-sample-workspace-page > section:first-child .col-12 > div:not(.row) {
     margin-top: var(--smplfy-sample-workspace-filter-list-margin-top-mobile);
     padding: 0;
   }
@@ -323,16 +323,16 @@
     padding: var(--smplfy-sample-workspace-offcanvas-padding-mobile);
   }
 
-  .smplfy-offcanvas-footer {
+  .smplfy-offcanvas.offcanvas > .d-flex:last-child {
     flex-direction: column-reverse;
     align-items: stretch;
   }
 
-  .smplfy-offcanvas-footer .smplfy-btn.btn {
+  .smplfy-offcanvas.offcanvas > .d-flex:last-child .smplfy-btn.btn {
     width: 100%;
   }
 
-  .smplfy-samples-panel {
+  .smplfy-sample-workspace-page > section:last-child {
     padding: var(--smplfy-sample-workspace-panel-padding-mobile);
   }
 }

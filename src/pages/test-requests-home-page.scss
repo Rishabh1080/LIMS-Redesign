@@ -2,12 +2,12 @@
   height: 51px;
 }
 
-.smplfy-test-requests-home-tabs-group {
+.smplfy-test-requests-home-tabs .nav-tabs {
   min-width: 0;
   scrollbar-width: none;
 }
 
-.smplfy-test-requests-home-tabs-group::-webkit-scrollbar {
+.smplfy-test-requests-home-tabs .nav-tabs::-webkit-scrollbar {
   display: none;
 }
 
@@ -16,13 +16,13 @@
   background: var(--smplfy-primitive-neutral-200);
 }
 
-.smplfy-test-requests-home-page .table-responsive:has(> .smplfy-test-requests-home-table) {
+.smplfy-test-requests-home-page .table-responsive:has(> .smplfy-table.table) {
   border: 0;
   border-radius: 0;
   background: transparent;
 }
 
-.smplfy-test-requests-home-table.table {
+.smplfy-test-requests-home-page .smplfy-table.table {
   --smplfy-table-min-width: 1040px;
   --smplfy-table-head-bg: transparent;
   --smplfy-table-border: transparent;
@@ -37,18 +37,18 @@
   border-spacing: 0 12px;
 }
 
-.smplfy-test-requests-home-table.table thead th {
+.smplfy-test-requests-home-page .smplfy-table.table thead th {
   color: var(--smplfy-primitive-neutral-600);
   background: transparent;
   font-weight: 500;
   white-space: nowrap;
 }
 
-.smplfy-test-requests-home-table.table tbody tr {
+.smplfy-test-requests-home-page .smplfy-table.table tbody tr {
   min-height: 66px;
 }
 
-.smplfy-test-requests-home-table.table tbody td {
+.smplfy-test-requests-home-page .smplfy-table.table tbody td {
   height: 66px;
   border-top: 1px solid var(--smplfy-primitive-neutral-300);
   border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
@@ -59,24 +59,24 @@
   font-weight: 500;
 }
 
-.smplfy-test-requests-home-table.table tbody td:first-child {
+.smplfy-test-requests-home-page .smplfy-table.table tbody td:first-child {
   border-left: 1px solid var(--smplfy-primitive-neutral-300);
   border-top-left-radius: 14px;
   border-bottom-left-radius: 14px;
 }
 
-.smplfy-test-requests-home-table.table tbody td:last-child {
+.smplfy-test-requests-home-page .smplfy-table.table tbody td:last-child {
   border-right: 1px solid var(--smplfy-primitive-neutral-300);
   border-top-right-radius: 14px;
   border-bottom-right-radius: 14px;
 }
 
-.smplfy-test-requests-home-table.table tbody tr:hover td {
+.smplfy-test-requests-home-page .smplfy-table.table tbody tr:hover td {
   background: var(--smplfy-primitive-neutral-100);
 }
 
 @media (max-width: 1199.98px) {
-  .smplfy-test-requests-home-table.table {
+  .smplfy-test-requests-home-page .smplfy-table.table {
     --smplfy-table-cell-padding-x: 16px;
   }
 }

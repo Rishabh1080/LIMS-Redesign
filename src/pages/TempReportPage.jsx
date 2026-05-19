@@ -23,9 +23,9 @@ const versionOptions = [
 
 function PageHeader({ reportId, version, loading, onBack, onFinalize, onVersionChange }) {
   return (
-    <section className="smplfy-temp-report-header bg-white border-bottom d-flex align-items-center justify-content-between gap-3 flex-wrap">
-      <div className="smplfy-temp-report-header-title d-flex align-items-center gap-3">
-        <SecondaryButton size="medium" className="smplfy-temp-report-header-back" leftIcon="chevron-left" aria-label="Go back" onClick={onBack} />
+    <section className="bg-white border-bottom d-flex align-items-center justify-content-between gap-3 flex-wrap px-4 py-3">
+      <div className="d-flex align-items-center gap-3">
+        <SecondaryButton size="medium" leftIcon="chevron-left" aria-label="Go back" onClick={onBack} />
         <h1 className="h6 mb-0 fw-semibold text-dark">{reportId}</h1>
         <VersionSelector
           value={version}
@@ -35,7 +35,7 @@ function PageHeader({ reportId, version, loading, onBack, onFinalize, onVersionC
         />
       </div>
 
-      <div className="smplfy-temp-report-header-actions d-flex align-items-center gap-3 flex-wrap">
+      <div className="d-flex align-items-center gap-3 flex-wrap">
         <SplitSecondaryButton label="Print" leftIcon="file-text" />
         <SecondaryButton leftIcon="file-text" onClick={onFinalize}>
           Finalize
@@ -120,23 +120,23 @@ export default function TempReportPage({
         />
       }
     >
-      <main className="smplfy-temp-report-page bg-body-tertiary min-vh-100">
+      <main className="smplfy-temp-report-page bg-body-tertiary p-4 min-vh-100">
         {loadingVersion || loadingFinalize ? (
           <LoadingAnimation
             title={loadingFinalize ? 'Finalising report' : 'Refreshing report version'}
           />
         ) : (
           <div className="smplfy-temp-report-grid row g-3 align-items-stretch">
-            <aside className="smplfy-temp-report-sidebar col-12 col-xl-3 d-flex flex-column gap-3">
-              <section className="smplfy-temp-report-group smplfy-card card overflow-hidden">
-                <div className="smplfy-temp-report-group-header w-100 d-flex align-items-center justify-content-between text-start">
-                  <div className="smplfy-temp-report-group-copy">
+            <aside className="col-12 col-xl-3 d-flex flex-column gap-3">
+              <section className="smplfy-card card overflow-hidden">
+                <div className="w-100 d-flex align-items-center justify-content-between text-start">
+                  <div className="d-flex flex-column">
                     <div className="fw-semibold text-dark">Product Wise Reports (3)</div>
                     <div className="text-secondary fw-normal mt-1">Select a report to view</div>
                   </div>
                 </div>
 
-                <div className="smplfy-temp-report-group-list list-group list-group-flush border rounded overflow-hidden">
+                <div className="list-group list-group-flush border rounded overflow-hidden">
                   {productReportRows.map((row) => (
                     <ReportSelector
                       key={row.id}
@@ -150,8 +150,8 @@ export default function TempReportPage({
               </section>
             </aside>
 
-            <section className="smplfy-temp-report-preview col-12 col-xl-9">
-              <div className="smplfy-temp-report-preview-card smplfy-card card h-100">
+            <section className="col-12 col-xl-9">
+              <div className="smplfy-card card h-100">
                 <div className="card-body d-flex align-items-center justify-content-center text-center text-secondary fw-medium">
                 Template content for {selectedReport?.label ?? 'the selected report'} in {selectedVersionLabel} shows
                 up in this container

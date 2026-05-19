@@ -7,13 +7,13 @@
   height: 100%;
 }
 
-.smplfy-all-samples-tabs-group {
+.smplfy-all-samples-tabs .nav-tabs {
   height: 100%;
   align-items: stretch;
   scrollbar-width: none;
 }
 
-.smplfy-all-samples-tabs-group::-webkit-scrollbar {
+.smplfy-all-samples-tabs .nav-tabs::-webkit-scrollbar {
   display: none;
 }
 
@@ -31,7 +31,7 @@
   min-height: 88px;
 }
 
-.smplfy-all-samples-search-group.input-group {
+.smplfy-all-samples-search .input-group {
   width: 100%;
   height: var(--smplfy-field-height);
   border: var(--smplfy-field-border-width) solid var(--smplfy-field-border-default);
@@ -40,13 +40,13 @@
   overflow: hidden;
 }
 
-.smplfy-all-samples-search-group.input-group .input-group-text {
+.smplfy-all-samples-search .input-group .input-group-text {
   padding: 0 0 0 var(--smplfy-field-padding-inline-compact);
   border: 0;
   background: transparent;
 }
 
-.smplfy-all-samples-search-group.input-group .smplfy-form-control.form-control {
+.smplfy-all-samples-search .input-group .smplfy-form-control.form-control {
   min-width: 0;
   min-height: 0;
   height: 100%;
@@ -60,7 +60,7 @@
   box-shadow: none;
 }
 
-.smplfy-all-samples-search-group.input-group .smplfy-btn.btn {
+.smplfy-all-samples-search .input-group .smplfy-btn.btn {
   --smplfy-button-current-height: var(--smplfy-field-height);
 
   width: var(--smplfy-field-height);
@@ -102,18 +102,18 @@
   padding: 24px 0;
 }
 
-.smplfy-all-samples-page-header {
+.smplfy-all-samples-page > .container-fluid > .w-100 > .d-flex:first-child {
   padding-bottom: 8px;
   color: var(--smplfy-primitive-neutral-600) !important;
   font-size: var(--smplfy-nav-link-font-size);
   line-height: var(--smplfy-nav-link-line-height);
 }
 
-.smplfy-all-samples-list {
+.smplfy-all-samples-page > .container-fluid > .w-100 > .d-flex:last-child {
   gap: 12px;
 }
 
-.smplfy-all-samples-offcanvas-backdrop.offcanvas-backdrop {
+.smplfy-all-samples-page ~ .offcanvas-backdrop.offcanvas-backdrop {
   background: rgba(2, 21, 39, 0.38);
   opacity: 1;
   z-index: 1040;
@@ -145,7 +145,7 @@
   padding: 24px 0;
 }
 
-.smplfy-all-samples-offcanvas-footer {
+.smplfy-all-samples-offcanvas.offcanvas > .d-flex:last-child {
   padding-top: 24px;
 }
 

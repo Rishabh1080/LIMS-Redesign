@@ -1,38 +1,21 @@
-.smplfy-datasheet-header {
-  min-height: 72px;
-  padding: 16px 24px;
-}
-
-.smplfy-datasheet-header-title,
-.smplfy-datasheet-header-actions {
-  gap: 12px;
-}
-
-.smplfy-datasheet-header-back.smplfy-btn.btn {
-  width: 32px;
-  padding-inline: 0;
-}
-
-.smplfy-datasheet-header h1 {
-  color: var(--smplfy-primitive-neutral-800);
-  font-size: 20px;
-  line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-}
-
 .smplfy-datasheet-page {
-  padding: 24px;
-  background: var(--smplfy-primitive-neutral-200);
+  --bs-tertiary-bg: var(--smplfy-primitive-neutral-200);
+  --smplfy-datasheet-placeholder-border: var(--smplfy-primitive-neutral-300);
+  --smplfy-datasheet-placeholder-radius: 16px;
+  --smplfy-datasheet-placeholder-padding: 24px;
+  --smplfy-datasheet-placeholder-text: var(--smplfy-primitive-neutral-600);
+  --smplfy-datasheet-placeholder-font-size: 14px;
+  --smplfy-datasheet-placeholder-line-height: 20px;
+  --smplfy-datasheet-placeholder-font-weight: 500;
 }
 
-.smplfy-datasheet-placeholder.card {
+.smplfy-datasheet-page > .smplfy-card.card {
   min-height: 100%;
-  padding: 24px;
-  border-color: var(--smplfy-primitive-neutral-300);
-  border-radius: 16px;
-  color: var(--smplfy-primitive-neutral-600);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
+  padding: var(--smplfy-datasheet-placeholder-padding);
+  border-color: var(--smplfy-datasheet-placeholder-border);
+  border-radius: var(--smplfy-datasheet-placeholder-radius);
+  color: var(--smplfy-datasheet-placeholder-text);
+  font-size: var(--smplfy-datasheet-placeholder-font-size);
+  line-height: var(--smplfy-datasheet-placeholder-line-height);
+  font-weight: var(--smplfy-datasheet-placeholder-font-weight);
 }

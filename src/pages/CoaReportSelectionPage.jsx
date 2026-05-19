@@ -35,15 +35,15 @@ const templateOptions = ['Test Report Universal (Main_template)'];
 
 function PageHeader({ reportId, canSubmit, onBack, onGenerate, onFinalize }) {
   return (
-    <section className="smplfy-coa-report-header d-flex align-items-center justify-content-between gap-3 bg-white border-bottom flex-wrap">
-      <div className="smplfy-coa-report-header-title d-flex align-items-center gap-3 min-w-0">
-        <SecondaryButton size="medium" className="smplfy-coa-report-header-back px-0" aria-label="Go back" onClick={onBack}>
+    <section className="d-flex align-items-center justify-content-between gap-3 bg-white border-bottom flex-wrap px-4 py-3">
+      <div className="d-flex align-items-center gap-3 min-w-0">
+        <SecondaryButton size="medium" className="px-0" aria-label="Go back" onClick={onBack}>
           <AppIcon name="chevron-left" />
         </SecondaryButton>
         <h1 className="h6 fw-semibold text-body mb-0">{reportId}</h1>
       </div>
 
-      <div className="smplfy-coa-report-header-actions d-flex align-items-center gap-3 flex-wrap">
+      <div className="d-flex align-items-center gap-3 flex-wrap">
         <PrimaryButton leftIcon="file-text" disabled={!canSubmit} onClick={canSubmit ? onFinalize : undefined}>
           Finalise
         </PrimaryButton>
@@ -57,17 +57,17 @@ function PageHeader({ reportId, canSubmit, onBack, onGenerate, onFinalize }) {
 
 function TemplateRow({ label, value, onChange }) {
   return (
-    <div className="smplfy-coa-template-row row g-2 align-items-center">
-      <div className="smplfy-coa-template-label col-lg-4 fw-medium text-body">{label}</div>
-      <div className="smplfy-coa-template-field col-lg-8">
-      <InputFieldDropdown
-        state={value ? 'filled' : 'default'}
-        value={value}
-        placeholder="Select Template"
-        options={templateOptions}
-        className="w-100"
-        onChange={onChange}
-      />
+    <div className="row g-2 align-items-center">
+      <div className="col-lg-4 fw-medium text-body">{label}</div>
+      <div className="col-lg-8">
+        <InputFieldDropdown
+          state={value ? 'filled' : 'default'}
+          value={value}
+          placeholder="Select Template"
+          options={templateOptions}
+          className="w-100"
+          onChange={onChange}
+        />
       </div>
     </div>
   );
@@ -140,17 +140,17 @@ export default function CoaReportSelectionPage({
         />
       }
     >
-      <main className="smplfy-coa-report-page bg-body-tertiary min-vh-100">
+      <main className="smplfy-coa-report-page bg-body-tertiary p-4 min-vh-100">
         {loadingAction ? (
           <LoadingAnimation
             title={loadingAction === 'generate' ? 'Generating report' : 'Finalising report'}
           />
         ) : (
-          <section className="smplfy-coa-report-panel container-xl smplfy-card card shadow-sm">
-            <div className="smplfy-coa-report-panel-title h5 fw-semibold text-body mb-0">Select Report Type</div>
+          <section className="container-xl smplfy-card card shadow-sm">
+            <div className="h5 fw-semibold text-body mb-0">Select Report Type</div>
 
-            <div className="smplfy-coa-report-panel-body row g-3 align-items-stretch">
-              <div className="smplfy-coa-report-options col-lg-4 d-flex flex-column gap-3">
+            <div className="row g-3 align-items-stretch">
+              <div className="col-lg-4 d-flex flex-column gap-3">
                 {reportTypeOptions.map((option) => (
                   <CardSelector
                     key={option.key}
@@ -169,12 +169,12 @@ export default function CoaReportSelectionPage({
                 ))}
               </div>
 
-              <div className="smplfy-coa-report-templates-col col-lg-8">
-                <div className="smplfy-coa-report-templates smplfy-card card h-100">
+              <div className="col-lg-8">
+                <div className="smplfy-card card h-100">
                 {showTemplates ? (
                   <>
-                    <div className="smplfy-coa-report-templates-title text-secondary">Select Templates</div>
-                    <div className="smplfy-coa-report-templates-list d-flex flex-column gap-3 mt-4">
+                    <div className="text-secondary">Select Templates</div>
+                    <div className="d-flex flex-column gap-3 mt-4">
                       {templateRows.map((row) => (
                         <TemplateRow
                           key={row.key}
@@ -191,7 +191,7 @@ export default function CoaReportSelectionPage({
                     </div>
                   </>
                 ) : (
-                  <div className="smplfy-coa-report-placeholder d-flex flex-fill align-items-center justify-content-center text-secondary">
+                  <div className="d-flex flex-fill align-items-center justify-content-center text-secondary">
                     Select a <span className="fw-semibold ms-1">Report type</span> to continue
                   </div>
                 )}

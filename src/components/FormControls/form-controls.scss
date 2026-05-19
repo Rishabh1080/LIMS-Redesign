@@ -370,12 +370,6 @@
   color: var(--smplfy-toast-error-text) !important;
 }
 
-.smplfy-toast.toast.smplfy-toast-gone {
-  opacity: 0;
-  transform: var(--smplfy-toast-gone-transform);
-  pointer-events: none;
-}
-
 .smplfy-toast.toast > .toast-body {
   padding: var(--smplfy-button-space-0);
   display: inline-flex;

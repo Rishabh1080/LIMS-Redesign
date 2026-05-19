@@ -44,21 +44,20 @@ function RemnantModal({ open, onCancel, onSubmit }) {
       titleId="remnant-modal-title"
       onClose={onCancel}
       size="md"
-      cardClassName="smplfy-remnant-modal-dialog"
-      className="smplfy-remnant-modal"
-      actionsClassName="smplfy-remnant-modal-actions"
+      cardClassName="smplfy-remnant-modal"
+      actionsClassName="justify-content-between"
       actions={
         <>
-          <PrimaryButton styleVariant="red" className="smplfy-remnant-modal-action w-100" onClick={() => onSubmit(false)}>
+          <PrimaryButton styleVariant="red" className="w-100" onClick={() => onSubmit(false)}>
             Not Available
           </PrimaryButton>
-          <PrimaryButton styleVariant="positive" className="smplfy-remnant-modal-action w-100" onClick={() => onSubmit(true)}>
+          <PrimaryButton styleVariant="positive" className="w-100" onClick={() => onSubmit(true)}>
             Yes, Available
           </PrimaryButton>
         </>
       }
     >
-      <p className="smplfy-remnant-modal-copy text-secondary mb-0">
+      <p className="text-secondary mb-0">
         If there&apos;s any sample left after testing, select Yes. Otherwise, select Not available.
       </p>
     </Modal>
@@ -140,25 +139,25 @@ function PageHeader({
 
   return (
     <section className="smplfy-tr-details-header d-flex align-items-center justify-content-between gap-3 bg-white border-bottom flex-wrap">
-      <div className="smplfy-tr-details-header-title d-flex align-items-center gap-3 min-w-0">
-        <SecondaryButton size="medium" className="smplfy-tr-details-header-back px-0 flex-shrink-0" aria-label="Go back" onClick={onBack}>
+      <div className="d-flex align-items-center gap-3 min-w-0">
+        <SecondaryButton size="medium" className="px-0 flex-shrink-0" aria-label="Go back" onClick={onBack}>
           <AppIcon name="chevron-left" />
         </SecondaryButton>
         <div className="d-flex flex-column min-w-0">
-          <div className="smplfy-tr-details-title-row d-flex align-items-center gap-3 flex-wrap">
+          <div className="d-flex align-items-center gap-3 flex-wrap">
             <h1 className="h5 fw-semibold text-body mb-0">{requestId}</h1>
             <StatusPill color={resolvedStatusPresentation.color} styleType={resolvedStatusPresentation.styleType}>
               {resolvedStatusPresentation.label}
             </StatusPill>
           </div>
-          <div className="smplfy-tr-details-timestamp d-inline-flex gap-3 mt-2 text-secondary fw-medium">
+          <div className="d-inline-flex gap-3 mt-2 text-secondary fw-medium">
             <span>06/03/2026</span>
             <span>10:13</span>
           </div>
         </div>
       </div>
 
-      <div className="smplfy-tr-details-header-actions d-flex align-items-center gap-3 flex-wrap">
+      <div className="d-flex align-items-center gap-3 flex-wrap">
         {isSubmitted ? (
           <PrimaryButton leftIcon="printer">Print</PrimaryButton>
         ) : isReadyForReview ? (
@@ -308,21 +307,21 @@ export default function TrDetailsPage({
         />
       }
     >
-      <main className={`smplfy-tr-details-page bg-body-tertiary min-vh-100 ${methods.length > 1 ? '' : 'smplfy-tr-details-page-single'}`}>
+      <main className="smplfy-tr-details-page bg-body-tertiary min-vh-100">
         {methods.length > 1 ? (
-          <div className="smplfy-tr-details-grid row g-3 h-100">
+          <div className="row g-3 h-100">
             <aside className="col-xl-3 col-12">
-              <section className="smplfy-tr-details-methods smplfy-card card overflow-hidden">
+              <section className="smplfy-card card overflow-hidden">
                 <button
                   type="button"
-                  className="smplfy-tr-details-methods-header btn w-100 d-flex align-items-center justify-content-between text-start bg-white border-0 fw-semibold"
+                  className="btn w-100 d-flex align-items-center justify-content-between text-start bg-white border-0 fw-semibold"
                   aria-expanded="true"
                 >
                   <span>Test Methods ({methods.length})</span>
                   <AppIcon name="chevron-down" />
                 </button>
 
-                <div className="smplfy-tr-details-methods-list list-group list-group-flush m-2 border rounded-3 overflow-hidden">
+                <div className="list-group list-group-flush m-2 border rounded-3 overflow-hidden">
                   {methods.map((method) => (
                     <ReportSelector
                       key={method.id}
@@ -337,14 +336,14 @@ export default function TrDetailsPage({
             </aside>
 
             <section className="col-xl-9 col-12 d-flex">
-              <div className="smplfy-tr-details-placeholder smplfy-card card flex-fill align-items-center justify-content-center text-center text-secondary">
+              <div className="smplfy-card card flex-fill align-items-center justify-content-center text-center text-secondary">
                 Template content will be added here
               </div>
             </section>
           </div>
         ) : (
           <section className="d-flex h-100">
-            <div className="smplfy-tr-details-placeholder smplfy-card card flex-fill align-items-center justify-content-center text-center text-secondary">
+            <div className="smplfy-card card flex-fill align-items-center justify-content-center text-center text-secondary">
               Template content will be added here
             </div>
           </section>

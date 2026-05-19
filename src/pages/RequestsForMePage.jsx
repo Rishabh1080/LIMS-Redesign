@@ -90,7 +90,7 @@ function RequestsHeader({ sections, activeSection, onSectionChange }) {
       <div className="container-fluid h-100 px-4">
         <div className="row h-100 gx-0 align-items-stretch flex-nowrap">
           <div className="col">
-            <nav className="smplfy-requests-tabs-group nav" aria-label="Request sections">
+            <nav className="nav" aria-label="Request sections">
               {sections.map((section) => (
                 <button
                   key={section.key}
@@ -99,7 +99,7 @@ function RequestsHeader({ sections, activeSection, onSectionChange }) {
                   aria-current={activeSection === section.key ? 'page' : undefined}
                   onClick={() => onSectionChange(section.key)}
                 >
-                  <span className="smplfy-nav-link-label">
+                  <span className="d-inline-flex align-items-center gap-2">
                     <AppIcon name={section.icon} size={14} />
                     <span>{section.label}</span>
                   </span>
@@ -118,9 +118,9 @@ function CategoryFilter({ activeCategory, onCategoryChange }) {
   return (
     <section className="smplfy-requests-categories">
       <div className="container-fluid px-4">
-        <div className="smplfy-requests-categories-inner">
-          <div className="smplfy-requests-categories-label">Categories:</div>
-          <nav className="smplfy-requests-categories-rail nav nav-pills" aria-label="Request categories">
+        <div className="d-flex align-items-center gap-3">
+          <div className="flex-shrink-0 fw-medium text-body">Categories:</div>
+          <nav className="nav nav-pills" aria-label="Request categories">
             {requestCategories.map((category) => (
               <button
                 key={category.key}
@@ -148,8 +148,8 @@ function RequestCard({ request, onOpenDetails }) {
 
   return (
     <article className="smplfy-card card smplfy-request-card">
-      <div className="smplfy-request-card-item">
-        <button type="button" className="smplfy-btn btn btn-link smplfy-request-title" onClick={() => onOpenDetails(request)}>
+      <div className="min-w-0">
+        <button type="button" className="smplfy-btn btn btn-link" onClick={() => onOpenDetails(request)}>
           {title}
         </button>
       </div>
@@ -160,18 +160,17 @@ function RequestCard({ request, onOpenDetails }) {
         <StatusBadge presentation={targetState} />
       </div>
 
-      <div className="smplfy-request-days">{requestDays}</div>
+      <div className="d-flex align-items-center justify-content-center">{requestDays}</div>
 
-      <div className="smplfy-request-raised">
+      <div className="d-flex align-items-center">
         <span>{request.requestedOn}</span>
       </div>
 
-      <div className="smplfy-request-actions">
+      <div className="d-flex align-items-center flex-nowrap">
         <SecondaryButton
           size="small"
           tone="info"
           leftIcon="arrow-up-right"
-          className="smplfy-request-action-button"
           onClick={() => onOpenDetails(request)}
         >
           View
@@ -180,7 +179,6 @@ function RequestCard({ request, onOpenDetails }) {
           size="small"
           tone="success"
           leftIcon="check"
-          className="smplfy-request-action-button"
         >
           Approve
         </SecondaryButton>
@@ -188,7 +186,6 @@ function RequestCard({ request, onOpenDetails }) {
           size="small"
           tone="danger"
           leftIcon="close"
-          className="smplfy-request-action-button"
         >
           Reject
         </SecondaryButton>

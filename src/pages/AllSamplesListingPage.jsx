@@ -124,11 +124,11 @@ function ListingTabs({ activeTab, onTabChange }) {
       <div className="container-fluid px-4">
         <div className="row gx-0 align-items-stretch flex-nowrap">
           <div className="col">
-            <div className="smplfy-all-samples-tabs-group nav nav-tabs flex-nowrap overflow-auto border-0">
+            <div className="nav nav-tabs flex-nowrap overflow-auto border-0">
               {leftTabs.map((tab) => (
                 <NavSelector
                   key={tab.key}
-                  className="text-nowrap smplfy-all-samples-tab"
+                  className="text-nowrap"
                   active={activeTab === tab.key}
                   onClick={() => onTabChange(tab.key)}
                 >
@@ -139,11 +139,11 @@ function ListingTabs({ activeTab, onTabChange }) {
           </div>
 
           <div className="col-auto ms-auto">
-            <div className="smplfy-all-samples-tabs-group nav nav-tabs flex-nowrap justify-content-end border-0">
+            <div className="nav nav-tabs flex-nowrap justify-content-end border-0">
               {rightTabs.map((tab) => (
                 <NavSelector
                   key={tab.key}
-                  className="text-nowrap smplfy-all-samples-tab"
+                  className="text-nowrap"
                   active={activeTab === tab.key}
                   onClick={() => onTabChange(tab.key)}
                 >
@@ -167,7 +167,7 @@ function ListingSearch({ activeTab, searchValue, onSearchChange, onOpenFilters, 
       <div className="container-fluid px-4">
         <div className="row h-100 align-items-center gx-3">
           <div className="col-xl-5 col-lg-6 col-12">
-            <div className="smplfy-all-samples-search-group input-group flex-nowrap">
+            <div className="input-group flex-nowrap">
               <span className="input-group-text text-secondary">
                 <AppIcon name="search" />
               </span>
@@ -249,7 +249,7 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
 
   return (
     <>
-      <div className="smplfy-all-samples-offcanvas-backdrop offcanvas-backdrop fade show" onClick={onCancel} />
+      <div className="offcanvas-backdrop fade show" onClick={onCancel} />
       <aside className="smplfy-all-samples-offcanvas offcanvas offcanvas-end show" tabIndex="-1" role="dialog" aria-modal="true" aria-labelledby="all-samples-filters-title">
         <div className="offcanvas-header border-bottom">
           <h2 className="offcanvas-title h5 mb-0" id="all-samples-filters-title">All Filters</h2>
@@ -273,7 +273,7 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
           ))}
         </div>
 
-        <div className="smplfy-all-samples-offcanvas-footer d-flex justify-content-between gap-3 border-top">
+        <div className="d-flex justify-content-between gap-3 border-top">
           <SecondaryButton onClick={onCancel}>
             Cancel
           </SecondaryButton>
@@ -291,12 +291,12 @@ function ListingBody({ samples, onOpenSample, onEditSample, viewMode, onViewMode
     <main className="smplfy-all-samples-page bg-body-tertiary flex-grow-1">
       <div className="container-fluid px-4">
         <div className="w-100">
-          <div className="smplfy-all-samples-page-header d-flex align-items-center justify-content-between gap-3 flex-wrap text-secondary fw-medium">
+          <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap text-secondary fw-medium">
             <span>{samples.length} Total Samples</span>
             <SampleCardViewToggle value={viewMode} onChange={onViewModeChange} />
           </div>
 
-          <div className="smplfy-all-samples-list d-flex flex-column">
+          <div className="d-flex flex-column">
             {samples.length ? (
               samples.map((sample, index) => {
                 const { extraMetaFields, extraDateFields } = getSampleDisplayExtras(sample);

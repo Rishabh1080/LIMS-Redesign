@@ -3,21 +3,13 @@
   padding: 16px 24px;
 }
 
-.smplfy-sample-details-title-block {
-  gap: 12px;
-}
-
-.smplfy-sample-details-header-back.smplfy-btn.btn {
+.smplfy-sample-details-header .smplfy-btn.btn[aria-label="Go back"] {
   width: 32px;
   flex: 0 0 32px;
   padding-inline: 0;
 }
 
-.smplfy-sample-details-title-row {
-  gap: 8px;
-}
-
-.smplfy-sample-details-title-row h1 {
+.smplfy-sample-details-header h1 {
   color: var(--smplfy-primitive-neutral-800);
   font-size: 20px;
   line-height: 1.2;
@@ -25,24 +17,14 @@
   letter-spacing: -0.02em;
 }
 
-.smplfy-sample-details-timestamp {
+.smplfy-sample-details-header .d-flex.flex-column > .d-inline-flex {
   color: var(--smplfy-primitive-neutral-600);
   font-size: 14px;
   font-weight: 500;
 }
 
-.smplfy-sample-details-header-actions {
-  gap: 12px;
-}
-
 .smplfy-sample-details-page {
-  padding: 24px;
-  background: var(--smplfy-primitive-neutral-200);
-}
-
-.smplfy-sample-details-body,
-.smplfy-sample-details-report-stack {
-  gap: 16px;
+  --bs-tertiary-bg: var(--smplfy-primitive-neutral-200);
 }
 
 .smplfy-sample-report-card.card {

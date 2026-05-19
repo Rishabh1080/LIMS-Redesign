@@ -4,7 +4,7 @@
   border-bottom: var(--bs-border-width) solid var(--smplfy-primitive-neutral-400);
 }
 
-.smplfy-requests-tabs-group {
+.smplfy-requests-tabs .nav {
   display: flex;
   align-items: stretch;
   min-width: 0;
@@ -12,7 +12,7 @@
   scrollbar-width: none;
 }
 
-.smplfy-requests-tabs-group::-webkit-scrollbar {
+.smplfy-requests-tabs .nav::-webkit-scrollbar {
   display: none;
 }
 
@@ -104,12 +104,6 @@
   box-shadow: none;
 }
 
-.smplfy-nav-link-label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--smplfy-nav-link-gap);
-}
-
 .smplfy-requests-tabs .smplfy-badge.badge {
   min-width: var(--smplfy-badge-size-sm);
   width: var(--smplfy-badge-size-sm);
@@ -122,22 +116,20 @@
   padding: 16px 0 12px;
 }
 
-.smplfy-requests-categories-inner {
+.smplfy-requests-categories .container-fluid > .d-flex {
   min-height: 44px;
   padding: var(--smplfy-button-space-0);
-  display: flex;
-  align-items: center;
   gap: 16px;
 }
 
-.smplfy-requests-categories-label {
+.smplfy-requests-categories .container-fluid > .d-flex > .flex-shrink-0 {
   flex: 0 0 auto;
   color: var(--smplfy-primitive-neutral-800);
   font-size: var(--smplfy-nav-link-font-size);
   font-weight: var(--smplfy-nav-link-font-weight);
 }
 
-.smplfy-requests-categories-rail.nav-pills {
+.smplfy-requests-categories .nav-pills {
   --bs-nav-pills-link-active-color: var(--smplfy-primitive-neutral-800);
   --bs-nav-pills-link-active-bg: var(--smplfy-primitive-neutral-100);
 
@@ -152,7 +144,7 @@
   box-sizing: border-box;
 }
 
-.smplfy-requests-categories-rail.nav-pills .smplfy-nav-link.nav-link {
+.smplfy-requests-categories .nav-pills .smplfy-nav-link.nav-link {
   --bs-nav-link-padding-x: var(--smplfy-button-space-0);
   --bs-nav-link-padding-y: var(--smplfy-button-space-0);
 
@@ -179,18 +171,18 @@
   white-space: nowrap;
 }
 
-.smplfy-requests-categories-rail.nav-pills .smplfy-nav-link.nav-link::after {
+.smplfy-requests-categories .nav-pills .smplfy-nav-link.nav-link::after {
   content: none;
 }
 
-.smplfy-requests-categories-rail.nav-pills .smplfy-nav-link.nav-link:hover:not(.active) {
+.smplfy-requests-categories .nav-pills .smplfy-nav-link.nav-link:hover:not(.active) {
   color: var(--smplfy-primitive-neutral-800);
   background: transparent;
 }
 
-.smplfy-requests-categories-rail.nav-pills .smplfy-nav-link.nav-link.active,
-.smplfy-requests-categories-rail.nav-pills .smplfy-nav-link.nav-link.active:hover,
-.smplfy-requests-categories-rail.nav-pills .smplfy-nav-link.nav-link.active:focus-visible {
+.smplfy-requests-categories .nav-pills .smplfy-nav-link.nav-link.active,
+.smplfy-requests-categories .nav-pills .smplfy-nav-link.nav-link.active:hover,
+.smplfy-requests-categories .nav-pills .smplfy-nav-link.nav-link.active:focus-visible {
   background: var(--smplfy-primitive-neutral-100);
   color: var(--smplfy-primitive-neutral-800);
   box-shadow:
@@ -285,7 +277,7 @@
   gap: var(--smplfy-nav-link-gap);
 }
 
-.smplfy-request-title.btn {
+.smplfy-request-card.card > :first-child .btn-link {
   --smplfy-button-current-height: auto;
   --bs-btn-padding-x: var(--smplfy-button-space-0);
   --bs-btn-padding-y: var(--smplfy-button-space-0);
@@ -314,25 +306,25 @@
   transform: none;
 }
 
-.smplfy-request-title.btn:hover,
-.smplfy-request-title.btn:focus-visible {
+.smplfy-request-card.card > :first-child .btn-link:hover,
+.smplfy-request-card.card > :first-child .btn-link:focus-visible {
   text-decoration: none;
 }
 
-.smplfy-request-card-item,
+.smplfy-request-card.card > :first-child,
 .smplfy-state-transition,
-.smplfy-request-days,
-.smplfy-request-raised,
-.smplfy-request-actions {
+.smplfy-request-card.card > :nth-child(3),
+.smplfy-request-card.card > :nth-child(4),
+.smplfy-request-card.card > :last-child {
   min-width: 0;
   padding: 0 calc(var(--smplfy-request-cell-pad-x) - 4px);
 }
 
-.smplfy-request-card-item {
+.smplfy-request-card.card > :first-child {
   padding-left: var(--smplfy-request-cell-pad-x);
 }
 
-.smplfy-request-actions {
+.smplfy-request-card.card > :last-child {
   padding-right: var(--smplfy-request-cell-pad-x);
 }
 
@@ -442,7 +434,7 @@
   color: var(--smplfy-status-pill-green-solid-text) !important;
 }
 
-.smplfy-request-days {
+.smplfy-request-card.card > :nth-child(3) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -452,7 +444,7 @@
   font-weight: var(--smplfy-nav-link-font-weight);
 }
 
-.smplfy-request-raised {
+.smplfy-request-card.card > :nth-child(4) {
   display: flex;
   align-items: center;
   color: var(--smplfy-primitive-neutral-800);
@@ -462,7 +454,7 @@
   white-space: nowrap;
 }
 
-.smplfy-request-actions {
+.smplfy-request-card.card > :last-child {
   display: flex;
   align-items: center;
   gap: var(--smplfy-nav-link-gap);
@@ -470,7 +462,7 @@
   flex-wrap: nowrap;
 }
 
-.smplfy-request-action-button.btn {
+.smplfy-request-card.card > :last-child .smplfy-btn.btn {
   flex: 0 0 auto;
   min-width: 0;
   height: 25px;
@@ -479,7 +471,7 @@
   padding-bottom: var(--smplfy-button-space-1);
 }
 
-.smplfy-request-action-button.btn > span {
+.smplfy-request-card.card > :last-child .smplfy-btn.btn > span {
   line-height: var(--smplfy-nav-link-line-height);
 }
 
@@ -1022,7 +1014,7 @@
     min-height: var(--smplfy-nav-link-height-large);
   }
 
-  .smplfy-requests-categories-inner {
+  .smplfy-requests-categories .container-fluid > .d-flex {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -1037,21 +1029,21 @@
     padding: 16px;
   }
 
-  .smplfy-request-days,
-  .smplfy-request-raised {
+  .smplfy-request-card.card > :nth-child(3),
+  .smplfy-request-card.card > :nth-child(4) {
     justify-content: flex-start;
   }
 
-  .smplfy-request-actions {
+  .smplfy-request-card.card > :last-child {
     justify-content: flex-start;
     flex-wrap: wrap;
   }
 
-  .smplfy-request-card-item,
+  .smplfy-request-card.card > :first-child,
   .smplfy-state-transition,
-  .smplfy-request-days,
-  .smplfy-request-raised,
-  .smplfy-request-actions {
+  .smplfy-request-card.card > :nth-child(3),
+  .smplfy-request-card.card > :nth-child(4),
+  .smplfy-request-card.card > :last-child {
     padding: 0;
   }
 

@@ -113,7 +113,7 @@ function AllocationModal({
             </div>
 
             <div className="flex-grow-1 overflow-auto">
-              <DataTable className={`smplfy-tr-allocation-table smplfy-tr-allocation-table-${activeTab}`}>
+              <DataTable>
                 <thead>
                   <tr>
                     {table.columns.map((column) => (
@@ -195,11 +195,11 @@ function TestRequestsHomeHeader({ activeTab, countsByTab, onTabChange }) {
       <div className="container-fluid px-4">
         <div className="row gx-0 align-items-stretch flex-nowrap">
           <div className="col">
-            <div className="smplfy-test-requests-home-tabs-group nav nav-tabs flex-nowrap overflow-auto border-0">
+            <div className="nav nav-tabs flex-nowrap overflow-auto border-0">
               {testRequestsHomeTabs.map((tab) => (
                 <NavSelector
                   key={tab.key}
-                  className="smplfy-test-requests-home-tab text-nowrap"
+                  className="text-nowrap"
                   active={activeTab === tab.key}
                   count={tab.key === 'all-test-requests' ? undefined : countsByTab[tab.key]}
                   onClick={() => onTabChange(tab.key)}
@@ -377,7 +377,7 @@ function TestRequestsHomeBody({ rows, showStatus, activeTab, onAllocate, onView,
   return (
     <main className="smplfy-test-requests-home-page bg-body-tertiary flex-grow-1">
       <div className="container-fluid px-4">
-        <DataTable className="smplfy-test-requests-home-table">
+        <DataTable>
           <thead>
             <tr>
               <th scope="col">Test Request ID</th>

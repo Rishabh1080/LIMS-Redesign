@@ -108,8 +108,8 @@ function AdminHubSearch({ value, inputRef, onChange, results }) {
   const resultCountLabel = getResultsCountLabel(results.length);
 
   return (
-    <div className="smplfy-admin-hub-search-shell position-relative w-100" role="search">
-      <label className="smplfy-admin-hub-search input-group flex-nowrap mb-0" aria-label="Search by Module or Setting Name">
+    <div className="position-relative w-100" role="search">
+      <label className="input-group flex-nowrap mb-0" aria-label="Search by Module or Setting Name">
         <span className="input-group-text bg-white text-secondary" aria-hidden="true">
           <AppIcon name="search" size={16} />
         </span>
@@ -125,7 +125,7 @@ function AdminHubSearch({ value, inputRef, onChange, results }) {
           aria-expanded={hasQuery}
           onChange={(event) => onChange(event.target.value)}
         />
-        <span className="smplfy-admin-hub-search-shortcut input-group-text bg-white text-secondary d-none d-md-inline-flex align-items-center gap-1" aria-hidden="true">
+        <span className="input-group-text bg-white text-secondary d-none d-md-inline-flex align-items-center gap-1" aria-hidden="true">
           <kbd>Ctrl</kbd>
           <span>+</span>
           <kbd>/</kbd>
@@ -135,12 +135,12 @@ function AdminHubSearch({ value, inputRef, onChange, results }) {
       {hasQuery ? (
         <div
           id="admin-hub-search-results"
-          className="smplfy-admin-hub-search-tray smplfy-card card position-absolute top-100 start-0 w-100 mt-2 shadow z-3"
+          className="smplfy-card card position-absolute top-100 start-0 w-100 mt-2 shadow z-3"
           role="listbox"
           aria-label="Admin Hub search results"
         >
           <div className="card-header bg-transparent small text-secondary">{resultCountLabel}</div>
-          <div className="smplfy-admin-hub-search-results list-group list-group-flush overflow-auto">
+          <div className="list-group list-group-flush overflow-auto">
             {results.length ? (
               results.map((result) => (
                 <SearchResult
@@ -152,7 +152,7 @@ function AdminHubSearch({ value, inputRef, onChange, results }) {
                 />
               ))
             ) : (
-              <div className="smplfy-admin-hub-search-empty list-group-item text-secondary" role="status">
+              <div className="list-group-item text-secondary" role="status">
                 No Settings found
               </div>
             )}
@@ -165,17 +165,17 @@ function AdminHubSearch({ value, inputRef, onChange, results }) {
 
 function AdminModuleGroup({ section }) {
   return (
-    <section className="smplfy-admin-hub-module d-flex flex-column gap-2" aria-labelledby={`admin-hub-${section.title}`}>
-      <div className="smplfy-admin-hub-module-header d-flex align-items-center gap-2">
-        <span className="smplfy-admin-hub-module-icon d-inline-flex align-items-center justify-content-center rounded border border-primary-subtle bg-primary-subtle text-primary p-2" aria-hidden="true">
+    <section className="d-flex flex-column gap-2" aria-labelledby={`admin-hub-${section.title}`}>
+      <div className="d-flex align-items-center gap-2">
+        <span className="d-inline-flex align-items-center justify-content-center rounded border border-primary-subtle bg-primary-subtle text-primary p-2" aria-hidden="true">
           <AppIcon name={section.icon} size={20} />
         </span>
-        <h2 id={`admin-hub-${section.title}`} className="smplfy-admin-hub-module-title h6 mb-0 fw-semibold text-dark">
+        <h2 id={`admin-hub-${section.title}`} className="h6 mb-0 fw-semibold text-dark">
           {section.title}
         </h2>
       </div>
 
-      <div className="smplfy-admin-hub-module-links d-flex flex-column align-items-start gap-2 ps-5">
+      <div className="d-flex flex-column align-items-start gap-2 ps-5">
         {section.links.map((link) => (
           <LinkItem key={link} label={link} />
         ))}
@@ -220,10 +220,10 @@ export default function AdminHubPage() {
 
   return (
     <div className="smplfy-admin-hub-page min-vh-100 bg-body-tertiary">
-      <header className="smplfy-admin-hub-topbar bg-white border-bottom p-3">
+      <header className="bg-white border-bottom p-3">
         <div className="container-fluid h-100">
           <div className="row h-100 align-items-center g-3">
-        <div className="smplfy-admin-hub-brand col-12 col-lg d-inline-flex align-items-center gap-2 text-dark">
+        <div className="col-12 col-lg d-inline-flex align-items-center gap-2 text-dark">
           <AppIcon name="admin-hub" size={18} stroke={2} />
           <span>IICT Admin Hub</span>
         </div>
@@ -241,7 +241,6 @@ export default function AdminHubPage() {
         <SecondaryButton
           size="large"
           tone="neutral"
-          className="smplfy-admin-hub-profile"
           leftIcon="user"
           aria-label="User profile"
         >
@@ -252,9 +251,9 @@ export default function AdminHubPage() {
         </div>
       </header>
 
-      <main className="smplfy-admin-hub-main container-fluid p-4">
-        <section className="smplfy-admin-hub-hero d-flex flex-column align-items-center justify-content-center text-center py-5" aria-labelledby="admin-hub-title">
-          <div className="smplfy-admin-hub-title-row d-inline-flex align-items-center justify-content-center gap-3">
+      <main className="container-fluid p-4">
+        <section className="d-flex flex-column align-items-center justify-content-center text-center py-5" aria-labelledby="admin-hub-title">
+          <div className="d-inline-flex align-items-center justify-content-center gap-3">
             <AppIcon name="admin-hub" size={32} stroke={2.4} />
             <h1 id="admin-hub-title" className="display-5 mb-0 text-dark">IICT Admin Hub</h1>
           </div>
@@ -263,7 +262,7 @@ export default function AdminHubPage() {
 
         <section className="smplfy-admin-hub-grid row g-4 justify-content-center" aria-label="Admin Hub modules">
           {gridColumns.map((column, columnIndex) => (
-            <div className="smplfy-admin-hub-grid-column col-12 col-md-6 col-xl-3 d-flex flex-column gap-4" key={column.join('-') || columnIndex}>
+            <div className="col-12 col-md-6 col-xl-3 d-flex flex-column gap-4" key={column.join('-') || columnIndex}>
               {column.map((sectionTitle) => {
                 const section = sectionMap[sectionTitle];
 
