@@ -20,6 +20,7 @@ const navigationSections = [
     items: [
       { label: 'Requests for me', icon: 'requests-for-me', key: 'requests-for-me', badgeKey: 'requests-for-me' },
       { label: 'Test Requests', icon: 'test-requests', key: 'test-requests-home', badgeKey: 'test-requests-home' },
+      { label: 'Document Management', icon: 'file-description', key: 'document-management' },
       { label: 'Samples Workspace', icon: 'workspace', key: 'samples-workspace' },
       { label: 'All Samples', icon: 'all-samples', key: 'all-samples' },
       { label: 'Environment Data', icon: 'cloud-data', key: 'environment-data' },

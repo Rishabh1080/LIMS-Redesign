@@ -5,6 +5,7 @@ import NewSampleCustomerDetailsPage from './pages/NewSampleCustomerDetailsPage';
 import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
 import DashboardPage from './pages/DashboardPage';
 import DatasheetPage from './pages/DatasheetPage';
+import DocumentManagementPage from './pages/DocumentManagementPage';
 import EnvironmentDataPage from './pages/EnvironmentDataPage';
 import FinalisedReportPage from './pages/FinalisedReportPage';
 import LeaveRecordsPage from './pages/LeaveRecordsPage';
@@ -529,6 +530,11 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'document-management') {
+      setActivePage('document-management');
+      return;
+    }
+
     if (nextPage === 'environment-data') {
       setActivePage('environment-data');
       return;
@@ -803,6 +809,17 @@ export default function App() {
       <TestRequestsHomePage
         onNavigate={handleNavigate}
         onOpenTrDetails={openTrDetails}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'document-management') {
+    return (
+      <DocumentManagementPage
+        onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
