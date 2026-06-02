@@ -2,7 +2,7 @@
 
 ## Current Status
 
-SitePing is installed and integrated. It is visible during local Vite development and hidden from the deployed production frontend.
+SitePing is installed and integrated. The frontend widget is currently hidden in local Vite development and in the deployed production frontend.
 
 The frontend-only kill switch lives in `src/siteping.js`:
 
@@ -10,7 +10,7 @@ The frontend-only kill switch lives in `src/siteping.js`:
 const sitepingFrontendVisible = false;
 ```
 
-With that value set to `false`, `initSitepingFeedbackWidget()` still runs in `npm run dev`, but returns before loading `@siteping/widget` in production. The floating SitePing FAB does not appear on the deployed interface.
+With that value set to `false`, `initSitepingFeedbackWidget()` returns before loading `@siteping/widget`. The floating SitePing FAB does not appear on the frontend.
 
 No SitePing code has been removed. The widget initializer, Vite dev middleware, Vercel API route, npm dependencies, and shared-storage code remain in the project.
 
@@ -37,7 +37,7 @@ Vercel should redeploy from `main` after the push.
 
 - `src/main.jsx` calls `initSitepingFeedbackWidget()`.
 - `src/siteping.js` owns the frontend visibility switch and lazy-loads SitePing only when enabled.
-- `npm run dev` enables SitePing automatically via `import.meta.env.DEV`.
+- `npm run dev` no longer bypasses the frontend visibility switch.
 - `server/sitepingMiddleware.js` provides the shared SitePing CRUD handler and the Vite dev/preview `/api/siteping` middleware.
 - `api/siteping.js` exposes `/api/siteping` as a Vercel serverless function.
 - `package.json` includes `@siteping/widget` and `@siteping/adapter-localstorage`.
@@ -80,4 +80,4 @@ Set the frontend switch back to:
 const sitepingFrontendVisible = false;
 ```
 
-This hides the SitePing UI in production without deleting the integration. Local `npm run dev` remains enabled unless the code is changed to remove the `import.meta.env.DEV` condition.
+This hides the SitePing UI without deleting the integration.
