@@ -11,6 +11,7 @@ import FinalisedReportPage from './pages/FinalisedReportPage';
 import LeaveRecordsPage from './pages/LeaveRecordsPage';
 import MaterialsPage from './pages/MaterialsPage';
 import MaterialDetailsPage from './pages/MaterialDetailsPage';
+import AllServicesPage from './pages/AllServicesPage';
 import InstrumentsPage from './pages/InstrumentsPage';
 import InstrumentDetailsPage from './pages/InstrumentDetailsPage';
 import NewInstrumentPage from './pages/NewInstrumentPage';
@@ -19,10 +20,12 @@ import TrainingsPage, { defaultTrainings } from './pages/TrainingsPage';
 import RequestsForMePage from './pages/RequestsForMePage';
 import SampleDetailsPage from './pages/SampleDetailsPage';
 import SampleWorkspacePage from './pages/SampleWorkspacePage';
+import ServiceDetailsPage from './pages/ServiceDetailsPage';
 import TempReportPage from './pages/TempReportPage';
 import TestRequestsHomePage from './pages/TestRequestsHomePage';
 import TestRequestsListingPage from './pages/TestRequestsListingPage';
 import TrDetailsPage from './pages/TrDetailsPage';
+import { initialInstrumentServices } from './data/instrumentServices';
 import {
   createAnalyticsSessionId,
   getAnalyticsElapsedTime,
@@ -129,6 +132,17 @@ function getInstrumentById(instrumentId) {
   return instrumentCatalog.find((instrument) => instrument.id === instrumentId) ?? null;
 }
 
+function formatDateForDisplay(value) {
+  if (!value) return '-';
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [year, month, day] = value.split('-');
+    return `${day}/${month}/${year}`;
+  }
+
+  return value;
+}
+
 export default function App() {
   const [activePage, setActivePage] = useState(getInitialPage);
   const sampleCreationFlowRef = useRef({
@@ -185,11 +199,19 @@ export default function App() {
     origin: 'temp-report',
   });
   const [instrumentToast, setInstrumentToast] = useState(null);
+  const [instrumentServices, setInstrumentServices] = useState(initialInstrumentServices);
+  const [allServicesActiveTab, setAllServicesActiveTab] = useState('calibration');
   const [instrumentDetailsState, setInstrumentDetailsState] = useState({
     id: null,
     name: '',
     instrument: null,
     initialToast: null,
+  });
+  const [serviceDetailsState, setServiceDetailsState] = useState({
+    service: null,
+    instrumentId: null,
+    instrumentName: '',
+    sourcePage: 'instrument-details',
   });
   const [instrumentEditorState, setInstrumentEditorState] = useState({
     mode: 'create',
@@ -294,6 +316,68 @@ export default function App() {
       initialToast,
     });
     setActivePage('instrument-details');
+  };
+
+  const openServiceDetails = (service, options = {}) => {
+    const instrumentId = options.instrumentId ?? service?.instrumentId ?? instrumentDetailsState.id;
+    const instrumentName = options.instrumentName ?? service?.instrumentName ?? instrumentDetailsState.name;
+    const sourcePage = options.sourcePage ?? (activePage === 'all-services' ? 'all-services' : 'instrument-details');
+    const instrument = getInstrumentById(instrumentId) ?? {
+      id: instrumentId,
+      name: instrumentName,
+    };
+
+    if (instrumentId || instrumentName) {
+      setInstrumentDetailsState({
+        id: instrument.id,
+        name: instrument.name,
+        instrument,
+        initialToast: null,
+      });
+    }
+
+    setServiceDetailsState({
+      service,
+      instrumentId: instrument.id,
+      instrumentName: instrument.name,
+      sourcePage,
+    });
+    setActivePage('service-details');
+  };
+
+  const handleServiceCreated = (service) => {
+    setInstrumentServices((current) => [
+      service,
+      ...current.filter((currentService) => currentService.id !== service.id),
+    ]);
+  };
+
+  const createServiceFromDraft = (draft) => {
+    const instrument = getInstrumentById(draft.instrumentId);
+
+    if (!instrument) {
+      return null;
+    }
+
+    const now = new Date();
+    const details = draft.details || `${draft.serviceType} service created for ${instrument.name}.`;
+    const service = {
+      id: `SVC-${now.getFullYear()}-${String(instrumentServices.length + 1).padStart(3, '0')}`,
+      serviceDate: now.toLocaleDateString('en-GB'),
+      nextServiceDate: formatDateForDisplay(draft.nextServiceOn),
+      status: 'Not initialised',
+      stage: 'service-created',
+      details,
+      summary: details,
+      serviceType: draft.serviceType,
+      vendor: draft.vendor,
+      attachment: draft.attachment,
+      instrumentId: instrument.id,
+      instrumentName: instrument.name,
+    };
+
+    handleServiceCreated(service);
+    return service;
   };
 
   const openNewInstrument = () => {
@@ -552,6 +636,16 @@ export default function App() {
 
     if (nextPage === 'instruments') {
       setActivePage('instruments');
+      return;
+    }
+
+    if (nextPage === 'all-services') {
+      setActivePage('all-services');
+      return;
+    }
+
+    if (nextPage === 'instrument-details') {
+      setActivePage('instrument-details');
       return;
     }
 
@@ -881,11 +975,33 @@ export default function App() {
   if (activePage === 'instruments') {
     return (
       <InstrumentsPage
+        services={instrumentServices}
         onNavigate={handleNavigate}
         onNewInstrument={openNewInstrument}
         onEditInstrument={(instrumentId) => openEditInstrument(instrumentId, { sourcePage: 'instruments' })}
         onOpenInstrument={(id, name) => openInstrumentDetails(id, name)}
+        onOpenService={openServiceDetails}
+        onOpenAllServices={() => setActivePage('all-services')}
         initialToast={instrumentToast}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'all-services') {
+    return (
+      <AllServicesPage
+        services={instrumentServices}
+        instruments={instrumentCatalog}
+        activeTab={allServicesActiveTab}
+        onActiveTabChange={setAllServicesActiveTab}
+        onBack={() => setActivePage('instruments')}
+        onCreateService={createServiceFromDraft}
+        onOpenInstrument={(id, name) => openInstrumentDetails(id, name)}
+        onOpenService={openServiceDetails}
+        onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
@@ -929,12 +1045,32 @@ export default function App() {
         uniqueKey={instrumentDetailsState.instrument?.uniqueKey}
         modelNo={instrumentDetailsState.instrument?.modelNo}
         serialNo={instrumentDetailsState.instrument?.serialNo}
+        records={instrumentServices.filter((service) => service.instrumentId === instrumentDetailsState.id)}
         initialToast={instrumentDetailsState.initialToast}
         onBack={() => setActivePage('instruments')}
+        onServiceCreated={handleServiceCreated}
         onEditInstrument={() =>
           openEditInstrument(instrumentDetailsState.instrument ?? instrumentDetailsState.id, {
             sourcePage: 'instrument-details',
           })
+        }
+        onOpenService={openServiceDetails}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'service-details') {
+    return (
+      <ServiceDetailsPage
+        service={serviceDetailsState.service}
+        instrumentId={serviceDetailsState.instrumentId}
+        instrumentName={serviceDetailsState.instrumentName}
+        onBack={() =>
+          setActivePage(serviceDetailsState.sourcePage === 'all-services' ? 'all-services' : 'instrument-details')
         }
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}

@@ -309,6 +309,37 @@
   --smplfy-status-pill-yellow-solid-border: var(--smplfy-primitive-yellow-250);
   --smplfy-status-pill-yellow-solid-text: var(--smplfy-primitive-neutral-100);
 
+  --smplfy-bootstrap-badge-primary-bg: var(--smplfy-primitive-blue-500);
+  --smplfy-bootstrap-badge-primary-border: var(--smplfy-status-pill-blue-solid-border);
+  --smplfy-bootstrap-badge-primary-text: var(--smplfy-status-pill-blue-solid-text);
+  --smplfy-bootstrap-badge-secondary-bg: var(--smplfy-status-pill-gray-solid-bg);
+  --smplfy-bootstrap-badge-secondary-border: var(--smplfy-status-pill-gray-solid-border);
+  --smplfy-bootstrap-badge-secondary-text: var(--smplfy-status-pill-gray-solid-text);
+  --smplfy-bootstrap-badge-success-bg: var(--smplfy-primitive-green-500);
+  --smplfy-bootstrap-badge-success-border: var(--smplfy-status-pill-green-solid-border);
+  --smplfy-bootstrap-badge-success-text: var(--smplfy-status-pill-green-solid-text);
+  --smplfy-bootstrap-badge-danger-bg: var(--smplfy-primitive-red-500);
+  --smplfy-bootstrap-badge-danger-border: var(--smplfy-status-pill-red-solid-border);
+  --smplfy-bootstrap-badge-danger-text: var(--smplfy-status-pill-red-solid-text);
+  --smplfy-bootstrap-badge-warning-bg: var(--smplfy-primitive-yellow-600);
+  --smplfy-bootstrap-badge-warning-border: var(--smplfy-status-pill-yellow-solid-border);
+  --smplfy-bootstrap-badge-warning-text: var(--smplfy-status-pill-yellow-solid-text);
+  --smplfy-bootstrap-badge-primary-subtle-bg: var(--smplfy-primitive-blue-100);
+  --smplfy-bootstrap-badge-primary-subtle-border: var(--smplfy-primitive-blue-600);
+  --smplfy-bootstrap-badge-primary-subtle-text: var(--smplfy-primitive-blue-600);
+  --smplfy-bootstrap-badge-secondary-subtle-bg: var(--smplfy-primitive-neutral-200);
+  --smplfy-bootstrap-badge-secondary-subtle-border: var(--smplfy-primitive-neutral-600);
+  --smplfy-bootstrap-badge-secondary-subtle-text: var(--smplfy-primitive-neutral-600);
+  --smplfy-bootstrap-badge-success-subtle-bg: var(--smplfy-primitive-green-100);
+  --smplfy-bootstrap-badge-success-subtle-border: var(--smplfy-primitive-green-600);
+  --smplfy-bootstrap-badge-success-subtle-text: var(--smplfy-primitive-green-600);
+  --smplfy-bootstrap-badge-danger-subtle-bg: var(--smplfy-primitive-red-100);
+  --smplfy-bootstrap-badge-danger-subtle-border: var(--smplfy-primitive-red-600);
+  --smplfy-bootstrap-badge-danger-subtle-text: var(--smplfy-primitive-red-600);
+  --smplfy-bootstrap-badge-warning-subtle-bg: var(--smplfy-primitive-yellow-100);
+  --smplfy-bootstrap-badge-warning-subtle-border: var(--smplfy-primitive-yellow-600);
+  --smplfy-bootstrap-badge-warning-subtle-text: var(--smplfy-primitive-yellow-600);
+
   --smplfy-form-check-hit-size: 28px;
   --smplfy-form-check-checkbox-box-size: 15px;
   --smplfy-form-check-checkbox-halo-size: 25px;
@@ -1217,6 +1248,116 @@
 
 .smplfy-btn-group.btn-group:not(:has(.dropdown-toggle-split)) > .smplfy-btn.btn.active {
   box-shadow: var(--smplfy-sample-card-view-toggle-active-shadow);
+}
+
+.badge.text-bg-primary,
+.badge.bg-primary {
+  background-color: var(--smplfy-bootstrap-badge-primary-bg) !important;
+  color: var(--smplfy-bootstrap-badge-primary-text) !important;
+}
+
+.badge.border-primary {
+  border-color: var(--smplfy-bootstrap-badge-primary-border) !important;
+}
+
+.badge.text-bg-secondary,
+.badge.bg-secondary {
+  background-color: var(--smplfy-bootstrap-badge-secondary-bg) !important;
+  color: var(--smplfy-bootstrap-badge-secondary-text) !important;
+}
+
+.badge.border-secondary {
+  border-color: var(--smplfy-bootstrap-badge-secondary-border) !important;
+}
+
+.badge.text-bg-success,
+.badge.bg-success {
+  background-color: var(--smplfy-bootstrap-badge-success-bg) !important;
+  color: var(--smplfy-bootstrap-badge-success-text) !important;
+}
+
+.badge.border-success {
+  border-color: var(--smplfy-bootstrap-badge-success-border) !important;
+}
+
+.badge.text-bg-danger,
+.badge.bg-danger {
+  background-color: var(--smplfy-bootstrap-badge-danger-bg) !important;
+  color: var(--smplfy-bootstrap-badge-danger-text) !important;
+}
+
+.badge.border-danger {
+  border-color: var(--smplfy-bootstrap-badge-danger-border) !important;
+}
+
+.badge.text-bg-warning,
+.badge.bg-warning {
+  background-color: var(--smplfy-bootstrap-badge-warning-bg) !important;
+  color: var(--smplfy-bootstrap-badge-warning-text) !important;
+}
+
+.badge.border-warning {
+  border-color: var(--smplfy-bootstrap-badge-warning-border) !important;
+}
+
+.badge.bg-primary-subtle {
+  background-color: var(--smplfy-bootstrap-badge-primary-subtle-bg) !important;
+}
+
+.badge.text-primary.bg-primary-subtle {
+  color: var(--smplfy-bootstrap-badge-primary-subtle-text) !important;
+}
+
+.badge.bg-primary-subtle.border-primary {
+  border-color: var(--smplfy-bootstrap-badge-primary-subtle-border) !important;
+}
+
+.badge.bg-secondary-subtle {
+  background-color: var(--smplfy-bootstrap-badge-secondary-subtle-bg) !important;
+}
+
+.badge.text-secondary.bg-secondary-subtle {
+  color: var(--smplfy-bootstrap-badge-secondary-subtle-text) !important;
+}
+
+.badge.bg-secondary-subtle.border-secondary {
+  border-color: var(--smplfy-bootstrap-badge-secondary-subtle-border) !important;
+}
+
+.badge.bg-success-subtle {
+  background-color: var(--smplfy-bootstrap-badge-success-subtle-bg) !important;
+}
+
+.badge.text-success.bg-success-subtle {
+  color: var(--smplfy-bootstrap-badge-success-subtle-text) !important;
+}
+
+.badge.bg-success-subtle.border-success {
+  border-color: var(--smplfy-bootstrap-badge-success-subtle-border) !important;
+}
+
+.badge.bg-danger-subtle {
+  background-color: var(--smplfy-bootstrap-badge-danger-subtle-bg) !important;
+}
+
+.badge.text-danger.bg-danger-subtle {
+  color: var(--smplfy-bootstrap-badge-danger-subtle-text) !important;
+}
+
+.badge.bg-danger-subtle.border-danger {
+  border-color: var(--smplfy-bootstrap-badge-danger-subtle-border) !important;
+}
+
+.badge.bg-warning-subtle {
+  background-color: var(--smplfy-bootstrap-badge-warning-subtle-bg) !important;
+}
+
+.badge.text-warning.bg-warning-subtle {
+  color: var(--smplfy-bootstrap-badge-warning-subtle-text) !important;
+}
+
+.badge.bg-warning-subtle.border-warning {
+  border-color: var(--smplfy-bootstrap-badge-warning-subtle-border) !important;
 }
 
 .smplfy-table.table {

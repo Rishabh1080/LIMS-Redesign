@@ -137,7 +137,7 @@
   align-items: center;
   gap: var(--smplfy-button-space-0);
   padding: var(--smplfy-button-space-1);
-  border-radius: var(--smplfy-field-radius);
+  border-radius: 8px;
   background: var(--smplfy-primitive-neutral-200);
   border: var(--bs-border-width) solid var(--smplfy-primitive-neutral-300);
   height: 40px;
@@ -153,7 +153,7 @@
   min-height: 32px;
   padding: 0 16px 0 12px;
   border: 0;
-  border-radius: var(--smplfy-button-radius);
+  border-radius: 4px;
   background: transparent;
   color: var(--smplfy-primitive-neutral-600);
   display: inline-flex;

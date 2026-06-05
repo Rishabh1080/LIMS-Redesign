@@ -75,6 +75,28 @@ const STATUS_SCHEMAS = {
       styleType: 'neutral',
     },
   },
+  service: {
+    not_initialised: {
+      label: 'Not initialised',
+      color: 'gray',
+      styleType: 'neutral',
+    },
+    pending: {
+      label: 'Pending',
+      color: 'yellow',
+      styleType: 'neutral',
+    },
+    under_analysis: {
+      label: 'Under analysis',
+      color: 'blue',
+      styleType: 'neutral',
+    },
+    approved: {
+      label: 'Approved',
+      color: 'green',
+      styleType: 'neutral',
+    },
+  },
 };
 
 function normalizeStatusKey(status) {
@@ -108,3 +130,4 @@ export function getEntityStatuses(entityType) {
 export const sampleStatuses = STATUS_SCHEMAS.sample;
 export const testRequestStatuses = STATUS_SCHEMAS.testRequest;
 export const datasheetStatuses = STATUS_SCHEMAS.datasheet;
+export const serviceStatuses = STATUS_SCHEMAS.service;

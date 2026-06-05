@@ -17,6 +17,7 @@
     "@siteping/widget": "^0.9.5",
     "@tabler/icons-react": "^3.41.1",
     "bootstrap": "^5.3.3",
+    "echarts": "^6.1.0",
     "posthog-js": "^1.372.10",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"

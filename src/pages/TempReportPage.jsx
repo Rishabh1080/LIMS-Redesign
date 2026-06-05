@@ -25,7 +25,13 @@ function PageHeader({ reportId, version, loading, onBack, onFinalize, onVersionC
   return (
     <section className="bg-white border-bottom d-flex align-items-center justify-content-between gap-3 flex-wrap px-4 py-3">
       <div className="d-flex align-items-center gap-3">
-        <SecondaryButton size="medium" leftIcon="chevron-left" aria-label="Go back" onClick={onBack} />
+        <SecondaryButton
+          size="medium"
+          leftIcon="chevron-left"
+          className="px-0 flex-shrink-0"
+          aria-label="Go back"
+          onClick={onBack}
+        />
         <h1 className="h6 mb-0 fw-semibold text-dark">{reportId}</h1>
         <VersionSelector
           value={version}

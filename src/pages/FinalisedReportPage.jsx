@@ -28,6 +28,7 @@ function PageHeader({ reportId, version, loading, onBack, onVersionChange }) {
         <SecondaryButton
           size="medium"
           leftIcon="chevron-left"
+          className="px-0 flex-shrink-0"
           aria-label="Go back"
           onClick={onBack}
         />

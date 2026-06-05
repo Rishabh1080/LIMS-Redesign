@@ -17,7 +17,7 @@ function AttendanceHeader({ title, onBack }) {
       <div className="d-flex align-items-start gap-3">
         <SecondaryButton
           size="medium"
-          className="p-0 flex-shrink-0"
+          className="px-0 flex-shrink-0"
           aria-label="Go back"
           onClick={onBack}
         >

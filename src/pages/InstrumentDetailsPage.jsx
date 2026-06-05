@@ -1,158 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import DataTable from '../components/DataTable';
 import MoreActionButton from '../components/MoreActionButton';
 import NavSelector from '../components/NavSelector';
+import NewServiceModal from '../components/NewServiceModal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import { FormElement, ToastNotification } from '../components/FormControls';
-import Modal from '../components/Modal/Modal';
+import { ToastNotification } from '../components/FormControls';
+import StatusPill from '../components/StatusPill';
+import { initialInstrumentServices, serviceTypeTabs } from '../data/instrumentServices';
+import { getStatusPresentation } from '../status/statusRegistry';
 import qrCode from '../../assets/qr.png';
 import './instrument-details-page.scss';
 
-const serviceTypeOptions = ['Calibration', 'Breakdown', 'Maintenance', 'Service'];
+function formatDateForDisplay(value) {
+  if (!value) return '-';
 
-const initialServiceDraft = {
-  serviceType: serviceTypeOptions[0],
-  vendor: '',
-  nextServiceOn: '',
-  attachment: null,
-  details: '',
-};
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [year, month, day] = value.split('-');
+    return `${day}/${month}/${year}`;
+  }
 
-function NewServiceModal({ open, instrumentName, onCancel, onSubmit }) {
-  const [draft, setDraft] = useState(initialServiceDraft);
-  const [errors, setErrors] = useState({});
-
-  const update = (field, value) => {
-    setDraft((c) => ({ ...c, [field]: value }));
-    if (errors[field]) setErrors((c) => { const n = { ...c }; delete n[field]; return n; });
-  };
-
-  const handleSubmit = () => {
-    const nextErrors = {};
-    if (!draft.nextServiceOn) nextErrors.nextServiceOn = 'Next service date is required.';
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length) return;
-    setDraft(initialServiceDraft);
-    setErrors({});
-    onSubmit();
-  };
-
-  const handleCancel = () => {
-    setDraft(initialServiceDraft);
-    setErrors({});
-    onCancel();
-  };
-
-  if (!open) return null;
-
-  return (
-    <Modal
-      open={open}
-      title="New Service"
-      titleId="new-service-modal-title"
-      titleIcon="settings"
-      onClose={handleCancel}
-      size="md"
-      actions={
-        <>
-          <SecondaryButton leftIcon="close" size="large" onClick={handleCancel}>Cancel</SecondaryButton>
-          <PrimaryButton leftIcon="save" onClick={handleSubmit}>Submit</PrimaryButton>
-        </>
-      }
-    >
-      <form
-        className="d-flex flex-column gap-3"
-        onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
-      >
-        <div className="row g-3">
-          <div className="col-12">
-            <div className="d-inline-flex align-items-center gap-1 mb-2">
-              <span className="form-label mb-0">Type of Service</span>
-              <span className="text-danger">*</span>
-            </div>
-
-            <div className="nav nav-pills p-1 bg-body-tertiary border rounded" role="tablist" aria-label="Type of Service">
-              {serviceTypeOptions.map((option) => {
-                const isActive = draft.serviceType === option;
-
-                return (
-                  <NavSelector
-                    key={option}
-                    type="button"
-                    size="medium"
-                    active={isActive}
-                    className="flex-fill"
-                    role="tab"
-                    aria-selected={isActive}
-                    onClick={() => update('serviceType', option)}
-                  >
-                    {option}
-                  </NavSelector>
-                );
-              })}
-            </div>
-          </div>
-          <div className="col-12 col-md-6">
-            <FormElement
-              type="text"
-              label="Vendor"
-              inputProps={{
-                value: draft.vendor,
-                placeholder: 'eg.',
-                onChange: (e) => update('vendor', e.target.value),
-              }}
-            />
-          </div>
-          <div className="col-12 col-md-6">
-            <FormElement
-              type="date"
-              mandatory
-              label="Next Service On"
-              message={errors.nextServiceOn}
-              messageTone="error"
-              inputProps={{
-                value: draft.nextServiceOn,
-                placeholder: 'Select date',
-                onChange: (e) => update('nextServiceOn', e.target.value),
-              }}
-            />
-          </div>
-          <div className="col-12 col-md-6">
-            <FormElement
-              type="file"
-              label="Attachments"
-              inputProps={{
-                value: draft.attachment,
-                placeholder: 'Choose files',
-                onChange: (e) => update('attachment', e.target.value),
-              }}
-            />
-          </div>
-        </div>
-        <div>
-          <FormElement
-            type="text"
-            label="Details and Summary"
-            inputProps={{
-              value: draft.details,
-              placeholder: 'Enter the details of the service',
-              onChange: (e) => update('details', e.target.value),
-            }}
-          />
-        </div>
-      </form>
-    </Modal>
-  );
+  return value;
 }
-
-const mockRecords = [
-  { id: 1, type: 'IN', quantity: '19', supplierBatch: '01-04-2026', transactionDate: '01-04-2026', expiryDate: '-', cost: '-', by: 'Deepak Cyblt' },
-  { id: 2, type: 'OUT', quantity: '19', supplierBatch: '01-04-2026', transactionDate: '01-04-2026', expiryDate: '-', cost: '-', by: 'Deepak Cyblt' },
-  { id: 3, type: 'OUT- Damaged', quantity: '19', supplierBatch: '01-04-2026', transactionDate: '01-04-2026', expiryDate: '-', cost: '-', by: 'Deepak Cyblt' },
-];
 
 function InstrumentDetailsHeader({ instrumentName, onBack, onEditInstrument, onNewService }) {
   const moreActionItems = [
@@ -170,7 +41,9 @@ function InstrumentDetailsHeader({ instrumentName, onBack, onEditInstrument, onN
         <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto d-flex align-items-center gap-3">
             <SecondaryButton
+              size="medium"
               leftIcon="chevron-left"
+              className="px-0 flex-shrink-0"
               onClick={onBack}
               aria-label="Go back"
             />
@@ -199,11 +72,13 @@ export default function InstrumentDetailsPage({
   uniqueKey = 'Y8k08',
   modelNo = 'Y8k08',
   serialNo = 'Y8k08',
-  records = mockRecords,
+  records = null,
   initialToast = null,
   onEditInstrument,
   onBack,
   onNewService,
+  onServiceCreated,
+  onOpenService,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -212,6 +87,11 @@ export default function InstrumentDetailsPage({
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
+  const resolvedRecords = useMemo(
+    () => records ?? initialInstrumentServices.filter((record) => record.instrumentId === instrumentId),
+    [instrumentId, records],
+  );
+  const [serviceRecords, setServiceRecords] = useState(resolvedRecords);
 
   useEffect(() => {
     if (!initialToast) {
@@ -234,12 +114,44 @@ export default function InstrumentDetailsPage({
     };
   }, [initialToast]);
 
-  const tabs = [
-    { key: 'calibration', label: 'Calibration' },
-    { key: 'maintenance', label: 'Maintenance' },
-    { key: 'breakdown', label: 'Breakdown' },
-    { key: 'service', label: 'Service' },
-  ];
+  useEffect(() => {
+    setServiceRecords(resolvedRecords);
+  }, [resolvedRecords]);
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setToastVisible(false);
+
+    window.requestAnimationFrame(() => {
+      setToastVisible(true);
+      window.setTimeout(() => setToastVisible(false), 5000);
+    });
+  };
+
+  const handleCreateService = (draft) => {
+    const now = new Date();
+    const nextRecord = {
+      id: `SVC-${now.getFullYear()}-${String(serviceRecords.length + 1).padStart(3, '0')}`,
+      serviceDate: now.toLocaleDateString('en-GB'),
+      nextServiceDate: formatDateForDisplay(draft.nextServiceOn),
+      status: 'Not initialised',
+      stage: 'service-created',
+      details: draft.details || `${draft.serviceType} service created for ${instrumentName}.`,
+      summary: draft.details || `${draft.serviceType} service created for ${instrumentName}.`,
+      serviceType: draft.serviceType,
+      vendor: draft.vendor,
+      instrumentId,
+      instrumentName,
+    };
+
+    setServiceRecords((current) => [nextRecord, ...current]);
+    setServiceModalOpen(false);
+    onNewService?.(nextRecord);
+    onServiceCreated?.(nextRecord);
+    showToast('Service created successfully.');
+  };
+
+  const tabs = serviceTypeTabs;
 
   return (
     <AppChrome
@@ -317,33 +229,48 @@ export default function InstrumentDetailsPage({
             </div>
 
             <div className="card-body">
-              <div className="fw-medium text-dark mb-3">{records.length} Records</div>
+              <div className="fw-medium text-dark mb-3">{serviceRecords.length} Records</div>
               <DataTable>
                 <thead>
                   <tr>
-                    <th scope="col">Sr</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Supplier/Batch</th>
-                    <th scope="col">Transaction Date</th>
-                    <th scope="col">Expiry Date</th>
-                    <th scope="col">Cost(s)</th>
-                    <th scope="col">By</th>
+                    <th scope="col">Service date</th>
+                    <th scope="col">Next service date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Details</th>
+                    <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {records.map((record, index) => (
-                    <tr key={record.id}>
-                      <td>{index + 1}</td>
-                      <td>{record.type}</td>
-                      <td>{record.quantity}</td>
-                      <td>{record.supplierBatch}</td>
-                      <td>{record.transactionDate}</td>
-                      <td>{record.expiryDate}</td>
-                      <td>{record.cost}</td>
-                      <td>{record.by}</td>
-                    </tr>
-                  ))}
+                  {serviceRecords.map((record) => {
+                    const statusPresentation = getStatusPresentation('service', record.status);
+
+                    return (
+                      <tr key={record.id}>
+                        <td className="text-nowrap">{record.serviceDate}</td>
+                        <td className="text-nowrap">{record.nextServiceDate}</td>
+                        <td className="text-nowrap">
+                          <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
+                            {statusPresentation.label}
+                          </StatusPill>
+                        </td>
+                        <td>{record.details}</td>
+                        <td className="text-nowrap">
+                          <SecondaryButton
+                            size="medium"
+                            leftIcon="eye"
+                            onClick={() =>
+                              onOpenService?.(record, {
+                                instrumentId,
+                                instrumentName,
+                              })
+                            }
+                          >
+                            View
+                          </SecondaryButton>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </DataTable>
             </div>
@@ -353,16 +280,17 @@ export default function InstrumentDetailsPage({
 
       <NewServiceModal
         open={serviceModalOpen}
-        instrumentName={instrumentName}
+        instrumentOptions={[
+          {
+            value: instrumentId,
+            label: instrumentName,
+          },
+        ]}
+        initialInstrumentId={instrumentId}
+        showInstrumentField
+        instrumentFieldDisabled
         onCancel={() => setServiceModalOpen(false)}
-        onSubmit={() => {
-          setServiceModalOpen(false);
-          setToastMessage('Service created successfully.');
-          window.requestAnimationFrame(() => {
-            setToastVisible(true);
-            window.setTimeout(() => setToastVisible(false), 5000);
-          });
-        }}
+        onSubmit={handleCreateService}
       />
 
       <ToastNotification

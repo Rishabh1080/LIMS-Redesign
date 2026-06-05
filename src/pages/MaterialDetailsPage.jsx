@@ -103,7 +103,9 @@ function MaterialDetailsHeader({ materialName, onBack, onNewTransaction }) {
         <div className="row align-items-center justify-content-between gx-0 gy-3">
           <div className="col-auto d-flex align-items-center gap-3">
             <SecondaryButton
+              size="medium"
               leftIcon="chevron-left"
+              className="px-0 flex-shrink-0"
               onClick={onBack}
               aria-label="Go back"
             />

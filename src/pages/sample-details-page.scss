@@ -91,6 +91,12 @@ body:has(.smplfy-sample-details-page) siteping-widget {
   font-weight: 600;
 }
 
+.smplfy-sample-details-page .smplfy-card.card[aria-label="Service details content"] .text-secondary {
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
 .smplfy-sample-details-fields {
   padding: 8px 16px;
   row-gap: 4px;
@@ -228,7 +234,8 @@ body:has(.smplfy-sample-details-page) siteping-widget {
 
 .smplfy-sample-details-action.card {
   width: 288px;
-  height: 202px;
+  height: auto;
+  min-height: 0;
   border: 0;
   outline: var(--smplfy-card-border-width) solid var(--smplfy-sample-details-border);
 }
@@ -246,7 +253,7 @@ body:has(.smplfy-sample-details-page) siteping-widget {
   font-size: 14px;
   line-height: 22px;
   font-weight: 500;
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
 }
 
 .smplfy-sample-details-action.card > .card-header strong {
@@ -255,45 +262,20 @@ body:has(.smplfy-sample-details-page) siteping-widget {
 }
 
 .smplfy-sample-details-action.card > .card-body {
-  padding: 16px 8px 8px;
-}
-
-.smplfy-sample-details-action dl {
-  padding: 0 8px;
-}
-
-.smplfy-sample-details-action dl > div {
-  height: 18px;
-  display: grid;
-  grid-template-columns: 104px minmax(0, 1fr);
-}
-
-.smplfy-sample-details-action dl > div + div {
-  margin-top: 12px;
-}
-
-.smplfy-sample-details-action dt,
-.smplfy-sample-details-action dd {
-  margin: 0;
-  overflow: hidden;
+  padding: 16px;
   font-size: 14px;
-  line-height: 18px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 20px;
+  letter-spacing: -0.02em;
 }
 
-.smplfy-sample-details-action dt {
-  color: var(--smplfy-sample-details-muted);
-  font-weight: 400;
-}
-
-.smplfy-sample-details-action dd {
-  color: var(--smplfy-sample-details-text);
-  font-weight: 500;
+.smplfy-sample-details-action.card > .card-body p,
+.smplfy-sample-details-action.card > .card-body .smplfy-btn.btn {
+  font-size: 14px;
+  letter-spacing: -0.02em;
 }
 
 .smplfy-sample-details-action .smplfy-btn.btn {
-  margin-top: 12px;
+  margin-top: 4px;
 }
 
 .smplfy-sample-details-activity {

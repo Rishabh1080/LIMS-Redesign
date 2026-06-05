@@ -1,0 +1,147 @@
+.smplfy-instruments-page {
+  --smplfy-instruments-card-border: var(--border-card);
+  --smplfy-instruments-card-radius: 8px;
+  --smplfy-instruments-card-height: 344px;
+  --smplfy-instruments-card-header-height: 56px;
+  --smplfy-instruments-chart-height: 188px;
+}
+
+.smplfy-instruments-page .smplfy-instruments-dashboard-cards .smplfy-card.card {
+  --bs-card-border-color: var(--smplfy-instruments-card-border);
+  --bs-card-border-radius: var(--smplfy-instruments-card-radius);
+  height: var(--smplfy-instruments-card-height);
+  min-height: var(--smplfy-instruments-card-height);
+  max-height: var(--smplfy-instruments-card-height);
+  overflow: hidden;
+}
+
+.smplfy-instruments-page .smplfy-instruments-dashboard-cards .smplfy-card.card > .card-header {
+  height: var(--smplfy-instruments-card-header-height);
+  min-height: var(--smplfy-instruments-card-header-height);
+  flex: 0 0 var(--smplfy-instruments-card-header-height);
+  border-color: var(--smplfy-instruments-card-border);
+  padding: 8px 16px;
+}
+
+.smplfy-instruments-page .smplfy-instruments-dashboard-cards .smplfy-card.card > .card-header h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: #1c2126 !important;
+}
+
+.smplfy-instruments-page .smplfy-instruments-dashboard-cards .smplfy-card.card > .card-header .smplfy-btn.btn span {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.02em;
+  color: #4d5561;
+}
+
+.smplfy-instruments-page .smplfy-instruments-dashboard-cards .smplfy-card.card > .card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 32px 16px;
+}
+
+.smplfy-instruments-page .smplfy-instruments-dashboard-cards .smplfy-card.card > .card-body.overflow-auto {
+  max-height: calc(var(--smplfy-instruments-card-height) - var(--smplfy-instruments-card-header-height));
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+
+.smplfy-instruments-page .smplfy-instruments-dashboard-cards .smplfy-card.card > .card-body > .badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #3f9443 !important;
+}
+
+.smplfy-instruments-health-meter {
+  width: min(360px, 100%);
+  height: var(--smplfy-instruments-chart-height);
+}
+
+.smplfy-instruments-health-chart {
+  width: 100%;
+  height: 100%;
+}
+
+.smplfy-instruments-health-copy {
+  top: 63%;
+}
+
+.smplfy-instruments-health-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: #4daf51;
+}
+
+.smplfy-instruments-health-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  color: #b2b2b2;
+}
+
+.smplfy-instruments-page .list-group-item {
+  min-height: 64px;
+  border-color: var(--smplfy-instruments-card-border);
+}
+
+.smplfy-instruments-page .list-group-item .badge {
+  font-family: 'Inter', sans-serif;
+  min-width: 104px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.smplfy-instruments-page .list-group-item .flex-grow-1 {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.03em;
+  color: #1c2126;
+}
+
+.smplfy-instruments-page .list-group-item time {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #4d5561;
+}
+
+@media (max-width: 767.98px) {
+  .smplfy-instruments-page {
+    --smplfy-instruments-card-height: 344px;
+  }
+
+  .smplfy-instruments-page .row {
+    margin-inline: 0;
+  }
+
+  .smplfy-instruments-page .list-group-item {
+    align-items: flex-start !important;
+    flex-wrap: wrap;
+  }
+
+  .smplfy-instruments-page .list-group-item .flex-grow-1 {
+    flex-basis: calc(100% - 140px);
+  }
+}

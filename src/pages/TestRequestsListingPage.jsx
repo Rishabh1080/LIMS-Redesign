@@ -198,7 +198,13 @@ function PageHeader({ onBack }) {
   return (
     <section className="smplfy-tr-listing-header bg-white border-bottom">
       <div className="d-flex align-items-center gap-3">
-        <SecondaryButton size="medium" leftIcon="chevron-left" aria-label="Go back" onClick={onBack} />
+        <SecondaryButton
+          size="medium"
+          leftIcon="chevron-left"
+          className="px-0 flex-shrink-0"
+          aria-label="Go back"
+          onClick={onBack}
+        />
         <h1 className="h5 mb-0 fw-semibold text-dark">All Test Requests</h1>
       </div>
     </section>

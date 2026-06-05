@@ -10,7 +10,7 @@ function PageHeader({ datasheetId, loading, onBack, onRefresh, onSave }) {
   return (
     <section className="d-flex align-items-center justify-content-between gap-3 bg-white border-bottom flex-wrap px-4 py-3">
       <div className="d-flex align-items-center gap-3 min-w-0">
-        <SecondaryButton size="medium" className="px-0" aria-label="Go back" onClick={onBack}>
+        <SecondaryButton size="medium" className="px-0 flex-shrink-0" aria-label="Go back" onClick={onBack}>
           <AppIcon name="chevron-left" />
         </SecondaryButton>
         <h1 className="h5 fw-semibold text-body mb-0">{datasheetId}</h1>

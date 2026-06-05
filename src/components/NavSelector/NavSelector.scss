@@ -94,10 +94,27 @@
   --smplfy-nav-link-current-height: var(--smplfy-nav-link-height-medium);
 }
 
+.nav-tabs > .smplfy-nav-link.nav-link,
+.nav-tabs > .smplfy-nav-link.nav-link:hover,
+.nav-tabs > .smplfy-nav-link.nav-link:focus-visible,
+.nav-tabs > .smplfy-nav-link.nav-link.active,
+.nav-tabs > .smplfy-nav-link.nav-link.active:hover,
+.nav-tabs > .smplfy-nav-link.nav-link.active:active,
+.nav-tabs > .smplfy-nav-link.nav-link.active:focus-visible {
+  border: 0;
+  border-color: transparent;
+  background-color: var(--smplfy-nav-link-current-bg);
+  color: var(--smplfy-nav-link-current-text);
+}
+
+.nav.nav-pills.bg-body-tertiary.border.rounded {
+  border-radius: 8px !important;
+}
+
 .nav-pills > .smplfy-nav-link.nav-link {
   --bs-nav-pills-link-active-bg: var(--smplfy-primitive-neutral-100);
   --bs-nav-pills-link-active-color: var(--smplfy-primitive-neutral-800);
-  --smplfy-nav-link-radius: var(--bs-border-radius);
+  --smplfy-nav-link-radius: 4px;
   --smplfy-nav-link-hover-bg: transparent;
   --smplfy-nav-link-hover-text: var(--smplfy-primitive-neutral-800);
   --smplfy-nav-link-focus-bg: transparent;
