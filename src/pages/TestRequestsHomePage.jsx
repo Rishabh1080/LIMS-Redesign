@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import DataTable from '../components/DataTable';
 import { FormElement, ToastNotification } from '../components/FormControls';
@@ -6,6 +6,7 @@ import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
+import TestRequestApprovalActionModal from '../components/TestRequestApprovalActionModal';
 import { AllocateTestRequestButton, ViewTestRequestButton } from '../components/TestRequestActions';
 import Modal from '../components/Modal/Modal';
 import { getStatusPresentation } from '../status/statusRegistry';
@@ -212,104 +213,6 @@ function TestRequestsHomeHeader({ activeTab, countsByTab, onTabChange }) {
         </div>
       </div>
     </section>
-  );
-}
-
-function ApprovalActionModal({ action, requestId, onClose, onSubmit }) {
-  const [comment, setComment] = useState('');
-  const [commentError, setCommentError] = useState('');
-  const [narration, setNarration] = useState('');
-
-  useEffect(() => {
-    if (!action || !requestId) {
-      setComment('');
-      setCommentError('');
-      setNarration('');
-    }
-  }, [action, requestId]);
-
-  if (!action || !requestId) {
-    return null;
-  }
-
-  const isApprove = action === 'approve';
-  const isReview = action === 'review';
-  const isPositiveAction = isApprove || isReview;
-  const actionLabel = isReview ? 'Review' : isApprove ? 'Approve' : 'Reject';
-  const handleSubmit = () => {
-    if (!comment.trim()) {
-      setCommentError('Comment is required.');
-      return;
-    }
-
-    setCommentError('');
-    onSubmit?.({
-      action,
-      requestId,
-      comment,
-      narration,
-    });
-  };
-
-  return (
-    <Modal
-      open={Boolean(action && requestId)}
-      title={`${actionLabel} Test Request`}
-      titleId="test-request-approval-action-title"
-      titleIcon={isPositiveAction ? 'check' : 'close'}
-      onClose={onClose}
-      size="md"
-      actionsClassName="justify-content-between"
-      actions={
-        <>
-          <SecondaryButton leftIcon="close" size="large" onClick={onClose}>
-            Cancel
-          </SecondaryButton>
-          <PrimaryButton
-            leftIcon={isPositiveAction ? 'check' : 'close'}
-            styleVariant={isPositiveAction ? 'positive' : 'destructive'}
-            onClick={handleSubmit}
-          >
-            {actionLabel}
-          </PrimaryButton>
-        </>
-      }
-    >
-      <div className="d-flex flex-column gap-3">
-      <div className="d-flex align-items-center justify-content-between gap-3">
-        <div className="text-secondary fw-medium">Test Request ID</div>
-        <div className="text-dark fw-semibold text-end">{requestId}</div>
-      </div>
-      <FormElement
-        type="text"
-        mandatory
-        label="Comment"
-        message={commentError}
-        messageTone="error"
-        inputProps={{
-          value: comment,
-          placeholder: 'Add comment',
-          onChange: (event) => {
-            setComment(event.target.value);
-            if (commentError) {
-              setCommentError('');
-            }
-          },
-        }}
-      />
-      {isApprove ? (
-        <FormElement
-          type="text"
-          label="Narration"
-          inputProps={{
-            value: narration,
-            placeholder: 'Add narration',
-            onChange: (event) => setNarration(event.target.value),
-          }}
-        />
-      ) : null}
-      </div>
-    </Modal>
   );
 }
 
@@ -563,7 +466,7 @@ export default function TestRequestsHomePage({
         onCancel={() => setAllocationModalOpen(false)}
       />
 
-      <ApprovalActionModal
+      <TestRequestApprovalActionModal
         action={approvalModalState.action}
         requestId={approvalModalState.requestId}
         onSubmit={handleSubmitApprovalAction}

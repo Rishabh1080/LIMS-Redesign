@@ -7,6 +7,7 @@ import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
+import TestRequestApprovalActionModal from '../components/TestRequestApprovalActionModal';
 import { getStatusPresentation } from '../status/statusRegistry';
 import './tr-details-page.scss';
 
@@ -15,6 +16,7 @@ const toastMessageByKey = {
   'method-added': 'new method added successfully.',
   'method-deleted': 'method deleted.',
   'tr-submitted': 'Test request sent for review successfully.',
+  'approval-action-success': 'Approval action completed successfully.',
 };
 
 const methodOptions = [
@@ -298,8 +300,22 @@ function DeleteMethodModal({ open, method, onCancel, onSubmit }) {
   );
 }
 
-function TrActionRequiredPanel({ workflowStage, methodCount }) {
+function TrActionRequiredPanel({ workflowStage, methodCount, resolved, onTakeAction }) {
   const actionDetails = getTrActionDetails(workflowStage, methodCount);
+
+  if (resolved) {
+    return (
+      <section className="smplfy-card card smplfy-tr-details-action is-resolved overflow-hidden">
+        <div className="card-header d-flex align-items-center gap-3">
+          <AppIcon name="check" size={24} stroke={2} />
+          <span>No pending actions</span>
+        </div>
+        <div className="card-body">
+          <p className="mb-0">No pending actions required from your end</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="smplfy-card card smplfy-tr-details-action overflow-hidden">
@@ -323,9 +339,9 @@ function TrActionRequiredPanel({ workflowStage, methodCount }) {
             <dd>{actionDetails.comments}</dd>
           </div>
         </dl>
-        <SecondaryButton className="w-100" leftIcon="external-link" size="default">
-          Details
-        </SecondaryButton>
+        <PrimaryButton className="w-100" leftIcon="external-link" size="default" onClick={onTakeAction}>
+          Take action
+        </PrimaryButton>
       </div>
     </section>
   );
@@ -570,6 +586,8 @@ export default function TrDetailsPage({
   const [remnantModalOpen, setRemnantModalOpen] = useState(false);
   const [addMethodModalOpen, setAddMethodModalOpen] = useState(false);
   const [deleteMethodModalOpen, setDeleteMethodModalOpen] = useState(false);
+  const [approvalModalOpen, setApprovalModalOpen] = useState(false);
+  const [approvalActionResolved, setApprovalActionResolved] = useState(false);
   const [methodDraft, setMethodDraft] = useState('');
   const [methods, setMethods] = useState(initialMethods);
   const [selectedMethodId, setSelectedMethodId] = useState(initialMethods[0]?.id ?? '');
@@ -678,6 +696,12 @@ export default function TrDetailsPage({
     showToast('method-deleted');
   };
 
+  const handleSubmitApprovalAction = () => {
+    setApprovalActionResolved(true);
+    setApprovalModalOpen(false);
+    showToast('approval-action-success');
+  };
+
   return (
     <AppChrome
       activeNav={activeNav}
@@ -714,7 +738,12 @@ export default function TrDetailsPage({
           </section>
 
           <aside className="col-12 col-xl-auto smplfy-tr-details-rail">
-            <TrActionRequiredPanel workflowStage={workflowStage} methodCount={methods.length} />
+            <TrActionRequiredPanel
+              workflowStage={workflowStage}
+              methodCount={methods.length}
+              resolved={approvalActionResolved}
+              onTakeAction={() => setApprovalModalOpen(true)}
+            />
             <TrActivityRail workflowStage={workflowStage} />
           </aside>
         </div>
@@ -743,6 +772,13 @@ export default function TrDetailsPage({
         open={remnantModalOpen}
         onCancel={() => setRemnantModalOpen(false)}
         onSubmit={handleRemnantSubmit}
+      />
+
+      <TestRequestApprovalActionModal
+        action={approvalModalOpen ? 'review' : null}
+        requestId={requestId}
+        onSubmit={handleSubmitApprovalAction}
+        onClose={() => setApprovalModalOpen(false)}
       />
 
       <ToastNotification

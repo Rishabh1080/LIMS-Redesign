@@ -225,7 +225,7 @@
     minmax(248px, 1.45fr)
     minmax(72px, 0.36fr)
     minmax(112px, 0.58fr)
-    minmax(308px, 1.3fr);
+    minmax(96px, 0.42fr);
 }
 
 .smplfy-requests-legend {
@@ -599,7 +599,19 @@
 }
 
 .smplfy-request-modal .modal-body > aside > :first-child {
+  flex: 1 1 auto;
   padding: 24px 24px 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+
+.smplfy-request-checklist-item {
+  color: var(--smplfy-primitive-neutral-800);
+  font-size: var(--smplfy-nav-link-font-size);
+  line-height: 18px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
 }
 
 .smplfy-request-modal .modal-body > aside > .modal-footer {

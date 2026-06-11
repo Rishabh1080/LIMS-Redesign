@@ -42,6 +42,10 @@
   letter-spacing: var(--smplfy-instrument-details-copy-letter-spacing);
 }
 
+.smplfy-instrument-details-page .smplfy-instrument-details-access {
+  border-color: var(--smplfy-instrument-details-card-border) !important;
+}
+
 .smplfy-instrument-details-page .row:first-child .col-xl-auto > .smplfy-card.card {
   width: var(--smplfy-instrument-details-qr-width);
 }

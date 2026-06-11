@@ -1,17 +1,38 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FormElement } from '../FormControls';
 import Modal from '../Modal/Modal';
-import NavSelector from '../NavSelector';
 import PrimaryButton from '../PrimaryButton/PrimaryButton';
 import SecondaryButton from '../SecondaryButton';
-import { serviceTypeTabs } from '../../data/instrumentServices';
 
-const serviceTypeOptions = serviceTypeTabs.map((tab) => tab.label);
+const serviceTypeOptions = ['Calibration', 'Preventive Maintenance', 'Breakdown'];
+const calibrationTypeOptions = ['Internal Calibration', 'External Calibration'];
+const vendorOptions = [
+  'Anton Paar India',
+  'Shimadzu Scientific Instruments',
+  'Agilent Technologies',
+  'PerkinElmer Service',
+  'Mettler Toledo Support',
+];
 
-function getInitialServiceDraft(initialInstrumentId = '') {
+function resolveInitialServiceType(value) {
+  if (!value) return '';
+  if (serviceTypeOptions.includes(value)) return value;
+
+  const normalizedValue = String(value ?? '').trim().toLowerCase();
+
+  if (normalizedValue === 'maintenance' || normalizedValue === 'service') {
+    return 'Preventive Maintenance';
+  }
+
+  return '';
+}
+
+function getInitialServiceDraft(initialInstrumentId = '', initialServiceType = '') {
   return {
     instrumentId: initialInstrumentId,
-    serviceType: serviceTypeOptions[0],
+    serviceType: resolveInitialServiceType(initialServiceType),
+    calibrationType: '',
+    serviceDate: '',
     vendor: '',
     nextServiceOn: '',
     attachment: null,
@@ -23,14 +44,15 @@ export default function NewServiceModal({
   open,
   instrumentOptions = [],
   initialInstrumentId = '',
+  initialServiceType = '',
   showInstrumentField = false,
   instrumentFieldDisabled = false,
   onCancel,
   onSubmit,
 }) {
   const initialDraft = useMemo(
-    () => getInitialServiceDraft(initialInstrumentId),
-    [initialInstrumentId],
+    () => getInitialServiceDraft(initialInstrumentId, initialServiceType),
+    [initialInstrumentId, initialServiceType],
   );
   const [draft, setDraft] = useState(initialDraft);
   const [errors, setErrors] = useState({});
@@ -43,7 +65,12 @@ export default function NewServiceModal({
   }, [initialDraft, open]);
 
   const update = (field, value) => {
-    setDraft((current) => ({ ...current, [field]: value }));
+    setDraft((current) => ({
+      ...current,
+      [field]: value,
+      ...(field === 'serviceType' && value !== 'Calibration' ? { calibrationType: '' } : {}),
+      ...(field === 'serviceType' && value === 'Breakdown' ? { nextServiceOn: '', vendor: '' } : {}),
+    }));
     if (errors[field]) {
       setErrors((current) => {
         const nextErrors = { ...current };
@@ -60,8 +87,14 @@ export default function NewServiceModal({
       nextErrors.instrumentId = 'Instrument is required.';
     }
 
-    if (!draft.nextServiceOn) {
-      nextErrors.nextServiceOn = 'Next service date is required.';
+    if (!draft.serviceType) {
+      nextErrors.serviceType = 'Type of service is required.';
+    }
+
+    if (!draft.serviceDate) {
+      nextErrors.serviceDate = draft.serviceType === 'Breakdown'
+        ? 'Breakdown date is required.'
+        : 'Service date is required.';
     }
 
     setErrors(nextErrors);
@@ -81,6 +114,8 @@ export default function NewServiceModal({
 
   if (!open) return null;
 
+  const isBreakdown = draft.serviceType === 'Breakdown';
+
   return (
     <Modal
       open={open}
@@ -88,7 +123,7 @@ export default function NewServiceModal({
       titleId="new-service-modal-title"
       titleIcon="settings"
       onClose={handleCancel}
-      size="md"
+      size="xl"
       actions={
         <>
           <SecondaryButton leftIcon="close" size="large" onClick={handleCancel}>Cancel</SecondaryButton>
@@ -97,7 +132,7 @@ export default function NewServiceModal({
       }
     >
       <form
-        className="d-flex flex-column gap-3"
+        className="d-flex flex-column gap-4"
         onSubmit={(event) => {
           event.preventDefault();
           handleSubmit();
@@ -105,30 +140,36 @@ export default function NewServiceModal({
       >
         <div className="row g-3">
           <div className="col-12">
-            <div className="smplfy-form-label-row mb-2">
-              <span className="smplfy-form-label form-label">Type of Service</span>
-              <span className="smplfy-form-required">*</span>
-            </div>
-
-            <div className="nav nav-pills p-1 bg-body-tertiary border rounded" role="tablist" aria-label="Type of Service">
-              {serviceTypeOptions.map((option) => {
-                const isActive = draft.serviceType === option;
-
-                return (
-                  <NavSelector
-                    key={option}
-                    type="button"
-                    size="medium"
-                    active={isActive}
-                    className="flex-fill"
-                    role="tab"
-                    aria-selected={isActive}
-                    onClick={() => update('serviceType', option)}
-                  >
-                    {option}
-                  </NavSelector>
-                );
-              })}
+            <div className="row g-3">
+              <div className="col-12 col-md-6">
+                <FormElement
+                  type="dropdown"
+                  mandatory
+                  label="Type of service"
+                  message={errors.serviceType}
+                  messageTone="error"
+                  inputProps={{
+                    value: draft.serviceType,
+                    placeholder: 'Select service type',
+                    options: serviceTypeOptions,
+                    onChange: (event) => update('serviceType', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-md-6">
+                {draft.serviceType === 'Calibration' ? (
+                  <FormElement
+                    type="dropdown"
+                    label="Type of calibration"
+                    inputProps={{
+                      value: draft.calibrationType,
+                      placeholder: 'Select calibration type',
+                      options: calibrationTypeOptions,
+                      onChange: (event) => update('calibrationType', event.target.value),
+                    }}
+                  />
+                ) : null}
+              </div>
             </div>
           </div>
 
@@ -152,48 +193,79 @@ export default function NewServiceModal({
           ) : null}
           <div className="col-12 col-md-6">
             <FormElement
-              type="text"
-              label="Vendor"
-              inputProps={{
-                value: draft.vendor,
-                placeholder: 'eg.',
-                onChange: (event) => update('vendor', event.target.value),
-              }}
-            />
-          </div>
-          <div className="col-12 col-md-6">
-            <FormElement
               type="date"
               mandatory
-              label="Next Service On"
-              message={errors.nextServiceOn}
+              label={isBreakdown ? 'Breakdown date' : 'Service date'}
+              message={errors.serviceDate}
               messageTone="error"
               inputProps={{
-                value: draft.nextServiceOn,
+                value: draft.serviceDate,
                 placeholder: 'Select date',
-                onChange: (event) => update('nextServiceOn', event.target.value),
+                onChange: (event) => update('serviceDate', event.target.value),
               }}
             />
           </div>
-          <div className="col-12 col-md-6">
-            <FormElement
-              type="file"
-              label="Attachments"
-              inputProps={{
-                value: draft.attachment,
-                placeholder: 'Choose files',
-                onChange: (event) => update('attachment', event.target.value),
-              }}
-            />
-          </div>
+          {isBreakdown ? (
+            <div className="col-12 col-md-6">
+              <FormElement
+                type="file"
+                label="Attachments"
+                inputProps={{
+                  value: draft.attachment,
+                  placeholder: 'Choose files',
+                  onChange: (event) => update('attachment', event.target.value),
+                }}
+              />
+            </div>
+          ) : (
+            <>
+              <div className="col-12 col-md-6">
+                <FormElement
+                  type="dropdown"
+                  label="Vendor"
+                  inputProps={{
+                    value: draft.vendor,
+                    placeholder: 'Select vendor',
+                    options: vendorOptions,
+                    onChange: (event) => update('vendor', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-md-6">
+                <FormElement
+                  type="date"
+                  label="Next service on"
+                  message={errors.nextServiceOn}
+                  messageTone="error"
+                  inputProps={{
+                    value: draft.nextServiceOn,
+                    placeholder: 'Select date',
+                    onChange: (event) => update('nextServiceOn', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-md-6">
+                <FormElement
+                  type="file"
+                  label="Attachments"
+                  inputProps={{
+                    value: draft.attachment,
+                    placeholder: 'Choose files',
+                    onChange: (event) => update('attachment', event.target.value),
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
         <div>
           <FormElement
-            type="text"
-            label="Details and Summary"
+            type="textarea"
+            label={isBreakdown ? 'Details/remarks' : 'Details and Summary'}
             inputProps={{
               value: draft.details,
-              placeholder: 'Enter the details of the service',
+              placeholder: isBreakdown ? 'Enter breakdown details or remarks' : 'Enter the details of the service',
+              rows: 5,
               onChange: (event) => update('details', event.target.value),
             }}
           />

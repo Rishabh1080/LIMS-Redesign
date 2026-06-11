@@ -9,7 +9,12 @@ import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import { ToastNotification } from '../components/FormControls';
 import StatusPill from '../components/StatusPill';
-import { initialInstrumentServices, serviceTypeTabs } from '../data/instrumentServices';
+import {
+  initialInstrumentServices,
+  isBreakdownServiceType,
+  normalizeServiceType,
+  serviceTypeTabs,
+} from '../data/instrumentServices';
 import { getStatusPresentation } from '../status/statusRegistry';
 import qrCode from '../../assets/qr.png';
 import './instrument-details-page.scss';
@@ -72,6 +77,8 @@ export default function InstrumentDetailsPage({
   uniqueKey = 'Y8k08',
   modelNo = 'Y8k08',
   serialNo = 'Y8k08',
+  dateOfInstallation = '-',
+  peopleWithAccess = 'Rishabh Gangwar, Deepak Cybit, Priya Nair',
   records = null,
   initialToast = null,
   onEditInstrument,
@@ -130,28 +137,43 @@ export default function InstrumentDetailsPage({
 
   const handleCreateService = (draft) => {
     const now = new Date();
+    const isBreakdown = isBreakdownServiceType(draft.serviceType);
     const nextRecord = {
       id: `SVC-${now.getFullYear()}-${String(serviceRecords.length + 1).padStart(3, '0')}`,
-      serviceDate: now.toLocaleDateString('en-GB'),
-      nextServiceDate: formatDateForDisplay(draft.nextServiceOn),
       status: 'Not initialised',
       stage: 'service-created',
       details: draft.details || `${draft.serviceType} service created for ${instrumentName}.`,
       summary: draft.details || `${draft.serviceType} service created for ${instrumentName}.`,
       serviceType: draft.serviceType,
+      calibrationType: draft.calibrationType,
       vendor: draft.vendor,
       instrumentId,
       instrumentName,
+      ...(isBreakdown
+        ? {
+            reportedOn: now.toLocaleDateString('en-GB'),
+            breakdownDate: formatDateForDisplay(draft.serviceDate),
+          }
+        : {
+            serviceDate: formatDateForDisplay(draft.serviceDate),
+            nextServiceDate: formatDateForDisplay(draft.nextServiceOn),
+          }),
     };
 
     setServiceRecords((current) => [nextRecord, ...current]);
     setServiceModalOpen(false);
     onNewService?.(nextRecord);
     onServiceCreated?.(nextRecord);
+    setActiveTab(normalizeServiceType(nextRecord.serviceType));
     showToast('Service created successfully.');
   };
 
   const tabs = serviceTypeTabs;
+  const visibleServiceRecords = useMemo(
+    () => serviceRecords.filter((record) => normalizeServiceType(record.serviceType || record.type) === activeTab),
+    [activeTab, serviceRecords],
+  );
+  const isBreakdownTab = activeTab === 'breakdown';
 
   return (
     <AppChrome
@@ -199,7 +221,15 @@ export default function InstrumentDetailsPage({
                       <span className="text-secondary">Serial No:</span>
                       <span className="fw-bold text-secondary">{serialNo}</span>
                     </div>
+                    <div className="d-flex align-items-center gap-2">
+                      <span className="text-secondary">Date of installation:</span>
+                      <span className="fw-bold text-secondary">{dateOfInstallation || '-'}</span>
+                    </div>
                   </div>
+                </div>
+                <div className="smplfy-instrument-details-access px-4 py-3 border-top">
+                  <span className="text-secondary">People with access: </span>
+                  <span className="fw-bold text-secondary">{peopleWithAccess}</span>
                 </div>
               </div>
             </div>
@@ -229,25 +259,37 @@ export default function InstrumentDetailsPage({
             </div>
 
             <div className="card-body">
-              <div className="fw-medium text-dark mb-3">{serviceRecords.length} Records</div>
+              <div className="fw-medium text-dark mb-3">{visibleServiceRecords.length} Records</div>
               <DataTable>
                 <thead>
                   <tr>
-                    <th scope="col">Service date</th>
-                    <th scope="col">Next service date</th>
+                    {isBreakdownTab ? (
+                      <th scope="col">Breakdown date</th>
+                    ) : (
+                      <>
+                        <th scope="col">Service date</th>
+                        <th scope="col">Next service date</th>
+                      </>
+                    )}
                     <th scope="col">Status</th>
                     <th scope="col">Details</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {serviceRecords.map((record) => {
+                  {visibleServiceRecords.map((record) => {
                     const statusPresentation = getStatusPresentation('service', record.status);
 
                     return (
                       <tr key={record.id}>
-                        <td className="text-nowrap">{record.serviceDate}</td>
-                        <td className="text-nowrap">{record.nextServiceDate}</td>
+                        {isBreakdownTab ? (
+                          <td className="text-nowrap">{record.breakdownDate}</td>
+                        ) : (
+                          <>
+                            <td className="text-nowrap">{record.serviceDate}</td>
+                            <td className="text-nowrap">{record.nextServiceDate}</td>
+                          </>
+                        )}
                         <td className="text-nowrap">
                           <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
                             {statusPresentation.label}
@@ -271,6 +313,13 @@ export default function InstrumentDetailsPage({
                       </tr>
                     );
                   })}
+                  {visibleServiceRecords.length === 0 ? (
+                    <tr>
+                      <td colSpan={isBreakdownTab ? 4 : 5} className="text-center text-secondary">
+                        No services found.
+                      </td>
+                    </tr>
+                  ) : null}
                 </tbody>
               </DataTable>
             </div>

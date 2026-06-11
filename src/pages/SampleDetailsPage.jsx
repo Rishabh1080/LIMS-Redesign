@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import AppIcon from '../components/AppIcon';
 import AppChrome from '../components/AppChrome/AppChrome';
+import Checkbox from '../components/Checkbox/Checkbox';
 import Modal from '../components/Modal/Modal';
 import { FormElement, ToastNotification } from '../components/FormControls';
 import MoreActionButton from '../components/MoreActionButton';
@@ -18,6 +19,7 @@ const carpetImage =
 const toastMessageByKey = {
   'sample-created': 'Sample Created.',
   'review-request-success': 'Review Request sent successfully.',
+  'approval-action-success': 'Approval action completed successfully.',
 };
 
 const sampleHeaderActionItems = [
@@ -120,6 +122,18 @@ const activityItems = [
     tone: 'info',
   },
 ];
+
+const sampleApprovalChecklist = [
+  { key: 'parametersPresent', label: 'All parameters information is present ?' },
+  { key: 'sampleImagesPresent', label: 'Sample Images are present ?' },
+  { key: 'customerInfoPresent', label: 'Customer information is present ?' },
+  { key: 'nablMarked', label: 'NABL marking is done' },
+];
+
+const initialSampleApprovalChecklistState = sampleApprovalChecklist.reduce((accumulator, item) => {
+  accumulator[item.key] = false;
+  return accumulator;
+}, {});
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
@@ -353,7 +367,21 @@ function ProductWiseDetails() {
   );
 }
 
-function ActionRequiredPanel() {
+function ActionRequiredPanel({ resolved, onTakeAction }) {
+  if (resolved) {
+    return (
+      <section className="smplfy-card card smplfy-sample-details-action is-resolved overflow-hidden">
+        <div className="card-header d-flex align-items-center gap-3">
+          <AppIcon name="check" size={24} stroke={2} />
+          <span>No pending actions</span>
+        </div>
+        <div className="card-body">
+          <p className="mb-0">No pending actions required from your end</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="smplfy-card card smplfy-sample-details-action overflow-hidden">
       <div className="card-header d-flex align-items-center gap-3">
@@ -376,9 +404,9 @@ function ActionRequiredPanel() {
             <dd>Approve this sample ASAP</dd>
           </div>
         </dl>
-        <SecondaryButton className="w-100" leftIcon="external-link" size="default">
-          Details
-        </SecondaryButton>
+        <PrimaryButton className="w-100" leftIcon="external-link" size="default" onClick={onTakeAction}>
+          Take action
+        </PrimaryButton>
       </div>
     </section>
   );
@@ -474,6 +502,137 @@ function ReviewRequestModal({ open, sendTo, comments, onSendToChange, onComments
   );
 }
 
+function SampleApprovalActionModal({ open, sampleId, onCancel, onSubmit }) {
+  const [comment, setComment] = useState('');
+  const [commentError, setCommentError] = useState('');
+  const [checklistValues, setChecklistValues] = useState(initialSampleApprovalChecklistState);
+  const [checklistError, setChecklistError] = useState('');
+
+  useEffect(() => {
+    if (!open) {
+      setComment('');
+      setCommentError('');
+      setChecklistValues(initialSampleApprovalChecklistState);
+      setChecklistError('');
+    }
+  }, [open]);
+
+  if (!open) {
+    return null;
+  }
+
+  const handleChecklistChange = (key, checked) => {
+    const nextChecklistValues = {
+      ...checklistValues,
+      [key]: checked,
+    };
+
+    setChecklistValues(nextChecklistValues);
+
+    if (sampleApprovalChecklist.every((item) => nextChecklistValues[item.key])) {
+      setChecklistError('');
+    }
+  };
+
+  const handleAction = (actionType) => {
+    let hasError = false;
+
+    if (!comment.trim()) {
+      setCommentError('Please add a comment to respond.');
+      hasError = true;
+    } else {
+      setCommentError('');
+    }
+
+    if (
+      actionType === 'approve'
+      && !sampleApprovalChecklist.every((item) => checklistValues[item.key])
+    ) {
+      setChecklistError('Complete all checks before approving this request.');
+      hasError = true;
+    } else {
+      setChecklistError('');
+    }
+
+    if (hasError) return;
+
+    onSubmit?.({
+      action: actionType,
+      sampleId,
+      comment,
+      checklistValues,
+    });
+  };
+
+  return (
+    <Modal
+      open={open}
+      title="Sample Approval"
+      titleId="sample-approval-action-title"
+      titleIcon="check"
+      onClose={onCancel}
+      size="md"
+      actionsClassName="justify-content-between"
+      actions={
+        <>
+          <PrimaryButton styleVariant="destructive" size="large" onClick={() => handleAction('reject')} leftIcon="close">
+            Reject
+          </PrimaryButton>
+          <PrimaryButton styleVariant="positive" size="large" onClick={() => handleAction('approve')} leftIcon="check">
+            Approve
+          </PrimaryButton>
+        </>
+      }
+    >
+      <div className="d-flex flex-column gap-3">
+        <div className="d-flex align-items-center justify-content-between gap-3">
+          <div className="text-secondary fw-medium">Sample ID</div>
+          <div className="text-dark fw-semibold text-end">{sampleId}</div>
+        </div>
+
+        <div className="d-flex flex-column gap-2">
+          <label className="smplfy-form-label form-label mb-0" htmlFor="sample-approval-comment">
+            Comment <span className="text-danger">*</span>
+          </label>
+          <input
+            id="sample-approval-comment"
+            className={joinClasses('smplfy-form-control', 'form-control', commentError ? 'is-invalid' : '')}
+            value={comment}
+            placeholder="Add a comment to respond"
+            onChange={(event) => {
+              setComment(event.target.value);
+              if (event.target.value.trim()) {
+                setCommentError('');
+              }
+            }}
+          />
+          {commentError ? <div className="smplfy-form-feedback invalid-feedback d-block">{commentError}</div> : null}
+        </div>
+
+        <div className="d-flex flex-column gap-2">
+          {sampleApprovalChecklist.map((item) => {
+            const isInvalid = Boolean(checklistError && !checklistValues[item.key]);
+
+            return (
+              <label className="smplfy-request-checklist-item d-flex align-items-center gap-2" key={item.key}>
+                <Checkbox
+                  checked={checklistValues[item.key]}
+                  invalid={isInvalid}
+                  onChange={(nextChecked) => handleChecklistChange(item.key, nextChecked)}
+                />
+                <span>{item.label}</span>
+              </label>
+            );
+          })}
+          {checklistError ? (
+            <div className="smplfy-form-feedback invalid-feedback d-block">{checklistError}</div>
+          ) : null}
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
 export default function SampleDetailsPage({
   sampleId = 'IICT/2025-2026/1101',
   initialToast = null,
@@ -496,6 +655,8 @@ export default function SampleDetailsPage({
   const [toastMessage, setToastMessage] = useState(toastMessageByKey['sample-created']);
   const [reviewRequested, setReviewRequested] = useState(false);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [approvalActionModalOpen, setApprovalActionModalOpen] = useState(false);
+  const [approvalActionResolved, setApprovalActionResolved] = useState(false);
   const [sendTo, setSendTo] = useState('');
   const [comments, setComments] = useState('');
   const trackedSuccessToastRef = useRef(null);
@@ -566,6 +727,12 @@ export default function SampleDetailsPage({
     showToast('review-request-success');
   };
 
+  const handleSubmitApprovalAction = () => {
+    setApprovalActionResolved(true);
+    setApprovalActionModalOpen(false);
+    showToast('approval-action-success');
+  };
+
   const sourceLabel = sourcePage === 'all-samples' ? 'All Samples' : 'Samples Workspace';
   const activeNav = sourcePage === 'all-samples' ? 'all-samples' : 'samples-workspace';
   const breadcrumbs = [
@@ -603,7 +770,10 @@ export default function SampleDetailsPage({
             </div>
           </div>
           <aside className="smplfy-sample-details-rail">
-            <ActionRequiredPanel />
+            <ActionRequiredPanel
+              resolved={approvalActionResolved}
+              onTakeAction={() => setApprovalActionModalOpen(true)}
+            />
             <ActivityRail />
           </aside>
         </div>
@@ -617,6 +787,13 @@ export default function SampleDetailsPage({
         onCommentsChange={setComments}
         onCancel={() => setReviewModalOpen(false)}
         onSubmit={handleSubmitReviewRequest}
+      />
+
+      <SampleApprovalActionModal
+        open={approvalActionModalOpen}
+        sampleId={sampleId}
+        onCancel={() => setApprovalActionModalOpen(false)}
+        onSubmit={handleSubmitApprovalAction}
       />
 
       <ToastNotification

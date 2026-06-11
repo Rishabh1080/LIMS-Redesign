@@ -11,6 +11,7 @@ export default function Checkbox({
   ariaLabel,
   'aria-label': ariaLabelAttribute,
   disabled = false,
+  invalid = false,
   type: _type,
   ...props
 }) {
@@ -22,11 +23,13 @@ export default function Checkbox({
       type="checkbox"
       checked={checked}
       aria-label={resolvedAriaLabel}
+      aria-invalid={props['aria-invalid'] ?? (invalid ? 'true' : undefined)}
       disabled={disabled}
       readOnly={onChange ? undefined : true}
       className={joinClasses(
         'smplfy-form-check-input',
         'form-check-input',
+        invalid ? 'is-invalid' : '',
         className,
       )}
       onChange={(event) => {

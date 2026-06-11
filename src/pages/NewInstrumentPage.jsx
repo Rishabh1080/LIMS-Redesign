@@ -4,6 +4,7 @@ import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import Stepper from '../components/Stepper/Stepper';
+import './new-instrument-page.scss';
 
 const wizardSteps = [
   'Basic Details',
@@ -13,17 +14,20 @@ const wizardSteps = [
   'Additional Details',
 ];
 
-const roleOptions = ['Lab Manager', 'Technician', 'Quality Analyst', 'Supervisor'];
+const userOptions = ['Rishabh Gangwar', 'Deepak Cybit', 'Priya Nair', 'Ravi Sharma', 'Amit Patel'];
+const labOptions = ['Chemical Lab', 'Mechanical Lab', 'Analytical Lab', 'Microbiology Lab', 'QC Lab'];
 const templateOptions = ['Calibration Template', 'Maintenance Template', 'Breakdown Template'];
 const workflowOptions = ['Standard Workflow', 'Escalated Workflow', 'Approval Workflow'];
 
 const initialFormValues = {
   // Step 1
   name: '',
+  lab: '',
   uniqueKey: '',
   serialNumber: '',
   make: '',
   model: '',
+  dateOfInstallation: '',
   allowAccessTo: '',
   description: '',
   // Step 2
@@ -69,31 +73,33 @@ function buildEditFormValues(instrument) {
   return {
     ...initialFormValues,
     name: instrument.name ?? '',
+    lab: instrument.lab ?? '',
     uniqueKey: instrument.uniqueKey ?? '',
     serialNumber: instrument.serialNo ?? '',
     make: instrument.make ?? '',
     model: instrument.modelNo ?? '',
-    allowAccessTo: instrument.allowAccessTo ?? roleOptions[0],
+    dateOfInstallation: instrument.dateOfInstallation ?? '',
+    allowAccessTo: instrument.allowAccessTo ?? userOptions[0],
     description: instrument.description ?? '',
     calibLastPerformedOn: instrument.calibLastPerformedOn ?? instrument.lastServiceOn ?? '',
     calibFrequency: instrument.calibFrequency ?? '180',
     calibRemindBeforeDays: instrument.calibRemindBeforeDays ?? '15',
     calibReminderFrequency: instrument.calibReminderFrequency ?? '7',
-    calibRemindTo: instrument.calibRemindTo ?? roleOptions[0],
+    calibRemindTo: instrument.calibRemindTo ?? userOptions[0],
     calibTemplate: instrument.calibTemplate ?? templateOptions[0],
     calibWorkflow: instrument.calibWorkflow ?? workflowOptions[0],
     pmLastPerformedOn: instrument.pmLastPerformedOn ?? instrument.lastServiceOn ?? '',
     pmFrequency: instrument.pmFrequency ?? '90',
     pmRemindBeforeDays: instrument.pmRemindBeforeDays ?? '10',
     pmReminderFrequency: instrument.pmReminderFrequency ?? '5',
-    pmRemindTo: instrument.pmRemindTo ?? roleOptions[0],
+    pmRemindTo: instrument.pmRemindTo ?? userOptions[0],
     pmTemplate: instrument.pmTemplate ?? templateOptions[1],
     pmWorkflow: instrument.pmWorkflow ?? workflowOptions[0],
     bdLastPerformedOn: instrument.bdLastPerformedOn ?? instrument.lastServiceOn ?? '',
     bdFrequency: instrument.bdFrequency ?? '30',
     bdRemindBeforeDays: instrument.bdRemindBeforeDays ?? '3',
     bdReminderFrequency: instrument.bdReminderFrequency ?? '1',
-    bdRemindTo: instrument.bdRemindTo ?? roleOptions[0],
+    bdRemindTo: instrument.bdRemindTo ?? userOptions[0],
     bdTemplate: instrument.bdTemplate ?? templateOptions[2],
     bdWorkflow: instrument.bdWorkflow ?? workflowOptions[1],
     costOfEquipment: instrument.costOfEquipment ?? '125000',
@@ -186,6 +192,16 @@ function BasicDetailsSection({ formValues, fieldErrors, onFieldChange }) {
         </div>
         <div className="col-lg-6">
           <FormElement
+            type="dropdown"
+            mandatory
+            label="Lab"
+            message={fieldErrors.lab}
+            messageTone="error"
+            inputProps={{ ...getInputProps('lab', formValues, onFieldChange), placeholder: 'Select lab', options: labOptions }}
+          />
+        </div>
+        <div className="col-lg-6">
+          <FormElement
             type="text"
             mandatory
             label="Unique Key"
@@ -215,6 +231,16 @@ function BasicDetailsSection({ formValues, fieldErrors, onFieldChange }) {
             inputProps={{ ...getInputProps('model', formValues, onFieldChange), placeholder: 'eg. K 043' }}
           />
         </div>
+        <div className="col-lg-6">
+          <FormElement
+            type="date"
+            mandatory
+            label="Date of installation"
+            message={fieldErrors.dateOfInstallation}
+            messageTone="error"
+            inputProps={{ ...getInputProps('dateOfInstallation', formValues, onFieldChange), placeholder: 'dd/mm/yyyy' }}
+          />
+        </div>
         <div className="col-12">
           <FormElement
             type="dropdown"
@@ -222,14 +248,14 @@ function BasicDetailsSection({ formValues, fieldErrors, onFieldChange }) {
             label="Allow Access to"
             message={fieldErrors.allowAccessTo}
             messageTone="error"
-            inputProps={{ ...getInputProps('allowAccessTo', formValues, onFieldChange), placeholder: 'Select role(s)', options: roleOptions }}
+            inputProps={{ ...getInputProps('allowAccessTo', formValues, onFieldChange), placeholder: 'Select user(s)', options: userOptions }}
           />
         </div>
         <div className="col-12">
           <FormElement
-            type="text"
+            type="textarea"
             label="Description"
-            inputProps={{ ...getInputProps('description', formValues, onFieldChange), placeholder: 'eg. Technical Manager' }}
+            inputProps={{ ...getInputProps('description', formValues, onFieldChange), placeholder: 'eg. Technical Manager', rows: 5 }}
           />
         </div>
       </div>
@@ -242,53 +268,58 @@ function MaintenanceScheduleSection({
   formValues,
   fieldErrors,
   onFieldChange,
+  showScheduleFields = true,
 }) {
   return (
     <div className="container-fluid p-4 p-lg-5">
       <div className="row g-4">
-        <div className="col-lg-6">
-          <FormElement
-            type="date"
-            label="Last Performed On"
-            message={fieldErrors[`${prefix}LastPerformedOn`]}
-            messageTone="error"
-            inputProps={{
-              ...getInputProps(`${prefix}LastPerformedOn`, formValues, onFieldChange),
-              placeholder: 'dd/mm/yyyy',
-            }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            label="Frequency(in days)"
-            message={fieldErrors[`${prefix}Frequency`]}
-            messageTone="error"
-            inputProps={{ ...getInputProps(`${prefix}Frequency`, formValues, onFieldChange), placeholder: '' }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            label="Remind Before days"
-            inputProps={{ ...getInputProps(`${prefix}RemindBeforeDays`, formValues, onFieldChange), placeholder: '' }}
-          />
-        </div>
-        <div className="col-lg-6">
-          <FormElement
-            type="text"
-            label="Reminder Frequency"
-            inputProps={{ ...getInputProps(`${prefix}ReminderFrequency`, formValues, onFieldChange), placeholder: '' }}
-          />
-        </div>
+        {showScheduleFields ? (
+          <>
+            <div className="col-lg-6">
+              <FormElement
+                type="date"
+                label="Last Performed On"
+                message={fieldErrors[`${prefix}LastPerformedOn`]}
+                messageTone="error"
+                inputProps={{
+                  ...getInputProps(`${prefix}LastPerformedOn`, formValues, onFieldChange),
+                  placeholder: 'dd/mm/yyyy',
+                }}
+              />
+            </div>
+            <div className="col-lg-6">
+              <FormElement
+                type="text"
+                label="Frequency(in days)"
+                message={fieldErrors[`${prefix}Frequency`]}
+                messageTone="error"
+                inputProps={{ ...getInputProps(`${prefix}Frequency`, formValues, onFieldChange), placeholder: '' }}
+              />
+            </div>
+            <div className="col-lg-6">
+              <FormElement
+                type="text"
+                label="Remind Before days"
+                inputProps={{ ...getInputProps(`${prefix}RemindBeforeDays`, formValues, onFieldChange), placeholder: '' }}
+              />
+            </div>
+            <div className="col-lg-6">
+              <FormElement
+                type="text"
+                label="Reminder Frequency"
+                inputProps={{ ...getInputProps(`${prefix}ReminderFrequency`, formValues, onFieldChange), placeholder: '' }}
+              />
+            </div>
+          </>
+        ) : null}
         <div className="col-12">
           <FormElement
             type="dropdown"
             label="Remind To"
             inputProps={{
               ...getInputProps(`${prefix}RemindTo`, formValues, onFieldChange),
-              placeholder: 'Nothing selected',
-              options: roleOptions,
+              placeholder: 'Select user(s)',
+              options: userOptions,
             }}
           />
         </div>
@@ -348,6 +379,7 @@ function BreakdownDetailsSection({ formValues, fieldErrors, onFieldChange }) {
       formValues={formValues}
       fieldErrors={fieldErrors}
       onFieldChange={onFieldChange}
+      showScheduleFields={false}
     />
   );
 }
@@ -396,7 +428,7 @@ function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel, mode 
 
   if (mode === 'edit') {
     return (
-      <div className="d-flex align-items-center justify-content-between gap-3 p-4 border-top bg-white flex-wrap">
+      <div className="d-flex align-items-center justify-content-between gap-3 p-4 border-top bg-white flex-wrap flex-shrink-0">
         <SecondaryButton leftIcon="close" onClick={onCancel}>
           Cancel
         </SecondaryButton>
@@ -408,7 +440,7 @@ function WizardFooter({ currentStep, onPrev, onNext, onComplete, onCancel, mode 
   }
 
   return (
-    <div className="d-flex align-items-center justify-content-between gap-3 p-4 border-top bg-white flex-wrap">
+    <div className="d-flex align-items-center justify-content-between gap-3 p-4 border-top bg-white flex-wrap flex-shrink-0">
       <SecondaryButton leftIcon="chevron-left" onClick={handlePrevClick}>
         {prevLabel}
       </SecondaryButton>
@@ -435,10 +467,10 @@ function InstrumentForm({ currentStep, formValues, fieldErrors, onFieldChange, o
   ];
 
   return (
-    <section className="smplfy-card card shadow mx-auto overflow-hidden w-100 h-100">
-      <div className="row g-0 h-100">
+    <section className="smplfy-card card shadow mx-auto overflow-hidden w-100">
+      <div className="d-grid h-100">
         <StepRail currentStep={currentStep} mode={mode} title={title} onStepChange={onStepChange} />
-        <div className="col d-flex flex-column overflow-hidden">
+        <div className="d-flex flex-column overflow-hidden">
           <div className="flex-fill overflow-auto">{sections[currentStep]}</div>
           <WizardFooter currentStep={currentStep} onPrev={onPrev} onNext={onNext} onComplete={onComplete} onCancel={onCancel} mode={mode} />
         </div>
@@ -476,19 +508,49 @@ export default function NewInstrumentPage({
     });
   };
 
+  const validateBasicDetails = () => {
+    const nextErrors = {};
+
+    [
+      ['name', 'Name is required.'],
+      ['lab', 'Lab is required.'],
+      ['uniqueKey', 'Unique key is required.'],
+      ['dateOfInstallation', 'Date of installation is required.'],
+      ['allowAccessTo', 'Allow access to is required.'],
+    ].forEach(([key, message]) => {
+      if (!isFilledValue(formValues[key])) {
+        nextErrors[key] = message;
+      }
+    });
+
+    setFieldErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const handleNext = () => {
+    if (currentStep === 0 && !validateBasicDetails()) {
+      return;
+    }
+
     setCurrentStep((step) => Math.min(wizardSteps.length - 1, step + 1));
   };
 
   const handleComplete = () => {
+    if (!validateBasicDetails()) {
+      setCurrentStep(0);
+      return;
+    }
+
     onComplete?.({
       ...instrument,
       ...formValues,
       name: formValues.name,
+      lab: formValues.lab,
       uniqueKey: formValues.uniqueKey,
       serialNo: formValues.serialNumber,
       make: formValues.make,
       modelNo: formValues.model,
+      dateOfInstallation: formValues.dateOfInstallation,
       description: formValues.description,
       lastServiceOn: formValues.pmLastPerformedOn || formValues.calibLastPerformedOn || instrument?.lastServiceOn || '',
       nextServiceOn: instrument?.nextServiceOn ?? '14/10/2026',
@@ -497,9 +559,9 @@ export default function NewInstrumentPage({
   };
 
   return (
-    <div className="vh-100 bg-body-tertiary d-flex flex-column">
+    <div className="smplfy-new-instrument-page bg-body-tertiary d-flex flex-column">
       <TopBar parentLabel={parentLabel} currentLabel={currentCrumbLabel} onBack={onBack} />
-      <main className="flex-fill p-4 p-lg-5 d-flex overflow-auto">
+      <main>
         <InstrumentForm
           currentStep={currentStep}
           formValues={formValues}

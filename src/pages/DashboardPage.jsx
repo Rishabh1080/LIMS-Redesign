@@ -1,715 +1,437 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { BarChart, PieChart } from 'echarts/charts';
+import { GridComponent, TooltipComponent } from 'echarts/components';
+import * as echarts from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
-import NavSelector from '../components/NavSelector';
+import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import { allSamplesDb } from '../data/samplesDb';
-import { requestCategories, requestSections, requestsForMeBySection } from '../data/requestsForMeData';
-import { allTestRequestBuckets } from '../data/testRequestsHomeData';
+import './dashboard-page.scss';
 
-const dashboardModules = [
-  {
-    key: 'samples',
-    label: 'Samples',
-    icon: 'workspace',
-    title: 'Samples Dashboard',
-    description: 'Manage all sample related information here',
-    actionLabel: 'All Samples',
-    actionTarget: 'all-samples',
-  },
-  {
-    key: 'instruments',
-    label: 'Instruments',
-    icon: 'tool',
-    title: 'Instruments Dashboard',
-    description: 'Monitor equipment availability, calibration status, and maintenance signals here',
-    actionLabel: 'Instruments',
-    actionTarget: 'instruments',
-  },
-  {
-    key: 'inventory',
-    label: 'Inventory',
-    icon: 'database',
-    title: 'Inventory Dashboard',
-    description: 'Track material availability, expiry exposure, and stock risks across the lab',
-    actionLabel: 'Materials',
-    actionTarget: 'materials',
-  },
-  {
-    key: 'documents',
-    label: 'Documents',
-    icon: 'file-text',
-    title: 'Documents Dashboard',
-    description: 'Keep document updates, approval requests, and review pressure visible in one place',
-    actionLabel: 'Requests',
-    actionTarget: 'requests-for-me',
-  },
-  {
-    key: 'invoice',
-    label: 'Invoice',
-    icon: 'clipboard-text',
-    title: 'Invoice Dashboard',
-    description: 'Review release readiness signals that affect customer-facing completion and dispatch',
-    actionLabel: 'Workspace',
-    actionTarget: 'samples-workspace',
-  },
+echarts.use([BarChart, PieChart, GridComponent, TooltipComponent, CanvasRenderer]);
+
+const laboratoryHealthItems = [
+  { label: 'Env. Data', status: '5 Alerts', tone: 'danger', icon: 'cloud-data', section: 'env-data-alerts' },
+  { label: 'Instruments', status: 'Up to Date', tone: 'success', icon: 'tool', section: 'instrument-alerts' },
+  { label: 'Inventory', status: '5 Alerts', tone: 'danger', icon: 'materials', section: 'material-alerts' },
+  { label: 'Documents', status: 'Up to Date', tone: 'success', icon: 'file-description', section: 'document-alerts' },
 ];
 
-const alertFilterOptions = [
-  { key: 'all', label: 'All' },
-  { key: 'high', label: 'Severe' },
-  { key: 'medium', label: 'Med Priority' },
+const summaryMetricItems = [
+  { value: '15', label: 'Pending Requests' },
+  { value: '15', label: 'Planned IQC' },
+  { value: '15', label: 'Samples to be allocated' },
+  { value: '15', label: 'Pending Test Requests' },
 ];
 
-function parseDate(value) {
-  const normalizedValue = String(value ?? '').trim();
+const chartCategories = [
+  'Finished\nProduct',
+  'Base Oil',
+  'Compatability\nTesting',
+  'Raw Material',
+  'Air',
+  'Water',
+];
 
-  if (!normalizedValue) {
-    return new Date('1970-01-01T00:00:00');
-  }
+const chartSeries = {
+  pending: [12, 25, 25, 25, 10, 50],
+  underAnalysis: [18, 25, 10, 54, 10, 0],
+  completed: [5, 8, 9, 9, 23, 8],
+};
 
-  const [datePart] = normalizedValue.split(',');
-  const trimmedDatePart = datePart.trim();
-  const slashParts = trimmedDatePart.split('/');
+const sampleStatusItems = [
+  { label: 'Pending', value: 80, color: '#1379f0' },
+  { label: 'Under Analysis', value: 480, color: '#f2c94c' },
+  { label: 'Completed', value: 200, color: '#4caf50' },
+  { label: 'Total', value: 697, total: true },
+];
 
-  if (slashParts.length === 3) {
-    const [day, month, year] = slashParts;
-    return new Date(`${year}-${month}-${day}T00:00:00`);
-  }
-
-  const parsed = new Date(trimmedDatePart);
-  return Number.isNaN(parsed.getTime()) ? new Date('1970-01-01T00:00:00') : parsed;
-}
-
-function buildCount(value) {
-  return String(value ?? 0);
-}
-
-function extractTimeLabel(value, fallback = '02:34 PM') {
-  const normalizedValue = String(value ?? '').trim();
-
-  if (!normalizedValue) {
-    return fallback;
-  }
-
-  const meridiemMatch = normalizedValue.match(/(\d{1,2}:\d{2}\s?(?:AM|PM))/i);
-
-  if (meridiemMatch) {
-    return meridiemMatch[1].toUpperCase();
-  }
-
-  const twentyFourHourMatch = normalizedValue.match(/(\d{1,2}):(\d{2})/);
-
-  if (!twentyFourHourMatch) {
-    return fallback;
-  }
-
-  const hourValue = Number(twentyFourHourMatch[1]);
-  const minuteValue = twentyFourHourMatch[2];
-  const period = hourValue >= 12 ? 'PM' : 'AM';
-  const normalizedHour = hourValue % 12 || 12;
-
-  return `${normalizedHour}:${minuteValue} ${period}`;
-}
-
-function groupRowsIntoColumns(rows) {
-  return [rows.slice(0, 3), rows.slice(3, 6)];
-}
-
-function ModuleTabs({ activeModuleKey, onChange }) {
+function ActionCenterCard({ children, className = '' }) {
   return (
-    <section className="bg-white border-bottom">
-      <div className="container-fluid px-4">
-        <div className="nav nav-tabs flex-nowrap overflow-auto border-0">
-          {dashboardModules.map((module) => (
-            <NavSelector
-              key={module.key}
-              active={module.key === activeModuleKey}
-              onClick={() => onChange(module.key)}
-            >
-              <span className="d-inline-flex align-items-center gap-2">
-                <AppIcon name={module.icon} size={16} />
-                <span>{module.label}</span>
-              </span>
-            </NavSelector>
-          ))}
-        </div>
-      </div>
+    <section className={`smplfy-card card overflow-hidden ${className}`}>
+      {children}
     </section>
   );
 }
 
-function PrimaryCard({ module, onNavigate }) {
+function ActionCenterCardHeader({ title, icon, action }) {
   return (
-    <section className="smplfy-card card h-100">
-      <div className="card-body d-flex align-items-center justify-content-between gap-3 flex-wrap">
-        <div className="d-inline-flex align-items-center gap-3">
-          <AppIcon name={module.icon} size={22} />
-          <div>
-            <h1 className="h4 mb-1 text-dark">{module.title}</h1>
-            <p className="mb-0 text-secondary">{module.description}</p>
-          </div>
-        </div>
+    <div className="card-header bg-transparent d-flex align-items-center justify-content-between gap-3">
+      <div className="d-flex align-items-center gap-2 min-w-0">
+        <AppIcon name={icon} size={18} stroke={1.9} />
+        <h2 className="smplfy-action-center-title mb-0 text-dark text-truncate">{title}</h2>
+      </div>
+      {action}
+    </div>
+  );
+}
 
+function HealthTile({ item, onNavigate }) {
+  const isDanger = item.tone === 'danger';
+
+  return (
+    <button
+      type="button"
+      className={`smplfy-action-center-health-tile border rounded d-flex align-items-center justify-content-between gap-3 p-3 ${
+        isDanger ? 'border-danger-subtle' : 'border-success-subtle'
+      }`}
+      onClick={() => onNavigate?.('requests-for-me', { initialSection: item.section })}
+    >
+      <div className="d-flex align-items-center gap-3 min-w-0">
+        <AppIcon name={item.icon} size={20} stroke={1.9} />
+        <span className="smplfy-action-center-tile-title text-dark text-truncate">{item.label}</span>
+      </div>
+      <span
+        className={`badge rounded-pill border px-3 py-2 ${
+          isDanger
+            ? 'text-bg-danger border-danger'
+            : 'text-success bg-success-subtle border-success'
+        }`}
+      >
+        {item.status}
+      </span>
+    </button>
+  );
+}
+
+function LaboratoryHealthCard({ onNavigate }) {
+  return (
+    <ActionCenterCard className="smplfy-action-center-health-card">
+      <ActionCenterCardHeader
+        title="Laboratory Health"
+        icon="tool"
+        action={(
+          <SecondaryButton
+            size="medium"
+            rightIcon="external-link"
+            onClick={() => onNavigate?.('requests-for-me')}
+          >
+            See all alerts
+          </SecondaryButton>
+        )}
+      />
+      <div className="card-body p-3">
+        <div className="row g-3">
+          {laboratoryHealthItems.map((item) => (
+            <div className="col-12 col-md-6" key={item.label}>
+              <HealthTile item={item} onNavigate={onNavigate} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </ActionCenterCard>
+  );
+}
+
+function MetricTile({ item, onNavigate }) {
+  return (
+    <div className="smplfy-action-center-metric-tile border rounded bg-white position-relative overflow-hidden p-3">
+      <button
+        type="button"
+        className="smplfy-btn btn btn-outline-secondary btn-sm p-0 position-absolute top-0 end-0 mt-2 me-2"
+        aria-label={`Go to ${item.label}`}
+        onClick={() => onNavigate?.('all-samples')}
+      >
+        <AppIcon name="external-link" size={16} />
+      </button>
+      <div className="d-flex flex-column justify-content-end h-100 position-relative">
+        <div className="smplfy-action-center-count text-dark">{item.value}</div>
+        <div className="smplfy-action-center-label text-dark">{item.label}</div>
+      </div>
+    </div>
+  );
+}
+
+function SampleMetricCard({ onNavigate }) {
+  return (
+    <ActionCenterCard className="smplfy-action-center-metrics-card">
+      <div className="card-body p-3 h-100">
+        <div className="row row-cols-1 row-cols-md-2 g-3 h-100">
+          {summaryMetricItems.map((item) => (
+            <div className="col" key={item.label}>
+              <MetricTile item={item} onNavigate={onNavigate} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </ActionCenterCard>
+  );
+}
+
+function QuickActionsCard({ onNavigate, onNewSample }) {
+  return (
+    <ActionCenterCard className="smplfy-action-center-quick-card">
+      <ActionCenterCardHeader
+        title="Quick Actions"
+        icon="workspace"
+        action={(
+          <button type="button" className="btn p-0 border-0 text-secondary" aria-label="More actions">
+            <AppIcon name="more" size={20} />
+          </button>
+        )}
+      />
+      <div className="card-body d-grid gap-3 p-3">
+        <PrimaryButton
+          leftIcon="plus"
+          className="w-100"
+          onClick={() => onNewSample?.({ sourcePage: 'samples-workspace' })}
+        >
+          New sample
+        </PrimaryButton>
         <SecondaryButton
           size="medium"
-          rightIcon="external-link"
-          onClick={() => onNavigate?.(module.actionTarget)}
+          leftIcon="search"
+          className="w-100 justify-content-center"
+          onClick={() => onNavigate?.('samples-workspace')}
         >
-          {module.actionLabel}
+          Search Samples
+        </SecondaryButton>
+        <SecondaryButton
+          size="medium"
+          leftIcon="leave-records"
+          className="w-100 justify-content-center"
+          onClick={() => onNavigate?.('leave-records')}
+        >
+          Add Leave Record
+        </SecondaryButton>
+        <SecondaryButton
+          size="medium"
+          leftIcon="alert-circle"
+          className="w-100 justify-content-center"
+          onClick={() => onNavigate?.('instruments')}
+        >
+          Report Breakdown
         </SecondaryButton>
       </div>
-    </section>
+    </ActionCenterCard>
   );
 }
 
-function MetricCard({ title, actionTarget, rows, onNavigate }) {
-  const [leftRows, rightRows] = groupRowsIntoColumns(rows);
+function SamplesBarChart() {
+  const chartRef = useRef(null);
 
-  return (
-    <section className="smplfy-card card h-100">
-      <div className="card-header bg-transparent d-flex align-items-center justify-content-between gap-3">
-        <div className="d-inline-flex align-items-center gap-2">
-          <AppIcon name="workspace" size={18} />
-          <h2 className="h6 mb-0 fw-semibold text-dark">{title}</h2>
-        </div>
+  useEffect(() => {
+    const chartNode = chartRef.current;
 
-        <button
-          type="button"
-          className="smplfy-btn btn btn-outline-secondary"
-          aria-label={`Go to ${title}`}
-          onClick={() => onNavigate?.(actionTarget)}
-        >
-          <AppIcon name="external-link" size={16} />
-        </button>
-      </div>
+    if (!chartNode) return undefined;
 
-      <div className="card-body">
-        <div className="row g-0">
-        <div className="col-12 col-md-6 d-flex flex-column gap-3 pe-md-4">
-          {leftRows.map((row) => (
-            <div className="d-flex align-items-center justify-content-between gap-3" key={row.label}>
-              <span className="text-dark">{row.label}</span>
-              <span className="fw-semibold text-dark">{row.value}</span>
-            </div>
-          ))}
-        </div>
+    const chart = echarts.init(chartNode, null, { renderer: 'canvas' });
 
-        <div className="col-12 col-md-6 d-flex flex-column gap-3 ps-md-4 border-start">
-          {rightRows.map((row) => (
-            <div className="d-flex align-items-center justify-content-between gap-3" key={row.label}>
-              <span className="text-dark">{row.label}</span>
-              <span className="fw-semibold text-dark">{row.value}</span>
-            </div>
-          ))}
-        </div>
-        </div>
-      </div>
-    </section>
-  );
+    chart.setOption({
+      animation: false,
+      color: ['#1379f0', '#f2c94c', '#4caf50'],
+      grid: {
+        left: 44,
+        right: 8,
+        top: 16,
+        bottom: 44,
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+      },
+      xAxis: {
+        type: 'category',
+        data: chartCategories,
+        axisTick: { show: false },
+        axisLine: { lineStyle: { color: '#d1d5db' } },
+        axisLabel: {
+          color: '#4d5561',
+          fontFamily: 'Inter',
+          fontSize: 10,
+          lineHeight: 12,
+          interval: 0,
+        },
+      },
+      yAxis: {
+        type: 'value',
+        min: 0,
+        max: 90,
+        interval: 10,
+        axisTick: { show: false },
+        axisLine: { show: true, lineStyle: { color: '#d1d5db' } },
+        splitLine: { lineStyle: { color: '#e6e8eb' } },
+        axisLabel: {
+          color: '#4d5561',
+          fontFamily: 'Inter',
+          fontSize: 10,
+          lineHeight: 12,
+        },
+      },
+      series: [
+        {
+          name: 'Pending',
+          type: 'bar',
+          stack: 'samples',
+          barWidth: 32,
+          data: chartSeries.pending,
+        },
+        {
+          name: 'Under Analysis',
+          type: 'bar',
+          stack: 'samples',
+          barWidth: 32,
+          data: chartSeries.underAnalysis,
+        },
+        {
+          name: 'Completed',
+          type: 'bar',
+          stack: 'samples',
+          barWidth: 32,
+          data: chartSeries.completed,
+        },
+      ],
+    });
+
+    const handleResize = () => chart.resize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      chart.dispose();
+    };
+  }, []);
+
+  return <div className="smplfy-action-center-bar-chart" ref={chartRef} aria-label="Samples summary bar chart" />;
 }
 
-function AlertsPanel({ items, filterKey, onFilterChange, onNavigate }) {
-  const visibleItems = items.filter((item) => filterKey === 'all' || item.priority === filterKey);
-  const groupedItems = visibleItems.reduce((accumulator, item) => {
-    accumulator[item.group] = [...(accumulator[item.group] ?? []), item];
-    return accumulator;
-  }, {});
+function SamplesDonutChart() {
+  const chartRef = useRef(null);
 
+  useEffect(() => {
+    const chartNode = chartRef.current;
+
+    if (!chartNode) return undefined;
+
+    const chart = echarts.init(chartNode, null, { renderer: 'canvas' });
+
+    chart.setOption({
+      animation: false,
+      color: ['#1379f0', '#f2c94c', '#4caf50'],
+      series: [
+        {
+          type: 'pie',
+          radius: ['58%', '82%'],
+          center: ['50%', '50%'],
+          silent: true,
+          avoidLabelOverlap: true,
+          label: { show: false },
+          labelLine: { show: false },
+          data: sampleStatusItems.filter((item) => !item.total).map((item) => ({
+            name: item.label,
+            value: item.value,
+          })),
+        },
+      ],
+    });
+
+    const handleResize = () => chart.resize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      chart.dispose();
+    };
+  }, []);
+
+  return <div className="smplfy-action-center-donut-chart" ref={chartRef} aria-label="Samples summary donut chart" />;
+}
+
+function SamplesSummaryCard({ onNavigate }) {
   return (
-    <aside className="smplfy-card card h-100">
-      <div className="card-header bg-transparent d-flex align-items-center justify-content-between gap-3">
-        <div className="d-inline-flex align-items-center gap-2">
-          <AppIcon name="alert-circle" size={18} />
-          <h2 className="h6 mb-0 fw-semibold text-dark">Alerts</h2>
-        </div>
-
-        <button
-          type="button"
-          className="smplfy-btn btn btn-outline-secondary"
-          aria-label="Go to Requests for Me"
-        >
-          <AppIcon name="external-link" size={16} />
-        </button>
-      </div>
-
-      <div className="card-body d-flex flex-column gap-3">
-      <div className="d-flex align-items-center gap-2 flex-wrap">
-        {alertFilterOptions.map((option) => (
-          <button
-            key={option.key}
-            type="button"
-            className={`smplfy-btn btn ${filterKey === option.key ? 'btn-primary' : 'btn-outline-secondary'}`}
-            onClick={() => onFilterChange(option.key)}
+    <ActionCenterCard className="smplfy-action-center-summary-card">
+      <ActionCenterCardHeader
+        title="Samples Summary"
+        icon="tool"
+        action={(
+          <SecondaryButton
+            size="medium"
+            rightIcon="external-link"
+            onClick={() => onNavigate?.('all-samples')}
           >
-            {option.label}
+            View all Samples
+          </SecondaryButton>
+        )}
+      />
+      <div className="card-body p-3">
+        <div className="d-flex align-items-center justify-content-between gap-3 mb-4">
+          <div className="d-flex align-items-center gap-2">
+            <span className="smplfy-action-center-control-label text-secondary">Filter by:</span>
+            <button type="button" className="smplfy-btn btn btn-outline-secondary btn-sm">
+              <span>Category</span>
+              <AppIcon name="chevron-down" size={18} />
+            </button>
+          </div>
+          <button type="button" className="smplfy-btn btn btn-outline-secondary btn-sm">
+            <span>Today</span>
+            <AppIcon name="chevron-down" size={18} />
           </button>
-        ))}
-      </div>
+        </div>
 
-        {Object.entries(groupedItems).map(([groupName, groupItems]) => (
-          <section key={groupName}>
-            <div className="d-flex align-items-center gap-2 text-secondary small fw-medium mb-2">
-              <span>{groupName}</span>
-              <span className="border-top flex-grow-1" />
+        <div className="row g-4 align-items-end">
+          <div className="col-12 col-xl-8">
+            <SamplesBarChart />
+          </div>
+          <div className="col-12 col-xl-4">
+            <div className="border rounded bg-white p-3 mx-xl-auto smplfy-action-center-donut-panel">
+              <SamplesDonutChart />
+              <div className="d-grid gap-3 mt-3">
+                {sampleStatusItems.map((item) => (
+                  <div className="d-flex align-items-center justify-content-between gap-3" key={item.label}>
+                    <div className="d-flex align-items-center gap-2 min-w-0">
+                      {item.total ? null : (
+                        <span
+                          className="smplfy-action-center-legend-dot rounded-1 flex-shrink-0"
+                          style={{ backgroundColor: item.color }}
+                        />
+                      )}
+                      <span className="smplfy-action-center-label text-dark text-truncate">{item.label}</span>
+                    </div>
+                    <span className="smplfy-action-center-label text-dark">{item.value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-
-            <div className="list-group list-group-flush">
-              {groupItems.map((item) => (
-                <div className="list-group-item d-flex align-items-start gap-2 px-0" key={item.id}>
-                  <div className="d-inline-flex align-items-center justify-content-center text-secondary pt-1">
-                    <AppIcon name={item.icon} size={14} />
-                  </div>
-                  <div className="flex-grow-1 overflow-hidden">
-                    <div className="text-dark fw-medium text-truncate">{item.title}</div>
-                    <div className="text-secondary small text-truncate">{item.detail}</div>
-                  </div>
-                  <div className="d-inline-flex align-items-center gap-2 ms-auto">
-                    <div className="text-secondary small text-nowrap">{item.time}</div>
-                    <button
-                      type="button"
-                      className="smplfy-btn btn btn-outline-secondary"
-                      aria-label={`Open ${item.group}`}
-                      onClick={() =>
-                        onNavigate?.('requests-for-me', {
-                          initialSection: item.alertCenterSection,
-                          highlightedAlertId: item.id,
-                        })
-                      }
-                    >
-                      <AppIcon name="external-link" size={16} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        ))}
+          </div>
+        </div>
       </div>
-    </aside>
+    </ActionCenterCard>
   );
-}
-
-function buildModuleCards({
-  activeSamples,
-  retainedSamplesCount,
-  samplesByMode,
-  samplesByStatus,
-  testRequestsByBucket,
-  requestTotal,
-  materialAlerts,
-  instrumentAlerts,
-  envAlerts,
-  documentAlerts,
-  requestSectionsTotal,
-  instruments,
-  trainings,
-}) {
-  const highPriorityAlertsCount = [...materialAlerts, ...instrumentAlerts, ...envAlerts, ...documentAlerts].filter(
-    (item) => item.priority === 'high',
-  ).length;
-  const mediumPriorityAlertsCount = [...materialAlerts, ...instrumentAlerts, ...envAlerts, ...documentAlerts].filter(
-    (item) => item.priority === 'medium',
-  ).length;
-  const calibratedCount = instruments.filter((instrument) => instrument.calibrated === 'Yes').length;
-  const uncalibratedCount = instruments.filter((instrument) => instrument.calibrated === 'No').length;
-  const maintenanceCount = instrumentAlerts.filter((item) => item.type === 'maintenance').length;
-  const breakdownCount = instrumentAlerts.filter((item) => item.type === 'breakdown').length;
-  const lowStockCount = materialAlerts.filter((item) => item.title.toLowerCase().includes('low stock')).length;
-  const expiredMaterialCount = materialAlerts.filter((item) => item.title.toLowerCase().includes('expired')).length;
-  const openSampleCount = (samplesByStatus.Pending ?? 0) + (samplesByStatus['Under Analysis'] ?? 0);
-
-  return {
-    samples: [
-      {
-        title: 'Sample Status',
-        actionTarget: 'all-samples',
-        rows: [
-          { label: 'Pending', value: buildCount(samplesByStatus.Pending ?? 0) },
-          { label: 'Under Analysis', value: buildCount(samplesByStatus['Under Analysis'] ?? 0) },
-          { label: 'Completed', value: buildCount(samplesByStatus.Completed ?? 0) },
-          { label: 'Online', value: buildCount(samplesByMode.Online ?? 0) },
-          { label: 'Pickup', value: buildCount(samplesByMode.Pickup ?? 0) },
-          { label: 'Retained', value: buildCount(retainedSamplesCount) },
-        ],
-      },
-      {
-        title: 'Test Request Queue',
-        actionTarget: 'test-requests-home',
-        rows: [
-          { label: 'Pending Allocation', value: buildCount(testRequestsByBucket['pending-for-allocation'] ?? 0) },
-          { label: 'Under Testing', value: buildCount(testRequestsByBucket['allocated-to-me'] ?? 0) },
-          { label: 'Pending Approval', value: buildCount(testRequestsByBucket['pending-for-approval'] ?? 0) },
-          { label: 'Queue Total', value: buildCount(allTestRequestBuckets.length) },
-          { label: 'My Requests', value: buildCount(requestTotal) },
-          { label: 'High Priority', value: buildCount(highPriorityAlertsCount) },
-        ],
-      },
-      {
-        title: 'Operational Signals',
-        actionTarget: 'requests-for-me',
-        rows: [
-          { label: 'Requests', value: buildCount(requestSectionsTotal.requests ?? 0) },
-          { label: 'Material Alerts', value: buildCount(materialAlerts.length) },
-          { label: 'Instrument Alerts', value: buildCount(instrumentAlerts.length) },
-          { label: 'Env. Alerts', value: buildCount(envAlerts.length) },
-          { label: 'Document Alerts', value: buildCount(documentAlerts.length) },
-          { label: 'Med Priority', value: buildCount(mediumPriorityAlertsCount) },
-        ],
-      },
-      {
-        title: 'Lab Readiness',
-        actionTarget: 'samples-workspace',
-        rows: [
-          { label: 'Active Samples', value: buildCount(openSampleCount) },
-          { label: 'Completed Samples', value: buildCount(samplesByStatus.Completed ?? 0) },
-          { label: 'Tracked Records', value: buildCount(activeSamples.length) },
-          { label: 'Instruments Due', value: buildCount(instrumentAlerts.length) },
-          { label: 'Trainings', value: buildCount(trainings.length) },
-          { label: 'Needs Review', value: buildCount(highPriorityAlertsCount + mediumPriorityAlertsCount) },
-        ],
-      },
-    ],
-    instruments: [
-      {
-        title: 'Instrument Fleet',
-        actionTarget: 'instruments',
-        rows: [
-          { label: 'Registered', value: buildCount(instruments.length) },
-          { label: 'Calibrated', value: buildCount(calibratedCount) },
-          { label: 'Uncalibrated', value: buildCount(uncalibratedCount) },
-          { label: 'Maintenance', value: buildCount(maintenanceCount) },
-          { label: 'Breakdown', value: buildCount(breakdownCount) },
-          { label: 'Active Alerts', value: buildCount(instrumentAlerts.length) },
-        ],
-      },
-      {
-        title: 'Testing Impact',
-        actionTarget: 'test-requests-home',
-        rows: [
-          { label: 'Open Samples', value: buildCount(openSampleCount) },
-          { label: 'Pending Allocation', value: buildCount(testRequestsByBucket['pending-for-allocation'] ?? 0) },
-          { label: 'Under Testing', value: buildCount(testRequestsByBucket['allocated-to-me'] ?? 0) },
-          { label: 'High Priority', value: buildCount(highPriorityAlertsCount) },
-          { label: 'Material Risks', value: buildCount(materialAlerts.length) },
-          { label: 'Env. Risks', value: buildCount(envAlerts.length) },
-        ],
-      },
-      {
-        title: 'Readiness Signals',
-        actionTarget: 'requests-for-me',
-        rows: [
-          { label: 'Documents', value: buildCount(documentAlerts.length) },
-          { label: 'My Requests', value: buildCount(requestTotal) },
-          { label: 'Trainings', value: buildCount(trainings.length) },
-          { label: 'Low Stock', value: buildCount(lowStockCount) },
-          { label: 'Expired Lots', value: buildCount(expiredMaterialCount) },
-          { label: 'Priority Load', value: buildCount(highPriorityAlertsCount + mediumPriorityAlertsCount) },
-        ],
-      },
-      {
-        title: 'Support Load',
-        actionTarget: 'trainings',
-        rows: [
-          { label: 'This Week Trainings', value: buildCount(Math.min(trainings.length, 2)) },
-          { label: 'Upcoming Sessions', value: buildCount(trainings.length) },
-          { label: 'Requests', value: buildCount(requestSectionsTotal.requests ?? 0) },
-          { label: 'Completed Samples', value: buildCount(samplesByStatus.Completed ?? 0) },
-          { label: 'Pending Approval', value: buildCount(testRequestsByBucket['pending-for-approval'] ?? 0) },
-          { label: 'Queue Total', value: buildCount(allTestRequestBuckets.length) },
-        ],
-      },
-    ],
-    inventory: [
-      {
-        title: 'Inventory Health',
-        actionTarget: 'materials',
-        rows: [
-          { label: 'Material Alerts', value: buildCount(materialAlerts.length) },
-          { label: 'Low Stock', value: buildCount(lowStockCount) },
-          { label: 'Expired', value: buildCount(expiredMaterialCount) },
-          { label: 'High Priority', value: buildCount(materialAlerts.filter((item) => item.priority === 'high').length) },
-          { label: 'Med Priority', value: buildCount(materialAlerts.filter((item) => item.priority === 'medium').length) },
-          { label: 'Open Samples', value: buildCount(openSampleCount) },
-        ],
-      },
-      {
-        title: 'Testing Dependency',
-        actionTarget: 'samples-workspace',
-        rows: [
-          { label: 'Pending Samples', value: buildCount(samplesByStatus.Pending ?? 0) },
-          { label: 'Under Analysis', value: buildCount(samplesByStatus['Under Analysis'] ?? 0) },
-          { label: 'Under Testing', value: buildCount(testRequestsByBucket['allocated-to-me'] ?? 0) },
-          { label: 'Pending Allocation', value: buildCount(testRequestsByBucket['pending-for-allocation'] ?? 0) },
-          { label: 'Pending Approval', value: buildCount(testRequestsByBucket['pending-for-approval'] ?? 0) },
-          { label: 'Completed', value: buildCount(samplesByStatus.Completed ?? 0) },
-        ],
-      },
-      {
-        title: 'Cross-team Alerts',
-        actionTarget: 'requests-for-me',
-        rows: [
-          { label: 'Instruments', value: buildCount(instrumentAlerts.length) },
-          { label: 'Documents', value: buildCount(documentAlerts.length) },
-          { label: 'Env. Data', value: buildCount(envAlerts.length) },
-          { label: 'My Requests', value: buildCount(requestTotal) },
-          { label: 'Sample Requests', value: buildCount(requestCategories.find((item) => item.key === 'samples')?.count ?? 0) },
-          { label: 'Datasheet Requests', value: buildCount(requestCategories.find((item) => item.key === 'datasheet')?.count ?? 0) },
-        ],
-      },
-      {
-        title: 'Readiness Snapshot',
-        actionTarget: 'materials',
-        rows: [
-          { label: 'Tracked Materials', value: buildCount(materialAlerts.length) },
-          { label: 'Priority Load', value: buildCount(highPriorityAlertsCount + mediumPriorityAlertsCount) },
-          { label: 'Retained Samples', value: buildCount(retainedSamplesCount) },
-          { label: 'Trainings', value: buildCount(trainings.length) },
-          { label: 'Calibrated', value: buildCount(calibratedCount) },
-          { label: 'Uncalibrated', value: buildCount(uncalibratedCount) },
-        ],
-      },
-    ],
-    documents: [
-      {
-        title: 'Document Control',
-        actionTarget: 'requests-for-me',
-        rows: [
-          { label: 'Document Alerts', value: buildCount(documentAlerts.length) },
-          { label: 'High Priority', value: buildCount(documentAlerts.filter((item) => item.priority === 'high').length) },
-          { label: 'Med Priority', value: buildCount(documentAlerts.filter((item) => item.priority === 'medium').length) },
-          { label: 'My Requests', value: buildCount(requestTotal) },
-          { label: 'Sample Requests', value: buildCount(requestCategories.find((item) => item.key === 'samples')?.count ?? 0) },
-          { label: 'Datasheet Requests', value: buildCount(requestCategories.find((item) => item.key === 'datasheet')?.count ?? 0) },
-        ],
-      },
-      {
-        title: 'Approval Pressure',
-        actionTarget: 'test-requests-home',
-        rows: [
-          { label: 'Pending Approval', value: buildCount(testRequestsByBucket['pending-for-approval'] ?? 0) },
-          { label: 'Pending Allocation', value: buildCount(testRequestsByBucket['pending-for-allocation'] ?? 0) },
-          { label: 'Under Testing', value: buildCount(testRequestsByBucket['allocated-to-me'] ?? 0) },
-          { label: 'Completed', value: buildCount(samplesByStatus.Completed ?? 0) },
-          { label: 'Open Samples', value: buildCount(openSampleCount) },
-          { label: 'Total Queue', value: buildCount(allTestRequestBuckets.length) },
-        ],
-      },
-      {
-        title: 'Associated Risks',
-        actionTarget: 'requests-for-me',
-        rows: [
-          { label: 'Materials', value: buildCount(materialAlerts.length) },
-          { label: 'Instruments', value: buildCount(instrumentAlerts.length) },
-          { label: 'Env. Data', value: buildCount(envAlerts.length) },
-          { label: 'High Priority', value: buildCount(highPriorityAlertsCount) },
-          { label: 'Med Priority', value: buildCount(mediumPriorityAlertsCount) },
-          { label: 'Trainings', value: buildCount(trainings.length) },
-        ],
-      },
-      {
-        title: 'System Snapshot',
-        actionTarget: 'samples-workspace',
-        rows: [
-          { label: 'Tracked Records', value: buildCount(activeSamples.length) },
-          { label: 'Retained', value: buildCount(retainedSamplesCount) },
-          { label: 'Requests', value: buildCount(requestSectionsTotal.requests ?? 0) },
-          { label: 'Calibrated', value: buildCount(calibratedCount) },
-          { label: 'Uncalibrated', value: buildCount(uncalibratedCount) },
-          { label: 'Trainings', value: buildCount(trainings.length) },
-        ],
-      },
-    ],
-    invoice: [
-      {
-        title: 'Release Readiness',
-        actionTarget: 'all-samples',
-        rows: [
-          { label: 'Completed Samples', value: buildCount(samplesByStatus.Completed ?? 0) },
-          { label: 'Open Samples', value: buildCount(openSampleCount) },
-          { label: 'Retained', value: buildCount(retainedSamplesCount) },
-          { label: 'Pending Approval', value: buildCount(testRequestsByBucket['pending-for-approval'] ?? 0) },
-          { label: 'Under Testing', value: buildCount(testRequestsByBucket['allocated-to-me'] ?? 0) },
-          { label: 'Queue Total', value: buildCount(allTestRequestBuckets.length) },
-        ],
-      },
-      {
-        title: 'Customer-facing Signals',
-        actionTarget: 'requests-for-me',
-        rows: [
-          { label: 'My Requests', value: buildCount(requestTotal) },
-          { label: 'Documents', value: buildCount(documentAlerts.length) },
-          { label: 'Env. Alerts', value: buildCount(envAlerts.length) },
-          { label: 'High Priority', value: buildCount(highPriorityAlertsCount) },
-          { label: 'Med Priority', value: buildCount(mediumPriorityAlertsCount) },
-          { label: 'Material Risks', value: buildCount(materialAlerts.length) },
-        ],
-      },
-      {
-        title: 'Dispatch Constraints',
-        actionTarget: 'materials',
-        rows: [
-          { label: 'Low Stock', value: buildCount(lowStockCount) },
-          { label: 'Expired', value: buildCount(expiredMaterialCount) },
-          { label: 'Maintenance', value: buildCount(maintenanceCount) },
-          { label: 'Breakdown', value: buildCount(breakdownCount) },
-          { label: 'Uncalibrated', value: buildCount(uncalibratedCount) },
-          { label: 'Trainings', value: buildCount(trainings.length) },
-        ],
-      },
-      {
-        title: 'System Load',
-        actionTarget: 'samples-workspace',
-        rows: [
-          { label: 'Pending Samples', value: buildCount(samplesByStatus.Pending ?? 0) },
-          { label: 'Under Analysis', value: buildCount(samplesByStatus['Under Analysis'] ?? 0) },
-          { label: 'Requests', value: buildCount(requestSectionsTotal.requests ?? 0) },
-          { label: 'Documents', value: buildCount(documentAlerts.length) },
-          { label: 'Instruments', value: buildCount(instrumentAlerts.length) },
-          { label: 'Env. Data', value: buildCount(envAlerts.length) },
-        ],
-      },
-    ],
-  };
 }
 
 export default function DashboardPage({
-  instruments = [],
-  trainings = [],
   onNavigate,
+  onNewSample,
   sidebarCollapsed,
   onSidebarCollapsedChange,
   sidebarBadgeCounts,
 }) {
-  const [activeModuleKey, setActiveModuleKey] = useState('samples');
-  const [alertFilterKey, setAlertFilterKey] = useState('all');
-
-  const derivedState = useMemo(() => {
-    const activeSamples = allSamplesDb.filter((sample) => !['retained', 'disposed'].includes(sample.category));
-    const retainedSamplesCount = allSamplesDb.filter((sample) => sample.category === 'retained').length;
-    const samplesByStatus = activeSamples.reduce((accumulator, sample) => {
-      accumulator[sample.status] = (accumulator[sample.status] ?? 0) + 1;
-      return accumulator;
-    }, {});
-    const samplesByMode = activeSamples.reduce((accumulator, sample) => {
-      accumulator[sample.requestMode] = (accumulator[sample.requestMode] ?? 0) + 1;
-      return accumulator;
-    }, {});
-    const testRequestsByBucket = allTestRequestBuckets.reduce((accumulator, request) => {
-      accumulator[request.bucket] = (accumulator[request.bucket] ?? 0) + 1;
-      return accumulator;
-    }, {});
-
-    const materialAlerts = requestsForMeBySection['material-alerts'] ?? [];
-    const instrumentAlerts = requestsForMeBySection['instrument-alerts'] ?? [];
-    const envAlerts = requestsForMeBySection['env-data-alerts'] ?? [];
-    const documentAlerts = requestsForMeBySection['document-alerts'] ?? [];
-    const requestTotal = requestSections.reduce((sum, section) => sum + (section.count ?? 0), 0);
-    const requestSectionsTotal = requestSections.reduce((accumulator, section) => {
-      accumulator[section.key] = section.count ?? 0;
-      return accumulator;
-    }, {});
-
-    return {
-      activeSamples,
-      retainedSamplesCount,
-      samplesByStatus,
-      samplesByMode,
-      testRequestsByBucket,
-      materialAlerts,
-      instrumentAlerts,
-      envAlerts,
-      documentAlerts,
-      requestTotal,
-      requestSectionsTotal,
-    };
-  }, []);
-
-  const moduleMap = Object.fromEntries(dashboardModules.map((module) => [module.key, module]));
-  const activeModule = moduleMap[activeModuleKey] ?? dashboardModules[0];
-  const moduleCards = buildModuleCards({
-    ...derivedState,
-    instruments,
-    trainings,
-  })[activeModuleKey];
-
-  const alertItems = [
-    ...derivedState.materialAlerts.map((item) => ({
-      id: item.id,
-      group: 'Materials',
-      title: item.title,
-      detail: item.comments,
-      time: extractTimeLabel(item.requestedOn, '12:56 PM'),
-      priority: item.priority,
-      icon: 'materials',
-      alertCenterSection: 'material-alerts',
-    })),
-    ...derivedState.instrumentAlerts.map((item) => ({
-      id: item.id,
-      group: 'Instruments',
-      title: item.type === 'breakdown' ? 'Breakdown' : 'Maintenance',
-      detail: item.instrumentName,
-      time: extractTimeLabel(item.alertRaisedOn, '02:34 PM'),
-      priority: item.priority,
-      icon: 'tool',
-      alertCenterSection: 'instrument-alerts',
-    })),
-    ...derivedState.envAlerts.map((item) => ({
-      id: item.id,
-      group: 'Environmental Data',
-      title: item.labName,
-      detail: `Data update missed by ${item.priority === 'high' ? '2h 5m' : '1d'}`,
-      time: extractTimeLabel(item.due, '02:34 PM'),
-      priority: item.priority,
-      icon: 'cloud-data',
-      alertCenterSection: 'env-data-alerts',
-    })),
-  ];
-
   return (
     <AppChrome
       activeNav="dashboard"
       onNavigate={onNavigate}
-      breadcrumbs={[{ key: 'dashboard', label: 'Dashboard', current: true }]}
+      breadcrumbs={[]}
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
       sidebarBadgeCounts={sidebarBadgeCounts}
-      pageHeader={<ModuleTabs activeModuleKey={activeModuleKey} onChange={setActiveModuleKey} />}
     >
-      <main className="bg-body-tertiary p-4 min-vh-100">
+      <main className="smplfy-action-center bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0">
-          <section className="row g-3 align-items-start">
-            <div className="col-12 col-xl-9 d-flex flex-column gap-3">
-                <PrimaryCard module={activeModule} onNavigate={onNavigate} />
-
-              <div className="row g-3">
-                <div className="col-12 col-lg-6">
-                  <MetricCard {...moduleCards[0]} onNavigate={onNavigate} />
-                </div>
-
-                <div className="col-12 col-lg-6">
-                  <MetricCard {...moduleCards[1]} onNavigate={onNavigate} />
-                </div>
-
-                <div className="col-12 col-lg-6">
-                  <MetricCard {...moduleCards[2]} onNavigate={onNavigate} />
-                </div>
-
-                <div className="col-12 col-lg-6">
-                  <MetricCard {...moduleCards[3]} onNavigate={onNavigate} />
-                </div>
-              </div>
+          <div className="smplfy-action-center-grid">
+            <div className="smplfy-action-center-span-6">
+              <LaboratoryHealthCard onNavigate={onNavigate} />
             </div>
-
-            <div className="col-12 col-xl-3">
-              <AlertsPanel
-                items={alertItems}
-                filterKey={alertFilterKey}
-                onFilterChange={setAlertFilterKey}
-                onNavigate={onNavigate}
-              />
+            <div className="smplfy-action-center-span-4">
+              <SampleMetricCard onNavigate={onNavigate} />
             </div>
-          </section>
+            <div className="smplfy-action-center-span-2">
+              <QuickActionsCard onNavigate={onNavigate} onNewSample={onNewSample} />
+            </div>
+            <div className="smplfy-action-center-span-12">
+              <SamplesSummaryCard onNavigate={onNavigate} />
+            </div>
+          </div>
         </div>
       </main>
     </AppChrome>

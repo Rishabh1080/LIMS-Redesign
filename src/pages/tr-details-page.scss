@@ -276,8 +276,28 @@
   color: var(--smplfy-tr-details-danger-strong);
 }
 
+.smplfy-tr-details-action.card.is-resolved {
+  height: auto;
+}
+
+.smplfy-tr-details-action.card.is-resolved > .card-header {
+  border-bottom-color: var(--smplfy-primitive-green-200);
+  background: linear-gradient(90deg, var(--smplfy-primitive-green-150) 0%, var(--smplfy-primitive-neutral-100) 100%);
+  color: var(--smplfy-tr-details-success);
+}
+
 .smplfy-tr-details-action.card > .card-body {
   padding: 16px 8px 8px;
+}
+
+.smplfy-tr-details-action.card.is-resolved > .card-body {
+  padding: 16px;
+}
+
+.smplfy-tr-details-action.card > .card-body p {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.02em;
 }
 
 .smplfy-tr-details-action dl {

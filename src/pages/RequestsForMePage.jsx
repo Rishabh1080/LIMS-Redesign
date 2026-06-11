@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
+import Checkbox from '../components/Checkbox/Checkbox';
 import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
@@ -83,6 +84,18 @@ const requestApprovalRows = [
   { sr: '9', approverName: 'Technical Assistant', status: 'Approved', daysTaken: '4', decisionOn: '01-04-2026 12:34', comments: 'No comments' },
   { sr: '10', approverName: 'Technical Assistant', status: 'Approved', daysTaken: '4', decisionOn: '01-04-2026 12:34', comments: 'No comments' },
 ];
+
+const requestActionChecklist = [
+  { key: 'parametersPresent', label: 'All parameters information is present ?' },
+  { key: 'sampleImagesPresent', label: 'Sample Images are present ?' },
+  { key: 'customerInfoPresent', label: 'Customer information is present ?' },
+  { key: 'nablMarked', label: 'NABL marking is done' },
+];
+
+const initialRequestChecklistState = requestActionChecklist.reduce((accumulator, item) => {
+  accumulator[item.key] = false;
+  return accumulator;
+}, {});
 
 function RequestsHeader({ sections, activeSection, onSectionChange }) {
   return (
@@ -167,28 +180,13 @@ function RequestCard({ request, onOpenDetails }) {
       </div>
 
       <div className="d-flex align-items-center flex-nowrap">
-        <SecondaryButton
+        <PrimaryButton
           size="small"
-          tone="info"
           leftIcon="arrow-up-right"
           onClick={() => onOpenDetails(request)}
         >
           View
-        </SecondaryButton>
-        <SecondaryButton
-          size="small"
-          tone="success"
-          leftIcon="check"
-        >
-          Approve
-        </SecondaryButton>
-        <SecondaryButton
-          size="small"
-          tone="danger"
-          leftIcon="close"
-        >
-          Reject
-        </SecondaryButton>
+        </PrimaryButton>
       </div>
     </article>
   );
@@ -197,20 +195,55 @@ function RequestCard({ request, onOpenDetails }) {
 function RequestDetailsModal({ request, onClose }) {
   const [comment, setComment] = useState('');
   const [commentError, setCommentError] = useState('');
+  const [checklistValues, setChecklistValues] = useState(initialRequestChecklistState);
+  const [checklistError, setChecklistError] = useState('');
 
   useEffect(() => {
     if (!request) {
       setComment('');
       setCommentError('');
+      setChecklistValues(initialRequestChecklistState);
+      setChecklistError('');
     }
   }, [request]);
 
-  const handleAction = () => {
+  const handleChecklistChange = (key, checked) => {
+    const nextChecklistValues = {
+      ...checklistValues,
+      [key]: checked,
+    };
+
+    setChecklistValues(nextChecklistValues);
+
+    if (requestActionChecklist.every((item) => nextChecklistValues[item.key])) {
+      setChecklistError('');
+    }
+  };
+
+  const handleAction = (actionType) => {
+    let hasError = false;
+
     if (!comment.trim()) {
       setCommentError('Please add a comment to respond.');
-      return;
+      hasError = true;
+    } else {
+      setCommentError('');
     }
-    setCommentError('');
+
+    if (
+      actionType === 'approve'
+      && !requestActionChecklist.every((item) => checklistValues[item.key])
+    ) {
+      setChecklistError('Complete all checks before approving this request.');
+      hasError = true;
+    } else if (actionType === 'approve') {
+      setChecklistError('');
+    } else {
+      setChecklistError('');
+    }
+
+    if (hasError) return;
+
     onClose();
   };
 
@@ -298,26 +331,51 @@ function RequestDetailsModal({ request, onClose }) {
 
       <aside className="d-flex flex-column justify-content-between flex-shrink-0 overflow-hidden">
         <div className="d-flex flex-column gap-4">
-          <label className="smplfy-form-label form-label mb-0" htmlFor="request-comment">
-            Comment <span className="text-danger">*</span>
-          </label>
-          <input
-            id="request-comment"
-            className={joinClasses('smplfy-form-control', 'form-control', commentError ? 'is-invalid' : '')}
-            value={comment}
-            placeholder="Add a comment to respond"
-            onChange={(e) => {
-              setComment(e.target.value);
-              if (e.target.value.trim()) setCommentError('');
-            }}
-          />
-          {commentError ? <div className="smplfy-form-feedback invalid-feedback d-block">{commentError}</div> : null}
+          <div className="d-flex flex-column gap-2">
+            <label className="smplfy-form-label form-label mb-0" htmlFor="request-comment">
+              Comment <span className="text-danger">*</span>
+            </label>
+            <input
+              id="request-comment"
+              className={joinClasses('smplfy-form-control', 'form-control', commentError ? 'is-invalid' : '')}
+              value={comment}
+              placeholder="Add a comment to respond"
+              onChange={(e) => {
+                setComment(e.target.value);
+                if (e.target.value.trim()) setCommentError('');
+              }}
+            />
+            {commentError ? <div className="smplfy-form-feedback invalid-feedback d-block">{commentError}</div> : null}
+          </div>
+
+          <div className="d-flex flex-column gap-2">
+            {requestActionChecklist.map((item) => {
+              const isInvalid = Boolean(checklistError && !checklistValues[item.key]);
+
+              return (
+                <label
+                  className="smplfy-request-checklist-item d-flex align-items-center gap-2"
+                  key={item.key}
+                >
+                  <Checkbox
+                    checked={checklistValues[item.key]}
+                    invalid={isInvalid}
+                    onChange={(nextChecked) => handleChecklistChange(item.key, nextChecked)}
+                  />
+                  <span>{item.label}</span>
+                </label>
+              );
+            })}
+            {checklistError ? (
+              <div className="smplfy-form-feedback invalid-feedback d-block">{checklistError}</div>
+            ) : null}
+          </div>
         </div>
         <div className="modal-footer border-top d-flex align-items-center justify-content-between">
-          <PrimaryButton styleVariant="destructive" size="large" onClick={handleAction} leftIcon="close">
+          <PrimaryButton styleVariant="destructive" size="large" onClick={() => handleAction('reject')} leftIcon="close">
             Reject
           </PrimaryButton>
-          <PrimaryButton styleVariant="positive" size="large" onClick={handleAction} leftIcon="check">
+          <PrimaryButton styleVariant="positive" size="large" onClick={() => handleAction('approve')} leftIcon="check">
             Approve
           </PrimaryButton>
         </div>

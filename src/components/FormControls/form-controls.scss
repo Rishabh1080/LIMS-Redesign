@@ -85,6 +85,13 @@
     background-color var(--smplfy-field-transition);
 }
 
+.smplfy-form-control.form-control.smplfy-form-textarea {
+  min-height: 120px;
+  height: auto;
+  padding-block: var(--smplfy-field-padding-inline-compact);
+  resize: vertical;
+}
+
 .smplfy-date-field.input-group,
 .smplfy-file-field.input-group {
   flex-wrap: nowrap;

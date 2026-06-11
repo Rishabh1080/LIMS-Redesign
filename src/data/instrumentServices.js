@@ -1,8 +1,7 @@
 export const serviceTypeTabs = [
   { key: 'calibration', label: 'Calibration' },
-  { key: 'maintenance', label: 'Maintenance' },
+  { key: 'maintenance', label: 'Preventive Maintenance' },
   { key: 'breakdown', label: 'Breakdown' },
-  { key: 'service', label: 'Service' },
 ];
 
 export const initialInstrumentServices = [
@@ -24,7 +23,7 @@ export const initialInstrumentServices = [
     nextServiceDate: '14/10/2026',
     status: 'Pending',
     stage: 'pending-default',
-    serviceType: 'Maintenance',
+    serviceType: 'Preventive Maintenance',
     summary: 'Preventive maintenance visit scheduled with the vendor.',
     details: 'Preventive maintenance visit scheduled with the vendor.',
     instrumentId: 'inst-001',
@@ -36,7 +35,7 @@ export const initialInstrumentServices = [
     nextServiceDate: '16/10/2026',
     status: 'Pending',
     stage: 'approval-requested',
-    serviceType: 'Service',
+    serviceType: 'Preventive Maintenance',
     summary: 'Service data submitted for approval.',
     details: 'Service data submitted for approval.',
     instrumentId: 'inst-001',
@@ -72,23 +71,11 @@ export const initialInstrumentServices = [
     nextServiceDate: '18/07/2026',
     status: 'Approved',
     stage: 'analysis-done',
-    serviceType: 'Service',
+    serviceType: 'Preventive Maintenance',
     summary: 'Service completed and approved by QA.',
     details: 'Service completed and approved by QA.',
     instrumentId: 'inst-001',
     instrumentName: 'Stabinger Viscometer',
-  },
-  {
-    id: 'breakdown-uv-vis',
-    serviceDate: '06/05/2026',
-    nextServiceDate: '06/11/2026',
-    status: 'Pending',
-    stage: 'approval-requested',
-    serviceType: 'Breakdown',
-    summary: 'Breakdown reported for UV-Vis Spectrophotometer.',
-    details: 'Breakdown reported for UV-Vis Spectrophotometer.',
-    instrumentId: 'inst-002',
-    instrumentName: 'UV-Vis Spectrophotometer',
   },
   {
     id: 'maintenance-uv-vis',
@@ -96,7 +83,7 @@ export const initialInstrumentServices = [
     nextServiceDate: '06/11/2026',
     status: 'Under analysis',
     stage: 'approved-under-analysis',
-    serviceType: 'Maintenance',
+    serviceType: 'Preventive Maintenance',
     summary: 'Maintenance record is under technical review.',
     details: 'Maintenance record is under technical review.',
     instrumentId: 'inst-002',
@@ -108,7 +95,7 @@ export const initialInstrumentServices = [
     nextServiceDate: '06/11/2026',
     status: 'Not initialised',
     stage: 'service-created',
-    serviceType: 'Service',
+    serviceType: 'Preventive Maintenance',
     summary: 'Service visit is not initialised.',
     details: 'Service visit is not initialised.',
     instrumentId: 'inst-002',
@@ -120,7 +107,7 @@ export const initialInstrumentServices = [
     nextServiceDate: '06/11/2026',
     status: 'Approved',
     stage: 'analysis-done',
-    serviceType: 'Service',
+    serviceType: 'Preventive Maintenance',
     summary: 'Service completed and approved by QA.',
     details: 'Service completed and approved by QA.',
     instrumentId: 'inst-002',
@@ -144,30 +131,34 @@ export const initialInstrumentServices = [
     nextServiceDate: '05/10/2026',
     status: 'Pending',
     stage: 'pending-default',
-    serviceType: 'Maintenance',
+    serviceType: 'Preventive Maintenance',
     summary: 'Lamp alignment maintenance pending.',
     details: 'Lamp alignment maintenance pending.',
     instrumentId: 'inst-004',
     instrumentName: 'Atomic Absorption Spectrometer',
   },
-  {
-    id: 'breakdown-ph-001',
-    serviceDate: '22/03/2026',
-    nextServiceDate: '22/06/2026',
-    status: 'Under analysis',
-    stage: 'approved-under-analysis',
-    serviceType: 'Breakdown',
-    summary: 'Probe response drift under investigation.',
-    details: 'Probe response drift under investigation.',
-    instrumentId: 'inst-005',
-    instrumentName: 'pH Meter',
-  },
 ];
 
 export function normalizeServiceType(value) {
-  return String(value ?? '')
+  const normalizedValue = String(value ?? '')
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+
+  if (normalizedValue === 'preventive-maintenance' || normalizedValue === 'service') {
+    return 'maintenance';
+  }
+
+  return normalizedValue;
+}
+
+export function isBreakdownServiceType(value) {
+  return normalizeServiceType(value) === 'breakdown';
+}
+
+export function getServiceTimelineDate(service) {
+  return isBreakdownServiceType(service?.serviceType || service?.type)
+    ? service?.breakdownDate ?? service?.serviceDate
+    : service?.serviceDate;
 }

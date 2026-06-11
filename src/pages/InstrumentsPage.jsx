@@ -6,19 +6,20 @@ import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import DataTable from '../components/DataTable';
 import { ToastNotification } from '../components/FormControls';
+import NewServiceModal from '../components/NewServiceModal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import { initialInstrumentServices } from '../data/instrumentServices';
+import { getServiceTimelineDate, initialInstrumentServices, isBreakdownServiceType } from '../data/instrumentServices';
 import './instruments-page.scss';
 
 echarts.use([GaugeChart, CanvasRenderer]);
 
 const defaultInstruments = [
-  { id: 'inst-001', name: 'Stabinger Viscometer', lastServiceOn: '14/04/2026', calibrated: 'Yes', nextServiceOn: '14/10/2026' },
-  { id: 'inst-002', name: 'UV-Vis Spectrophotometer', lastServiceOn: '02/03/2026', calibrated: 'No', nextServiceOn: '02/09/2026' },
-  { id: 'inst-003', name: 'Gas Chromatograph', lastServiceOn: '18/01/2026', calibrated: 'Yes', nextServiceOn: '18/07/2026' },
-  { id: 'inst-004', name: 'Atomic Absorption Spectrometer', lastServiceOn: '05/04/2026', calibrated: 'No', nextServiceOn: '05/10/2026' },
-  { id: 'inst-005', name: 'pH Meter', lastServiceOn: '22/03/2026', calibrated: 'Yes', nextServiceOn: '22/06/2026' },
+  { id: 'inst-001', name: 'Stabinger Viscometer', lab: 'Central Lab', uid: 'SVM4K9', serialNo: 'AP-3001-26', make: 'Anton Paar', modelNo: 'SVM 3001', lastServiceOn: '14/04/2026', calibrated: 'Yes', nextServiceOn: '14/10/2026' },
+  { id: 'inst-002', name: 'UV-Vis Spectrophotometer', lab: 'Analytical Lab', uid: 'UV9P2Q', serialNo: 'SH-1900-26', make: 'Shimadzu', modelNo: 'UV-1900i', lastServiceOn: '02/03/2026', calibrated: 'No', nextServiceOn: '02/09/2026' },
+  { id: 'inst-003', name: 'Gas Chromatograph', lab: 'Organic Lab', uid: 'GC8A41', serialNo: 'AG-8890-26', make: 'Agilent', modelNo: '8890', lastServiceOn: '18/01/2026', calibrated: 'Yes', nextServiceOn: '18/07/2026' },
+  { id: 'inst-004', name: 'Atomic Absorption Spectrometer', lab: 'Metals Lab', uid: 'AAS73X', serialNo: 'PE-900T-26', make: 'PerkinElmer', modelNo: 'PinAAcle 900T', lastServiceOn: '05/04/2026', calibrated: 'No', nextServiceOn: '05/10/2026' },
+  { id: 'inst-005', name: 'pH Meter', lab: 'QC Lab', uid: 'PHM62D', serialNo: 'MT-SC-26', make: 'Mettler Toledo', modelNo: 'SevenCompact', lastServiceOn: '22/03/2026', calibrated: 'Yes', nextServiceOn: '22/06/2026' },
 ];
 
 const instrumentHealth = {
@@ -35,7 +36,7 @@ function getServiceTypeTone(serviceType) {
 
   if (normalizedType === 'calibration') return 'primary';
   if (normalizedType === 'breakdown') return 'danger';
-  if (normalizedType === 'maintenance') return 'warning';
+  if (normalizedType === 'maintenance' || normalizedType === 'preventive maintenance') return 'warning';
 
   return 'secondary';
 }
@@ -52,7 +53,7 @@ function getServiceDateValue(date) {
 
 function getReverseChronologicalServices(services) {
   return [...services].sort((firstService, secondService) => {
-    const dateDifference = getServiceDateValue(secondService.serviceDate) - getServiceDateValue(firstService.serviceDate);
+    const dateDifference = getServiceDateValue(getServiceTimelineDate(secondService)) - getServiceDateValue(getServiceTimelineDate(firstService));
 
     if (dateDifference !== 0) {
       return dateDifference;
@@ -72,7 +73,40 @@ function formatShortDate(date) {
   return `${day}/${month}/${year.slice(-2)}`;
 }
 
-function InstrumentsHeader({ onNewInstrument, onCalibrationSchedule }) {
+function getInstrumentStatus(instrumentId, services) {
+  const hasUnresolvedBreakdown = services.some((service) => (
+    service.instrumentId === instrumentId
+    && isBreakdownServiceType(service.serviceType || service.type)
+    && !service.resolvedOn
+  ));
+
+  return hasUnresolvedBreakdown ? 'breakdown' : 'working';
+}
+
+function InstrumentStatusPill({ status }) {
+  const isBreakdown = status === 'breakdown';
+
+  return (
+    <span
+      className={joinClasses(
+        'smplfy-instrument-status-pill',
+        'd-inline-flex',
+        'align-items-center',
+        'justify-content-center',
+        isBreakdown ? 'is-breakdown' : 'is-working',
+      )}
+    >
+      {isBreakdown ? (
+        <AppIcon name="alert-circle" size={16} stroke={2} />
+      ) : (
+        <span className="smplfy-instrument-status-dot" aria-hidden="true" />
+      )}
+      <span>{isBreakdown ? 'Breakdown' : 'Working'}</span>
+    </span>
+  );
+}
+
+function InstrumentsHeader({ onNewInstrument, onNewService }) {
   return (
     <section className="bg-white border-bottom px-4 py-3">
       <div className="container-fluid px-0">
@@ -81,12 +115,12 @@ function InstrumentsHeader({ onNewInstrument, onCalibrationSchedule }) {
             <h1 className="h5 mb-0 fw-semibold text-dark">Instrument Management</h1>
           </div>
           <div className="col-auto d-flex align-items-center gap-3">
-            <SecondaryButton leftIcon="calendar" onClick={onCalibrationSchedule}>
-              Calibration Schedule
-            </SecondaryButton>
-            <PrimaryButton leftIcon="plus" onClick={onNewInstrument}>
-              New Instrument
+            <PrimaryButton leftIcon="plus" onClick={onNewService}>
+              New Service
             </PrimaryButton>
+            <SecondaryButton leftIcon="plus" onClick={onNewInstrument}>
+              New Instrument
+            </SecondaryButton>
           </div>
         </div>
       </div>
@@ -225,9 +259,10 @@ function getUpdateBadgeClass(tone) {
   return 'text-secondary bg-secondary-subtle border border-secondary';
 }
 
-function InstrumentUpdateRow({ service, onOpenService }) {
+function InstrumentUpdateRow({ service, onOpenService, onCreateFromAlert }) {
   const serviceType = service.serviceType || service.type;
   const tone = getServiceTypeTone(serviceType);
+  const isBreakdown = isBreakdownServiceType(serviceType);
 
   return (
     <li
@@ -240,62 +275,86 @@ function InstrumentUpdateRow({ service, onOpenService }) {
         'py-3',
       )}
     >
-      <span
-        className={joinClasses(
-          'badge',
-          'rounded-pill',
-          'px-3',
-          'py-2',
-          'fw-medium',
-          getUpdateBadgeClass(tone),
-        )}
-      >
-        {serviceType}
-      </span>
-      <span className="flex-grow-1 text-truncate fw-medium">
-        {service.instrumentName}
+      <span className="flex-grow-1 d-flex align-items-center gap-2 min-w-0">
+        <span className="text-truncate fw-medium">
+          {service.instrumentName}
+        </span>
+        <span
+          className={joinClasses(
+            'badge',
+            'rounded-pill',
+            'px-3',
+            'py-2',
+            'fw-medium',
+            'flex-shrink-0',
+            getUpdateBadgeClass(tone),
+          )}
+        >
+          {serviceType}
+        </span>
       </span>
       <time className="text-nowrap fw-normal">
-        {formatShortDate(service.serviceDate)}
+        {formatShortDate(getServiceTimelineDate(service))}
       </time>
-      <SecondaryButton
-        size="medium"
-        className="px-2"
-        aria-label={`Open ${String(serviceType).toLowerCase()} service for ${service.instrumentName}`}
-        onClick={() =>
-          onOpenService?.(
-            {
-              ...service,
-              serviceType,
-            },
-            {
-              instrumentId: service.instrumentId,
-              instrumentName: service.instrumentName,
-            },
-          )
-        }
-      >
-        <AppIcon name="external-link" size={18} />
-      </SecondaryButton>
+      {isBreakdown ? (
+        <SecondaryButton
+          size="medium"
+          className="px-2"
+          aria-label={`Open ${String(serviceType).toLowerCase()} service for ${service.instrumentName}`}
+          onClick={() =>
+            onOpenService?.(
+              {
+                ...service,
+                serviceType,
+              },
+              {
+                instrumentId: service.instrumentId,
+                instrumentName: service.instrumentName,
+              },
+            )
+          }
+        >
+          <AppIcon name="external-link" size={18} />
+        </SecondaryButton>
+      ) : (
+        <SecondaryButton
+          size="medium"
+          className="px-2"
+          aria-label={`Create service for ${service.instrumentName}`}
+          onClick={() => onCreateFromAlert?.(service)}
+        >
+          <AppIcon name="plus" size={18} />
+        </SecondaryButton>
+      )}
     </li>
   );
 }
 
-function InstrumentUpdatesCard({ services, onOpenService, onOpenAllServices }) {
+function InstrumentUpdatesCard({ services, onOpenService, onOpenAllServices, onCreateFromAlert }) {
   const sortedServices = getReverseChronologicalServices(services);
 
   return (
     <section className="smplfy-card card">
       <div className="card-header bg-white d-flex align-items-center justify-content-between gap-3">
-        <InstrumentCardTitle>Updates ({services.length})</InstrumentCardTitle>
-        <SecondaryButton size="medium" rightIcon="external-link" onClick={onOpenAllServices}>
-          All services
-        </SecondaryButton>
+        <InstrumentCardTitle>Alerts ({services.length})</InstrumentCardTitle>
+        <div className="d-flex align-items-center gap-2">
+          <SecondaryButton size="medium" className="px-2" aria-label="Calendar">
+            <AppIcon name="calendar" size={18} />
+          </SecondaryButton>
+          <SecondaryButton size="medium" rightIcon="external-link" onClick={onOpenAllServices}>
+            All services
+          </SecondaryButton>
+        </div>
       </div>
       <div className="card-body p-0 overflow-auto">
         <ul className="list-group list-group-flush">
           {sortedServices.map((service) => (
-            <InstrumentUpdateRow key={service.id} service={service} onOpenService={onOpenService} />
+            <InstrumentUpdateRow
+              key={service.id}
+              service={service}
+              onOpenService={onOpenService}
+              onCreateFromAlert={onCreateFromAlert}
+            />
           ))}
         </ul>
       </div>
@@ -303,7 +362,7 @@ function InstrumentUpdatesCard({ services, onOpenService, onOpenAllServices }) {
   );
 }
 
-function InstrumentDashboardCards({ services, onOpenService, onOpenAllServices }) {
+function InstrumentDashboardCards({ services, onOpenService, onOpenAllServices, onCreateFromAlert }) {
   return (
     <div className="smplfy-instruments-dashboard-cards row g-3 align-items-start">
       <div className="col-12 col-xl-7">
@@ -314,6 +373,7 @@ function InstrumentDashboardCards({ services, onOpenService, onOpenAllServices }
           services={services}
           onOpenService={onOpenService}
           onOpenAllServices={onOpenAllServices}
+          onCreateFromAlert={onCreateFromAlert}
         />
       </div>
     </div>
@@ -325,10 +385,10 @@ export default function InstrumentsPage({
   onNewInstrument,
   onEditInstrument,
   onDeleteInstrument,
-  onCalibrationSchedule,
   onOpenInstrument,
   onOpenService,
   onOpenAllServices,
+  onCreateService,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -338,6 +398,9 @@ export default function InstrumentsPage({
   const [visibleInstruments, setVisibleInstruments] = useState(instruments);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [serviceModalOpen, setServiceModalOpen] = useState(false);
+  const [serviceModalInstrumentId, setServiceModalInstrumentId] = useState('');
+  const [serviceModalServiceType, setServiceModalServiceType] = useState('');
 
   useEffect(() => {
     setVisibleInstruments(instruments);
@@ -355,6 +418,31 @@ export default function InstrumentsPage({
     return () => window.cancelAnimationFrame(frameId);
   }, []);
 
+  const instrumentOptions = instruments.map((instrument) => ({
+    value: instrument.id,
+    label: instrument.name,
+  }));
+
+  const openNewServiceModal = (instrumentId = '', serviceType = '') => {
+    setServiceModalInstrumentId(instrumentId);
+    setServiceModalServiceType(serviceType);
+    setServiceModalOpen(true);
+  };
+
+  const handleCreateService = (draft) => {
+    const createdService = onCreateService?.(draft);
+    setServiceModalOpen(false);
+
+    if (createdService) {
+      setToastMessage('Service created successfully.');
+      setToastVisible(false);
+      window.requestAnimationFrame(() => {
+        setToastVisible(true);
+        window.setTimeout(() => setToastVisible(false), 5000);
+      });
+    }
+  };
+
   return (
     <AppChrome
       activeNav="instruments"
@@ -365,7 +453,7 @@ export default function InstrumentsPage({
       pageHeader={
         <InstrumentsHeader
           onNewInstrument={onNewInstrument}
-          onCalibrationSchedule={onCalibrationSchedule}
+          onNewService={() => openNewServiceModal()}
         />
       }
     >
@@ -375,12 +463,19 @@ export default function InstrumentsPage({
             services={services}
             onOpenService={onOpenService}
             onOpenAllServices={onOpenAllServices}
+            onCreateFromAlert={(service) => openNewServiceModal(service.instrumentId, service.serviceType || service.type)}
           />
 
           <DataTable>
             <thead>
               <tr>
                 <th scope="col">Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Lab</th>
+                <th scope="col">UID</th>
+                <th scope="col">Serial no</th>
+                <th scope="col">Make</th>
+                <th scope="col">Model</th>
                 <th scope="col">Last Service on</th>
                 <th scope="col">Calibrated?</th>
                 <th scope="col">Next Service on</th>
@@ -398,6 +493,24 @@ export default function InstrumentsPage({
                     >
                       <span>{instrument.name}</span>
                     </a>
+                  </td>
+                  <td className="text-nowrap">
+                    <InstrumentStatusPill status={getInstrumentStatus(instrument.id, services)} />
+                  </td>
+                  <td className="text-nowrap">
+                    {instrument.lab}
+                  </td>
+                  <td className="text-nowrap">
+                    {instrument.uid}
+                  </td>
+                  <td className="text-nowrap">
+                    {instrument.serialNo}
+                  </td>
+                  <td className="text-nowrap">
+                    {instrument.make}
+                  </td>
+                  <td className="text-nowrap">
+                    {instrument.modelNo}
                   </td>
                   <td className="text-nowrap">
                     {instrument.lastServiceOn}
@@ -433,9 +546,20 @@ export default function InstrumentsPage({
         </div>
       </main>
 
+      <NewServiceModal
+        open={serviceModalOpen}
+        instrumentOptions={instrumentOptions}
+        initialInstrumentId={serviceModalInstrumentId}
+        initialServiceType={serviceModalServiceType}
+        showInstrumentField
+        onCancel={() => setServiceModalOpen(false)}
+        onSubmit={handleCreateService}
+      />
+
       <ToastNotification
         state={toastVisible ? 'default' : 'gone'}
         message={toastMessage}
+        className="position-fixed bottom-0 start-0 m-4"
         onClose={() => setToastVisible(false)}
       />
     </AppChrome>

@@ -74,6 +74,25 @@
   letter-spacing: var(--smplfy-modal-title-letter-spacing);
 }
 
+.smplfy-modal .smplfy-modal-title-stack,
+.smplfy-modal .smplfy-modal-title-line {
+  min-width: var(--smplfy-button-space-0);
+}
+
+.smplfy-modal .smplfy-modal-subtitle {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--smplfy-primitive-neutral-700);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .smplfy-modal .modal-header svg {
   width: var(--smplfy-modal-title-icon-size);
   height: var(--smplfy-modal-title-icon-size);

@@ -6,7 +6,7 @@ import NewServiceModal from '../components/NewServiceModal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
-import { serviceTypeTabs, normalizeServiceType } from '../data/instrumentServices';
+import { isBreakdownServiceType, normalizeServiceType, serviceTypeTabs } from '../data/instrumentServices';
 import { getStatusPresentation } from '../status/statusRegistry';
 import './instrument-details-page.scss';
 
@@ -25,7 +25,10 @@ function AllServicesHeader({ onBack, onNewService }) {
             />
             <h1 className="h5 mb-0 fw-semibold text-dark">All Services</h1>
           </div>
-          <div className="col-auto">
+          <div className="col-auto d-flex align-items-center gap-3">
+            <SecondaryButton leftIcon="calendar">
+              Service Schedule
+            </SecondaryButton>
             <PrimaryButton leftIcon="plus" onClick={onNewService}>
               New service
             </PrimaryButton>
@@ -83,6 +86,7 @@ export default function AllServicesPage({
   const visibleServices = useMemo(() => (
     services.filter((service) => normalizeServiceType(service.serviceType || service.type) === resolvedActiveTab)
   ), [resolvedActiveTab, services]);
+  const isBreakdownTab = isBreakdownServiceType(resolvedActiveTab);
 
   return (
     <AppChrome
@@ -121,8 +125,14 @@ export default function AllServicesPage({
                 <thead>
                   <tr>
                     <th scope="col">Instrument name</th>
-                    <th scope="col">Service date</th>
-                    <th scope="col">Next service date</th>
+                    {isBreakdownTab ? (
+                      <th scope="col">Breakdown date</th>
+                    ) : (
+                      <>
+                        <th scope="col">Service date</th>
+                        <th scope="col">Next service date</th>
+                      </>
+                    )}
                     <th scope="col">Status</th>
                     <th scope="col">Details</th>
                     <th scope="col">Action</th>
@@ -146,8 +156,14 @@ export default function AllServicesPage({
                             <span>{service.instrumentName}</span>
                           </a>
                         </td>
-                        <td className="text-nowrap">{service.serviceDate}</td>
-                        <td className="text-nowrap">{service.nextServiceDate}</td>
+                        {isBreakdownTab ? (
+                          <td className="text-nowrap">{service.breakdownDate}</td>
+                        ) : (
+                          <>
+                            <td className="text-nowrap">{service.serviceDate}</td>
+                            <td className="text-nowrap">{service.nextServiceDate}</td>
+                          </>
+                        )}
                         <td className="text-nowrap">
                           <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
                             {statusPresentation.label}
@@ -174,7 +190,7 @@ export default function AllServicesPage({
                   })}
                   {visibleServices.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="text-center text-secondary">
+                      <td colSpan={isBreakdownTab ? 5 : 6} className="text-center text-secondary">
                         No services found.
                       </td>
                     </tr>

@@ -261,6 +261,12 @@ body:has(.smplfy-sample-details-page) siteping-widget {
   color: var(--smplfy-sample-details-danger-strong);
 }
 
+.smplfy-sample-details-action.card.is-resolved > .card-header {
+  border-bottom-color: var(--smplfy-primitive-green-200);
+  background: linear-gradient(90deg, var(--smplfy-sample-details-success-soft) 0%, var(--smplfy-primitive-neutral-100) 100%);
+  color: var(--smplfy-sample-details-success);
+}
+
 .smplfy-sample-details-action.card > .card-body {
   padding: 16px;
   font-size: 14px;
@@ -276,6 +282,14 @@ body:has(.smplfy-sample-details-page) siteping-widget {
 
 .smplfy-sample-details-action .smplfy-btn.btn {
   margin-top: 4px;
+}
+
+.smplfy-sample-details-page .smplfy-request-checklist-item {
+  color: var(--smplfy-primitive-neutral-800);
+  font-size: var(--smplfy-nav-link-font-size);
+  line-height: 18px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
 }
 
 .smplfy-sample-details-activity {

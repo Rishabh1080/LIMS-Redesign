@@ -4,6 +4,7 @@ import InputFieldDropdown from './InputFieldDropdown';
 import InputFieldFile from './InputFieldFile';
 import InputFieldSplitSelector from './InputFieldSplitSelector';
 import InputFieldText from './InputFieldText';
+import InputFieldTextarea from './InputFieldTextarea';
 import './form-controls.scss';
 
 const inputByType = {
@@ -12,6 +13,7 @@ const inputByType = {
   date: InputFieldDate,
   file: InputFieldFile,
   split: InputFieldSplitSelector,
+  textarea: InputFieldTextarea,
 };
 
 export default function FormElement({

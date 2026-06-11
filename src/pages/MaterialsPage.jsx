@@ -7,62 +7,94 @@ import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 
-const defaultMaterials = [
+export const defaultMaterials = [
   {
     id: 'material-001',
     name: 'Sodium Hydroxide (NaOH)',
+    classification: 'Chemicals',
     description: '5% concentrated solution used for pH adjustment and titration. Reorder when stock falls below 500 mL.',
     key: 'NaOH-5P',
     created: '02/01/2026',
+    currentQuantity: 2500,
+    minQuantity: 500,
+    unit: 'mL',
   },
   {
     id: 'material-002',
     name: 'Sulphuric Acid (H₂SO₄)',
+    classification: 'Chemicals',
     description: '0.02N standard solution for alkalinity titration per IS:3025. Store in acid cabinet away from bases.',
     key: 'H2SO4-02N',
     created: '05/01/2026',
+    currentQuantity: 320,
+    minQuantity: 500,
+    unit: 'mL',
   },
   {
     id: 'material-003',
     name: 'EDTA Disodium Salt',
+    classification: 'Chemicals',
     description: '0.01M solution for hardness determination. Prepare fresh monthly and store at room temperature.',
     key: 'EDTA-01M',
     created: '10/01/2026',
+    currentQuantity: 1400,
+    minQuantity: 300,
+    unit: 'g',
   },
   {
     id: 'material-004',
     name: 'Potassium Permanganate (KMnO₄)',
+    classification: 'Chemicals',
     description: 'Used for COD and oxidisability tests. Standardise against oxalic acid before each batch of tests.',
     key: 'KMnO4-STD',
     created: '12/01/2026',
+    currentQuantity: 180,
+    minQuantity: 250,
+    unit: 'g',
   },
   {
     id: 'material-005',
     name: 'Eriochrome Black T Indicator',
+    classification: 'Indicators',
     description: 'Powder indicator for total hardness titration. Keep dry and away from moisture. Replace if colour fades.',
     key: 'EBT-IND',
     created: '15/01/2026',
+    currentQuantity: 75,
+    minQuantity: 50,
+    unit: 'g',
   },
   {
     id: 'material-006',
     name: 'Ammonium Buffer Solution (pH 10)',
+    classification: 'Reagents',
     description: 'Buffer for hardness and calcium titrations. Prepared from NH₄Cl and NH₄OH. Check pH before use.',
     key: 'NH4-BUF',
     created: '18/01/2026',
+    currentQuantity: 900,
+    minQuantity: 1000,
+    unit: 'mL',
   },
   {
     id: 'material-007',
     name: 'Phenolphthalein Indicator',
+    classification: 'Indicators',
     description: '1% solution in ethanol. Used for P-alkalinity and CO₂ determination. Discard if solution turns pink at rest.',
     key: 'PHPH-1P',
     created: '20/01/2026',
+    currentQuantity: 4,
+    minQuantity: 2,
+    unit: 'bottles',
   },
   {
     id: 'material-008',
     name: 'Methyl Orange Indicator',
+    classification: 'Glassware',
     description: '0.05% aqueous solution for M-alkalinity and total alkalinity titrations. Stable for 6 months.',
     key: 'MO-005P',
     created: '22/01/2026',
+    currentQuantity: 12,
+    minQuantity: 6,
+    unit: 'bottles',
   },
 ];
 
@@ -99,7 +131,7 @@ function formatDate(date = new Date()) {
   return `${day}/${month}/${year}`;
 }
 
-function MaterialsHeader({ onNewMaterial }) {
+function MaterialsHeader({ onNewMaterial, onStockReport }) {
   return (
     <section className="bg-white border-bottom px-4 py-3">
       <div className="container-fluid px-0">
@@ -108,7 +140,10 @@ function MaterialsHeader({ onNewMaterial }) {
             <h1 className="h5 mb-0 fw-semibold text-dark">Material Management</h1>
           </div>
 
-          <div className="col-auto">
+          <div className="col-auto d-flex align-items-center gap-3">
+            <SecondaryButton leftIcon="file-text" onClick={onStockReport}>
+              Stock Report
+            </SecondaryButton>
             <PrimaryButton leftIcon="plus" onClick={onNewMaterial}>
               New Material
             </PrimaryButton>
@@ -277,7 +312,8 @@ function MaterialTransactionModal({
   return (
     <Modal
       open={open}
-      title={`New Transaction (${material.name})`}
+      title="New Transaction"
+      subtitle={material.name}
       titleId="materials-transaction-modal-title"
       titleIcon="refresh"
       onClose={onCancel}
@@ -431,6 +467,7 @@ export default function MaterialsPage({
   onDeleteMaterial,
   onNewTransaction,
   onOpenMaterial,
+  onStockReport,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -566,9 +603,13 @@ export default function MaterialsPage({
     const nextMaterial = {
       id: `material-${Date.now()}`,
       name: draft.name.trim(),
+      classification: 'Chemicals',
       description: draft.description.trim() || 'Material description goes here',
       key: draft.uniqueKey.trim(),
       created: formatDate(),
+      currentQuantity: Number(draft.initialQuantity) || 0,
+      minQuantity: Number(draft.minQuantity) || 0,
+      unit: draft.unit,
     };
 
     setVisibleMaterials((current) => [nextMaterial, ...current]);
@@ -623,7 +664,7 @@ export default function MaterialsPage({
       breadcrumbs={[{ key: 'materials', label: 'Materials', current: true }]}
       sidebarCollapsed={sidebarCollapsed}
       onSidebarCollapsedChange={onSidebarCollapsedChange}
-      pageHeader={<MaterialsHeader onNewMaterial={openModal} />}
+      pageHeader={<MaterialsHeader onNewMaterial={openModal} onStockReport={onStockReport} />}
     >
       <main className="bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0">
@@ -650,6 +691,7 @@ export default function MaterialsPage({
             <thead>
               <tr>
                 <th scope="col">Name</th>
+                <th scope="col">Classification</th>
                 <th scope="col">Description</th>
                 <th scope="col">Key</th>
                 <th scope="col">Created</th>
@@ -667,6 +709,9 @@ export default function MaterialsPage({
                     >
                       <span>{material.name}</span>
                     </a>
+                  </td>
+                  <td className="text-nowrap">
+                    {material.classification}
                   </td>
                   <td>
                     {material.description}

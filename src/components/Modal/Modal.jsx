@@ -22,6 +22,7 @@ export default function Modal({
   title,
   titleId,
   titleIcon,
+  subtitle,
   titleExtra,
   onClose,
   children,
@@ -48,8 +49,13 @@ export default function Modal({
           <div className="modal-header">
             <div className="d-flex align-items-center gap-2 flex-grow-1 min-w-0">
               {titleIcon ? <AppIcon name={titleIcon} size={24} className="flex-shrink-0" /> : null}
-              <h2 className="modal-title" id={titleId}>{title}</h2>
-              {titleExtra ? <div className="ms-2">{titleExtra}</div> : null}
+              <div className="smplfy-modal-title-stack d-flex flex-column min-w-0 flex-grow-1">
+                <div className="smplfy-modal-title-line d-flex align-items-center gap-2 min-w-0">
+                  <h2 className="modal-title" id={titleId}>{title}</h2>
+                  {titleExtra ? <div className="ms-2">{titleExtra}</div> : null}
+                </div>
+                {subtitle ? <div className="smplfy-modal-subtitle">{subtitle}</div> : null}
+              </div>
             </div>
 
             {showCloseButton ? (

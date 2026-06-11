@@ -33,7 +33,8 @@ function TransactionModal({ open, materialName, values, errors, onChange, onBlur
   return (
     <Modal
       open={open}
-      title={`New Transaction (${materialName})`}
+      title="New Transaction"
+      subtitle={materialName}
       titleId="material-details-transaction-modal-title"
       titleIcon="refresh"
       onClose={onCancel}

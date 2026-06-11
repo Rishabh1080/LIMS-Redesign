@@ -88,6 +88,18 @@
   outline: none;
 }
 
+.smplfy-form-check-input.form-check-input[type='checkbox'].is-invalid {
+  color: var(--smplfy-field-error-color);
+}
+
+.smplfy-form-check-input.form-check-input[type='checkbox'].is-invalid::before {
+  border-color: var(--smplfy-field-border-error);
+}
+
+.smplfy-form-check-input.form-check-input[type='checkbox'].is-invalid:focus-visible {
+  box-shadow: var(--smplfy-field-shadow-error);
+}
+
 .smplfy-form-check-input.form-check-input[type='checkbox']:disabled {
   opacity: var(--smplfy-form-check-disabled-opacity);
   cursor: not-allowed;

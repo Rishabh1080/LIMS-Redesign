@@ -21,11 +21,12 @@ import RequestsForMePage from './pages/RequestsForMePage';
 import SampleDetailsPage from './pages/SampleDetailsPage';
 import SampleWorkspacePage from './pages/SampleWorkspacePage';
 import ServiceDetailsPage from './pages/ServiceDetailsPage';
+import StockReportPage from './pages/StockReportPage';
 import TempReportPage from './pages/TempReportPage';
 import TestRequestsHomePage from './pages/TestRequestsHomePage';
 import TestRequestsListingPage from './pages/TestRequestsListingPage';
 import TrDetailsPage from './pages/TrDetailsPage';
-import { initialInstrumentServices } from './data/instrumentServices';
+import { initialInstrumentServices, isBreakdownServiceType } from './data/instrumentServices';
 import {
   createAnalyticsSessionId,
   getAnalyticsElapsedTime,
@@ -49,13 +50,16 @@ const instrumentCatalog = [
     name: 'Stabinger Viscometer',
     description: 'Precision viscosity analyzer used for fuel, oil, and lubricant characterization under controlled lab conditions.',
     make: 'Anton Paar',
+    lab: 'Central Lab',
+    uid: 'SVM4K9',
     uniqueKey: 'SVM-001',
     modelNo: 'SVM 3001',
     serialNo: 'AP-3001-26',
+    dateOfInstallation: '14/01/2026',
     lastServiceOn: '14/04/2026',
     calibrated: 'Yes',
     nextServiceOn: '14/10/2026',
-    allowAccessTo: 'Lab Manager',
+    allowAccessTo: 'Rishabh Gangwar, Deepak Cybit, Priya Nair',
     calibLastPerformedOn: '14/04/2026',
     calibFrequency: '180',
     calibRemindBeforeDays: '15',
@@ -83,9 +87,12 @@ const instrumentCatalog = [
     name: 'UV-Vis Spectrophotometer',
     description: 'Bench-top absorbance system used for quantitative chemical analysis and method validation.',
     make: 'Shimadzu',
+    lab: 'Analytical Lab',
+    uid: 'UV9P2Q',
     uniqueKey: 'UVV-002',
     modelNo: 'UV-1900i',
     serialNo: 'SH-1900-26',
+    dateOfInstallation: '02/01/2026',
     lastServiceOn: '02/03/2026',
     calibrated: 'No',
     nextServiceOn: '02/09/2026',
@@ -95,9 +102,12 @@ const instrumentCatalog = [
     name: 'Gas Chromatograph',
     description: 'Used for compositional separation and trace-level analysis of volatile compounds.',
     make: 'Agilent',
+    lab: 'Organic Lab',
+    uid: 'GC8A41',
     uniqueKey: 'GC-003',
     modelNo: '8890',
     serialNo: 'AG-8890-26',
+    dateOfInstallation: '18/11/2025',
     lastServiceOn: '18/01/2026',
     calibrated: 'Yes',
     nextServiceOn: '18/07/2026',
@@ -107,9 +117,12 @@ const instrumentCatalog = [
     name: 'Atomic Absorption Spectrometer',
     description: 'High-sensitivity elemental analysis system for metals and trace contaminants.',
     make: 'PerkinElmer',
+    lab: 'Metals Lab',
+    uid: 'AAS73X',
     uniqueKey: 'AAS-004',
     modelNo: 'PinAAcle 900T',
     serialNo: 'PE-900T-26',
+    dateOfInstallation: '05/02/2026',
     lastServiceOn: '05/04/2026',
     calibrated: 'No',
     nextServiceOn: '05/10/2026',
@@ -119,9 +132,12 @@ const instrumentCatalog = [
     name: 'pH Meter',
     description: 'Routine pH measurement instrument used for sample prep, solution verification, and QC checks.',
     make: 'Mettler Toledo',
+    lab: 'QC Lab',
+    uid: 'PHM62D',
     uniqueKey: 'PHM-005',
     modelNo: 'SevenCompact',
     serialNo: 'MT-SC-26',
+    dateOfInstallation: '22/12/2025',
     lastServiceOn: '22/03/2026',
     calibrated: 'Yes',
     nextServiceOn: '22/06/2026',
@@ -352,6 +368,19 @@ export default function App() {
     ]);
   };
 
+  const handleServiceUpdated = (service) => {
+    setInstrumentServices((current) =>
+      current.map((currentService) => (
+        currentService.id === service.id ? { ...currentService, ...service } : currentService
+      )),
+    );
+    setServiceDetailsState((current) => (
+      current.service?.id === service.id
+        ? { ...current, service: { ...current.service, ...service } }
+        : current
+    ));
+  };
+
   const createServiceFromDraft = (draft) => {
     const instrument = getInstrumentById(draft.instrumentId);
 
@@ -361,19 +390,28 @@ export default function App() {
 
     const now = new Date();
     const details = draft.details || `${draft.serviceType} service created for ${instrument.name}.`;
+    const isBreakdown = isBreakdownServiceType(draft.serviceType);
     const service = {
       id: `SVC-${now.getFullYear()}-${String(instrumentServices.length + 1).padStart(3, '0')}`,
-      serviceDate: now.toLocaleDateString('en-GB'),
-      nextServiceDate: formatDateForDisplay(draft.nextServiceOn),
       status: 'Not initialised',
       stage: 'service-created',
       details,
       summary: details,
       serviceType: draft.serviceType,
+      calibrationType: draft.calibrationType,
       vendor: draft.vendor,
       attachment: draft.attachment,
       instrumentId: instrument.id,
       instrumentName: instrument.name,
+      ...(isBreakdown
+        ? {
+            reportedOn: now.toLocaleDateString('en-GB'),
+            breakdownDate: formatDateForDisplay(draft.serviceDate),
+          }
+        : {
+            serviceDate: formatDateForDisplay(draft.serviceDate),
+            nextServiceDate: formatDateForDisplay(draft.nextServiceOn),
+          }),
     };
 
     handleServiceCreated(service);
@@ -634,6 +672,11 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'stock-report') {
+      setActivePage('stock-report');
+      return;
+    }
+
     if (nextPage === 'instruments') {
       setActivePage('instruments');
       return;
@@ -675,6 +718,7 @@ export default function App() {
         trainings={defaultTrainings}
         onNavigate={handleNavigate}
         onOpenSample={openSampleDetails}
+        onNewSample={openNewSample}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
@@ -948,6 +992,19 @@ export default function App() {
       <MaterialsPage
         onNavigate={handleNavigate}
         onOpenMaterial={(id, name) => openMaterialDetails(id, name)}
+        onStockReport={() => setActivePage('stock-report')}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'stock-report') {
+    return (
+      <StockReportPage
+        onBack={() => setActivePage('materials')}
+        onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
@@ -982,6 +1039,7 @@ export default function App() {
         onOpenInstrument={(id, name) => openInstrumentDetails(id, name)}
         onOpenService={openServiceDetails}
         onOpenAllServices={() => setActivePage('all-services')}
+        onCreateService={createServiceFromDraft}
         initialToast={instrumentToast}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
@@ -1045,6 +1103,8 @@ export default function App() {
         uniqueKey={instrumentDetailsState.instrument?.uniqueKey}
         modelNo={instrumentDetailsState.instrument?.modelNo}
         serialNo={instrumentDetailsState.instrument?.serialNo}
+        dateOfInstallation={instrumentDetailsState.instrument?.dateOfInstallation}
+        peopleWithAccess={instrumentDetailsState.instrument?.allowAccessTo}
         records={instrumentServices.filter((service) => service.instrumentId === instrumentDetailsState.id)}
         initialToast={instrumentDetailsState.initialToast}
         onBack={() => setActivePage('instruments')}
@@ -1072,6 +1132,7 @@ export default function App() {
         onBack={() =>
           setActivePage(serviceDetailsState.sourcePage === 'all-services' ? 'all-services' : 'instrument-details')
         }
+        onServiceUpdate={handleServiceUpdated}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}

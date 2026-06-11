@@ -7,6 +7,7 @@ import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
 import { ToastNotification } from '../components/FormControls';
+import { isBreakdownServiceType } from '../data/instrumentServices';
 import { getStatusPresentation } from '../status/statusRegistry';
 import './sample-details-page.scss';
 
@@ -120,6 +121,10 @@ function getServiceTypeLabel(service) {
   return service.serviceType || service.type || 'Calibration';
 }
 
+function isBreakdownService(service) {
+  return isBreakdownServiceType(getServiceTypeLabel(service));
+}
+
 function getServiceTypeValue(service) {
   if (service.serviceTypeValue) return service.serviceTypeValue;
   if (service.serviceTypeCode) return service.serviceTypeCode;
@@ -133,11 +138,21 @@ function getServiceTypeValue(service) {
   return String(serviceType).toLowerCase().replace(/\s+/g, '');
 }
 
+function getBreakdownActivityLabel(label) {
+  if (label === 'Service Created') return 'Breakdown reported';
+  if (label === 'Service Initialised') return 'Resolution created';
+
+  return label;
+}
+
 function getActivityItems(stage, service) {
-  const activityDate = service.serviceDate || '06/05/2026';
+  const activityDate = service.breakdownDate || service.serviceDate || '06/05/2026';
+  const isBreakdown = isBreakdownService(service);
   const timeByLabel = {
     'Service Created': '10:13',
     'Service Initialised': '10:18',
+    'Breakdown reported': '10:13',
+    'Resolution created': '10:18',
     'Approval Requested': '10:24',
     'Approval requested': '10:34',
     'Service Approved': '10:28',
@@ -146,6 +161,8 @@ function getActivityItems(stage, service) {
   const personByLabel = {
     'Service Created': 'Rishabh Gangwar',
     'Service Initialised': 'Rishabh Gangwar',
+    'Breakdown reported': 'Rishabh Gangwar',
+    'Resolution created': 'Rishabh Gangwar',
     'Approval Requested': 'Rishabh Gangwar',
     'Approval requested': 'Rishabh Gangwar',
     'Service Approved': 'Technical Manager',
@@ -154,19 +171,25 @@ function getActivityItems(stage, service) {
   const toneByLabel = {
     'Service Created': 'success',
     'Service Initialised': 'info',
+    'Breakdown reported': 'danger',
+    'Resolution created': 'info',
     'Approval Requested': 'warning',
     'Approval requested': 'warning',
     'Service Approved': 'success',
     'Service Concluded': 'success',
   };
 
-  return (serviceStageConfig[stage]?.activity ?? serviceStageConfig['service-created'].activity).map((label) => ({
-    label,
-    time: timeByLabel[label] ?? '10:13',
-    date: activityDate,
-    person: personByLabel[label],
-    tone: toneByLabel[label] ?? 'info',
-  }));
+  return (serviceStageConfig[stage]?.activity ?? serviceStageConfig['service-created'].activity).map((activityLabel) => {
+    const label = isBreakdown ? getBreakdownActivityLabel(activityLabel) : activityLabel;
+
+    return {
+      label,
+      time: timeByLabel[label] ?? '10:13',
+      date: activityDate,
+      person: personByLabel[label],
+      tone: toneByLabel[label] ?? 'info',
+    };
+  });
 }
 
 function createTemplateRow(id) {
@@ -199,6 +222,7 @@ function ServiceDetailsHeader({
   const statusPresentation = getStatusPresentation('service', service.status);
   const serviceSummary = `${getServiceTypeLabel(service)} - ${instrumentName}`;
   const cta = serviceStageConfig[serviceStage]?.cta;
+  const initializeLabel = isBreakdownService(service) ? 'Resolve' : 'Initialize';
 
   return (
     <section className="smplfy-sample-details-header bg-white border-bottom">
@@ -223,7 +247,7 @@ function ServiceDetailsHeader({
         {cta ? (
           <div className="d-flex align-items-center gap-3 flex-wrap">
             {cta === 'initialize' ? (
-              <PrimaryButton onClick={onInitialize}>Initialize</PrimaryButton>
+              <PrimaryButton onClick={onInitialize}>{initializeLabel}</PrimaryButton>
             ) : null}
             {cta === 'pending-actions' ? (
               <PrimaryButton onClick={onRequestApproval}>Request Approval</PrimaryButton>
@@ -242,14 +266,24 @@ function ServiceDetailsContent({
   instrumentName,
   values,
 }) {
-  const rows = [
-    { key: 'equipment', label: 'Equipment', value: values.equipment || instrumentName || 'Test' },
-    { key: 'serviceType', label: 'Service Type', value: values.serviceType },
-    { key: 'summary', label: 'Summary', value: values.summary },
-    { key: 'createdOnDate', label: 'Created On Date', value: values.createdOnDate },
-    { key: 'nextServiceOn', label: 'Next Service On', value: values.nextServiceOn },
-    { key: 'attachments', label: 'Attachments', value: values.attachments },
-  ];
+  const rows = values.isBreakdown
+    ? [
+        { key: 'equipment', label: 'Equipment', value: values.equipment || instrumentName || 'Test' },
+        { key: 'serviceType', label: 'Service Type', value: values.serviceType },
+        { key: 'summary', label: 'Summary', value: values.summary },
+        { key: 'reportedOn', label: 'Reported On', value: values.reportedOn },
+        { key: 'breakdownDate', label: 'Breakdown Date', value: values.breakdownDate },
+        { key: 'resolvedOn', label: 'Resolved On', value: values.resolvedOn },
+        { key: 'attachments', label: 'Attachments', value: values.attachments },
+      ]
+    : [
+        { key: 'equipment', label: 'Equipment', value: values.equipment || instrumentName || 'Test' },
+        { key: 'serviceType', label: 'Service Type', value: values.serviceType },
+        { key: 'summary', label: 'Summary', value: values.summary },
+        { key: 'createdOnDate', label: 'Created On Date', value: values.createdOnDate },
+        { key: 'nextServiceOn', label: 'Next Service On', value: values.nextServiceOn },
+        { key: 'attachments', label: 'Attachments', value: values.attachments },
+      ];
   const rowGroups = [
     rows.slice(0, Math.ceil(rows.length / 2)),
     rows.slice(Math.ceil(rows.length / 2)),
@@ -498,6 +532,7 @@ export default function ServiceDetailsPage({
   instrumentId = 'inst-001',
   instrumentName = 'UV-Vis Spectrophotometer',
   onBack,
+  onServiceUpdate,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -511,7 +546,11 @@ export default function ServiceDetailsPage({
     summary: resolvedService.summary ?? resolvedService.details ?? 'test',
     createdOnDate: resolvedService.createdOnDate || resolvedService.serviceDate || '04/06/2026',
     nextServiceOn: resolvedService.nextServiceDate || '06/07/2026',
+    reportedOn: resolvedService.reportedOn || resolvedService.createdOnDate || '06/05/2026',
+    breakdownDate: resolvedService.breakdownDate || resolvedService.serviceDate || '06/05/2026',
+    resolvedOn: resolvedService.resolvedOn || '',
     attachments: resolvedService.attachments || '',
+    isBreakdown: isBreakdownService(resolvedService),
   }), [instrumentName, resolvedService]);
   const initialTemplateRows = useMemo(
     () => normalizeTemplateRows(resolvedService.templateRows ?? resolvedService.results ?? []),
@@ -574,6 +613,25 @@ export default function ServiceDetailsPage({
       setServiceStage('final-approval-requested');
       setApprovalConfirmationAction(null);
       showToast('Service sent for approval successfully.');
+    }
+  };
+
+  const handleInitialize = () => {
+    setServiceStage('pending-default');
+
+    if (templateValues.isBreakdown && !templateValues.resolvedOn) {
+      const resolvedOn = new Date().toLocaleDateString('en-GB');
+
+      setTemplateValues((current) => ({
+        ...current,
+        resolvedOn,
+      }));
+      onServiceUpdate?.({
+        ...resolvedService,
+        status: getStatusForStage('pending-default', resolvedService.status),
+        stage: 'pending-default',
+        resolvedOn,
+      });
     }
   };
 
@@ -655,7 +713,7 @@ export default function ServiceDetailsPage({
           serviceStage={serviceStage}
           instrumentName={instrumentName}
           onBack={onBack}
-          onInitialize={() => setServiceStage('pending-default')}
+          onInitialize={handleInitialize}
           onRequestApproval={() => handleOpenApprovalConfirmation('request-approval')}
           onSendForApproval={() => handleOpenApprovalConfirmation('send-for-approval')}
         />
