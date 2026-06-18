@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import DataTable from '../components/DataTable';
+import InstrumentStatusPill, { getInstrumentStatus } from '../components/InstrumentStatusPill';
 import MoreActionButton from '../components/MoreActionButton';
 import NavSelector from '../components/NavSelector';
 import NewServiceModal from '../components/NewServiceModal';
@@ -30,7 +31,7 @@ function formatDateForDisplay(value) {
   return value;
 }
 
-function InstrumentDetailsHeader({ instrumentName, onBack, onEditInstrument, onNewService }) {
+function InstrumentDetailsHeader({ instrumentName, status, onBack, onEditInstrument, onNewService }) {
   const moreActionItems = [
     {
       key: 'edit',
@@ -52,7 +53,10 @@ function InstrumentDetailsHeader({ instrumentName, onBack, onEditInstrument, onN
               onClick={onBack}
               aria-label="Go back"
             />
-            <h1 className="h5 mb-0 fw-semibold text-dark">{instrumentName}</h1>
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <h1 className="h5 mb-0 fw-semibold text-dark">{instrumentName}</h1>
+              <InstrumentStatusPill status={status} />
+            </div>
           </div>
           <div className="col-auto d-flex align-items-center gap-3">
             <PrimaryButton leftIcon="plus" onClick={onNewService}>
@@ -174,6 +178,7 @@ export default function InstrumentDetailsPage({
     [activeTab, serviceRecords],
   );
   const isBreakdownTab = activeTab === 'breakdown';
+  const instrumentStatus = getInstrumentStatus(instrumentId, serviceRecords);
 
   return (
     <AppChrome
@@ -188,6 +193,7 @@ export default function InstrumentDetailsPage({
       pageHeader={
         <InstrumentDetailsHeader
           instrumentName={instrumentName}
+          status={instrumentStatus}
           onBack={onBack}
           onEditInstrument={onEditInstrument}
           onNewService={() => setServiceModalOpen(true)}
@@ -264,7 +270,10 @@ export default function InstrumentDetailsPage({
                 <thead>
                   <tr>
                     {isBreakdownTab ? (
-                      <th scope="col">Breakdown date</th>
+                      <>
+                        <th scope="col">Breakdown date</th>
+                        <th scope="col">Resolved on</th>
+                      </>
                     ) : (
                       <>
                         <th scope="col">Service date</th>
@@ -283,7 +292,10 @@ export default function InstrumentDetailsPage({
                     return (
                       <tr key={record.id}>
                         {isBreakdownTab ? (
-                          <td className="text-nowrap">{record.breakdownDate}</td>
+                          <>
+                            <td className="text-nowrap">{record.breakdownDate}</td>
+                            <td className="text-nowrap">{record.resolvedOn || '-'}</td>
+                          </>
                         ) : (
                           <>
                             <td className="text-nowrap">{record.serviceDate}</td>
@@ -315,7 +327,7 @@ export default function InstrumentDetailsPage({
                   })}
                   {visibleServiceRecords.length === 0 ? (
                     <tr>
-                      <td colSpan={isBreakdownTab ? 4 : 5} className="text-center text-secondary">
+                      <td colSpan={5} className="text-center text-secondary">
                         No services found.
                       </td>
                     </tr>

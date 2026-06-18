@@ -14,6 +14,35 @@ const vendorOptions = [
   'Mettler Toledo Support',
 ];
 
+function getTodayIsoDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function getDateValue(value) {
+  if (!value) return 0;
+
+  const displayMatch = String(value).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+
+  if (displayMatch) {
+    const [, day, month, year] = displayMatch;
+    return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
+  }
+
+  const isoMatch = String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (isoMatch) {
+    const [, year, month, day] = isoMatch;
+    return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
+  }
+
+  return 0;
+}
+
 function resolveInitialServiceType(value) {
   if (!value) return '';
   if (serviceTypeOptions.includes(value)) return value;
@@ -97,6 +126,14 @@ export default function NewServiceModal({
         : 'Service date is required.';
     }
 
+    if (
+      draft.serviceType === 'Breakdown'
+      && draft.serviceDate
+      && getDateValue(draft.serviceDate) > getDateValue(getTodayIsoDate())
+    ) {
+      nextErrors.serviceDate = 'Breakdown date cannot be in the future.';
+    }
+
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) return;
 
@@ -115,6 +152,7 @@ export default function NewServiceModal({
   if (!open) return null;
 
   const isBreakdown = draft.serviceType === 'Breakdown';
+  const todayIsoDate = getTodayIsoDate();
 
   return (
     <Modal
@@ -201,6 +239,7 @@ export default function NewServiceModal({
               inputProps={{
                 value: draft.serviceDate,
                 placeholder: 'Select date',
+                max: isBreakdown ? todayIsoDate : undefined,
                 onChange: (event) => update('serviceDate', event.target.value),
               }}
             />

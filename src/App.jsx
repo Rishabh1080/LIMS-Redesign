@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import AdminHubPage from './pages/AdminHubPage';
 import NewSampleCustomerDetailsPage from './pages/NewSampleCustomerDetailsPage';
 import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
+import CustomFormListingPage from './pages/CustomFormListingPage';
 import DashboardPage from './pages/DashboardPage';
 import DatasheetPage from './pages/DatasheetPage';
+import DocumentDetailsPage from './pages/DocumentDetailsPage';
 import DocumentManagementPage from './pages/DocumentManagementPage';
 import EnvironmentDataPage from './pages/EnvironmentDataPage';
 import FinalisedReportPage from './pages/FinalisedReportPage';
@@ -236,6 +238,11 @@ export default function App() {
     parentLabel: 'Instruments',
   });
   const [materialDetailsState, setMaterialDetailsState] = useState({ id: null, name: '', initialToast: null });
+  const [documentDetailsState, setDocumentDetailsState] = useState({
+    document: null,
+    sourcePage: 'document-management',
+    sourceLabel: 'Document Management',
+  });
   const [trDetailsState, setTrDetailsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
@@ -359,6 +366,18 @@ export default function App() {
       sourcePage,
     });
     setActivePage('service-details');
+  };
+
+  const openDocumentDetails = (document, options = {}) => {
+    const sourcePage = options.sourcePage ?? (activePage === 'document-management-2' ? 'document-management-2' : 'document-management');
+    const sourceLabel = options.sourceLabel ?? (sourcePage === 'document-management-2' ? 'Document Management 2' : 'Document Management');
+
+    setDocumentDetailsState({
+      document,
+      sourcePage,
+      sourceLabel,
+    });
+    setActivePage('document-details');
   };
 
   const handleServiceCreated = (service) => {
@@ -652,8 +671,8 @@ export default function App() {
       return;
     }
 
-    if (nextPage === 'document-management') {
-      setActivePage('document-management');
+    if (nextPage === 'document-management' || nextPage === 'document-management-2') {
+      setActivePage(nextPage);
       return;
     }
 
@@ -694,6 +713,11 @@ export default function App() {
 
     if (nextPage === 'trainings') {
       setActivePage('trainings');
+      return;
+    }
+
+    if (nextPage === 'daily-check' || nextPage === 'quality-objective' || nextPage.startsWith('custom-form-')) {
+      setActivePage(nextPage);
       return;
     }
 
@@ -957,6 +981,39 @@ export default function App() {
   if (activePage === 'document-management') {
     return (
       <DocumentManagementPage
+        key="document-management"
+        onNavigate={handleNavigate}
+        onOpenDocumentDetails={openDocumentDetails}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'document-management-2') {
+    return (
+      <DocumentManagementPage
+        key="document-management-2"
+        title="Document Management 2"
+        activeNav="document-management-2"
+        combinedMode
+        onNavigate={handleNavigate}
+        onOpenDocumentDetails={openDocumentDetails}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'document-details') {
+    return (
+      <DocumentDetailsPage
+        document={documentDetailsState.document}
+        sourcePage={documentDetailsState.sourcePage}
+        sourceLabel={documentDetailsState.sourceLabel}
+        onBack={() => setActivePage(documentDetailsState.sourcePage ?? 'document-management')}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
@@ -1133,6 +1190,18 @@ export default function App() {
           setActivePage(serviceDetailsState.sourcePage === 'all-services' ? 'all-services' : 'instrument-details')
         }
         onServiceUpdate={handleServiceUpdated}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'daily-check' || activePage === 'quality-objective' || activePage.startsWith('custom-form-')) {
+    return (
+      <CustomFormListingPage
+        formType={activePage}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}

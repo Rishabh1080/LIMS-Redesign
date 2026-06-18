@@ -11,6 +11,8 @@
 
 .smplfy-document-management-page aside > .smplfy-card.card > .card-body {
   padding: var(--smplfy-semantic-space-control-padding-inline-default);
+  border: var(--bs-border-width) solid var(--smplfy-primitive-neutral-300);
+  border-radius: var(--bs-card-border-radius);
 }
 
 .smplfy-document-management-page [role="search"] {
@@ -67,26 +69,81 @@
   color: var(--smplfy-field-label-color);
 }
 
-.smplfy-document-management-page [role="search"] > .input-group .input-group-text:last-child {
-  gap: calc(var(--smplfy-button-gap) / 2);
-  font-size: calc(var(--smplfy-button-font-size) - 1px);
-  line-height: 1;
+.smplfy-document-management-page .smplfy-document-tree-toggle {
+  min-height: 32px;
+  font-size: var(--smplfy-button-font-size);
+  line-height: var(--smplfy-button-line-height);
+  letter-spacing: 0;
 }
 
-.smplfy-document-management-page [role="search"] > .input-group .input-group-text:last-child kbd {
-  min-width: calc(var(--smplfy-semantic-size-control-height-small) - (var(--smplfy-button-gap) / 4));
-  height: calc(var(--smplfy-semantic-size-control-height-small) - (var(--smplfy-button-gap) / 2));
-  padding:
-    calc(var(--smplfy-button-gap) / 4)
-    calc(var(--smplfy-button-gap) / 2);
-  border: 1px solid var(--smplfy-primitive-neutral-400);
-  border-radius: calc(var(--smplfy-field-radius) / 2);
-  background: var(--smplfy-primitive-neutral-200);
+.smplfy-document-management-page .smplfy-document-tree-toggle-button.btn {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
   color: var(--smplfy-primitive-neutral-800);
-  font-family: var(--smplfy-field-font-family);
-  font-size: calc(var(--smplfy-button-font-size) - 2px);
-  font-weight: var(--smplfy-button-font-weight);
-  box-shadow: none;
+  text-decoration: none !important;
+  overflow: visible;
+}
+
+.smplfy-document-management-page .smplfy-document-tree-toggle-button.smplfy-btn:not(:disabled):not(.disabled):active,
+.smplfy-document-management-page .smplfy-document-tree-toggle-button.smplfy-btn:not(:disabled):not(.disabled).active {
+  transform: none;
+}
+
+.smplfy-document-management-page .smplfy-document-tree-toggle-button.btn:hover,
+.smplfy-document-management-page .smplfy-document-tree-toggle-button.btn:focus-visible {
+  color: var(--smplfy-primitive-neutral-800);
+  text-decoration: none !important;
+}
+
+.smplfy-document-management-page .smplfy-document-tree-toggle-tooltip {
+  position: absolute;
+  z-index: 50;
+  left: calc(100% + 12px);
+  top: 50%;
+  max-width: 220px;
+  min-height: 34px;
+  padding: 8px 12px;
+  border: 1px solid #1f2b36;
+  border-radius: 6px;
+  background: #3b5163;
+  color: #fff !important;
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-12px, -50%);
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.2);
+  transition:
+    opacity 180ms cubic-bezier(0.2, 0, 0, 1),
+    transform 220ms ease-out;
+}
+
+.smplfy-document-management-page .smplfy-document-tree-toggle-tooltip::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-left: 1px solid #1f2b36;
+  border-bottom: 1px solid #1f2b36;
+  border-radius: 2px;
+  background: #3b5163;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.smplfy-document-management-page .smplfy-document-tree-toggle-tooltip::after {
+  display: none;
+}
+
+.smplfy-document-management-page .smplfy-document-tree-toggle-tooltip.is-visible {
+  opacity: 1;
+  transform: translate(0, -50%);
 }
 
 .smplfy-document-management-page .accordion {
@@ -108,7 +165,7 @@
 .smplfy-document-management-page .accordion-button {
   max-width: 100%;
   min-height: 32px;
-  padding: 4px 8px;
+  padding: 4px 0;
   gap: var(--smplfy-button-gap);
   color: var(--smplfy-primitive-neutral-800);
   font-size: var(--smplfy-button-font-size);
@@ -131,7 +188,7 @@
 }
 
 .smplfy-document-management-page .accordion-body {
-  padding: 2px 0 6px 24px;
+  padding: 2px 0 6px 16px;
   background: var(--smplfy-primitive-neutral-100);
 }
 
@@ -147,13 +204,101 @@
   min-width: 0;
 }
 
+.smplfy-document-management-page .smplfy-document-status-badge.badge,
+.smplfy-document-management-page .smplfy-document-expiring-badge.badge {
+  min-width: 0;
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--smplfy-badge-radius-pill);
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.smplfy-document-management-page .smplfy-document-status-badge.badge {
+  border-color: var(--smplfy-bootstrap-badge-warning-subtle-border);
+  background-color: var(--smplfy-bootstrap-badge-warning-subtle-bg) !important;
+  color: var(--smplfy-bootstrap-badge-warning-subtle-text) !important;
+}
+
+.smplfy-document-management-page .smplfy-list-group-item.list-group-item.active .smplfy-document-status-badge.badge {
+  border-color: var(--smplfy-bootstrap-badge-warning-subtle-border) !important;
+  background-color: var(--smplfy-bootstrap-badge-warning-subtle-bg) !important;
+  color: var(--smplfy-bootstrap-badge-warning-subtle-text) !important;
+}
+
+.smplfy-document-management-page .smplfy-document-expiring-badge.badge {
+  border-color: var(--smplfy-bootstrap-badge-danger-subtle-border);
+  background-color: var(--smplfy-bootstrap-badge-danger-subtle-bg) !important;
+  color: var(--smplfy-bootstrap-badge-danger-subtle-text) !important;
+}
+
+.smplfy-document-management-page .smplfy-list-group-item.list-group-item.active .smplfy-document-expiring-badge.badge {
+  border-color: var(--smplfy-bootstrap-badge-danger-subtle-border) !important;
+  background-color: var(--smplfy-bootstrap-badge-danger-subtle-bg) !important;
+  color: var(--smplfy-bootstrap-badge-danger-subtle-text) !important;
+}
+
+.smplfy-document-management-page .smplfy-list-group-item.list-group-item.smplfy-document-recently-deselected,
+.smplfy-document-management-page .smplfy-list-group-item.list-group-item.smplfy-document-recently-deselected:hover,
+.smplfy-document-management-page .smplfy-list-group-item.list-group-item.smplfy-document-recently-deselected:focus,
+.smplfy-document-management-page .smplfy-list-group-item.list-group-item.smplfy-document-recently-deselected:focus-visible {
+  background-color: var(--smplfy-list-group-item-bg);
+  border-color: var(--smplfy-list-group-item-border);
+  color: var(--smplfy-list-group-item-text);
+  box-shadow: none;
+}
+
 .smplfy-document-management-page .list-group {
   min-width: 0;
   background: var(--smplfy-primitive-neutral-100);
 }
 
+.smplfy-document-management-page .smplfy-document-empty-state {
+  font-size: var(--smplfy-button-font-size);
+  line-height: var(--smplfy-button-line-height);
+}
+
 .smplfy-document-management-page .text-danger {
   color: var(--smplfy-primitive-red-500) !important;
+}
+
+.smplfy-document-management-page .smplfy-document-preview-card.card {
+  overflow: hidden;
+  border-radius: var(--bs-card-border-radius);
+  box-shadow: none !important;
+}
+
+.smplfy-document-management-page .smplfy-document-preview-card.card > .card-body {
+  overflow: hidden;
+  border-radius: inherit;
+  background: var(--smplfy-primitive-blue-50);
+}
+
+.smplfy-document-management-page .smplfy-document-preview-header {
+  min-height: 72px;
+  padding: 16px 24px;
+}
+
+.smplfy-document-management-page .smplfy-document-preview-header h2 {
+  font-size: 16px;
+  line-height: 21px;
+  letter-spacing: 0;
+}
+
+.smplfy-document-management-page .smplfy-document-preview-header .text-secondary {
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0;
+}
+
+.smplfy-document-management-page .smplfy-document-preview-canvas {
+  min-height: 520px;
+  padding: 24px;
+  background-image: radial-gradient(var(--smplfy-primitive-neutral-300) 1.5px, transparent 1.5px);
+  background-position: 0 0;
+  background-size: 24px 24px;
 }
 
 .smplfy-document-management-page > .container-fluid,

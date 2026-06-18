@@ -1,0 +1,16 @@
+.smplfy-document-details-page .smplfy-sample-details-main-panel > .smplfy-card.card {
+  min-height: 0;
+}
+
+.smplfy-document-details-page .smplfy-document-details-preview {
+  min-height: 520px;
+  padding: 24px;
+  background-image: radial-gradient(var(--smplfy-primitive-neutral-300) 1.5px, transparent 1.5px);
+  background-position: 0 0;
+  background-size: 24px 24px;
+}
+
+.smplfy-document-details-page .smplfy-document-details-preview .text-secondary {
+  font-size: 14px;
+  line-height: 18px;
+}

@@ -126,7 +126,10 @@ export default function AllServicesPage({
                   <tr>
                     <th scope="col">Instrument name</th>
                     {isBreakdownTab ? (
-                      <th scope="col">Breakdown date</th>
+                      <>
+                        <th scope="col">Breakdown date</th>
+                        <th scope="col">Resolved on</th>
+                      </>
                     ) : (
                       <>
                         <th scope="col">Service date</th>
@@ -157,7 +160,10 @@ export default function AllServicesPage({
                           </a>
                         </td>
                         {isBreakdownTab ? (
-                          <td className="text-nowrap">{service.breakdownDate}</td>
+                          <>
+                            <td className="text-nowrap">{service.breakdownDate}</td>
+                            <td className="text-nowrap">{service.resolvedOn || '-'}</td>
+                          </>
                         ) : (
                           <>
                             <td className="text-nowrap">{service.serviceDate}</td>
@@ -190,7 +196,7 @@ export default function AllServicesPage({
                   })}
                   {visibleServices.length === 0 ? (
                     <tr>
-                      <td colSpan={isBreakdownTab ? 5 : 6} className="text-center text-secondary">
+                      <td colSpan={6} className="text-center text-secondary">
                         No services found.
                       </td>
                     </tr>

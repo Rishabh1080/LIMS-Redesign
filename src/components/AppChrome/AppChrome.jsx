@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { IconFolder } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 import companyLogo from '../../../assets/logo-l.png';
 import Badge from '../Badge';
 import AppIcon from '../AppIcon';
@@ -21,6 +22,7 @@ const navigationSections = [
       { label: 'Requests for me', icon: 'requests-for-me', key: 'requests-for-me', badgeKey: 'requests-for-me' },
       { label: 'Test Requests', icon: 'test-requests', key: 'test-requests-home', badgeKey: 'test-requests-home' },
       { label: 'Document Management', icon: 'file-description', key: 'document-management' },
+      { label: 'Document Management 2', icon: 'file-description', key: 'document-management-2' },
       { label: 'Samples Workspace', icon: 'workspace', key: 'samples-workspace' },
       { label: 'All Samples', icon: 'all-samples', key: 'all-samples' },
       { label: 'Environment Data', icon: 'cloud-data', key: 'environment-data' },
@@ -30,9 +32,170 @@ const navigationSections = [
       { label: 'Trainings', icon: 'checklist', key: 'trainings' },
     ],
   },
+  {
+    title: 'Custom Forms',
+    items: [
+      {
+        type: 'folder',
+        label: 'Folder 1',
+        key: 'custom-forms-folder-1',
+        children: [
+          { label: 'Daily Check', initials: 'DC', key: 'daily-check' },
+          { label: 'Quality Objective', initials: 'QO', key: 'quality-objective' },
+          { label: 'Equipment Verification', initials: 'EV', key: 'custom-form-equipment-verification' },
+          { label: 'Instrument Calibration', initials: 'IC', key: 'custom-form-instrument-calibration' },
+          { label: 'Safety Observation', initials: 'SO', key: 'custom-form-safety-observation' },
+        ],
+      },
+    ],
+  },
 ];
 
+function SidebarNavButton({
+  item,
+  activeNav,
+  collapsed = false,
+  onItemClick,
+  onNavigate,
+  onTooltipShow,
+  onTooltipHide,
+  badgeCounts = {},
+  className = '',
+}) {
+  const hasBadge = Boolean(badgeCounts[item.badgeKey]);
+  const showIcon = Boolean(item.icon);
+  const tooltipLabel = item.opensInNewTab ? `${item.label} - opens in a new tab` : item.label;
+
+  return (
+    <button
+      key={item.key}
+      className={`sidebar-link btn text-start ${
+        item.key === activeNav ? 'is-active' : ''
+      } ${hasBadge ? 'smplfy-sidebar-link-with-badge' : ''} ${
+        collapsed && hasBadge ? 'smplfy-sidebar-link-with-dot' : ''
+      } ${className}`}
+      aria-label={item.opensInNewTab ? `${item.label} (opens in a new tab)` : item.label}
+      onMouseEnter={(event) => onTooltipShow?.(tooltipLabel, event)}
+      onMouseLeave={onTooltipHide}
+      onFocus={(event) => onTooltipShow?.(tooltipLabel, event)}
+      onBlur={onTooltipHide}
+      onClick={() => {
+        onNavigate?.(item.key, { newTab: item.opensInNewTab });
+        onItemClick?.();
+      }}
+    >
+      {showIcon ? (
+        <span className="smplfy-sidebar-link-icon">
+          <AppIcon name={item.icon} size={20} />
+          {collapsed && hasBadge ? <span className="smplfy-sidebar-link-dot" /> : null}
+        </span>
+      ) : null}
+      {collapsed && item.initials ? (
+        <span className="smplfy-sidebar-child-initials" aria-hidden="true">
+          {item.initials}
+        </span>
+      ) : null}
+      <span className="sidebar-link-text">{item.label}</span>
+      {hasBadge && !collapsed ? (
+        <Badge className="smplfy-sidebar-link-badge" tone="danger" size="small" shape="circle">
+          {badgeCounts[item.badgeKey]}
+        </Badge>
+      ) : null}
+      {item.opensInNewTab && !collapsed ? (
+        <span className="smplfy-sidebar-link-external" aria-hidden="true">
+          <AppIcon name="external-link" size={14} stroke={2} />
+        </span>
+      ) : null}
+      <span className="smplfy-sidebar-link-tooltip" role="tooltip">
+        {item.opensInNewTab ? `${item.label} - opens in a new tab` : item.label}
+      </span>
+    </button>
+  );
+}
+
+function SidebarFolderItem({
+  item,
+  activeNav,
+  collapsed = false,
+  onItemClick,
+  onNavigate,
+  onTooltipShow,
+  onTooltipHide,
+  badgeCounts = {},
+}) {
+  const hasActiveChild = item.children?.some((child) => child.key === activeNav) ?? false;
+  const [expanded, setExpanded] = useState(hasActiveChild);
+
+  useEffect(() => {
+    if (hasActiveChild) {
+      setExpanded(true);
+    }
+  }, [hasActiveChild]);
+
+  return (
+    <div className="smplfy-sidebar-folder">
+      <button
+        type="button"
+        className={`sidebar-link btn text-start smplfy-sidebar-folder-toggle ${hasActiveChild ? 'is-child-active' : ''}`}
+        aria-expanded={expanded}
+        aria-controls={`${item.key}-children`}
+        onMouseEnter={(event) => onTooltipShow?.(item.label, event)}
+        onMouseLeave={onTooltipHide}
+        onFocus={(event) => onTooltipShow?.(item.label, event)}
+        onBlur={onTooltipHide}
+        onClick={() => setExpanded((current) => !current)}
+      >
+        <span className="smplfy-sidebar-link-icon">
+          <IconFolder size={20} stroke={1.8} aria-hidden="true" />
+        </span>
+        <span className="sidebar-link-text">{item.label}</span>
+        <span className="smplfy-sidebar-folder-chevron" aria-hidden="true">
+          <AppIcon name={expanded ? 'chevron-down' : 'chevron-right'} size={16} stroke={2} />
+        </span>
+        <span className="smplfy-sidebar-link-tooltip" role="tooltip">
+          {item.label}
+        </span>
+      </button>
+
+      {expanded ? (
+        <div className="smplfy-sidebar-folder-children d-grid gap-1" id={`${item.key}-children`}>
+          {item.children.map((child) => (
+            <SidebarNavButton
+              key={child.key}
+              item={child}
+              activeNav={activeNav}
+              collapsed={collapsed}
+              onItemClick={onItemClick}
+              onNavigate={onNavigate}
+              onTooltipShow={onTooltipShow}
+              onTooltipHide={onTooltipHide}
+              badgeCounts={badgeCounts}
+              className="smplfy-sidebar-folder-child"
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeCounts = {} }) {
+  const [floatingTooltip, setFloatingTooltip] = useState(null);
+  const showFloatingTooltip = (label, event) => {
+    if (!collapsed) {
+      return;
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    setFloatingTooltip({
+      label,
+      top: rect.top + rect.height / 2,
+    });
+  };
+  const hideFloatingTooltip = () => {
+    setFloatingTooltip(null);
+  };
+
   return (
     <aside className={`lims-sidebar d-flex flex-column ${collapsed ? 'is-collapsed' : ''}`}>
       <div className="sidebar-brand d-flex align-items-center border-bottom">
@@ -52,44 +215,46 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
               <span>{section.title}</span>
             </div>
             <div className="d-grid gap-1">
-              {section.items.map((item) => (
-                <button
-                  key={item.key}
-                  className={`sidebar-link btn text-start ${
-                    item.key === activeNav ? 'is-active' : ''
-                  } ${badgeCounts[item.badgeKey] ? 'smplfy-sidebar-link-with-badge' : ''} ${
-                    collapsed && badgeCounts[item.badgeKey] ? 'smplfy-sidebar-link-with-dot' : ''
-                  }`}
-                  aria-label={item.opensInNewTab ? `${item.label} (opens in a new tab)` : item.label}
-                  onClick={() => {
-                    onNavigate?.(item.key, { newTab: item.opensInNewTab });
-                    onItemClick?.();
-                  }}
-                >
-                  <span className="smplfy-sidebar-link-icon">
-                    <AppIcon name={item.icon} size={20} />
-                    {collapsed && badgeCounts[item.badgeKey] ? <span className="smplfy-sidebar-link-dot" /> : null}
-                  </span>
-                  <span className="sidebar-link-text">{item.label}</span>
-                  {badgeCounts[item.badgeKey] && !collapsed ? (
-                    <Badge className="smplfy-sidebar-link-badge" tone="danger" size="small" shape="circle">
-                      {badgeCounts[item.badgeKey]}
-                    </Badge>
-                  ) : null}
-                  {item.opensInNewTab && !collapsed ? (
-                    <span className="smplfy-sidebar-link-external" aria-hidden="true">
-                      <AppIcon name="external-link" size={14} stroke={2} />
-                    </span>
-                  ) : null}
-                  <span className="smplfy-sidebar-link-tooltip" role="tooltip">
-                    {item.opensInNewTab ? `${item.label} - opens in a new tab` : item.label}
-                  </span>
-                </button>
-              ))}
+              {section.items.map((item) =>
+                item.type === 'folder' ? (
+                  <SidebarFolderItem
+                    key={item.key}
+                    item={item}
+                    activeNav={activeNav}
+                    collapsed={collapsed}
+                    onItemClick={onItemClick}
+                    onNavigate={onNavigate}
+                    onTooltipShow={showFloatingTooltip}
+                    onTooltipHide={hideFloatingTooltip}
+                    badgeCounts={badgeCounts}
+                  />
+                ) : (
+                  <SidebarNavButton
+                    key={item.key}
+                    item={item}
+                    activeNav={activeNav}
+                    collapsed={collapsed}
+                    onItemClick={onItemClick}
+                    onNavigate={onNavigate}
+                    onTooltipShow={showFloatingTooltip}
+                    onTooltipHide={hideFloatingTooltip}
+                    badgeCounts={badgeCounts}
+                  />
+                ),
+              )}
             </div>
           </section>
         ))}
       </div>
+      {collapsed && floatingTooltip ? (
+        <span
+          className="smplfy-sidebar-floating-tooltip"
+          style={{ top: `${floatingTooltip.top}px` }}
+          role="tooltip"
+        >
+          {floatingTooltip.label}
+        </span>
+      ) : null}
     </aside>
   );
 }

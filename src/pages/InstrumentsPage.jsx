@@ -5,6 +5,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import DataTable from '../components/DataTable';
+import InstrumentStatusPill, { getInstrumentStatus } from '../components/InstrumentStatusPill';
 import { ToastNotification } from '../components/FormControls';
 import NewServiceModal from '../components/NewServiceModal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
@@ -71,39 +72,6 @@ function formatShortDate(date) {
   }
 
   return `${day}/${month}/${year.slice(-2)}`;
-}
-
-function getInstrumentStatus(instrumentId, services) {
-  const hasUnresolvedBreakdown = services.some((service) => (
-    service.instrumentId === instrumentId
-    && isBreakdownServiceType(service.serviceType || service.type)
-    && !service.resolvedOn
-  ));
-
-  return hasUnresolvedBreakdown ? 'breakdown' : 'working';
-}
-
-function InstrumentStatusPill({ status }) {
-  const isBreakdown = status === 'breakdown';
-
-  return (
-    <span
-      className={joinClasses(
-        'smplfy-instrument-status-pill',
-        'd-inline-flex',
-        'align-items-center',
-        'justify-content-center',
-        isBreakdown ? 'is-breakdown' : 'is-working',
-      )}
-    >
-      {isBreakdown ? (
-        <AppIcon name="alert-circle" size={16} stroke={2} />
-      ) : (
-        <span className="smplfy-instrument-status-dot" aria-hidden="true" />
-      )}
-      <span>{isBreakdown ? 'Breakdown' : 'Working'}</span>
-    </span>
-  );
 }
 
 function InstrumentsHeader({ onNewInstrument, onNewService }) {
