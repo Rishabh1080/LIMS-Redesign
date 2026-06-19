@@ -4,7 +4,7 @@ import Modal from '../Modal/Modal';
 import PrimaryButton from '../PrimaryButton/PrimaryButton';
 import SecondaryButton from '../SecondaryButton';
 
-const serviceTypeOptions = ['Calibration', 'Preventive Maintenance', 'Breakdown'];
+const serviceTypeOptions = ['Calibration', 'Preventive Maintenance'];
 const calibrationTypeOptions = ['Internal Calibration', 'External Calibration'];
 const vendorOptions = [
   'Anton Paar India',
@@ -13,35 +13,6 @@ const vendorOptions = [
   'PerkinElmer Service',
   'Mettler Toledo Support',
 ];
-
-function getTodayIsoDate() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-}
-
-function getDateValue(value) {
-  if (!value) return 0;
-
-  const displayMatch = String(value).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-
-  if (displayMatch) {
-    const [, day, month, year] = displayMatch;
-    return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
-  }
-
-  const isoMatch = String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);
-
-  if (isoMatch) {
-    const [, year, month, day] = isoMatch;
-    return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
-  }
-
-  return 0;
-}
 
 function resolveInitialServiceType(value) {
   if (!value) return '';
@@ -98,7 +69,6 @@ export default function NewServiceModal({
       ...current,
       [field]: value,
       ...(field === 'serviceType' && value !== 'Calibration' ? { calibrationType: '' } : {}),
-      ...(field === 'serviceType' && value === 'Breakdown' ? { nextServiceOn: '', vendor: '' } : {}),
     }));
     if (errors[field]) {
       setErrors((current) => {
@@ -121,17 +91,7 @@ export default function NewServiceModal({
     }
 
     if (!draft.serviceDate) {
-      nextErrors.serviceDate = draft.serviceType === 'Breakdown'
-        ? 'Breakdown date is required.'
-        : 'Service date is required.';
-    }
-
-    if (
-      draft.serviceType === 'Breakdown'
-      && draft.serviceDate
-      && getDateValue(draft.serviceDate) > getDateValue(getTodayIsoDate())
-    ) {
-      nextErrors.serviceDate = 'Breakdown date cannot be in the future.';
+      nextErrors.serviceDate = 'Service date is required.';
     }
 
     setErrors(nextErrors);
@@ -150,9 +110,6 @@ export default function NewServiceModal({
   };
 
   if (!open) return null;
-
-  const isBreakdown = draft.serviceType === 'Breakdown';
-  const todayIsoDate = getTodayIsoDate();
 
   return (
     <Modal
@@ -233,77 +190,60 @@ export default function NewServiceModal({
             <FormElement
               type="date"
               mandatory
-              label={isBreakdown ? 'Breakdown date' : 'Service date'}
+              label="Service date"
               message={errors.serviceDate}
               messageTone="error"
               inputProps={{
                 value: draft.serviceDate,
                 placeholder: 'Select date',
-                max: isBreakdown ? todayIsoDate : undefined,
                 onChange: (event) => update('serviceDate', event.target.value),
               }}
             />
           </div>
-          {isBreakdown ? (
-            <div className="col-12 col-md-6">
-              <FormElement
-                type="file"
-                label="Attachments"
-                inputProps={{
-                  value: draft.attachment,
-                  placeholder: 'Choose files',
-                  onChange: (event) => update('attachment', event.target.value),
-                }}
-              />
-            </div>
-          ) : (
-            <>
-              <div className="col-12 col-md-6">
-                <FormElement
-                  type="dropdown"
-                  label="Vendor"
-                  inputProps={{
-                    value: draft.vendor,
-                    placeholder: 'Select vendor',
-                    options: vendorOptions,
-                    onChange: (event) => update('vendor', event.target.value),
-                  }}
-                />
-              </div>
-              <div className="col-12 col-md-6">
-                <FormElement
-                  type="date"
-                  label="Next service on"
-                  message={errors.nextServiceOn}
-                  messageTone="error"
-                  inputProps={{
-                    value: draft.nextServiceOn,
-                    placeholder: 'Select date',
-                    onChange: (event) => update('nextServiceOn', event.target.value),
-                  }}
-                />
-              </div>
-              <div className="col-12 col-md-6">
-                <FormElement
-                  type="file"
-                  label="Attachments"
-                  inputProps={{
-                    value: draft.attachment,
-                    placeholder: 'Choose files',
-                    onChange: (event) => update('attachment', event.target.value),
-                  }}
-                />
-              </div>
-            </>
-          )}
+          <div className="col-12 col-md-6">
+            <FormElement
+              type="dropdown"
+              label="Vendor"
+              inputProps={{
+                value: draft.vendor,
+                placeholder: 'Select vendor',
+                options: vendorOptions,
+                onChange: (event) => update('vendor', event.target.value),
+              }}
+            />
+          </div>
+          <div className="col-12 col-md-6">
+            <FormElement
+              type="date"
+              label="Next service on"
+              message={errors.nextServiceOn}
+              messageTone="error"
+              inputProps={{
+                value: draft.nextServiceOn,
+                placeholder: 'Select date',
+                onChange: (event) => update('nextServiceOn', event.target.value),
+              }}
+            />
+          </div>
+          <div className="col-12 col-md-6">
+            <FormElement
+              type="file"
+              label="Attachments"
+              inputProps={{
+                value: draft.attachment,
+                placeholder: 'Choose files',
+                onChange: (event) => update('attachment', event.target.value),
+              }}
+            />
+          </div>
         </div>
         <div>
           <FormElement
             type="textarea"
-            label={isBreakdown ? 'Details/remarks' : 'Details and Summary'}
+            label="Details and Summary"
             inputProps={{
               value: draft.details,
-              placeholder: isBreakdown ? 'Enter breakdown details or remarks' : 'Enter the details of the service',
+              placeholder: 'Enter the details of the service',
               rows: 5,
               onChange: (event) => update('details', event.target.value),
             }}

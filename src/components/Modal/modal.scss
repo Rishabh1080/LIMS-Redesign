@@ -125,6 +125,9 @@
     var(--smplfy-modal-body-padding-inline-end, var(--smplfy-modal-body-padding))
     var(--smplfy-modal-body-padding-block-end, var(--smplfy-modal-body-padding))
     var(--smplfy-modal-body-padding-inline-start, var(--smplfy-modal-body-padding));
+  font-size: var(--smplfy-nav-link-font-size);
+  line-height: 20px;
+  letter-spacing: var(--smplfy-nav-link-letter-spacing);
   overflow: auto;
 }
 

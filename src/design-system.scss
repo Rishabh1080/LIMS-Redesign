@@ -970,15 +970,15 @@
   --smplfy-button-outline-success-active-text: var(--smplfy-primitive-green-700);
   --smplfy-button-outline-success-active-border: var(--smplfy-semantic-color-border-transparent);
 
-  --smplfy-button-outline-danger-bg: var(--smplfy-primitive-red-50);
-  --smplfy-button-outline-danger-text: var(--smplfy-primitive-red-500);
-  --smplfy-button-outline-danger-border: var(--smplfy-semantic-color-border-transparent);
-  --smplfy-button-outline-danger-hover-bg: var(--smplfy-primitive-red-100);
-  --smplfy-button-outline-danger-hover-text: var(--smplfy-primitive-red-600);
-  --smplfy-button-outline-danger-hover-border: var(--smplfy-semantic-color-border-transparent);
-  --smplfy-button-outline-danger-active-bg: var(--smplfy-primitive-red-200);
-  --smplfy-button-outline-danger-active-text: var(--smplfy-primitive-red-700);
-  --smplfy-button-outline-danger-active-border: var(--smplfy-semantic-color-border-transparent);
+  --smplfy-button-outline-danger-bg: var(--smplfy-primitive-neutral-100);
+  --smplfy-button-outline-danger-text: #4b5662;
+  --smplfy-button-outline-danger-border: #99a0a7;
+  --smplfy-button-outline-danger-hover-bg: var(--smplfy-primitive-neutral-100);
+  --smplfy-button-outline-danger-hover-text: #ff2725;
+  --smplfy-button-outline-danger-hover-border: #ff2725;
+  --smplfy-button-outline-danger-active-bg: var(--smplfy-primitive-neutral-100);
+  --smplfy-button-outline-danger-active-text: #ec1d1d;
+  --smplfy-button-outline-danger-active-border: #ec1d1d;
 }
 
 .smplfy-btn {
@@ -1213,6 +1213,15 @@
   --bs-btn-disabled-bg: var(--smplfy-button-outline-danger-bg);
   --bs-btn-disabled-border-color: var(--smplfy-button-outline-danger-border);
   --smplfy-button-current-focus-shadow: var(--smplfy-button-focus-ring-danger);
+  --smplfy-button-current-gap: 4px;
+  --smplfy-button-current-icon-size: 16px;
+
+  letter-spacing: -0.02em;
+}
+
+.smplfy-btn.btn-outline-danger:has(> svg:first-child + span) {
+  --smplfy-button-current-padding-inline-start: 12px;
+  --smplfy-button-current-padding-inline-end: 16px;
 }
 
 .smplfy-btn-group.btn-group:not(:has(.dropdown-toggle-split)) {
@@ -1400,6 +1409,54 @@
 
 .smplfy-table.table tbody tr:last-child > * {
   border-bottom: 0;
+}
+
+.smplfy-table.table.smplfy-table-sticky-action th:last-child,
+.smplfy-table.table.smplfy-table-sticky-action td:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  width: 1%;
+  min-width: max-content;
+  white-space: nowrap;
+  border-left: 1px solid var(--smplfy-primitive-neutral-300);
+  background: var(--smplfy-table-bg);
+}
+
+.smplfy-table.table.smplfy-table-sticky-action th:last-child::before,
+.smplfy-table.table.smplfy-table-sticky-action td:last-child::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -12px;
+  width: 12px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(28, 33, 38, 0),
+    rgba(28, 33, 38, 0.07)
+  );
+  transition: opacity 160ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.smplfy-table.table.smplfy-table-sticky-action thead th:last-child {
+  z-index: 3;
+  background: var(--smplfy-table-head-bg);
+}
+
+.table-responsive.smplfy-table-responsive-sticky-action.is-scroll-at-end > .smplfy-table.table.smplfy-table-sticky-action th:last-child,
+.table-responsive.smplfy-table-responsive-sticky-action.is-scroll-at-end > .smplfy-table.table.smplfy-table-sticky-action td:last-child {
+  box-shadow: none;
+}
+
+.table-responsive.smplfy-table-responsive-sticky-action.is-scroll-at-end > .smplfy-table.table.smplfy-table-sticky-action th:last-child::before,
+.table-responsive.smplfy-table-responsive-sticky-action.is-scroll-at-end > .smplfy-table.table.smplfy-table-sticky-action td:last-child::before {
+  opacity: 0;
+}
+
+.smplfy-table.table-hover.smplfy-table-sticky-action tbody tr:hover > td:last-child {
+  background: var(--smplfy-table-hover-bg);
 }
 
 .smplfy-table.table .smplfy-link.link-primary {

@@ -14,6 +14,7 @@ import LeaveRecordsPage from './pages/LeaveRecordsPage';
 import MaterialsPage from './pages/MaterialsPage';
 import MaterialDetailsPage from './pages/MaterialDetailsPage';
 import AllServicesPage from './pages/AllServicesPage';
+import BreakdownDetailsPage from './pages/BreakdownDetailsPage';
 import InstrumentsPage from './pages/InstrumentsPage';
 import InstrumentDetailsPage from './pages/InstrumentDetailsPage';
 import NewInstrumentPage from './pages/NewInstrumentPage';
@@ -365,7 +366,7 @@ export default function App() {
       instrumentName: instrument.name,
       sourcePage,
     });
-    setActivePage('service-details');
+    setActivePage(isBreakdownServiceType(service?.serviceType || service?.type) ? 'breakdown-details' : 'service-details');
   };
 
   const openDocumentDetails = (document, options = {}) => {
@@ -1097,6 +1098,7 @@ export default function App() {
         onOpenService={openServiceDetails}
         onOpenAllServices={() => setActivePage('all-services')}
         onCreateService={createServiceFromDraft}
+        onServiceUpdate={handleServiceUpdated}
         initialToast={instrumentToast}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
@@ -1114,6 +1116,7 @@ export default function App() {
         onActiveTabChange={setAllServicesActiveTab}
         onBack={() => setActivePage('instruments')}
         onCreateService={createServiceFromDraft}
+        onServiceUpdate={handleServiceUpdated}
         onOpenInstrument={(id, name) => openInstrumentDetails(id, name)}
         onOpenService={openServiceDetails}
         onNavigate={handleNavigate}
@@ -1186,6 +1189,25 @@ export default function App() {
         service={serviceDetailsState.service}
         instrumentId={serviceDetailsState.instrumentId}
         instrumentName={serviceDetailsState.instrumentName}
+        onBack={() =>
+          setActivePage(serviceDetailsState.sourcePage === 'all-services' ? 'all-services' : 'instrument-details')
+        }
+        onServiceUpdate={handleServiceUpdated}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'breakdown-details') {
+    return (
+      <BreakdownDetailsPage
+        service={serviceDetailsState.service}
+        instrumentId={serviceDetailsState.instrumentId}
+        instrumentName={serviceDetailsState.instrumentName}
+        sourcePage={serviceDetailsState.sourcePage}
         onBack={() =>
           setActivePage(serviceDetailsState.sourcePage === 'all-services' ? 'all-services' : 'instrument-details')
         }

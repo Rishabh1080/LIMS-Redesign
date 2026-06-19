@@ -1,14 +1,29 @@
 import { useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import DataTable from '../components/DataTable';
+import { ToastNotification } from '../components/FormControls';
 import NavSelector from '../components/NavSelector';
 import NewServiceModal from '../components/NewServiceModal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
+import ResolveBreakdownModal from '../components/ResolveBreakdownModal';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
 import { isBreakdownServiceType, normalizeServiceType, serviceTypeTabs } from '../data/instrumentServices';
 import { getStatusPresentation } from '../status/statusRegistry';
 import './instrument-details-page.scss';
+
+const allServiceTypeTabs = serviceTypeTabs;
+
+function formatIsoDateForDisplay(value) {
+  if (!value) return '-';
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [year, month, day] = value.split('-');
+    return `${day}/${month}/${year}`;
+  }
+
+  return value;
+}
 
 function AllServicesHeader({ onBack, onNewService }) {
   return (
@@ -46,6 +61,7 @@ export default function AllServicesPage({
   onActiveTabChange,
   onBack,
   onCreateService,
+  onServiceUpdate,
   onOpenInstrument,
   onOpenService,
   onNavigate,
@@ -54,8 +70,14 @@ export default function AllServicesPage({
   sidebarBadgeCounts,
 }) {
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
-  const [localActiveTab, setLocalActiveTab] = useState(serviceTypeTabs[0]?.key ?? 'calibration');
-  const resolvedActiveTab = activeTab ?? localActiveTab;
+  const [resolveBreakdownServiceId, setResolveBreakdownServiceId] = useState('');
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [localActiveTab, setLocalActiveTab] = useState(allServiceTypeTabs[0]?.key ?? 'calibration');
+  const selectedActiveTab = activeTab ?? localActiveTab;
+  const resolvedActiveTab = allServiceTypeTabs.some((tab) => tab.key === selectedActiveTab)
+    ? selectedActiveTab
+    : allServiceTypeTabs[0]?.key ?? 'calibration';
   const instrumentOptions = useMemo(() => (
     instruments.map((instrument) => ({
       value: instrument.id,
@@ -87,6 +109,36 @@ export default function AllServicesPage({
     services.filter((service) => normalizeServiceType(service.serviceType || service.type) === resolvedActiveTab)
   ), [resolvedActiveTab, services]);
   const isBreakdownTab = isBreakdownServiceType(resolvedActiveTab);
+  const selectedResolveService = services.find((service) => service.id === resolveBreakdownServiceId);
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setToastVisible(false);
+
+    window.requestAnimationFrame(() => {
+      setToastVisible(true);
+      window.setTimeout(() => setToastVisible(false), 5000);
+    });
+  };
+
+  const handleResolveBreakdown = (draft) => {
+    if (!selectedResolveService) return;
+
+    onServiceUpdate?.({
+      ...selectedResolveService,
+      status: 'Pending',
+      stage: 'pending-default',
+      resolvedOn: new Date().toLocaleDateString('en-GB'),
+      resolutionServiceDate: formatIsoDateForDisplay(draft.serviceDate),
+      resolutionVendor: draft.vendor,
+      resolutionAttachment: draft.attachment,
+      resolutionCost: draft.cost,
+      resolutionComments: draft.comments,
+    });
+
+    setResolveBreakdownServiceId('');
+    showToast('Breakdown resolved.');
+  };
 
   return (
     <AppChrome
@@ -106,7 +158,7 @@ export default function AllServicesPage({
           <div className="smplfy-card card overflow-hidden">
             <div className="card-header bg-transparent p-0">
               <div className="nav nav-tabs px-4 border-0">
-                {serviceTypeTabs.map((tab) => (
+                {allServiceTypeTabs.map((tab) => (
                   <NavSelector
                     key={tab.key}
                     active={resolvedActiveTab === tab.key}
@@ -136,7 +188,7 @@ export default function AllServicesPage({
                         <th scope="col">Next service date</th>
                       </>
                     )}
-                    <th scope="col">Status</th>
+                    {!isBreakdownTab ? <th scope="col">Status</th> : null}
                     <th scope="col">Details</th>
                     <th scope="col">Action</th>
                   </tr>
@@ -170,33 +222,45 @@ export default function AllServicesPage({
                             <td className="text-nowrap">{service.nextServiceDate}</td>
                           </>
                         )}
-                        <td className="text-nowrap">
-                          <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
-                            {statusPresentation.label}
-                          </StatusPill>
-                        </td>
+                        {!isBreakdownTab ? (
+                          <td className="text-nowrap">
+                            <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
+                              {statusPresentation.label}
+                            </StatusPill>
+                          </td>
+                        ) : null}
                         <td>{service.details}</td>
                         <td className="text-nowrap">
-                          <SecondaryButton
-                            size="medium"
-                            leftIcon="eye"
-                            onClick={() =>
-                              onOpenService?.(service, {
-                                instrumentId: service.instrumentId,
-                                instrumentName: service.instrumentName,
-                                sourcePage: 'all-services',
-                              })
-                            }
-                          >
-                            View
-                          </SecondaryButton>
+                          {isBreakdownTab && !service.resolvedOn ? (
+                            <PrimaryButton
+                              size="medium"
+                              leftIcon="check"
+                              onClick={() => setResolveBreakdownServiceId(service.id)}
+                            >
+                              Resolve
+                            </PrimaryButton>
+                          ) : (
+                            <SecondaryButton
+                              size="medium"
+                              leftIcon="eye"
+                              onClick={() =>
+                                onOpenService?.(service, {
+                                  instrumentId: service.instrumentId,
+                                  instrumentName: service.instrumentName,
+                                  sourcePage: 'all-services',
+                                })
+                              }
+                            >
+                              View
+                            </SecondaryButton>
+                          )}
                         </td>
                       </tr>
                     );
                   })}
                   {visibleServices.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="text-center text-secondary">
+                      <td colSpan={isBreakdownTab ? 5 : 6} className="text-center text-secondary">
                         No services found.
                       </td>
                     </tr>
@@ -214,6 +278,20 @@ export default function AllServicesPage({
         showInstrumentField
         onCancel={() => setServiceModalOpen(false)}
         onSubmit={handleCreateService}
+      />
+
+      <ResolveBreakdownModal
+        open={Boolean(selectedResolveService)}
+        breakdownDate={selectedResolveService?.breakdownDate}
+        onCancel={() => setResolveBreakdownServiceId('')}
+        onSubmit={handleResolveBreakdown}
+      />
+
+      <ToastNotification
+        state={toastVisible ? 'default' : 'gone'}
+        message={toastMessage}
+        className="position-fixed bottom-0 start-0 m-4"
+        onClose={() => setToastVisible(false)}
       />
     </AppChrome>
   );

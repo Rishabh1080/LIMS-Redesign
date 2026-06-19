@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { GaugeChart } from 'echarts/charts';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -6,11 +6,15 @@ import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import DataTable from '../components/DataTable';
 import InstrumentStatusPill, { getInstrumentStatus } from '../components/InstrumentStatusPill';
-import { ToastNotification } from '../components/FormControls';
+import { FormElement, ToastNotification } from '../components/FormControls';
+import Checkbox from '../components/Checkbox/Checkbox';
+import Modal from '../components/Modal/Modal';
 import NewServiceModal from '../components/NewServiceModal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
+import ResolveBreakdownModal from '../components/ResolveBreakdownModal';
 import SecondaryButton from '../components/SecondaryButton';
 import { getServiceTimelineDate, initialInstrumentServices, isBreakdownServiceType } from '../data/instrumentServices';
+import breakdownImage from '../../assets/breakdown.png';
 import './instruments-page.scss';
 
 echarts.use([GaugeChart, CanvasRenderer]);
@@ -28,8 +32,21 @@ const instrumentHealth = {
   total: 30,
 };
 
+const initialInstrumentFilters = {
+  status: '',
+  lab: '',
+  calibrated: '',
+  make: '',
+};
+
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
+}
+
+function getUniqueOptions(items, key) {
+  return Array.from(new Set(items.map((item) => item[key]).filter(Boolean))).sort((first, second) =>
+    String(first).localeCompare(String(second)),
+  );
 }
 
 function getServiceTypeTone(serviceType) {
@@ -64,6 +81,33 @@ function getReverseChronologicalServices(services) {
   });
 }
 
+function getTodayIsoDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function formatIsoDateForDisplay(value) {
+  const [year, month, day] = String(value ?? '').split('-');
+
+  if (!year || !month || !day) {
+    return value;
+  }
+
+  return `${day}/${month}/${year}`;
+}
+
+function getUnresolvedBreakdownService(services, instrumentId) {
+  return getReverseChronologicalServices(services).find((service) => (
+    service.instrumentId === instrumentId
+    && isBreakdownServiceType(service.serviceType || service.type)
+    && !service.resolvedOn
+  ));
+}
+
 function formatShortDate(date) {
   const [day, month, year] = String(date ?? '').split('/');
 
@@ -93,6 +137,239 @@ function InstrumentsHeader({ onNewInstrument, onNewService }) {
         </div>
       </div>
     </section>
+  );
+}
+
+function InstrumentTableToolbar({
+  searchInputValue,
+  appliedSearchValue,
+  onSearchInputChange,
+  onSearchSubmit,
+  onRemoveSearch,
+  onOpenFilters,
+  filterConfig,
+  appliedFilters,
+  onRemoveFilter,
+  resultCount,
+}) {
+  const activeEntries = filterConfig
+    .map((filter) => ({ ...filter, value: appliedFilters[filter.key] }))
+    .filter((filter) => Boolean(filter.value));
+  const trimmedSearchValue = appliedSearchValue.trim();
+  const resultLabel = trimmedSearchValue
+    ? `${resultCount} ${resultCount === 1 ? 'result' : 'results'} found for "${trimmedSearchValue}"`
+    : activeEntries.length
+      ? `${resultCount} ${resultCount === 1 ? 'result' : 'results'} found`
+      : `Listing ${resultCount} ${resultCount === 1 ? 'instrument' : 'instruments'}`;
+  const displayedEntries = trimmedSearchValue
+    ? [
+        {
+          key: 'search',
+          label: 'Search',
+          value: trimmedSearchValue,
+          onRemove: onRemoveSearch,
+        },
+        ...activeEntries,
+      ]
+    : activeEntries;
+
+  return (
+    <section className="d-flex flex-column gap-4 py-4">
+      <div className="d-flex flex-column gap-2">
+        <form
+          className="row align-items-center gx-3 gy-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onSearchSubmit();
+          }}
+        >
+          <div className="col-12 col-lg-5">
+            <div className="input-group flex-nowrap bg-white border rounded overflow-hidden">
+              <span className="input-group-text text-secondary bg-white">
+                <AppIcon name="search" />
+              </span>
+              <input
+                className="smplfy-form-control form-control"
+                type="search"
+                value={searchInputValue}
+                placeholder="Search instruments"
+                onChange={(event) => onSearchInputChange(event.target.value)}
+              />
+              <button type="submit" className="smplfy-btn btn btn-primary" aria-label="Search instruments">
+                <AppIcon name="chevron-right" />
+              </button>
+            </div>
+          </div>
+          <div className="col-auto">
+            <button
+              type="button"
+              className="smplfy-btn btn btn-link text-secondary text-decoration-none border-0 bg-transparent shadow-none"
+              onClick={onOpenFilters}
+            >
+              <AppIcon name="filter" />
+              <span>All Filters</span>
+            </button>
+          </div>
+        </form>
+
+        {displayedEntries.length ? (
+          <div className="d-flex flex-wrap align-items-center gap-2">
+            {displayedEntries.map((filter) => (
+              <div
+                className="smplfy-badge badge text-secondary bg-white border border-secondary-subtle d-inline-flex align-items-center gap-2"
+                key={filter.key}
+              >
+                <span>{`${filter.label}: ${filter.value}`}</span>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label={`Remove ${filter.label} filter`}
+                  onClick={() => filter.onRemove?.() ?? onRemoveFilter(filter.key)}
+                />
+              </div>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <div className="smplfy-instruments-count-label text-secondary fw-medium">{resultLabel}</div>
+    </section>
+  );
+}
+
+function InstrumentFiltersDrawer({ open, filterConfig, draftFilters, onChange, onApply, onCancel }) {
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <>
+      <div className="offcanvas-backdrop fade show" onClick={onCancel} />
+      <aside className="smplfy-all-samples-offcanvas offcanvas offcanvas-end show" tabIndex="-1" role="dialog" aria-modal="true" aria-labelledby="instrument-filters-title">
+        <div className="offcanvas-header border-bottom">
+          <h2 className="offcanvas-title h5 mb-0" id="instrument-filters-title">All Filters</h2>
+          <button type="button" className="btn-close" aria-label="Close filters" onClick={onCancel} />
+        </div>
+
+        <div className="offcanvas-body d-flex flex-column gap-3">
+          {filterConfig.map((filter) => (
+            <FormElement
+              key={filter.key}
+              type="dropdown"
+              label={filter.label}
+              inputProps={{
+                state: draftFilters[filter.key] ? 'filled' : 'default',
+                value: draftFilters[filter.key],
+                placeholder: filter.placeholder,
+                options: filter.options,
+                onChange: (event) => onChange(filter.key, event.target.value),
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="d-flex justify-content-between gap-3 border-top">
+          <SecondaryButton onClick={onCancel}>
+            Cancel
+          </SecondaryButton>
+          <button type="button" className="smplfy-btn btn btn-primary" onClick={onApply}>
+            Apply
+          </button>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+function ReportBreakdownConfirmationModal({
+  open,
+  instrumentName,
+  onCancel,
+  onConfirm,
+}) {
+  const [acknowledged, setAcknowledged] = useState(false);
+  const [acknowledgementError, setAcknowledgementError] = useState('');
+
+  useEffect(() => {
+    if (!open) {
+      setAcknowledged(false);
+      setAcknowledgementError('');
+    }
+  }, [open]);
+
+  const handleConfirm = () => {
+    if (!acknowledged) {
+      setAcknowledgementError('Confirmation required for reporting breakdown');
+      return;
+    }
+
+    onConfirm?.();
+  };
+
+  return (
+    <Modal
+      open={open}
+      title="Report Instrument Breakdown"
+      titleId="report-instrument-breakdown-title"
+      titleIcon="alert-circle"
+      onClose={onCancel}
+      size="lg"
+      cardClassName="smplfy-report-breakdown-modal"
+      actionsClassName="border-top"
+      actions={
+        <>
+          <SecondaryButton leftIcon="close" onClick={onCancel}>Cancel</SecondaryButton>
+          <PrimaryButton styleVariant="destructive" leftIcon="alert-circle" onClick={handleConfirm}>
+            Mark as Broken
+          </PrimaryButton>
+        </>
+      }
+    >
+      <div className="row gx-4 align-items-start mx-0">
+        <div className="col-12 col-md-5">
+          <img
+            src={breakdownImage}
+            alt=""
+            className="img-fluid rounded"
+            aria-hidden="true"
+          />
+        </div>
+
+        <div className="col-12 col-md-7 d-flex flex-column gap-3 pe-4 mt-3">
+          <p className="mb-0">
+            This will mark <span className="fw-semibold">{instrumentName}</span> as broken and further allocation might be affected until the breakdown is resolved.
+          </p>
+          <p className="mb-0">Are you sure you want to continue?</p>
+
+          <div className="d-flex flex-column gap-2">
+            <div>
+              <label className="d-flex align-items-center gap-2 mb-0" style={{ marginLeft: '-8px' }}>
+                <Checkbox
+                  checked={acknowledged}
+                  invalid={Boolean(acknowledgementError && !acknowledged)}
+                  onChange={(nextChecked) => {
+                    setAcknowledged(nextChecked);
+                    if (nextChecked) {
+                      setAcknowledgementError('');
+                    }
+                  }}
+                />
+                <span>I understand.</span>
+              </label>
+              <div
+                className={joinClasses(
+                  'smplfy-form-feedback',
+                  'invalid-feedback',
+                  'd-block',
+                  !acknowledgementError && 'invisible',
+                )}
+              >
+                {acknowledgementError || 'Confirmation required for reporting breakdown'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
@@ -227,7 +504,7 @@ function getUpdateBadgeClass(tone) {
   return 'text-secondary bg-secondary-subtle border border-secondary';
 }
 
-function InstrumentUpdateRow({ service, onOpenService, onCreateFromAlert }) {
+function InstrumentUpdateRow({ service, onOpenService, onCreateFromAlert, onResolveBreakdown }) {
   const serviceType = service.serviceType || service.type;
   const tone = getServiceTypeTone(serviceType);
   const isBreakdown = isBreakdownServiceType(serviceType);
@@ -265,25 +542,13 @@ function InstrumentUpdateRow({ service, onOpenService, onCreateFromAlert }) {
         {formatShortDate(getServiceTimelineDate(service))}
       </time>
       {isBreakdown ? (
-        <SecondaryButton
+        <PrimaryButton
           size="medium"
+          leftIcon="check"
           className="px-2"
-          aria-label={`Open ${String(serviceType).toLowerCase()} service for ${service.instrumentName}`}
-          onClick={() =>
-            onOpenService?.(
-              {
-                ...service,
-                serviceType,
-              },
-              {
-                instrumentId: service.instrumentId,
-                instrumentName: service.instrumentName,
-              },
-            )
-          }
-        >
-          <AppIcon name="external-link" size={18} />
-        </SecondaryButton>
+          aria-label={`Resolve breakdown for ${service.instrumentName}`}
+          onClick={() => onResolveBreakdown?.(service)}
+        />
       ) : (
         <SecondaryButton
           size="medium"
@@ -298,13 +563,16 @@ function InstrumentUpdateRow({ service, onOpenService, onCreateFromAlert }) {
   );
 }
 
-function InstrumentUpdatesCard({ services, onOpenService, onOpenAllServices, onCreateFromAlert }) {
-  const sortedServices = getReverseChronologicalServices(services);
+function InstrumentUpdatesCard({ services, onOpenService, onOpenAllServices, onCreateFromAlert, onResolveBreakdown }) {
+  const alertServices = services.filter((service) => (
+    !isBreakdownServiceType(service.serviceType || service.type) || !service.resolvedOn
+  ));
+  const sortedServices = getReverseChronologicalServices(alertServices);
 
   return (
     <section className="smplfy-card card">
       <div className="card-header bg-white d-flex align-items-center justify-content-between gap-3">
-        <InstrumentCardTitle>Alerts ({services.length})</InstrumentCardTitle>
+        <InstrumentCardTitle>Alerts ({alertServices.length})</InstrumentCardTitle>
         <div className="d-flex align-items-center gap-2">
           <SecondaryButton size="medium" className="px-2" aria-label="Calendar">
             <AppIcon name="calendar" size={18} />
@@ -322,6 +590,7 @@ function InstrumentUpdatesCard({ services, onOpenService, onOpenAllServices, onC
               service={service}
               onOpenService={onOpenService}
               onCreateFromAlert={onCreateFromAlert}
+              onResolveBreakdown={onResolveBreakdown}
             />
           ))}
         </ul>
@@ -330,7 +599,7 @@ function InstrumentUpdatesCard({ services, onOpenService, onOpenAllServices, onC
   );
 }
 
-function InstrumentDashboardCards({ services, onOpenService, onOpenAllServices, onCreateFromAlert }) {
+function InstrumentDashboardCards({ services, onOpenService, onOpenAllServices, onCreateFromAlert, onResolveBreakdown }) {
   return (
     <div className="smplfy-instruments-dashboard-cards row g-3 align-items-start">
       <div className="col-12 col-xl-7">
@@ -342,6 +611,7 @@ function InstrumentDashboardCards({ services, onOpenService, onOpenAllServices, 
           onOpenService={onOpenService}
           onOpenAllServices={onOpenAllServices}
           onCreateFromAlert={onCreateFromAlert}
+          onResolveBreakdown={onResolveBreakdown}
         />
       </div>
     </div>
@@ -357,6 +627,7 @@ export default function InstrumentsPage({
   onOpenService,
   onOpenAllServices,
   onCreateService,
+  onServiceUpdate,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -369,10 +640,43 @@ export default function InstrumentsPage({
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
   const [serviceModalInstrumentId, setServiceModalInstrumentId] = useState('');
   const [serviceModalServiceType, setServiceModalServiceType] = useState('');
+  const [reportBreakdownInstrumentId, setReportBreakdownInstrumentId] = useState('');
+  const [resolveBreakdownServiceId, setResolveBreakdownServiceId] = useState('');
+  const [searchInputValue, setSearchInputValue] = useState('');
+  const [appliedSearchValue, setAppliedSearchValue] = useState('');
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState(initialInstrumentFilters);
+  const [draftFilters, setDraftFilters] = useState(initialInstrumentFilters);
 
   useEffect(() => {
-    setVisibleInstruments(instruments);
-  }, [instruments]);
+    const normalizedSearchValue = appliedSearchValue.trim().toLowerCase();
+
+    setVisibleInstruments(instruments.filter((instrument) => {
+      const instrumentStatus = getInstrumentStatus(instrument.id, services) === 'breakdown' ? 'Breakdown' : 'Working';
+      const searchableValues = [
+        instrument.name,
+        instrument.lab,
+        instrument.uid,
+        instrument.serialNo,
+        instrument.make,
+        instrument.modelNo,
+        instrument.lastServiceOn,
+        instrument.calibrated,
+        instrument.nextServiceOn,
+        instrumentStatus,
+      ];
+      const matchesSearch =
+        !normalizedSearchValue ||
+        searchableValues.some((value) => String(value ?? '').toLowerCase().includes(normalizedSearchValue));
+      const matchesFilters =
+        (!appliedFilters.status || instrumentStatus === appliedFilters.status)
+        && (!appliedFilters.lab || instrument.lab === appliedFilters.lab)
+        && (!appliedFilters.calibrated || instrument.calibrated === appliedFilters.calibrated)
+        && (!appliedFilters.make || instrument.make === appliedFilters.make);
+
+      return matchesSearch && matchesFilters;
+    }));
+  }, [appliedFilters, appliedSearchValue, instruments, services]);
 
   useEffect(() => {
     if (!initialToast) return undefined;
@@ -390,6 +694,62 @@ export default function InstrumentsPage({
     value: instrument.id,
     label: instrument.name,
   }));
+  const filterConfig = useMemo(() => [
+    {
+      key: 'status',
+      label: 'Status',
+      placeholder: 'All statuses',
+      options: ['Working', 'Breakdown'],
+    },
+    {
+      key: 'lab',
+      label: 'Lab',
+      placeholder: 'All labs',
+      options: getUniqueOptions(instruments, 'lab'),
+    },
+    {
+      key: 'calibrated',
+      label: 'Calibrated?',
+      placeholder: 'Any calibration state',
+      options: ['Yes', 'No'],
+    },
+    {
+      key: 'make',
+      label: 'Make',
+      placeholder: 'All makes',
+      options: getUniqueOptions(instruments, 'make'),
+    },
+  ], [instruments]);
+
+  const openFilters = () => {
+    setDraftFilters(appliedFilters);
+    setFiltersOpen(true);
+  };
+
+  const closeFilters = () => {
+    setDraftFilters(appliedFilters);
+    setFiltersOpen(false);
+  };
+
+  const applyFilters = () => {
+    setAppliedFilters(draftFilters);
+    setFiltersOpen(false);
+  };
+
+  const removeFilter = (filterKey) => {
+    const nextFilters = { ...appliedFilters, [filterKey]: '' };
+    setAppliedFilters(nextFilters);
+    setDraftFilters(nextFilters);
+  };
+
+  const applySearch = () => {
+    setAppliedSearchValue(searchInputValue.trim());
+  };
+
+  const removeSearch = () => {
+    setSearchInputValue('');
+    setAppliedSearchValue('');
+  };
 
   const openNewServiceModal = (instrumentId = '', serviceType = '') => {
     setServiceModalInstrumentId(instrumentId);
@@ -409,6 +769,56 @@ export default function InstrumentsPage({
         window.setTimeout(() => setToastVisible(false), 5000);
       });
     }
+  };
+
+  const selectedBreakdownInstrument = instruments.find((instrument) => instrument.id === reportBreakdownInstrumentId)
+    ?? visibleInstruments.find((instrument) => instrument.id === reportBreakdownInstrumentId);
+  const selectedResolveService = services.find((service) => service.id === resolveBreakdownServiceId);
+
+  const handleConfirmReportBreakdown = () => {
+    if (!selectedBreakdownInstrument) return;
+
+    const createdService = onCreateService?.({
+      instrumentId: selectedBreakdownInstrument.id,
+      serviceType: 'Breakdown',
+      serviceDate: getTodayIsoDate(),
+      details: `Breakdown reported for ${selectedBreakdownInstrument.name}.`,
+    });
+
+    setReportBreakdownInstrumentId('');
+
+    if (createdService) {
+      setToastMessage('Instrument marked as broken.');
+      setToastVisible(false);
+      window.requestAnimationFrame(() => {
+        setToastVisible(true);
+        window.setTimeout(() => setToastVisible(false), 5000);
+      });
+    }
+  };
+
+  const handleResolveBreakdown = (draft) => {
+    if (!selectedResolveService) return;
+
+    onServiceUpdate?.({
+      ...selectedResolveService,
+      status: 'Pending',
+      stage: 'pending-default',
+      resolvedOn: new Date().toLocaleDateString('en-GB'),
+      resolutionServiceDate: formatIsoDateForDisplay(draft.serviceDate),
+      resolutionVendor: draft.vendor,
+      resolutionAttachment: draft.attachment,
+      resolutionCost: draft.cost,
+      resolutionComments: draft.comments,
+    });
+
+    setResolveBreakdownServiceId('');
+    setToastMessage('Breakdown resolved.');
+    setToastVisible(false);
+    window.requestAnimationFrame(() => {
+      setToastVisible(true);
+      window.setTimeout(() => setToastVisible(false), 5000);
+    });
   };
 
   return (
@@ -432,9 +842,23 @@ export default function InstrumentsPage({
             onOpenService={onOpenService}
             onOpenAllServices={onOpenAllServices}
             onCreateFromAlert={(service) => openNewServiceModal(service.instrumentId, service.serviceType || service.type)}
+            onResolveBreakdown={(service) => setResolveBreakdownServiceId(service.id)}
           />
 
-          <DataTable>
+          <InstrumentTableToolbar
+            searchInputValue={searchInputValue}
+            appliedSearchValue={appliedSearchValue}
+            onSearchInputChange={setSearchInputValue}
+            onSearchSubmit={applySearch}
+            onRemoveSearch={removeSearch}
+            onOpenFilters={openFilters}
+            filterConfig={filterConfig}
+            appliedFilters={appliedFilters}
+            onRemoveFilter={removeFilter}
+            resultCount={visibleInstruments.length}
+          />
+
+          <DataTable stickyActionColumn>
             <thead>
               <tr>
                 <th scope="col">Name</th>
@@ -447,11 +871,16 @@ export default function InstrumentsPage({
                 <th scope="col">Last Service on</th>
                 <th scope="col">Calibrated?</th>
                 <th scope="col">Next Service on</th>
-                <th scope="col">Action</th>
+                <th scope="col" className="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
-              {visibleInstruments.map((instrument) => (
+              {visibleInstruments.map((instrument) => {
+                const instrumentStatus = getInstrumentStatus(instrument.id, services);
+                const unresolvedBreakdownService = getUnresolvedBreakdownService(services, instrument.id);
+                const isInstrumentBreakdown = instrumentStatus === 'breakdown' && unresolvedBreakdownService;
+
+                return (
                 <tr key={instrument.id}>
                   <td>
                     <a
@@ -463,7 +892,7 @@ export default function InstrumentsPage({
                     </a>
                   </td>
                   <td className="text-nowrap">
-                    <InstrumentStatusPill status={getInstrumentStatus(instrument.id, services)} />
+                    <InstrumentStatusPill status={instrumentStatus} />
                   </td>
                   <td className="text-nowrap">
                     {instrument.lab}
@@ -491,6 +920,24 @@ export default function InstrumentsPage({
                   </td>
                   <td className="text-nowrap">
                     <div className="d-flex align-items-center gap-2 flex-nowrap">
+                      {isInstrumentBreakdown ? (
+                        <PrimaryButton
+                          size="medium"
+                          leftIcon="check"
+                          onClick={() => setResolveBreakdownServiceId(unresolvedBreakdownService.id)}
+                        >
+                          Resolve
+                        </PrimaryButton>
+                      ) : (
+                        <SecondaryButton
+                          size="medium"
+                          tone="danger"
+                          leftIcon="alert-circle"
+                          onClick={() => setReportBreakdownInstrumentId(instrument.id)}
+                        >
+                          Report Breakdown
+                        </SecondaryButton>
+                      )}
                       <SecondaryButton
                         size="medium"
                         leftIcon="edit"
@@ -500,15 +947,23 @@ export default function InstrumentsPage({
                       </SecondaryButton>
                       <SecondaryButton
                         size="medium"
+                        tone="danger"
                         leftIcon="trash"
+                        aria-label={`Delete ${instrument.name}`}
                         onClick={() => onDeleteInstrument?.(instrument.id)}
-                      >
-                        Delete
-                      </SecondaryButton>
+                      />
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
+              {visibleInstruments.length === 0 ? (
+                <tr>
+                  <td colSpan={11} className="text-center text-secondary">
+                    No instruments found.
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </DataTable>
         </div>
@@ -522,6 +977,29 @@ export default function InstrumentsPage({
         showInstrumentField
         onCancel={() => setServiceModalOpen(false)}
         onSubmit={handleCreateService}
+      />
+
+      <ReportBreakdownConfirmationModal
+        open={Boolean(selectedBreakdownInstrument)}
+        instrumentName={selectedBreakdownInstrument?.name}
+        onCancel={() => setReportBreakdownInstrumentId('')}
+        onConfirm={handleConfirmReportBreakdown}
+      />
+
+      <ResolveBreakdownModal
+        open={Boolean(selectedResolveService)}
+        breakdownDate={selectedResolveService?.breakdownDate}
+        onCancel={() => setResolveBreakdownServiceId('')}
+        onSubmit={handleResolveBreakdown}
+      />
+
+      <InstrumentFiltersDrawer
+        open={filtersOpen}
+        filterConfig={filterConfig}
+        draftFilters={draftFilters}
+        onChange={(key, value) => setDraftFilters((current) => ({ ...current, [key]: value }))}
+        onApply={applyFilters}
+        onCancel={closeFilters}
       />
 
       <ToastNotification

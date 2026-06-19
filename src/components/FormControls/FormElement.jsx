@@ -2,6 +2,7 @@ import { useId } from 'react';
 import InputFieldDate from './InputFieldDate';
 import InputFieldDropdown from './InputFieldDropdown';
 import InputFieldFile from './InputFieldFile';
+import InputFieldRichDropdown from './InputFieldRichDropdown';
 import InputFieldSplitSelector from './InputFieldSplitSelector';
 import InputFieldText from './InputFieldText';
 import InputFieldTextarea from './InputFieldTextarea';
@@ -12,6 +13,7 @@ const inputByType = {
   dropdown: InputFieldDropdown,
   date: InputFieldDate,
   file: InputFieldFile,
+  'rich-dropdown': InputFieldRichDropdown,
   split: InputFieldSplitSelector,
   textarea: InputFieldTextarea,
 };

@@ -6,6 +6,7 @@ import Modal from '../components/Modal/Modal';
 import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
+import { getMaterialBatchOptions } from '../data/materialBatches';
 
 export const defaultMaterials = [
   {
@@ -114,6 +115,7 @@ const transactionTypeOptions = [
   { key: 'out-damaged', label: 'Out - Damaged' },
 ];
 const supplierOptions = ['Merck Life Science', 'SD Fine Chemicals', 'Loba Chemie', 'Rankem', 'Qualigens'];
+const batchDropdownOptions = getMaterialBatchOptions();
 const initialTransactionDraft = {
   type: 'in',
   quantity: '',
@@ -407,9 +409,9 @@ function MaterialTransactionModal({
               />
             </div>
           ) : (
-            <div className="col-12 col-md-6">
+            <div className="col-12">
               <FormElement
-                type="dropdown"
+                type="rich-dropdown"
                 mandatory
                 label="Supplier"
                 message={errors.supplier}
@@ -419,26 +421,43 @@ function MaterialTransactionModal({
                   placeholder: 'Select a supplier',
                   options: supplierOptions,
                   onChange: (event) => onChange('supplier', event.target.value),
-                  onBlur: () => onBlur('supplier', values.supplier),
+                  onBlur: (event) => onBlur('supplier', event?.target?.value ?? values.supplier),
                 }}
               />
             </div>
           )}
 
-          <div className="col-12 col-md-6">
-            <FormElement
-              type="text"
-              mandatory
-              label="Batch/Serial No."
-              message={errors.batchSerialNumber}
-              messageTone="error"
-              inputProps={{
-                value: values.batchSerialNumber,
-                placeholder: 'eg.',
-                onChange: (event) => onChange('batchSerialNumber', event.target.value),
-                onBlur: () => onBlur('batchSerialNumber', values.batchSerialNumber),
-              }}
-            />
+          <div className={isIn ? 'col-12 col-md-6' : 'col-12'}>
+            {isIn ? (
+              <FormElement
+                type="text"
+                mandatory
+                label="Batch/Serial No."
+                message={errors.batchSerialNumber}
+                messageTone="error"
+                inputProps={{
+                  value: values.batchSerialNumber,
+                  placeholder: 'eg.',
+                  onChange: (event) => onChange('batchSerialNumber', event.target.value),
+                  onBlur: () => onBlur('batchSerialNumber', values.batchSerialNumber),
+                }}
+              />
+            ) : (
+              <FormElement
+                type="rich-dropdown"
+                mandatory
+                label="Batch/Serial No."
+                message={errors.batchSerialNumber}
+                messageTone="error"
+                inputProps={{
+                  value: values.batchSerialNumber,
+                  placeholder: 'Select batch',
+                  options: batchDropdownOptions,
+                  onChange: (event) => onChange('batchSerialNumber', event.target.value),
+                  onBlur: (event) => onBlur('batchSerialNumber', event?.target?.value ?? values.batchSerialNumber),
+                }}
+              />
+            )}
           </div>
 
           {isIn ? (

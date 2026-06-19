@@ -280,7 +280,7 @@ export default function InstrumentDetailsPage({
                         <th scope="col">Next service date</th>
                       </>
                     )}
-                    <th scope="col">Status</th>
+                    {!isBreakdownTab ? <th scope="col">Status</th> : null}
                     <th scope="col">Details</th>
                     <th scope="col">Action</th>
                   </tr>
@@ -302,11 +302,13 @@ export default function InstrumentDetailsPage({
                             <td className="text-nowrap">{record.nextServiceDate}</td>
                           </>
                         )}
-                        <td className="text-nowrap">
-                          <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
-                            {statusPresentation.label}
-                          </StatusPill>
-                        </td>
+                        {!isBreakdownTab ? (
+                          <td className="text-nowrap">
+                            <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
+                              {statusPresentation.label}
+                            </StatusPill>
+                          </td>
+                        ) : null}
                         <td>{record.details}</td>
                         <td className="text-nowrap">
                           <SecondaryButton
@@ -327,7 +329,7 @@ export default function InstrumentDetailsPage({
                   })}
                   {visibleServiceRecords.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="text-center text-secondary">
+                      <td colSpan={isBreakdownTab ? 4 : 5} className="text-center text-secondary">
                         No services found.
                       </td>
                     </tr>
