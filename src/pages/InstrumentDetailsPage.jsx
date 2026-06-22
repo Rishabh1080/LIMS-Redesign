@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
+import BreakdownDetailModal from '../components/BreakdownDetailModal';
 import DataTable from '../components/DataTable';
 import InstrumentStatusPill, { getInstrumentStatus } from '../components/InstrumentStatusPill';
 import MoreActionButton from '../components/MoreActionButton';
 import NavSelector from '../components/NavSelector';
 import NewServiceModal from '../components/NewServiceModal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
+import ReportBreakdownConfirmationModal from '../components/ReportBreakdownConfirmationModal';
+import ResolveBreakdownModal from '../components/ResolveBreakdownModal';
 import SecondaryButton from '../components/SecondaryButton';
 import { ToastNotification } from '../components/FormControls';
 import StatusPill from '../components/StatusPill';
@@ -31,7 +34,14 @@ function formatDateForDisplay(value) {
   return value;
 }
 
-function InstrumentDetailsHeader({ instrumentName, status, onBack, onEditInstrument, onNewService }) {
+function InstrumentDetailsHeader({
+  instrumentName,
+  status,
+  onBack,
+  onEditInstrument,
+  onNewService,
+  onReportBreakdown,
+}) {
   const moreActionItems = [
     {
       key: 'edit',
@@ -39,6 +49,14 @@ function InstrumentDetailsHeader({ instrumentName, status, onBack, onEditInstrum
       leftIcon: 'edit',
       onClick: onEditInstrument,
     },
+    ...(status === 'breakdown'
+      ? []
+      : [{
+          key: 'report-breakdown',
+          label: 'Report Breakdown',
+          leftIcon: 'alert-circle',
+          onClick: onReportBreakdown,
+        }]),
   ];
 
   return (
@@ -89,6 +107,7 @@ export default function InstrumentDetailsPage({
   onBack,
   onNewService,
   onServiceCreated,
+  onServiceUpdate,
   onOpenService,
   onNavigate,
   sidebarCollapsed,
@@ -98,6 +117,9 @@ export default function InstrumentDetailsPage({
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
+  const [reportBreakdownModalOpen, setReportBreakdownModalOpen] = useState(false);
+  const [breakdownDetailRecordId, setBreakdownDetailRecordId] = useState('');
+  const [resolveBreakdownRecordId, setResolveBreakdownRecordId] = useState('');
   const resolvedRecords = useMemo(
     () => records ?? initialInstrumentServices.filter((record) => record.instrumentId === instrumentId),
     [instrumentId, records],
@@ -156,6 +178,8 @@ export default function InstrumentDetailsPage({
       ...(isBreakdown
         ? {
             reportedOn: now.toLocaleDateString('en-GB'),
+            reportedBy: 'Rishabh Gangwar',
+            breakdownComments: draft.details || `Breakdown reported for ${instrumentName}.`,
             breakdownDate: formatDateForDisplay(draft.serviceDate),
           }
         : {
@@ -179,6 +203,60 @@ export default function InstrumentDetailsPage({
   );
   const isBreakdownTab = activeTab === 'breakdown';
   const instrumentStatus = getInstrumentStatus(instrumentId, serviceRecords);
+  const activeBreakdownCount = serviceRecords.filter(
+    (record) => isBreakdownServiceType(record.serviceType || record.type) && !record.resolvedOn,
+  ).length;
+  const selectedBreakdownRecord = serviceRecords.find((record) => record.id === breakdownDetailRecordId);
+  const selectedResolveRecord = serviceRecords.find((record) => record.id === resolveBreakdownRecordId);
+
+  const handleReportBreakdown = () => {
+    const now = new Date();
+    const reportedOn = now.toLocaleDateString('en-GB');
+    const details = `Breakdown reported for ${instrumentName}.`;
+    const breakdownRecord = {
+      id: `BD-${Date.now()}`,
+      status: 'Not initialised',
+      stage: 'service-created',
+      serviceType: 'Breakdown',
+      instrumentId,
+      instrumentName,
+      reportedOn,
+      reportedBy: 'Rishabh Gangwar',
+      breakdownDate: reportedOn,
+      breakdownComments: details,
+      details,
+      summary: details,
+    };
+
+    setServiceRecords((current) => [breakdownRecord, ...current]);
+    onServiceCreated?.(breakdownRecord);
+    setReportBreakdownModalOpen(false);
+    setActiveTab('breakdown');
+    showToast('Instrument marked as broken.');
+  };
+
+  const handleResolveBreakdown = (draft) => {
+    if (!selectedResolveRecord) return;
+
+    const updatedRecord = {
+      ...selectedResolveRecord,
+      status: 'Pending',
+      stage: 'pending-default',
+      resolvedOn: new Date().toLocaleDateString('en-GB'),
+      resolutionServiceDate: formatDateForDisplay(draft.serviceDate),
+      resolutionVendor: draft.vendor,
+      resolutionAttachment: draft.attachment,
+      resolutionCost: draft.cost,
+      resolutionComments: draft.comments,
+    };
+
+    setServiceRecords((current) => (
+      current.map((record) => (record.id === updatedRecord.id ? updatedRecord : record))
+    ));
+    onServiceUpdate?.(updatedRecord);
+    setResolveBreakdownRecordId('');
+    showToast('Breakdown resolved.');
+  };
 
   return (
     <AppChrome
@@ -197,6 +275,7 @@ export default function InstrumentDetailsPage({
           onBack={onBack}
           onEditInstrument={onEditInstrument}
           onNewService={() => setServiceModalOpen(true)}
+          onReportBreakdown={() => setReportBreakdownModalOpen(true)}
         />
       }
     >
@@ -256,6 +335,7 @@ export default function InstrumentDetailsPage({
                   <NavSelector
                     key={tab.key}
                     active={activeTab === tab.key}
+                    count={tab.key === 'breakdown' ? activeBreakdownCount : undefined}
                     onClick={() => setActiveTab(tab.key)}
                   >
                     {tab.label}
@@ -311,18 +391,34 @@ export default function InstrumentDetailsPage({
                         ) : null}
                         <td>{record.details}</td>
                         <td className="text-nowrap">
-                          <SecondaryButton
-                            size="medium"
-                            leftIcon="eye"
-                            onClick={() =>
-                              onOpenService?.(record, {
-                                instrumentId,
-                                instrumentName,
-                              })
-                            }
-                          >
-                            View
-                          </SecondaryButton>
+                          <div className="d-flex align-items-center gap-2">
+                            <SecondaryButton
+                              size="medium"
+                              leftIcon="eye"
+                              onClick={() => {
+                                if (isBreakdownTab) {
+                                  setBreakdownDetailRecordId(record.id);
+                                  return;
+                                }
+
+                                onOpenService?.(record, {
+                                  instrumentId,
+                                  instrumentName,
+                                });
+                              }}
+                            >
+                              View
+                            </SecondaryButton>
+                            {isBreakdownTab && !record.resolvedOn ? (
+                              <PrimaryButton
+                                size="medium"
+                                leftIcon="check"
+                                onClick={() => setResolveBreakdownRecordId(record.id)}
+                              >
+                                Resolve
+                              </PrimaryButton>
+                            ) : null}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -354,6 +450,26 @@ export default function InstrumentDetailsPage({
         instrumentFieldDisabled
         onCancel={() => setServiceModalOpen(false)}
         onSubmit={handleCreateService}
+      />
+
+      <BreakdownDetailModal
+        open={Boolean(selectedBreakdownRecord)}
+        breakdown={selectedBreakdownRecord}
+        onClose={() => setBreakdownDetailRecordId('')}
+      />
+
+      <ReportBreakdownConfirmationModal
+        open={reportBreakdownModalOpen}
+        instrumentName={instrumentName}
+        onCancel={() => setReportBreakdownModalOpen(false)}
+        onConfirm={handleReportBreakdown}
+      />
+
+      <ResolveBreakdownModal
+        open={Boolean(selectedResolveRecord)}
+        breakdownDate={selectedResolveRecord?.breakdownDate}
+        onCancel={() => setResolveBreakdownRecordId('')}
+        onSubmit={handleResolveBreakdown}
       />
 
       <ToastNotification

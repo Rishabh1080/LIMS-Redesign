@@ -43,6 +43,24 @@ function formatInrAmount(value) {
   return `${groupedLeadingDigits},${lastThreeDigits}`;
 }
 
+function getIsoDate(value) {
+  const dateMatch = String(value ?? '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+
+  if (!dateMatch) return '';
+
+  const [, day, month, year] = dateMatch;
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
+function getTodayIsoDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 export default function ResolveBreakdownModal({
   open,
   breakdownDate = '',
@@ -51,6 +69,8 @@ export default function ResolveBreakdownModal({
 }) {
   const [draft, setDraft] = useState(getInitialResolveBreakdownDraft);
   const [errors, setErrors] = useState({});
+  const minimumServiceDate = getIsoDate(breakdownDate);
+  const maximumServiceDate = getTodayIsoDate();
 
   useEffect(() => {
     if (open) {
@@ -76,7 +96,17 @@ export default function ResolveBreakdownModal({
   const handleSubmit = () => {
     const nextErrors = {};
 
-    if (!draft.serviceDate) nextErrors.serviceDate = 'Service date is required.';
+    const selectedServiceDate = getIsoDate(draft.serviceDate);
+
+    if (!draft.serviceDate) {
+      nextErrors.serviceDate = 'Service date is required.';
+    } else if (
+      !selectedServiceDate
+      || (minimumServiceDate && selectedServiceDate < minimumServiceDate)
+      || selectedServiceDate > maximumServiceDate
+    ) {
+      nextErrors.serviceDate = 'Select a date between the breakdown date and today.';
+    }
     if (!draft.vendor) nextErrors.vendor = 'Vendor is required.';
     if (!draft.cost) nextErrors.cost = 'Cost is required.';
     if (!draft.comments.trim()) nextErrors.comments = 'Comments are required.';
@@ -131,6 +161,8 @@ export default function ResolveBreakdownModal({
               inputProps={{
                 value: draft.serviceDate,
                 placeholder: 'Select date',
+                min: minimumServiceDate,
+                max: maximumServiceDate,
                 onChange: (event) => update('serviceDate', event.target.value),
               }}
             />

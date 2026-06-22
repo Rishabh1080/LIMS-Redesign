@@ -69,6 +69,27 @@
   color: var(--smplfy-field-label-color);
 }
 
+.smplfy-document-management-page .breadcrumb,
+.smplfy-document-management-page .breadcrumb .btn {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.smplfy-document-management-page .breadcrumb {
+  row-gap: 4px;
+}
+
+.smplfy-document-management-page .breadcrumb-item {
+  min-width: 0;
+  white-space: normal;
+}
+
+.smplfy-document-management-page .breadcrumb-item .btn {
+  display: inline;
+  max-width: 100%;
+  white-space: normal;
+}
+
 .smplfy-document-management-page .smplfy-document-tree-toggle {
   min-height: 32px;
   font-size: var(--smplfy-button-font-size);

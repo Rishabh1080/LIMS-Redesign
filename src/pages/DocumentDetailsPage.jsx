@@ -69,51 +69,10 @@ function DocumentDetailsHeader({ document, onBack }) {
   );
 }
 
-function DetailRow({ label, value }) {
-  return (
-    <div className="col p-2">
-      <dt className="text-secondary fw-normal mb-1">{label}</dt>
-      <dd className="fw-medium text-truncate mb-0">{value || '-'}</dd>
-    </div>
-  );
-}
-
-function DocumentContentCard({ document }) {
-  const documentStatusLabel = document.documentState === 'pending' ? 'Pending' : 'Approved';
-  const detailRows = [
-    { label: 'Document Name', value: document.name },
-    { label: 'Created On', value: document.createdOn },
-    { label: 'Category', value: document.categoryName },
-    { label: 'Sub-Category', value: document.subCategoryName },
-    { label: 'File Name', value: document.fileName || '-' },
-    { label: 'Status', value: documentStatusLabel },
-  ];
-
+function DocumentContentCard() {
   return (
     <div className="smplfy-card card overflow-hidden">
       <section>
-        <div className="card-header d-flex align-items-center">
-          <h2 className="card-title mb-0">Document Details</h2>
-        </div>
-        <div className="card-body p-0">
-          <dl className="smplfy-sample-details-fields row row-cols-2 g-0 mb-0">
-            {detailRows.map((item) => (
-              <DetailRow key={item.label} label={item.label} value={item.value} />
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      <section className="border-top">
-        <div className="card-header d-flex align-items-center">
-          <h2 className="card-title mb-0">Description</h2>
-        </div>
-        <div className="card-body">
-          <p className="text-secondary mb-0">{document.description || 'No description added.'}</p>
-        </div>
-      </section>
-
-      <section className="border-top">
         <div className="card-header d-flex align-items-center">
           <h2 className="card-title mb-0">Preview</h2>
         </div>
@@ -199,7 +158,7 @@ export default function DocumentDetailsPage({
       <main className="smplfy-sample-details-page smplfy-document-details-page bg-body-tertiary p-4 min-vh-100">
         <div className="smplfy-sample-details-layout d-grid">
           <div className="smplfy-sample-details-main-panel">
-            <DocumentContentCard document={resolvedDocument} />
+            <DocumentContentCard />
           </div>
 
           <aside className="smplfy-sample-details-rail">

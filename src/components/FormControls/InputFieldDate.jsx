@@ -120,12 +120,21 @@ function createChangeEvent(sourceEvent, value) {
   };
 }
 
+function isWithinDateRange(isoDate, min, max) {
+  if (!isoDate) return true;
+  if (min && isoDate < min) return false;
+  if (max && isoDate > max) return false;
+  return true;
+}
+
 export default function InputFieldDate({
   state = 'default',
   value = '',
   placeholder = 'DD/MM/YYYY',
   className = '',
   disabled = false,
+  min,
+  max,
   onChange,
   onBlur,
   ...props
@@ -194,7 +203,7 @@ export default function InputFieldDate({
         onBlur={(event) => {
           const parsed = parseVisibleDate(event.target.value);
 
-          if (parsed) {
+          if (parsed && isWithinDateRange(parsed.iso, min, max)) {
             setTextValue(parsed.display);
             setPickerValue(parsed.iso);
             setLastValidText(parsed.display);
@@ -237,6 +246,8 @@ export default function InputFieldDate({
         tabIndex={-1}
         aria-hidden="true"
         value={pickerValue}
+        min={min}
+        max={max}
         disabled={isDisabled}
         onChange={(event) => {
           setPickerValue(event.target.value);

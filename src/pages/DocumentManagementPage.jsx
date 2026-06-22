@@ -285,6 +285,7 @@ function NewDocumentModal({
   values,
   errors,
   categoryOptions,
+  categoryLabel = 'Category',
   onChange,
   onCancel,
   onSubmit,
@@ -343,12 +344,12 @@ function NewDocumentModal({
         <FormElement
           type="dropdown"
           mandatory
-          label="Category"
+          label={categoryLabel}
           message={errors.category}
           messageTone="error"
           inputProps={{
             value: values.category,
-            placeholder: 'Select category',
+            placeholder: `Select ${categoryLabel.toLowerCase()}`,
             options: categoryOptions,
             onChange: (event) => onChange('category', event.target.value),
           }}
@@ -599,6 +600,176 @@ function DocumentNavigation({
   );
 }
 
+function StepBreadcrumb({
+  category,
+  subCategory,
+  onBack,
+  onShowCategories,
+  onShowSubCategories,
+}) {
+  return (
+    <div className="d-flex align-items-center gap-2 mb-3">
+      {category ? (
+        <SecondaryButton
+          size="medium"
+          leftIcon="chevron-left"
+          className="px-0 flex-shrink-0"
+          aria-label="Go back"
+          onClick={onBack}
+        />
+      ) : null}
+      <nav aria-label="Document location" className="min-w-0 flex-grow-1">
+        <ol className="breadcrumb mb-0 small flex-wrap">
+          <li className={joinClasses('breadcrumb-item', !category && 'active')} aria-current={!category ? 'page' : undefined}>
+            {category ? (
+              <button type="button" className="btn btn-link p-0 text-decoration-none small" onClick={onShowCategories}>
+                All folders
+              </button>
+            ) : 'All folders'}
+          </li>
+          {category ? (
+            <li
+              className={joinClasses('breadcrumb-item', !subCategory && 'active')}
+              aria-current={!subCategory ? 'page' : undefined}
+            >
+              {subCategory ? (
+                <button type="button" className="btn btn-link p-0 text-decoration-none small" onClick={onShowSubCategories}>
+                  {category.name}
+                </button>
+              ) : category.name}
+            </li>
+          ) : null}
+          {subCategory ? (
+            <li className="breadcrumb-item active" aria-current="page">
+              {subCategory.name}
+            </li>
+          ) : null}
+        </ol>
+      </nav>
+    </div>
+  );
+}
+
+function StepDocumentNavigation({
+  categories,
+  category,
+  subCategory,
+  documents,
+  selectedDocumentId,
+  recentlyDeselectedDocumentId,
+  onSelectCategory,
+  onSelectSubCategory,
+  onSelectDocument,
+  onClearRecentlyDeselectedDocument,
+  emptyDocumentMessage,
+  showDocumentStatusBadge = false,
+}) {
+  if (!category) {
+    return categories.length ? (
+      <nav aria-label="Document folders">
+        <div className="list-group list-group-flush gap-1">
+          {categories.map((categoryItem) => (
+            <button
+              type="button"
+              className="smplfy-list-group-item list-group-item list-group-item-action border-0 rounded-2 d-flex align-items-center gap-2 px-2 py-2 w-100 text-start"
+              key={categoryItem.id}
+              onClick={() => onSelectCategory(categoryItem.id)}
+            >
+              <AppIcon name="file-description" size={18} />
+              <span className="text-truncate flex-grow-1 fw-medium">{categoryItem.name}</span>
+              <span className="small text-secondary text-nowrap">
+                {categoryItem.subCategories.length}
+              </span>
+              <AppIcon name="chevron-right" size={16} />
+            </button>
+          ))}
+        </div>
+      </nav>
+    ) : (
+      <div className="text-secondary px-2 py-3" role="status">No folders found.</div>
+    );
+  }
+
+  if (!subCategory) {
+    return category.subCategories.length ? (
+      <nav aria-label={`${category.name} folders`}>
+        <div className="list-group list-group-flush gap-1">
+          {category.subCategories.map((subCategoryItem) => (
+            <button
+              type="button"
+              className="smplfy-list-group-item list-group-item list-group-item-action border-0 rounded-2 d-flex align-items-center gap-2 px-2 py-2 w-100 text-start"
+              key={subCategoryItem.id}
+              onClick={() => onSelectSubCategory(subCategoryItem.id)}
+            >
+              <AppIcon name="file-description" size={18} />
+              <span className="text-truncate flex-grow-1 fw-medium">{subCategoryItem.name}</span>
+              <span className="small text-secondary text-nowrap">
+                {subCategoryItem.documents.length}
+              </span>
+              <AppIcon name="chevron-right" size={16} />
+            </button>
+          ))}
+        </div>
+      </nav>
+    ) : (
+      <div className="text-secondary px-2 py-3" role="status">No folders found.</div>
+    );
+  }
+
+  return documents.length ? (
+    <nav aria-label={subCategory.name}>
+      <div className="list-group list-group-flush gap-1">
+        {documents.map((document) => (
+          <button
+            type="button"
+            className={joinClasses(
+              'smplfy-list-group-item',
+              'list-group-item',
+              'list-group-item-action',
+              'border-0',
+              'rounded-2',
+              'd-flex',
+              'align-items-center',
+              'gap-2',
+              'px-2',
+              'py-1',
+              'w-100',
+              'text-start',
+              selectedDocumentId === document.id && 'active',
+              recentlyDeselectedDocumentId === document.id && 'smplfy-document-recently-deselected',
+            )}
+            aria-current={selectedDocumentId === document.id ? 'true' : undefined}
+            key={document.id}
+            onClick={(event) => onSelectDocument(document.id, event)}
+            onPointerLeave={() => {
+              if (recentlyDeselectedDocumentId === document.id) {
+                onClearRecentlyDeselectedDocument();
+              }
+            }}
+          >
+            <AppIcon name="file-text" size={16} />
+            <span className="text-truncate flex-grow-1 fw-medium">{document.name}</span>
+            {showDocumentStatusBadge && document.documentState === 'pending' ? (
+              <Badge tone="warning" shape="pill" className="smplfy-document-status-badge">
+                Pending
+              </Badge>
+            ) : null}
+            {document.expiringSoon && !(showDocumentStatusBadge && document.documentState === 'pending') ? (
+              <Badge tone="danger" shape="pill" className="smplfy-document-expiring-badge">
+                Expiring soon
+              </Badge>
+            ) : null}
+          </button>
+        ))}
+      </div>
+    </nav>
+  ) : (
+    <div className="smplfy-document-empty-state text-secondary px-2 py-3" role="status">
+      {emptyDocumentMessage}
+    </div>
+  );
+}
+
 function DocumentPreviewEmptyState() {
   return (
     <section className="smplfy-card smplfy-document-preview-card card h-100">
@@ -662,6 +833,7 @@ export default function DocumentManagementPage({
   title = 'Document Management',
   activeNav = 'document-management',
   combinedMode = false,
+  stepNavigationMode = false,
   onNavigate,
   onOpenDocumentDetails,
   sidebarCollapsed,
@@ -674,6 +846,8 @@ export default function DocumentManagementPage({
   const [documentStatus, setDocumentStatus] = useState(combinedMode ? 'all' : 'approved');
   const [selectedDocumentId, setSelectedDocumentId] = useState(null);
   const [recentlyDeselectedDocumentId, setRecentlyDeselectedDocumentId] = useState(null);
+  const [stepCategoryId, setStepCategoryId] = useState(null);
+  const [stepSubCategoryId, setStepSubCategoryId] = useState(null);
   const [expandedCategoryIds, setExpandedCategoryIds] = useState(() => allCategoryIds);
   const [expandedSubCategoryIds, setExpandedSubCategoryIds] = useState(() => allSubCategoryIds);
   const [newDocumentModalOpen, setNewDocumentModalOpen] = useState(false);
@@ -688,12 +862,49 @@ export default function DocumentManagementPage({
     [documentStatus, documentsTree],
   );
   const visibleDocumentCount = useMemo(() => countDocuments(visibleCategories), [visibleCategories]);
+  const statusCategories = useMemo(
+    () => filterDocumentTree(documentsTree, '', documentStatus),
+    [documentStatus, documentsTree],
+  );
+  const stepCategory = useMemo(
+    () => statusCategories.find((category) => category.id === stepCategoryId) ?? null,
+    [statusCategories, stepCategoryId],
+  );
+  const stepSubCategory = useMemo(
+    () => stepCategory?.subCategories.find((subCategory) => subCategory.id === stepSubCategoryId) ?? null,
+    [stepCategory, stepSubCategoryId],
+  );
+  const normalizedStepSearchQuery = debouncedSearchQuery.trim().toLowerCase();
+  const stepVisibleCategories = useMemo(
+    () => statusCategories.filter((category) => (
+      !normalizedStepSearchQuery || category.name.toLowerCase().includes(normalizedStepSearchQuery)
+    )),
+    [normalizedStepSearchQuery, statusCategories],
+  );
+  const stepVisibleSubCategories = useMemo(
+    () => (stepCategory?.subCategories ?? []).filter((subCategory) => (
+      !normalizedStepSearchQuery || subCategory.name.toLowerCase().includes(normalizedStepSearchQuery)
+    )),
+    [normalizedStepSearchQuery, stepCategory],
+  );
+  const stepVisibleDocuments = useMemo(
+    () => (stepSubCategory?.documents ?? []).filter((document) => (
+      !normalizedStepSearchQuery || document.name.toLowerCase().includes(normalizedStepSearchQuery)
+    )),
+    [normalizedStepSearchQuery, stepSubCategory],
+  );
   const documentCategoryOptions = useMemo(() => getSubCategoryOptions(documentTree), []);
-  const searchLabel = combinedMode
-    ? `Search in ${totalDocumentCount} documents`
-    : documentStatus === 'pending'
-      ? 'Search in pending docs'
-      : 'Search in approved docs';
+  const searchLabel = stepNavigationMode
+    ? stepSubCategory
+      ? `Search in ${stepSubCategory.name}`
+      : stepCategory
+        ? `Search in ${stepCategory.name}`
+        : 'Search folders'
+    : combinedMode
+      ? `Search in ${totalDocumentCount} documents`
+      : documentStatus === 'pending'
+        ? 'Search in pending docs'
+        : 'Search in approved docs';
   const documentCountLabel = debouncedSearchQuery.trim()
     ? `${visibleDocumentCount} ${visibleDocumentCount === 1 ? 'document' : 'documents'} found for "${debouncedSearchQuery.trim()}"`
     : combinedMode
@@ -720,6 +931,10 @@ export default function DocumentManagementPage({
     setDocumentStatus(nextDocumentStatus);
     setSelectedDocumentId(null);
     setRecentlyDeselectedDocumentId(null);
+    setStepCategoryId(null);
+    setStepSubCategoryId(null);
+    setSearchQuery('');
+    setDebouncedSearchQuery('');
   };
   const handleNewDocumentChange = (field, value) => {
     setNewDocumentDraft((current) => ({
@@ -745,7 +960,7 @@ export default function DocumentManagementPage({
     }
 
     if (!newDocumentDraft.category) {
-      nextErrors.category = 'Category is required.';
+      nextErrors.category = `${stepNavigationMode ? 'Folder' : 'Category'} is required.`;
     }
 
     if (newDocumentDraft.file) {
@@ -806,6 +1021,14 @@ export default function DocumentManagementPage({
       );
     }
 
+    if (stepNavigationMode) {
+      setStepCategoryId(nextDocumentPath.categoryId);
+      setStepSubCategoryId(nextDocumentPath.subCategoryId);
+      setSelectedDocumentId(documentId);
+      setSearchQuery('');
+      setDebouncedSearchQuery('');
+    }
+
     handleCloseNewDocumentModal();
   };
 
@@ -820,9 +1043,11 @@ export default function DocumentManagementPage({
     setDocumentStatus(combinedMode ? 'all' : 'approved');
     setSelectedDocumentId(null);
     setRecentlyDeselectedDocumentId(null);
+    setStepCategoryId(null);
+    setStepSubCategoryId(null);
     setSearchQuery('');
     setDebouncedSearchQuery('');
-  }, [combinedMode]);
+  }, [combinedMode, stepNavigationMode]);
   const toggleCategory = (categoryId) => {
     if (selectedDocumentPath.categoryId === categoryId && expandedCategoryIds.includes(categoryId)) {
       return;
@@ -884,6 +1109,36 @@ export default function DocumentManagementPage({
         : current,
     );
   };
+  const showStepCategories = () => {
+    setStepCategoryId(null);
+    setStepSubCategoryId(null);
+    setSelectedDocumentId(null);
+    setRecentlyDeselectedDocumentId(null);
+    setSearchQuery('');
+    setDebouncedSearchQuery('');
+  };
+  const showStepSubCategories = () => {
+    setStepSubCategoryId(null);
+    setSelectedDocumentId(null);
+    setRecentlyDeselectedDocumentId(null);
+    setSearchQuery('');
+    setDebouncedSearchQuery('');
+  };
+  const handleSelectStepCategory = (categoryId) => {
+    setStepCategoryId(categoryId);
+    setStepSubCategoryId(null);
+    setSelectedDocumentId(null);
+    setRecentlyDeselectedDocumentId(null);
+    setSearchQuery('');
+    setDebouncedSearchQuery('');
+  };
+  const handleSelectStepSubCategory = (subCategoryId) => {
+    setStepSubCategoryId(subCategoryId);
+    setSelectedDocumentId(null);
+    setRecentlyDeselectedDocumentId(null);
+    setSearchQuery('');
+    setDebouncedSearchQuery('');
+  };
 
   return (
     <AppChrome
@@ -922,27 +1177,55 @@ export default function DocumentManagementPage({
 
               <section className="smplfy-card card h-100 border-0 shadow-none">
                 <div className="card-body">
-                  <DocumentSearch value={searchQuery} onChange={setSearchQuery} label={searchLabel} />
+                  {stepNavigationMode ? (
+                    <>
+                      <DocumentSearch value={searchQuery} onChange={setSearchQuery} label={searchLabel} />
+                      <StepBreadcrumb
+                        category={stepCategory}
+                        subCategory={stepSubCategory}
+                        onBack={stepSubCategory ? showStepSubCategories : showStepCategories}
+                        onShowCategories={showStepCategories}
+                        onShowSubCategories={showStepSubCategories}
+                      />
+                      <StepDocumentNavigation
+                        categories={stepVisibleCategories}
+                        category={stepCategory ? { ...stepCategory, subCategories: stepVisibleSubCategories } : null}
+                        subCategory={stepSubCategory}
+                        documents={stepVisibleDocuments}
+                        selectedDocumentId={selectedDocumentId}
+                        recentlyDeselectedDocumentId={recentlyDeselectedDocumentId}
+                        onSelectCategory={handleSelectStepCategory}
+                        onSelectSubCategory={handleSelectStepSubCategory}
+                        onClearRecentlyDeselectedDocument={() => setRecentlyDeselectedDocumentId(null)}
+                        onSelectDocument={handleSelectDocument}
+                        emptyDocumentMessage={documentStatus === 'pending' ? 'No pending docs' : 'No documents found'}
+                        showDocumentStatusBadge={combinedMode}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <DocumentSearch value={searchQuery} onChange={setSearchQuery} label={searchLabel} />
+                      <DocumentTreeToggle
+                        countLabel={documentCountLabel}
+                        shouldExpandTree={shouldExpandTree}
+                        onClick={handleToggleTreeExpansion}
+                      />
 
-                  <DocumentTreeToggle
-                    countLabel={documentCountLabel}
-                    shouldExpandTree={shouldExpandTree}
-                    onClick={handleToggleTreeExpansion}
-                  />
-
-                  <DocumentNavigation
-                    categories={visibleCategories}
-                    selectedDocumentId={selectedDocumentId}
-                    recentlyDeselectedDocumentId={recentlyDeselectedDocumentId}
-                    expandedCategoryIds={expandedCategoryIds}
-                    expandedSubCategoryIds={expandedSubCategoryIds}
-                    onToggleCategory={toggleCategory}
-                    onToggleSubCategory={toggleSubCategory}
-                    onClearRecentlyDeselectedDocument={() => setRecentlyDeselectedDocumentId(null)}
-                    onSelectDocument={handleSelectDocument}
-                    emptyDocumentMessage={documentStatus === 'pending' ? 'No pending docs' : 'No documents found'}
-                    showDocumentStatusBadge={combinedMode}
-                  />
+                      <DocumentNavigation
+                        categories={visibleCategories}
+                        selectedDocumentId={selectedDocumentId}
+                        recentlyDeselectedDocumentId={recentlyDeselectedDocumentId}
+                        expandedCategoryIds={expandedCategoryIds}
+                        expandedSubCategoryIds={expandedSubCategoryIds}
+                        onToggleCategory={toggleCategory}
+                        onToggleSubCategory={toggleSubCategory}
+                        onClearRecentlyDeselectedDocument={() => setRecentlyDeselectedDocumentId(null)}
+                        onSelectDocument={handleSelectDocument}
+                        emptyDocumentMessage={documentStatus === 'pending' ? 'No pending docs' : 'No documents found'}
+                        showDocumentStatusBadge={combinedMode}
+                      />
+                    </>
+                  )}
                 </div>
               </section>
             </aside>
@@ -964,6 +1247,7 @@ export default function DocumentManagementPage({
         values={newDocumentDraft}
         errors={newDocumentErrors}
         categoryOptions={documentCategoryOptions}
+        categoryLabel={stepNavigationMode ? 'Folder' : 'Category'}
         onChange={handleNewDocumentChange}
         onCancel={handleCloseNewDocumentModal}
         onSubmit={handleSubmitNewDocument}

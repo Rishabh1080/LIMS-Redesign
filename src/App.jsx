@@ -14,7 +14,6 @@ import LeaveRecordsPage from './pages/LeaveRecordsPage';
 import MaterialsPage from './pages/MaterialsPage';
 import MaterialDetailsPage from './pages/MaterialDetailsPage';
 import AllServicesPage from './pages/AllServicesPage';
-import BreakdownDetailsPage from './pages/BreakdownDetailsPage';
 import InstrumentsPage from './pages/InstrumentsPage';
 import InstrumentDetailsPage from './pages/InstrumentDetailsPage';
 import NewInstrumentPage from './pages/NewInstrumentPage';
@@ -343,6 +342,10 @@ export default function App() {
   };
 
   const openServiceDetails = (service, options = {}) => {
+    if (isBreakdownServiceType(service?.serviceType || service?.type)) {
+      return;
+    }
+
     const instrumentId = options.instrumentId ?? service?.instrumentId ?? instrumentDetailsState.id;
     const instrumentName = options.instrumentName ?? service?.instrumentName ?? instrumentDetailsState.name;
     const sourcePage = options.sourcePage ?? (activePage === 'all-services' ? 'all-services' : 'instrument-details');
@@ -366,12 +369,22 @@ export default function App() {
       instrumentName: instrument.name,
       sourcePage,
     });
-    setActivePage(isBreakdownServiceType(service?.serviceType || service?.type) ? 'breakdown-details' : 'service-details');
+    setActivePage('service-details');
   };
 
   const openDocumentDetails = (document, options = {}) => {
-    const sourcePage = options.sourcePage ?? (activePage === 'document-management-2' ? 'document-management-2' : 'document-management');
-    const sourceLabel = options.sourceLabel ?? (sourcePage === 'document-management-2' ? 'Document Management 2' : 'Document Management');
+    const sourcePage = options.sourcePage ?? (
+      activePage === 'document-management-2' || activePage === 'document-management-3'
+        ? activePage
+        : 'document-management'
+    );
+    const sourceLabel = options.sourceLabel ?? (
+      sourcePage === 'document-management-2'
+        ? 'Document Management 2'
+        : sourcePage === 'document-management-3'
+          ? 'Document Management 3'
+          : 'Document Management'
+    );
 
     setDocumentDetailsState({
       document,
@@ -426,6 +439,8 @@ export default function App() {
       ...(isBreakdown
         ? {
             reportedOn: now.toLocaleDateString('en-GB'),
+            reportedBy: 'Rishabh Gangwar',
+            breakdownComments: details,
             breakdownDate: formatDateForDisplay(draft.serviceDate),
           }
         : {
@@ -672,7 +687,11 @@ export default function App() {
       return;
     }
 
-    if (nextPage === 'document-management' || nextPage === 'document-management-2') {
+    if (
+      nextPage === 'document-management'
+      || nextPage === 'document-management-2'
+      || nextPage === 'document-management-3'
+    ) {
       setActivePage(nextPage);
       return;
     }
@@ -1008,6 +1027,23 @@ export default function App() {
     );
   }
 
+  if (activePage === 'document-management-3') {
+    return (
+      <DocumentManagementPage
+        key="document-management-3"
+        title="Document Management 3"
+        activeNav="document-management-3"
+        combinedMode
+        stepNavigationMode
+        onNavigate={handleNavigate}
+        onOpenDocumentDetails={openDocumentDetails}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
   if (activePage === 'document-details') {
     return (
       <DocumentDetailsPage
@@ -1169,6 +1205,7 @@ export default function App() {
         initialToast={instrumentDetailsState.initialToast}
         onBack={() => setActivePage('instruments')}
         onServiceCreated={handleServiceCreated}
+        onServiceUpdate={handleServiceUpdated}
         onEditInstrument={() =>
           openEditInstrument(instrumentDetailsState.instrument ?? instrumentDetailsState.id, {
             sourcePage: 'instrument-details',
@@ -1189,25 +1226,6 @@ export default function App() {
         service={serviceDetailsState.service}
         instrumentId={serviceDetailsState.instrumentId}
         instrumentName={serviceDetailsState.instrumentName}
-        onBack={() =>
-          setActivePage(serviceDetailsState.sourcePage === 'all-services' ? 'all-services' : 'instrument-details')
-        }
-        onServiceUpdate={handleServiceUpdated}
-        onNavigate={handleNavigate}
-        sidebarCollapsed={sidebarCollapsed}
-        onSidebarCollapsedChange={setSidebarCollapsed}
-        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
-      />
-    );
-  }
-
-  if (activePage === 'breakdown-details') {
-    return (
-      <BreakdownDetailsPage
-        service={serviceDetailsState.service}
-        instrumentId={serviceDetailsState.instrumentId}
-        instrumentName={serviceDetailsState.instrumentName}
-        sourcePage={serviceDetailsState.sourcePage}
         onBack={() =>
           setActivePage(serviceDetailsState.sourcePage === 'all-services' ? 'all-services' : 'instrument-details')
         }

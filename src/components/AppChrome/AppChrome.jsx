@@ -13,7 +13,6 @@ const navigationSections = [
     title: 'HOME',
     items: [
       { label: 'Dashboard', icon: 'home', key: 'dashboard' },
-      { label: 'Admin Hub', icon: 'admin-hub', key: 'admin-hub', opensInNewTab: true },
     ],
   },
   {
@@ -23,6 +22,7 @@ const navigationSections = [
       { label: 'Test Requests', icon: 'test-requests', key: 'test-requests-home', badgeKey: 'test-requests-home' },
       { label: 'Document Management', icon: 'file-description', key: 'document-management' },
       { label: 'Document Management 2', icon: 'file-description', key: 'document-management-2' },
+      { label: 'Document Management 3', icon: 'file-description', key: 'document-management-3' },
       { label: 'Samples Workspace', icon: 'workspace', key: 'samples-workspace' },
       { label: 'All Samples', icon: 'all-samples', key: 'all-samples' },
       { label: 'Environment Data', icon: 'cloud-data', key: 'environment-data' },
@@ -30,11 +30,6 @@ const navigationSections = [
       { label: 'Materials', icon: 'materials', key: 'materials' },
       { label: 'Instruments', icon: 'tool', key: 'instruments' },
       { label: 'Trainings', icon: 'checklist', key: 'trainings' },
-    ],
-  },
-  {
-    title: 'Custom Forms',
-    items: [
       {
         type: 'folder',
         label: 'Folder 1',
@@ -50,6 +45,13 @@ const navigationSections = [
     ],
   },
 ];
+
+const adminHubNavigationItem = {
+  label: 'Admin Hub',
+  icon: 'admin-hub',
+  key: 'admin-hub',
+  opensInNewTab: true,
+};
 
 function SidebarNavButton({
   item,
@@ -245,6 +247,18 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
             </div>
           </section>
         ))}
+      </div>
+      <div className="sidebar-footer border-top">
+        <SidebarNavButton
+          item={adminHubNavigationItem}
+          activeNav={activeNav}
+          collapsed={collapsed}
+          onItemClick={onItemClick}
+          onNavigate={onNavigate}
+          onTooltipShow={showFloatingTooltip}
+          onTooltipHide={hideFloatingTooltip}
+          badgeCounts={badgeCounts}
+        />
       </div>
       {collapsed && floatingTooltip ? (
         <span

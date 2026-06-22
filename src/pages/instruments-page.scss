@@ -134,15 +134,6 @@
   line-height: var(--smplfy-nav-link-line-height);
 }
 
-.modal-dialog.smplfy-report-breakdown-modal .modal-body {
-  color: var(--smplfy-primitive-neutral-900);
-  line-height: 160%;
-}
-
-.modal-dialog.smplfy-report-breakdown-modal .modal-footer {
-  border-top: var(--bs-border-width) solid var(--smplfy-primitive-neutral-300);
-}
-
 @media (max-width: 767.98px) {
   .smplfy-instruments-page {
     --smplfy-instruments-card-height: 344px;

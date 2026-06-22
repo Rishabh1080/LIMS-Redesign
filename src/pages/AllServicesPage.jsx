@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
+import BreakdownDetailModal from '../components/BreakdownDetailModal';
 import DataTable from '../components/DataTable';
 import { ToastNotification } from '../components/FormControls';
 import NavSelector from '../components/NavSelector';
@@ -70,6 +71,7 @@ export default function AllServicesPage({
   sidebarBadgeCounts,
 }) {
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
+  const [breakdownDetailServiceId, setBreakdownDetailServiceId] = useState('');
   const [resolveBreakdownServiceId, setResolveBreakdownServiceId] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -109,6 +111,7 @@ export default function AllServicesPage({
     services.filter((service) => normalizeServiceType(service.serviceType || service.type) === resolvedActiveTab)
   ), [resolvedActiveTab, services]);
   const isBreakdownTab = isBreakdownServiceType(resolvedActiveTab);
+  const selectedBreakdownService = services.find((service) => service.id === breakdownDetailServiceId);
   const selectedResolveService = services.find((service) => service.id === resolveBreakdownServiceId);
 
   const showToast = (message) => {
@@ -231,29 +234,35 @@ export default function AllServicesPage({
                         ) : null}
                         <td>{service.details}</td>
                         <td className="text-nowrap">
-                          {isBreakdownTab && !service.resolvedOn ? (
-                            <PrimaryButton
-                              size="medium"
-                              leftIcon="check"
-                              onClick={() => setResolveBreakdownServiceId(service.id)}
-                            >
-                              Resolve
-                            </PrimaryButton>
-                          ) : (
+                          <div className="d-flex align-items-center gap-2">
                             <SecondaryButton
                               size="medium"
                               leftIcon="eye"
-                              onClick={() =>
+                              onClick={() => {
+                                if (isBreakdownTab) {
+                                  setBreakdownDetailServiceId(service.id);
+                                  return;
+                                }
+
                                 onOpenService?.(service, {
                                   instrumentId: service.instrumentId,
                                   instrumentName: service.instrumentName,
                                   sourcePage: 'all-services',
-                                })
-                              }
+                                });
+                              }}
                             >
                               View
                             </SecondaryButton>
-                          )}
+                            {isBreakdownTab && !service.resolvedOn ? (
+                              <PrimaryButton
+                                size="medium"
+                                leftIcon="check"
+                                onClick={() => setResolveBreakdownServiceId(service.id)}
+                              >
+                                Resolve
+                              </PrimaryButton>
+                            ) : null}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -278,6 +287,12 @@ export default function AllServicesPage({
         showInstrumentField
         onCancel={() => setServiceModalOpen(false)}
         onSubmit={handleCreateService}
+      />
+
+      <BreakdownDetailModal
+        open={Boolean(selectedBreakdownService)}
+        breakdown={selectedBreakdownService}
+        onClose={() => setBreakdownDetailServiceId('')}
       />
 
       <ResolveBreakdownModal
