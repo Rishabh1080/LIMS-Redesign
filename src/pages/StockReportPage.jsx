@@ -1,10 +1,52 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import DataTable from '../components/DataTable';
+import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import { defaultMaterials } from './MaterialsPage';
 import './stock-report-page.scss';
+
+function padDateSegment(value) {
+  return String(value).padStart(2, '0');
+}
+
+function getTodayIsoDate() {
+  const today = new Date();
+  return [
+    today.getFullYear(),
+    padDateSegment(today.getMonth() + 1),
+    padDateSegment(today.getDate()),
+  ].join('-');
+}
+
+function getTodayDisplayDate() {
+  const today = new Date();
+  return [
+    padDateSegment(today.getDate()),
+    padDateSegment(today.getMonth() + 1),
+    today.getFullYear(),
+  ].join('/');
+}
+
+function parseDisplayDateToIso(value) {
+  const [day, month, year] = String(value ?? '').split('/').map(Number);
+  const parsedDate = new Date(year, month - 1, day);
+
+  if (
+    parsedDate.getFullYear() !== year ||
+    parsedDate.getMonth() !== month - 1 ||
+    parsedDate.getDate() !== day
+  ) {
+    return '';
+  }
+
+  return [
+    parsedDate.getFullYear(),
+    padDateSegment(parsedDate.getMonth() + 1),
+    padDateSegment(parsedDate.getDate()),
+  ].join('-');
+}
 
 function getQuantityValue(value) {
   const numericValue = Number(value);
@@ -68,7 +110,23 @@ export default function StockReportPage({
   onSidebarCollapsedChange,
   sidebarBadgeCounts,
 }) {
-  const materialGroups = useMemo(() => groupMaterialsByClassification(materials), [materials]);
+  const todayIsoDate = getTodayIsoDate();
+  const [asOnDate, setAsOnDate] = useState(getTodayDisplayDate);
+  const [appliedAsOnDate, setAppliedAsOnDate] = useState(getTodayDisplayDate);
+  const materialGroups = useMemo(
+    () => groupMaterialsByClassification(materials),
+    [appliedAsOnDate, materials],
+  );
+  const handleApplyDate = () => {
+    const selectedIsoDate = parseDisplayDateToIso(asOnDate);
+
+    if (!selectedIsoDate || selectedIsoDate > todayIsoDate) {
+      setAsOnDate(appliedAsOnDate);
+      return;
+    }
+
+    setAppliedAsOnDate(asOnDate);
+  };
 
   return (
     <AppChrome
@@ -85,38 +143,60 @@ export default function StockReportPage({
     >
       <main className="smplfy-stock-report-page bg-body-tertiary p-4 min-vh-100">
         <div className="smplfy-stock-report-content container-fluid px-0 d-grid gap-4 mx-auto">
-          {materialGroups.map((group) => (
-            <section key={group.classification} className="d-grid gap-3">
-              <h2 className="h6 fw-semibold text-dark mb-0">{group.classification}</h2>
-              <DataTable className="smplfy-stock-report-table">
-                <colgroup>
-                  <col className="smplfy-stock-report-col-name" />
-                  <col className="smplfy-stock-report-col-min" />
-                  <col className="smplfy-stock-report-col-current" />
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th scope="col">Material name</th>
-                    <th scope="col">Min quantity</th>
-                    <th scope="col">Current quantity</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {group.materials.map((material) => {
-                    const isBelowMinimum = getQuantityValue(material.currentQuantity) < getQuantityValue(material.minQuantity);
+          <div className="row g-3 align-items-end">
+            <div className="col-12 col-sm-6 col-lg-3">
+              <FormElement
+                type="date"
+                label="As on"
+                inputProps={{
+                  value: asOnDate,
+                  max: todayIsoDate,
+                  placeholder: 'DD/MM/YYYY',
+                  onChange: (event) => setAsOnDate(event.target.value),
+                }}
+              />
+            </div>
+            <div className="col-auto">
+              <PrimaryButton onClick={handleApplyDate}>
+                Apply
+              </PrimaryButton>
+            </div>
+          </div>
 
-                    return (
-                      <tr key={material.id} className={isBelowMinimum ? 'smplfy-stock-report-low-stock' : ''}>
-                        <td>{material.name}</td>
-                        <td className="text-nowrap">{formatQuantity(material.minQuantity, material.unit)}</td>
-                        <td className="text-nowrap">{formatQuantity(material.currentQuantity, material.unit)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </DataTable>
-            </section>
-          ))}
+          <div key={appliedAsOnDate} className="d-grid gap-4">
+            {materialGroups.map((group) => (
+              <section key={group.classification} className="d-grid gap-3">
+                <h2 className="h6 fw-semibold text-dark mb-0">{group.classification}</h2>
+                <DataTable className="smplfy-stock-report-table">
+                  <colgroup>
+                    <col className="smplfy-stock-report-col-name" />
+                    <col className="smplfy-stock-report-col-min" />
+                    <col className="smplfy-stock-report-col-current" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th scope="col">Material name</th>
+                      <th scope="col">Min quantity</th>
+                      <th scope="col">Current quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {group.materials.map((material) => {
+                      const isBelowMinimum = getQuantityValue(material.currentQuantity) < getQuantityValue(material.minQuantity);
+
+                      return (
+                        <tr key={material.id} className={isBelowMinimum ? 'smplfy-stock-report-low-stock' : ''}>
+                          <td>{material.name}</td>
+                          <td className="text-nowrap">{formatQuantity(material.minQuantity, material.unit)}</td>
+                          <td className="text-nowrap">{formatQuantity(material.currentQuantity, material.unit)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </DataTable>
+              </section>
+            ))}
+          </div>
         </div>
       </main>
     </AppChrome>

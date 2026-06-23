@@ -1,4 +1,9 @@
-import { IconLayoutBottombarCollapse, IconLayoutNavbarCollapse } from '@tabler/icons-react';
+import {
+  IconFolder,
+  IconFolderOpen,
+  IconLayoutBottombarCollapse,
+  IconLayoutNavbarCollapse,
+} from '@tabler/icons-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
@@ -485,6 +490,7 @@ function DocumentNavigation({
   onSelectDocument,
   emptyDocumentMessage,
   showDocumentStatusBadge = false,
+  showFolderIcons = false,
 }) {
   if (!categories.length) {
     return (
@@ -494,11 +500,13 @@ function DocumentNavigation({
     );
   }
 
+  const useFolderIcons = showFolderIcons || showDocumentStatusBadge;
+
   return (
-    <nav aria-label="Document folders">
-      <div className="accordion accordion-flush">
+    <nav className={joinClasses(useFolderIcons && 'smplfy-document-tree-lines')} aria-label="Document folders">
+      <div className="accordion accordion-flush smplfy-document-category-tree">
         {categories.map((category) => (
-          <div className="accordion-item" key={category.id}>
+          <div className="accordion-item smplfy-document-category-item" key={category.id}>
             <h2 className="accordion-header">
               <button
                 type="button"
@@ -507,7 +515,13 @@ function DocumentNavigation({
                 aria-controls={`${category.id}-panel`}
                 onClick={() => onToggleCategory(category.id)}
               >
-                <AppIcon name={expandedCategoryIds.includes(category.id) ? 'chevron-down' : 'chevron-right'} size={18} />
+                {useFolderIcons ? (
+                  <span className="smplfy-document-folder-icon d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0">
+                    <IconFolder size={18} stroke={1.8} aria-hidden="true" />
+                  </span>
+                ) : (
+                  <AppIcon name={expandedCategoryIds.includes(category.id) ? 'chevron-down' : 'chevron-right'} size={18} />
+                )}
                 <span className="fw-semibold text-truncate">{category.name}</span>
               </button>
             </h2>
@@ -516,10 +530,10 @@ function DocumentNavigation({
               id={`${category.id}-panel`}
               className={joinClasses('accordion-collapse', 'collapse', expandedCategoryIds.includes(category.id) && 'show')}
             >
-              <div className="accordion-body">
-                <div className="accordion accordion-flush">
+              <div className="accordion-body smplfy-document-category-body">
+                <div className="accordion accordion-flush smplfy-document-subcategory-tree">
                   {category.subCategories.map((subCategory) => (
-                    <div className="accordion-item" key={subCategory.id}>
+                    <div className="accordion-item smplfy-document-subcategory-item" key={subCategory.id}>
                       <h3 className="accordion-header">
                         <button
                           type="button"
@@ -528,7 +542,13 @@ function DocumentNavigation({
                           aria-controls={`${subCategory.id}-panel`}
                           onClick={() => onToggleSubCategory(subCategory.id)}
                         >
-                          <AppIcon name={expandedSubCategoryIds.includes(subCategory.id) ? 'chevron-down' : 'chevron-right'} size={18} />
+                          {useFolderIcons ? (
+                            <span className="smplfy-document-folder-icon d-inline-flex align-items-center justify-content-center text-secondary flex-shrink-0">
+                              <IconFolderOpen size={18} stroke={1.8} aria-hidden="true" />
+                            </span>
+                          ) : (
+                            <AppIcon name={expandedSubCategoryIds.includes(subCategory.id) ? 'chevron-down' : 'chevron-right'} size={18} />
+                          )}
                           <span className="fw-semibold text-truncate">{subCategory.name}</span>
                         </button>
                       </h3>
@@ -537,7 +557,7 @@ function DocumentNavigation({
                         id={`${subCategory.id}-panel`}
                         className={joinClasses('accordion-collapse', 'collapse', expandedSubCategoryIds.includes(subCategory.id) && 'show')}
                       >
-                        <div className="accordion-body">
+                        <div className="accordion-body smplfy-document-subcategory-body">
                           {subCategory.documents.length ? (
                             <div className="list-group list-group-flush gap-1">
                               {subCategory.documents.map((document) => (
@@ -1200,6 +1220,7 @@ export default function DocumentManagementPage({
                         onSelectDocument={handleSelectDocument}
                         emptyDocumentMessage={documentStatus === 'pending' ? 'No pending docs' : 'No documents found'}
                         showDocumentStatusBadge={combinedMode}
+                        showFolderIcons={combinedMode && !stepNavigationMode}
                       />
                     </>
                   ) : (

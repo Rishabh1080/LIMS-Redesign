@@ -8,6 +8,11 @@ import { requestSections } from '../../data/requestsForMeData';
 import { allTestRequestBuckets } from '../../data/testRequestsHomeData';
 import '../../styles.scss';
 
+const archivedNavigationItems = [
+  { label: 'Document Management', icon: 'file-description', key: 'document-management' },
+  { label: 'Document Management 3', icon: 'file-description', key: 'document-management-3' },
+];
+
 const navigationSections = [
   {
     title: 'HOME',
@@ -20,9 +25,7 @@ const navigationSections = [
     items: [
       { label: 'Requests for me', icon: 'requests-for-me', key: 'requests-for-me', badgeKey: 'requests-for-me' },
       { label: 'Test Requests', icon: 'test-requests', key: 'test-requests-home', badgeKey: 'test-requests-home' },
-      { label: 'Document Management', icon: 'file-description', key: 'document-management' },
-      { label: 'Document Management 2', icon: 'file-description', key: 'document-management-2' },
-      { label: 'Document Management 3', icon: 'file-description', key: 'document-management-3' },
+      { label: 'Document Management', icon: 'file-description', key: 'document-management-2' },
       { label: 'Samples Workspace', icon: 'workspace', key: 'samples-workspace' },
       { label: 'All Samples', icon: 'all-samples', key: 'all-samples' },
       { label: 'Environment Data', icon: 'cloud-data', key: 'environment-data' },
@@ -30,18 +33,8 @@ const navigationSections = [
       { label: 'Materials', icon: 'materials', key: 'materials' },
       { label: 'Instruments', icon: 'tool', key: 'instruments' },
       { label: 'Trainings', icon: 'checklist', key: 'trainings' },
-      {
-        type: 'folder',
-        label: 'Folder 1',
-        key: 'custom-forms-folder-1',
-        children: [
-          { label: 'Daily Check', initials: 'DC', key: 'daily-check' },
-          { label: 'Quality Objective', initials: 'QO', key: 'quality-objective' },
-          { label: 'Equipment Verification', initials: 'EV', key: 'custom-form-equipment-verification' },
-          { label: 'Instrument Calibration', initials: 'IC', key: 'custom-form-instrument-calibration' },
-          { label: 'Safety Observation', initials: 'SO', key: 'custom-form-safety-observation' },
-        ],
-      },
+      { label: 'Daily Checks', icon: 'checklist', key: 'daily-check' },
+      { label: 'Supplier Management', icon: 'materials', key: 'supplier-management' },
     ],
   },
 ];

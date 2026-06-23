@@ -25,20 +25,34 @@ const transactionTypeOptions = [
   { key: 'out', label: 'Out' },
   { key: 'out-damaged', label: 'Out - Damaged' },
 ];
-const supplierOptions = ['Merck Life Science', 'SD Fine Chemicals', 'Loba Chemie', 'Rankem', 'Qualigens'];
 const batchDropdownOptions = getMaterialBatchOptions();
 const initialTransactionDraft = { type: 'in', quantity: '', cost: '', supplier: '', batchSerialNumber: '', expiryDate: '' };
 
-function TransactionModal({ open, materialName, values, errors, onChange, onBlur, onCancel, onSubmit }) {
+function findBatchOption(value) {
+  return batchDropdownOptions.find((option) => option.value === value) ?? null;
+}
+
+function formatAvailableQuantity(batch, unit) {
+  if (!batch) {
+    return '-';
+  }
+
+  const amount = Number(batch.availableQuantity).toLocaleString('en-IN');
+  return unit ? `${amount} ${unit}` : amount;
+}
+
+function TransactionModal({ open, materialName, unit, values, errors, onChange, onBlur, onCancel, onSubmit }) {
   if (!open) return null;
   const isIn = values.type === 'in';
+  const selectedBatch = isIn ? null : findBatchOption(values.batchSerialNumber);
+
   return (
     <Modal
       open={open}
-      title="New Transaction"
-      subtitle={materialName}
+      title={materialName}
+      subtitle="New Transaction"
       titleId="material-details-transaction-modal-title"
-      titleIcon="refresh"
+      titleIcon="arrows-exchange"
       onClose={onCancel}
       size="md"
       actions={
@@ -69,36 +83,55 @@ function TransactionModal({ open, materialName, values, errors, onChange, onBlur
             </NavSelector>
           ))}
         </div>
-        <div className="row g-3">
-          <div className="col-12 col-md-6">
-            <FormElement type="text" mandatory label="Quantity" message={errors.quantity} messageTone="error"
-              inputProps={{ value: values.quantity, placeholder: 'eg.', onChange: (e) => onChange('quantity', e.target.value), onBlur: () => onBlur('quantity', values.quantity) }} />
-          </div>
-          <div className="col-12 col-md-6">
-            <FormElement type="text" mandatory label="Cost" message={errors.cost} messageTone="error"
-              inputProps={{ value: values.cost, placeholder: 'eg.', onChange: (e) => onChange('cost', e.target.value), onBlur: () => onBlur('cost', values.cost) }} />
-          </div>
-          {isIn ? (
+        {isIn ? (
+          <div className="row g-3">
+            <div className="col-12 col-md-6">
+              <FormElement type="text" mandatory label="Quantity" message={errors.quantity} messageTone="error"
+                inputProps={{ value: values.quantity, placeholder: 'eg.', onChange: (e) => onChange('quantity', e.target.value), onBlur: () => onBlur('quantity', values.quantity) }} />
+            </div>
+            <div className="col-12 col-md-6">
+              <FormElement type="text" mandatory label="Cost" message={errors.cost} messageTone="error"
+                inputProps={{ value: values.cost, placeholder: 'eg.', onChange: (e) => onChange('cost', e.target.value), onBlur: () => onBlur('cost', values.cost) }} />
+            </div>
             <div className="col-12 col-md-6">
               <FormElement type="date" label="Expiry Date"
                 inputProps={{ value: values.expiryDate, placeholder: 'DD/MM/YYYY', onChange: (e) => onChange('expiryDate', e.target.value) }} />
             </div>
-          ) : (
-            <div className="col-12">
-              <FormElement type="rich-dropdown" mandatory label="Supplier" message={errors.supplier} messageTone="error"
-                inputProps={{ value: values.supplier, placeholder: 'Select a supplier', options: supplierOptions, onChange: (e) => onChange('supplier', e.target.value), onBlur: (e) => onBlur('supplier', e?.target?.value ?? values.supplier) }} />
-            </div>
-          )}
-          <div className={isIn ? 'col-12 col-md-6' : 'col-12'}>
-            {isIn ? (
+            <div className="col-12 col-md-6">
               <FormElement type="text" mandatory label="Batch/Serial No." message={errors.batchSerialNumber} messageTone="error"
                 inputProps={{ value: values.batchSerialNumber, placeholder: 'eg.', onChange: (e) => onChange('batchSerialNumber', e.target.value), onBlur: () => onBlur('batchSerialNumber', values.batchSerialNumber) }} />
-            ) : (
+            </div>
+          </div>
+        ) : (
+          <div className="row g-3">
+            <div className="col-12">
               <FormElement type="rich-dropdown" mandatory label="Batch/Serial No." message={errors.batchSerialNumber} messageTone="error"
                 inputProps={{ value: values.batchSerialNumber, placeholder: 'Select batch', options: batchDropdownOptions, onChange: (e) => onChange('batchSerialNumber', e.target.value), onBlur: (e) => onBlur('batchSerialNumber', e?.target?.value ?? values.batchSerialNumber) }} />
-            )}
+            </div>
+
+            {selectedBatch ? (
+              <div className="col-12">
+                <div className="rounded border bg-body-tertiary p-3">
+                  <div className="row g-3">
+                    <div className="col-12 col-md-6">
+                      <div className="small text-secondary mb-1">Available quantity</div>
+                      <div className="fw-medium text-dark">{formatAvailableQuantity(selectedBatch, unit)}</div>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <div className="small text-secondary mb-1">Supplier</div>
+                      <div className="fw-medium text-dark">{selectedBatch.supplier}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="col-12">
+              <FormElement type="text" mandatory label="Quantity" message={errors.quantity} messageTone="error"
+                inputProps={{ value: values.quantity, placeholder: 'eg.', onChange: (e) => onChange('quantity', e.target.value), onBlur: () => onBlur('quantity', values.quantity) }} />
+            </div>
           </div>
-        </div>
+        )}
       </form>
     </Modal>
   );
@@ -211,8 +244,8 @@ export default function MaterialDetailsPage({
     const isIn = transactionDraft.type === 'in';
     const nextErrors = {
       quantity: transactionDraft.quantity.trim() ? null : 'Quantity is required.',
-      cost: transactionDraft.cost.trim() ? null : 'Cost is required.',
-      ...(!isIn && { supplier: transactionDraft.supplier ? null : 'Supplier is required.' }),
+      cost: isIn && !transactionDraft.cost.trim() ? 'Cost is required.' : null,
+      supplier: null,
       batchSerialNumber: transactionDraft.batchSerialNumber.trim() ? null : 'Batch/Serial No. is required.',
     };
 
@@ -328,6 +361,7 @@ export default function MaterialDetailsPage({
       <TransactionModal
         open={transactionModalOpen}
         materialName={materialName}
+        unit={unit}
         values={transactionDraft}
         errors={transactionErrors}
         onChange={(field, value) => setTransactionDraft((c) => ({ ...c, [field]: value }))}

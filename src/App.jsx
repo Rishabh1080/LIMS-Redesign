@@ -161,6 +161,36 @@ function formatDateForDisplay(value) {
   return value;
 }
 
+function formatDateTimeForDisplay(date = new Date()) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${day}/${month}/${year}, ${hours}:${minutes}`;
+}
+
+const initialCustomFormEntries = {
+  'environmental-check': [
+    { id: 'environmental-check-entry-001', name: 'Morning environmental check', createdAt: '23/06/2026, 09:00', createdBy: 'Rishabh Gangwar' },
+    { id: 'environmental-check-entry-002', name: 'Afternoon environmental check', createdAt: '22/06/2026, 14:30', createdBy: 'Priya Nair' },
+    { id: 'environmental-check-entry-003', name: 'Evening environmental check', createdAt: '21/06/2026, 17:45', createdBy: 'Deepak Cybit' },
+  ],
+  'housekeeping-record': [
+    { id: 'housekeeping-record-entry-001', name: 'Wet lab housekeeping record', createdAt: '23/06/2026, 10:15', createdBy: 'Rishabh Gangwar' },
+    { id: 'housekeeping-record-entry-002', name: 'Instrument room housekeeping record', createdAt: '22/06/2026, 11:20', createdBy: 'Quality Officer' },
+  ],
+  'weighing-balance-check': [
+    { id: 'weighing-balance-check-entry-001', name: 'Analytical balance daily check', createdAt: '23/06/2026, 08:45', createdBy: 'Lab Manager' },
+  ],
+  'supplier-management': [
+    { id: 'supplier-management-entry-001', name: 'Merck Life Science', createdAt: '20/06/2026, 11:30', createdBy: 'Rishabh Gangwar' },
+    { id: 'supplier-management-entry-002', name: 'SD Fine Chemicals', createdAt: '18/06/2026, 15:10', createdBy: 'Quality Officer' },
+    { id: 'supplier-management-entry-003', name: 'Loba Chemie', createdAt: '16/06/2026, 10:20', createdBy: 'Lab Manager' },
+  ],
+};
+
 export default function App() {
   const [activePage, setActivePage] = useState(getInitialPage);
   const sampleCreationFlowRef = useRef({
@@ -243,6 +273,7 @@ export default function App() {
     sourcePage: 'document-management',
     sourceLabel: 'Document Management',
   });
+  const [customFormEntries, setCustomFormEntries] = useState(initialCustomFormEntries);
   const [trDetailsState, setTrDetailsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
@@ -380,7 +411,7 @@ export default function App() {
     );
     const sourceLabel = options.sourceLabel ?? (
       sourcePage === 'document-management-2'
-        ? 'Document Management 2'
+        ? 'Document Management'
         : sourcePage === 'document-management-3'
           ? 'Document Management 3'
           : 'Document Management'
@@ -392,6 +423,21 @@ export default function App() {
       sourceLabel,
     });
     setActivePage('document-details');
+  };
+
+  const createCustomFormEntry = (formId, entry) => {
+    setCustomFormEntries((current) => ({
+      ...current,
+      [formId]: [
+        {
+          id: `${formId}-entry-${Date.now()}`,
+          name: entry.name,
+          createdAt: formatDateTimeForDisplay(),
+          createdBy: 'Rishabh Gangwar',
+        },
+        ...(current[formId] ?? []),
+      ],
+    }));
   };
 
   const handleServiceCreated = (service) => {
@@ -736,7 +782,12 @@ export default function App() {
       return;
     }
 
-    if (nextPage === 'daily-check' || nextPage === 'quality-objective' || nextPage.startsWith('custom-form-')) {
+    if (
+      nextPage === 'daily-check'
+      || nextPage === 'quality-objective'
+      || nextPage === 'supplier-management'
+      || nextPage.startsWith('custom-form-')
+    ) {
       setActivePage(nextPage);
       return;
     }
@@ -1015,7 +1066,7 @@ export default function App() {
     return (
       <DocumentManagementPage
         key="document-management-2"
-        title="Document Management 2"
+        title="Document Management"
         activeNav="document-management-2"
         combinedMode
         onNavigate={handleNavigate}
@@ -1238,10 +1289,18 @@ export default function App() {
     );
   }
 
-  if (activePage === 'daily-check' || activePage === 'quality-objective' || activePage.startsWith('custom-form-')) {
+  if (
+    activePage === 'daily-check'
+    || activePage === 'quality-objective'
+    || activePage === 'supplier-management'
+    || activePage.startsWith('custom-form-')
+  ) {
     return (
       <CustomFormListingPage
         formType={activePage}
+        entriesByFormId={customFormEntries}
+        onCreateEntry={createCustomFormEntry}
+        onBack={() => setActivePage('daily-check')}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
