@@ -115,6 +115,7 @@ const allSubCategoryIds = documentTree.flatMap((category) =>
 );
 const newDocumentInitialDraft = {
   name: '',
+  version: '',
   description: '',
   category: '',
   file: null,
@@ -235,7 +236,9 @@ function findDocumentById(tree, documentId, status) {
       if (document) {
         return {
           ...document,
+          categoryId: category.id,
           categoryName: category.name,
+          subCategoryId: subCategory.id,
           subCategoryName: subCategory.name,
         };
       }
@@ -252,6 +255,10 @@ function getSubCategoryOptions(tree) {
       label: `${category.name} / ${subCategory.name}`,
     })),
   );
+}
+
+export function getDocumentCategoryOptions() {
+  return getSubCategoryOptions(documentTree);
 }
 
 function findSubCategoryPath(tree, subCategoryId) {
@@ -285,12 +292,16 @@ function getSelectedDocumentDetails(document) {
   };
 }
 
-function NewDocumentModal({
+export function NewDocumentModal({
   open,
   values,
   errors,
   categoryOptions,
   categoryLabel = 'Category',
+  title = 'New Document',
+  titleId = 'new-document-modal-title',
+  primaryLabel = 'Submit',
+  formId = 'new-document-form',
   onChange,
   onCancel,
   onSubmit,
@@ -298,8 +309,8 @@ function NewDocumentModal({
   return (
     <Modal
       open={open}
-      title="New Document"
-      titleId="new-document-modal-title"
+      title={title}
+      titleId={titleId}
       titleIcon="file-text"
       onClose={onCancel}
       size="md"
@@ -308,14 +319,14 @@ function NewDocumentModal({
           <SecondaryButton leftIcon="close" size="large" onClick={onCancel}>
             Cancel
           </SecondaryButton>
-          <PrimaryButton type="submit" form="new-document-form" leftIcon="save">
-            Submit
+          <PrimaryButton type="submit" form={formId} leftIcon="save">
+            {primaryLabel}
           </PrimaryButton>
         </>
       }
     >
       <form
-        id="new-document-form"
+        id={formId}
         className="d-flex flex-column gap-4"
         onSubmit={(event) => {
           event.preventDefault();
@@ -332,6 +343,19 @@ function NewDocumentModal({
             value: values.name,
             placeholder: 'Enter document name',
             onChange: (event) => onChange('name', event.target.value),
+          }}
+        />
+
+        <FormElement
+          type="text"
+          mandatory
+          label="Version"
+          message={errors.version}
+          messageTone="error"
+          inputProps={{
+            value: values.version ?? '',
+            placeholder: 'eg. 1.0.1',
+            onChange: (event) => onChange('version', event.target.value),
           }}
         />
 
@@ -979,6 +1003,10 @@ export default function DocumentManagementPage({
       nextErrors.name = 'Document name is required.';
     }
 
+    if (!newDocumentDraft.version.trim()) {
+      nextErrors.version = 'Version is required.';
+    }
+
     if (!newDocumentDraft.category) {
       nextErrors.category = `${stepNavigationMode ? 'Folder' : 'Category'} is required.`;
     }
@@ -1004,6 +1032,7 @@ export default function DocumentManagementPage({
     const newDocument = {
       id: documentId,
       name: documentName,
+      version: newDocumentDraft.version.trim(),
       description: newDocumentDraft.description.trim(),
       fileName: newDocumentDraft.file?.name ?? '',
       createdOn: '12/06/26 12:36 PM',

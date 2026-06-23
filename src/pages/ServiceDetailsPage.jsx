@@ -238,7 +238,7 @@ function ServiceDetailsHeader({
                 {statusPresentation.label}
               </StatusPill>
             </div>
-            <div className="d-inline-flex gap-2 mt-2 text-secondary fw-medium">
+            <div className="d-inline-flex gap-2 text-secondary fw-medium">
               <span>{serviceSummary}</span>
             </div>
           </div>

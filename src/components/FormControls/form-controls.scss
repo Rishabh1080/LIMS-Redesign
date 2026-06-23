@@ -169,6 +169,7 @@
   border-radius: var(--smplfy-field-radius);
   background-color: var(--smplfy-field-current-bg);
   box-shadow: var(--smplfy-field-current-shadow);
+  overflow: hidden;
   transition:
     border-color var(--smplfy-field-transition),
     box-shadow var(--smplfy-field-transition),
@@ -522,13 +523,24 @@
   --bs-btn-focus-box-shadow: none;
 
   flex: 0 0 var(--smplfy-field-action-width);
+  position: relative;
   width: var(--smplfy-field-action-width);
   min-width: var(--smplfy-field-action-width);
   min-height: calc(var(--smplfy-field-height) - (var(--smplfy-field-border-width) * 2));
-  border-left: var(--smplfy-field-border-width) solid var(--smplfy-field-divider);
+  border-left: var(--smplfy-button-space-0);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.smplfy-date-button.btn::before,
+.smplfy-file-button.btn::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--smplfy-field-border-width);
+  inset-inline-start: 0;
+  width: var(--smplfy-field-border-width);
+  background: var(--smplfy-field-divider);
 }
 
 .smplfy-date-button.btn:disabled,

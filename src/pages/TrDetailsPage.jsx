@@ -526,7 +526,7 @@ function PageHeader({
               {resolvedStatusPresentation.label}
             </StatusPill>
           </div>
-          <div className="d-inline-flex gap-3 mt-2 text-secondary fw-medium">
+          <div className="d-inline-flex gap-3 text-secondary fw-medium">
             <span>06/03/2026</span>
             <span>10:13</span>
           </div>

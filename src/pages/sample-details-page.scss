@@ -1,6 +1,12 @@
 .smplfy-sample-details-header {
   min-height: 84px;
   padding: 16px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.smplfy-sample-details-header > .d-flex {
+  width: 100%;
 }
 
 .smplfy-sample-details-header .smplfy-btn.btn[aria-label="Go back"] {

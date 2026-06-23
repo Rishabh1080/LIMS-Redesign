@@ -123,7 +123,7 @@
   --bs-offcanvas-width: 376px;
   --bs-offcanvas-bg: var(--smplfy-primitive-neutral-100);
 
-  padding: 24px;
+  padding: 0;
   box-shadow: 0 18px 48px rgba(15, 23, 42, 0.18);
   visibility: visible;
   z-index: 1045;
@@ -131,7 +131,7 @@
 
 .smplfy-all-samples-offcanvas.offcanvas .offcanvas-header {
   min-height: 40px;
-  padding: 0 0 20px;
+  padding: 24px 24px 20px;
 }
 
 .smplfy-all-samples-offcanvas.offcanvas .offcanvas-title {
@@ -142,11 +142,11 @@
 }
 
 .smplfy-all-samples-offcanvas.offcanvas .offcanvas-body {
-  padding: 24px 0;
+  padding: 24px;
 }
 
 .smplfy-all-samples-offcanvas.offcanvas > .d-flex:last-child {
-  padding-top: 24px;
+  padding: 24px;
 }
 
 @media (max-width: 767.98px) {

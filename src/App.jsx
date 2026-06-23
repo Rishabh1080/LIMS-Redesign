@@ -20,6 +20,8 @@ import NewInstrumentPage from './pages/NewInstrumentPage';
 import TrainingAttendancePage from './pages/TrainingAttendancePage';
 import TrainingsPage, { defaultTrainings } from './pages/TrainingsPage';
 import RequestsForMePage from './pages/RequestsForMePage';
+import ReportDetailsPage from './pages/ReportDetailsPage';
+import ReportsPage from './pages/ReportsPage';
 import SampleDetailsPage from './pages/SampleDetailsPage';
 import SampleWorkspacePage from './pages/SampleWorkspacePage';
 import ServiceDetailsPage from './pages/ServiceDetailsPage';
@@ -273,6 +275,9 @@ export default function App() {
     sourcePage: 'document-management',
     sourceLabel: 'Document Management',
   });
+  const [reportDetailsState, setReportDetailsState] = useState({
+    report: null,
+  });
   const [customFormEntries, setCustomFormEntries] = useState(initialCustomFormEntries);
   const [trDetailsState, setTrDetailsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
@@ -423,6 +428,11 @@ export default function App() {
       sourceLabel,
     });
     setActivePage('document-details');
+  };
+
+  const openReportDetails = (report) => {
+    setReportDetailsState({ report });
+    setActivePage('report-details');
   };
 
   const createCustomFormEntry = (formId, entry) => {
@@ -779,6 +789,11 @@ export default function App() {
 
     if (nextPage === 'trainings') {
       setActivePage('trainings');
+      return;
+    }
+
+    if (nextPage === 'reports') {
+      setActivePage('reports');
       return;
     }
 
@@ -1231,6 +1246,31 @@ export default function App() {
       <TrainingAttendancePage
         trainingName={trainingAttendanceState.name}
         onBack={() => setActivePage('trainings')}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'reports') {
+    return (
+      <ReportsPage
+        onOpenReport={openReportDetails}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'report-details') {
+    return (
+      <ReportDetailsPage
+        report={reportDetailsState.report}
+        onBack={() => setActivePage('reports')}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}

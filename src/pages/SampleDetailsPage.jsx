@@ -206,7 +206,7 @@ function DetailsHeader({
                 {statusPresentation.label}
               </StatusPill>
             </div>
-            <div className="d-inline-flex gap-2 text-secondary fw-medium mt-2">
+            <div className="d-inline-flex gap-2 text-secondary fw-medium">
               <span>{date}</span>
               <span>{time}</span>
             </div>

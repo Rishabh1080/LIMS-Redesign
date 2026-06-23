@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import DataTable from '../components/DataTable';
@@ -172,7 +172,7 @@ function NewCustomFormEntryModal({
   return (
     <Modal
       open={open}
-      title={formName ? `New ${formName}` : 'New Entry'}
+      title={formName || 'New Entry'}
       titleId="new-custom-form-entry-modal-title"
       titleIcon="plus"
       onClose={onCancel}
@@ -226,7 +226,7 @@ function CustomFormGroupToolbar({
     : `Listing ${resultCount} ${resultCount === 1 ? 'item' : 'items'}`;
 
   return (
-    <section className="d-flex flex-column gap-4 py-4">
+    <section className="d-flex flex-column gap-4 pb-4">
       <form
         className="row align-items-end gx-3 gy-3"
         onSubmit={(event) => {
@@ -247,6 +247,51 @@ function CustomFormGroupToolbar({
               onChange={(event) => onSearchInputChange(event.target.value)}
             />
             <button type="submit" className="smplfy-btn btn btn-primary" aria-label="Search daily checks">
+              <AppIcon name="chevron-right" />
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div className="small text-secondary fw-medium">{resultLabel}</div>
+    </section>
+  );
+}
+
+function CustomFormEntryToolbar({
+  searchInputValue,
+  appliedSearchValue,
+  resultCount,
+  onSearchInputChange,
+  onSearchSubmit,
+}) {
+  const trimmedSearchValue = appliedSearchValue.trim();
+  const resultLabel = trimmedSearchValue
+    ? `${resultCount} ${resultCount === 1 ? 'result' : 'results'} found for "${trimmedSearchValue}"`
+    : `Listing ${resultCount} ${resultCount === 1 ? 'entry' : 'entries'}`;
+
+  return (
+    <section className="d-flex flex-column gap-4 pb-4">
+      <form
+        className="row align-items-end gx-3 gy-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSearchSubmit();
+        }}
+      >
+        <div className="col-12 col-lg-5">
+          <div className="input-group flex-nowrap bg-white border rounded overflow-hidden">
+            <span className="input-group-text text-secondary bg-white">
+              <AppIcon name="search" />
+            </span>
+            <input
+              className="smplfy-form-control form-control"
+              type="search"
+              value={searchInputValue}
+              placeholder="Search entries"
+              onChange={(event) => onSearchInputChange(event.target.value)}
+            />
+            <button type="submit" className="smplfy-btn btn btn-primary" aria-label="Search entries">
               <AppIcon name="chevron-right" />
             </button>
           </div>
@@ -280,6 +325,14 @@ export default function CustomFormListingPage({
   const dailyCheckFormTitle = dailyCheckForm ? toTitleCase(dailyCheckForm.name) : '';
   const dailyCheckEntryRows = dailyCheckForm ? entriesByFormId[dailyCheckForm.id] ?? [] : [];
   const listingRows = listingEntryFormId ? entriesByFormId[listingEntryFormId] ?? [] : listing.rows;
+  const entryRows = dailyCheckForm ? dailyCheckEntryRows : listingRows;
+  const visibleEntryRows = useMemo(() => {
+    const normalizedSearchValue = appliedSearchValue.trim().toLowerCase();
+
+    return entryRows.filter((row) => (
+      !normalizedSearchValue || row.name.toLowerCase().includes(normalizedSearchValue)
+    ));
+  }, [appliedSearchValue, entryRows]);
   const groupRows = useMemo(() => {
     const normalizedSearchValue = appliedSearchValue.trim().toLowerCase();
 
@@ -327,6 +380,11 @@ export default function CustomFormListingPage({
     onCreateEntry?.(entryModalFormId, { name: trimmedName });
     closeEntryModal();
   };
+
+  useEffect(() => {
+    setSearchInputValue('');
+    setAppliedSearchValue('');
+  }, [formType]);
 
   return (
     <AppChrome
@@ -416,32 +474,50 @@ export default function CustomFormListingPage({
               </DataTable>
             </>
           ) : (
-            <DataTable>
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Created at</th>
-                  <th scope="col">Created by</th>
-                  <th scope="col" className="text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(dailyCheckForm ? dailyCheckEntryRows : listingRows).map((row) => (
-                  <tr key={row.id}>
-                    <td>
-                      <span className="text-primary fw-semibold">{row.name}</span>
-                    </td>
-                    <td className="text-nowrap">{row.createdAt}</td>
-                    <td className="text-nowrap">{row.createdBy}</td>
-                    <td className="text-center">
-                      <SecondaryButton size="medium" leftIcon="external-link">
-                        View
-                      </SecondaryButton>
-                    </td>
+            <>
+              <CustomFormEntryToolbar
+                searchInputValue={searchInputValue}
+                appliedSearchValue={appliedSearchValue}
+                resultCount={visibleEntryRows.length}
+                onSearchInputChange={setSearchInputValue}
+                onSearchSubmit={() => setAppliedSearchValue(searchInputValue.trim())}
+              />
+
+              <DataTable>
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Created at</th>
+                    <th scope="col">Created by</th>
+                    <th scope="col" className="text-center">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </DataTable>
+                </thead>
+                <tbody>
+                  {visibleEntryRows.length ? (
+                    visibleEntryRows.map((row) => (
+                      <tr key={row.id}>
+                        <td>
+                          <span className="text-primary fw-semibold">{row.name}</span>
+                        </td>
+                        <td className="text-nowrap">{row.createdAt}</td>
+                        <td className="text-nowrap">{row.createdBy}</td>
+                        <td className="text-center">
+                          <SecondaryButton size="medium" leftIcon="external-link">
+                            View
+                          </SecondaryButton>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="text-center text-secondary py-4">
+                        No entries found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </DataTable>
+            </>
           )}
         </div>
       </main>

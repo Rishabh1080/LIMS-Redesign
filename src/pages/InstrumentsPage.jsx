@@ -172,7 +172,7 @@ function InstrumentTableToolbar({
     : activeEntries;
 
   return (
-    <section className="d-flex flex-column gap-4 py-4">
+    <section className="d-flex flex-column gap-4 pb-4">
       <div className="d-flex flex-column gap-2">
         <form
           className="row align-items-center gx-3 gy-2"
