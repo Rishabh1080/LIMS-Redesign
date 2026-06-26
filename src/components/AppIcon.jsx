@@ -5,6 +5,7 @@ import {
   IconAffiliate,
   IconArrowUpRight,
   IconArrowsExchange2,
+  IconArrowsMaximize,
   IconApps,
   IconBell,
   IconBuildingWarehouse,
@@ -50,6 +51,8 @@ import {
   IconUserPlus,
   IconUserShield,
   IconX,
+  IconZoomIn,
+  IconZoomOut,
 } from '@tabler/icons-react';
 
 const iconMap = {
@@ -62,6 +65,7 @@ const iconMap = {
   'admin-personnel': IconUserCog,
   'arrow-up-right': IconArrowUpRight,
   'arrows-exchange': IconArrowsExchange2,
+  'arrows-maximize': IconArrowsMaximize,
   bell: IconBell,
   'building-warehouse': IconBuildingWarehouse,
   calendar: IconCalendar,
@@ -107,6 +111,8 @@ const iconMap = {
   materials: IconBuildingWarehouse,
   'requests-for-me': IconClipboardList,
   'test-requests': IconClipboardText,
+  'zoom-in': IconZoomIn,
+  'zoom-out': IconZoomOut,
 };
 
 export default function AppIcon({

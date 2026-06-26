@@ -1,0 +1,48 @@
+.smplfy-reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.smplfy-report-list-card.card {
+  --bs-card-border-width: var(--smplfy-card-border-width);
+  --bs-card-border-color: var(--smplfy-primitive-neutral-300);
+  --bs-card-border-radius: var(--smplfy-card-radius);
+  --bs-card-bg: var(--smplfy-primitive-neutral-100);
+
+  min-height: 67px;
+  padding: 16px;
+  border: var(--bs-card-border-width) solid var(--bs-card-border-color);
+  background: var(--bs-card-bg);
+  color: var(--smplfy-primitive-blue-500);
+  display: flex;
+  align-items: center;
+  box-shadow: none;
+  cursor: pointer;
+  transform: none;
+  transition:
+    border-color var(--smplfy-field-transition),
+    background-color var(--smplfy-field-transition);
+}
+
+.smplfy-report-list-card.card:hover,
+.smplfy-report-list-card.card:focus-visible {
+  border-color: var(--smplfy-primitive-neutral-400);
+  background: var(--smplfy-primitive-neutral-100);
+  color: var(--smplfy-primitive-blue-600);
+  outline: none;
+}
+
+.smplfy-report-list-card.card:active {
+  color: var(--smplfy-primitive-blue-700);
+}
+
+.smplfy-report-list-card-title {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

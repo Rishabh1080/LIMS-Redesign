@@ -17,6 +17,7 @@ import AllServicesPage from './pages/AllServicesPage';
 import InstrumentsPage from './pages/InstrumentsPage';
 import InstrumentDetailsPage from './pages/InstrumentDetailsPage';
 import NewInstrumentPage from './pages/NewInstrumentPage';
+import OrganogramPage from './pages/OrganogramPage';
 import TrainingAttendancePage from './pages/TrainingAttendancePage';
 import TrainingsPage, { defaultTrainings } from './pages/TrainingsPage';
 import RequestsForMePage from './pages/RequestsForMePage';
@@ -797,6 +798,11 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'organogram') {
+      setActivePage('organogram');
+      return;
+    }
+
     if (
       nextPage === 'daily-check'
       || nextPage === 'quality-objective'
@@ -1271,6 +1277,17 @@ export default function App() {
       <ReportDetailsPage
         report={reportDetailsState.report}
         onBack={() => setActivePage('reports')}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'organogram') {
+    return (
+      <OrganogramPage
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}

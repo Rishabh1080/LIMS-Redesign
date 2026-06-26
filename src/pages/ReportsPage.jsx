@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
-import DataTable from '../components/DataTable';
 import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import { reportItems } from '../data/reportsData';
 import './environment-data-page.scss';
+import './reports-page.scss';
 
 const reportFilterConfig = [
   {
@@ -230,47 +230,26 @@ export default function ReportsPage({
             }}
           />
 
-          <DataTable>
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredReports.length ? (
-                filteredReports.map((report) => (
-                  <tr key={report.id}>
-                    <td>
-                      <button
-                        type="button"
-                        className="btn btn-link p-0 text-primary fw-semibold text-decoration-none"
-                        onClick={() => onOpenReport?.(report)}
-                      >
-                        {report.name}
-                      </button>
-                    </td>
-                    <td>
-                      <div className="d-inline-flex align-items-center gap-2">
-                        <SecondaryButton size="medium" leftIcon="external-link" onClick={() => onOpenReport?.(report)}>
-                          View
-                        </SecondaryButton>
-                        <SecondaryButton size="medium" leftIcon="download">
-                          Download as PDF
-                        </SecondaryButton>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={2} className="text-center text-secondary py-4">
-                    No reports found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </DataTable>
+          {filteredReports.length ? (
+            <div className="smplfy-reports-list">
+              {filteredReports.map((report) => (
+                <button
+                  key={report.id}
+                  type="button"
+                  className="smplfy-card card smplfy-report-list-card w-100 text-start"
+                  onClick={() => onOpenReport?.(report)}
+                >
+                  <span className="smplfy-report-list-card-title">{report.name}</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="smplfy-card card">
+              <div className="card-body text-center text-secondary py-4">
+                No reports found.
+              </div>
+            </div>
+          )}
         </div>
       </main>
 

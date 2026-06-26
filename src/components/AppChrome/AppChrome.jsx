@@ -34,6 +34,7 @@ const navigationSections = [
       { label: 'Instruments', icon: 'tool', key: 'instruments' },
       { label: 'Trainings', icon: 'checklist', key: 'trainings' },
       { label: 'Reports', icon: 'file-text', key: 'reports' },
+      { label: 'Organogram', icon: 'admin-personnel', key: 'organogram' },
       { label: 'Daily Checks', icon: 'checklist', key: 'daily-check' },
       { label: 'Supplier Management', icon: 'materials', key: 'supplier-management' },
     ],
