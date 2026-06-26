@@ -16,6 +16,7 @@
     "@siteping/adapter-localstorage": "^0.4.3",
     "@siteping/widget": "^0.9.5",
     "@tabler/icons-react": "^3.41.1",
+    "apextree": "^1.13.0",
     "bootstrap": "^5.3.3",
     "echarts": "^6.1.0",
     "posthog-js": "^1.372.10",
