@@ -21,6 +21,47 @@
   --smplfy-nav-link-current-height: var(--smplfy-nav-link-height-large);
 }
 
+.smplfy-all-samples-nav-count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--smplfy-badge-radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--smplfy-primitive-neutral-200);
+  color: var(--smplfy-primitive-neutral-600);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.smplfy-all-samples-tabs .smplfy-nav-link.nav-link.active .smplfy-all-samples-nav-count {
+  background: var(--smplfy-primitive-blue-100);
+  color: var(--smplfy-primitive-blue-600);
+}
+
+.smplfy-all-samples-quick-filters.nav-pills > .smplfy-nav-link.nav-link.active,
+.smplfy-all-samples-quick-filters.nav-pills > .smplfy-nav-link.nav-link.active:hover,
+.smplfy-all-samples-quick-filters.nav-pills > .smplfy-nav-link.nav-link.active:active,
+.smplfy-all-samples-quick-filters.nav-pills > .smplfy-nav-link.nav-link.active:focus-visible {
+  --smplfy-nav-link-current-bg: var(--smplfy-button-primary-bg);
+  --smplfy-nav-link-current-text: var(--smplfy-button-primary-text);
+  --smplfy-nav-link-active-bg: var(--smplfy-button-primary-bg);
+  --smplfy-nav-link-active-text: var(--smplfy-button-primary-text);
+  --smplfy-nav-link-active-border: transparent;
+
+  background-color: var(--smplfy-button-primary-bg);
+  color: var(--smplfy-button-primary-text);
+  box-shadow: var(--smplfy-button-primary-shadow-hover);
+}
+
+.smplfy-all-samples-quick-filters .smplfy-nav-link.nav-link.active .smplfy-all-samples-nav-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--smplfy-primitive-neutral-100);
+}
+
 .smplfy-all-samples-search {
   min-height: 88px;
   padding: 0;
@@ -107,6 +148,14 @@
   color: var(--smplfy-primitive-neutral-600) !important;
   font-size: var(--smplfy-nav-link-font-size);
   line-height: var(--smplfy-nav-link-line-height);
+}
+
+.smplfy-all-samples-count-label {
+  color: var(--smplfy-primitive-neutral-600) !important;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
 }
 
 .smplfy-all-samples-page > .container-fluid > .w-100 > .d-flex:last-child {

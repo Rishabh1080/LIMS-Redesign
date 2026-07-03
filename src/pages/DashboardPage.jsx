@@ -7,6 +7,8 @@ import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
+import { allSamplesDb } from '../data/samplesDb';
+import { isSampleDelayed } from '../utils/sampleDelay';
 import './dashboard-page.scss';
 
 echarts.use([BarChart, PieChart, GridComponent, TooltipComponent, CanvasRenderer]);
@@ -18,9 +20,15 @@ const laboratoryHealthItems = [
   { label: 'Documents', status: 'Up to Date', tone: 'success', icon: 'file-description', section: 'document-alerts' },
 ];
 
+const delayedSamplesCount = allSamplesDb.filter(isSampleDelayed).length;
+
 const summaryMetricItems = [
   { value: '15', label: 'Pending Requests' },
-  { value: '15', label: 'Planned IQC' },
+  {
+    value: String(delayedSamplesCount),
+    label: 'Delayed Samples',
+    navigationOptions: { initialQuickFilter: 'delayed' },
+  },
   { value: '15', label: 'Samples to be allocated' },
   { value: '15', label: 'Pending Test Requests' },
 ];
@@ -126,16 +134,16 @@ function LaboratoryHealthCard({ onNavigate }) {
 
 function MetricTile({ item, onNavigate }) {
   return (
-    <div className="smplfy-action-center-metric-tile border rounded bg-white position-relative overflow-hidden p-3">
+    <div className="smplfy-action-center-metric-tile border rounded bg-white position-relative overflow-hidden d-flex align-items-center p-3">
       <button
         type="button"
-        className="smplfy-btn btn btn-outline-secondary btn-sm p-0 position-absolute top-0 end-0 mt-2 me-2"
+        className="smplfy-btn btn btn-outline-secondary btn-sm p-0 position-absolute top-0 end-0 mt-2 me-2 z-1"
         aria-label={`Go to ${item.label}`}
-        onClick={() => onNavigate?.('all-samples')}
+        onClick={() => onNavigate?.('all-samples', item.navigationOptions)}
       >
         <AppIcon name="external-link" size={16} />
       </button>
-      <div className="d-flex flex-column justify-content-end h-100 position-relative">
+      <div className="d-flex flex-column justify-content-center w-100">
         <div className="smplfy-action-center-count text-dark">{item.value}</div>
         <div className="smplfy-action-center-label text-dark">{item.label}</div>
       </div>
@@ -175,7 +183,7 @@ function QuickActionsCard({ onNavigate, onNewSample }) {
         <PrimaryButton
           leftIcon="plus"
           className="w-100"
-          onClick={() => onNewSample?.({ sourcePage: 'samples-workspace' })}
+          onClick={() => onNewSample?.({ sourcePage: 'all-samples' })}
         >
           New sample
         </PrimaryButton>
@@ -183,7 +191,7 @@ function QuickActionsCard({ onNavigate, onNewSample }) {
           size="medium"
           leftIcon="search"
           className="w-100 justify-content-center"
-          onClick={() => onNavigate?.('samples-workspace')}
+          onClick={() => onNavigate?.('all-samples')}
         >
           Search Samples
         </SecondaryButton>

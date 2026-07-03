@@ -361,6 +361,13 @@ const samplesByCategory = {
   ],
 };
 
+const delayedSampleIds = new Set([
+  'IICT/2025-2026/1102',
+  'IICT/2025-2026/1111',
+  'IICT/2025-2026/1121',
+  'IICT/2025-2026/1138',
+]);
+
 function normalizeSample(sample) {
   const resolvedParameters =
     sample.status === 'Completed'
@@ -369,6 +376,7 @@ function normalizeSample(sample) {
 
   return {
     ...sample,
+    delayed: delayedSampleIds.has(sample.id),
     parameters: resolvedParameters,
   };
 }

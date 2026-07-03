@@ -28,6 +28,9 @@ export default function InputFieldRichDropdown({
   className = '',
   disabled = false,
   menuPlacement = 'bottom',
+  searchable = false,
+  searchPlaceholder = 'Search',
+  maxVisibleItems = 4,
   onChange,
   onBlur,
   id,
@@ -39,11 +42,26 @@ export default function InputFieldRichDropdown({
   const generatedId = useId();
   const rootRef = useRef(null);
   const menuRef = useRef(null);
+  const searchInputRef = useRef(null);
   const [open, setOpen] = useState(false);
   const [menuStyle, setMenuStyle] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
   const isDisabled = disabled || state === 'disabled';
   const isInvalid = state === 'error' || ariaInvalid === 'true';
   const normalizedOptions = normalizeOptions(options);
+  const filteredOptions = searchable && searchQuery.trim()
+    ? normalizedOptions.filter((option) => {
+      const query = searchQuery.trim().toLowerCase();
+      const searchableText = [
+        option.label,
+        option.value,
+        option.rightLabel,
+        option.searchText,
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      return searchableText.includes(query);
+    })
+    : normalizedOptions;
   const selectedOption = normalizedOptions.find((option) => option.value === value);
   const isFilled = state === 'filled' || Boolean(selectedOption);
   const triggerId = id ?? `rich-dropdown-${generatedId}`;
@@ -54,6 +72,8 @@ export default function InputFieldRichDropdown({
     if (!open) {
       return undefined;
     }
+
+    setSearchQuery('');
 
     const updateMenuPosition = () => {
       const rect = rootRef.current?.getBoundingClientRect();
@@ -95,13 +115,20 @@ export default function InputFieldRichDropdown({
     window.addEventListener('resize', updateMenuPosition);
     window.addEventListener('scroll', updateMenuPosition, true);
 
+    const focusFrame = searchable
+      ? window.requestAnimationFrame(() => searchInputRef.current?.focus())
+      : null;
+
     return () => {
+      if (focusFrame) {
+        window.cancelAnimationFrame(focusFrame);
+      }
       document.removeEventListener('pointerdown', handlePointerDown);
       document.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('resize', updateMenuPosition);
       window.removeEventListener('scroll', updateMenuPosition, true);
     };
-  }, [open, onBlur, opensUp, value]);
+  }, [open, onBlur, opensUp, searchable, value]);
 
   const handleSelect = (nextValue) => {
     onChange?.({ target: { value: nextValue } });
@@ -173,12 +200,41 @@ export default function InputFieldRichDropdown({
             'position-fixed',
             'shadow',
           )}
-          style={menuStyle}
+          style={{
+            ...menuStyle,
+            '--smplfy-rich-dropdown-visible-items': maxVisibleItems,
+          }}
           role="listbox"
           aria-labelledby={triggerId}
         >
+          {searchable ? (
+            <div className="smplfy-rich-dropdown-search">
+              <div className="input-group">
+                <span className="input-group-text" aria-hidden="true">
+                  <AppIcon name="search" size={16} />
+                </span>
+                <input
+                  ref={searchInputRef}
+                  type="search"
+                  className="smplfy-form-control form-control"
+                  placeholder={searchPlaceholder}
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  onClick={(event) => event.stopPropagation()}
+                  onKeyDown={(event) => {
+                    event.stopPropagation();
+                    if (event.key === 'Escape') {
+                      setOpen(false);
+                      onBlur?.({ target: { value } });
+                    }
+                  }}
+                  aria-label={searchPlaceholder}
+                />
+              </div>
+            </div>
+          ) : null}
           <div className="list-group list-group-flush overflow-auto">
-            {normalizedOptions.map((option) => {
+            {filteredOptions.length ? filteredOptions.map((option) => {
               const isSelected = option.value === value;
 
               return (
@@ -208,7 +264,11 @@ export default function InputFieldRichDropdown({
                   ) : null}
                 </button>
               );
-            })}
+            }) : (
+              <div className="smplfy-rich-dropdown-empty text-secondary" role="status">
+                No results found
+              </div>
+            )}
           </div>
         </div>,
         document.body,

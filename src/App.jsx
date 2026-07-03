@@ -23,6 +23,7 @@ import TrainingsPage, { defaultTrainings } from './pages/TrainingsPage';
 import RequestsForMePage from './pages/RequestsForMePage';
 import ReportDetailsPage from './pages/ReportDetailsPage';
 import ReportsPage from './pages/ReportsPage';
+import TemplateEditPage from './pages/TemplateEditPage';
 import SampleDetailsPage from './pages/SampleDetailsPage';
 import SampleWorkspacePage from './pages/SampleWorkspacePage';
 import ServiceDetailsPage from './pages/ServiceDetailsPage';
@@ -206,6 +207,7 @@ export default function App() {
   const lastTrackedSampleFormVariantRef = useRef(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [sampleCardViewMode, setSampleCardViewMode] = useState('grid');
+  const [allSamplesInitialQuickFilter, setAllSamplesInitialQuickFilter] = useState('all');
   const [requestsForMeState, setRequestsForMeState] = useState({
     initialSection: 'requests',
     highlightedAlertId: null,
@@ -226,6 +228,8 @@ export default function App() {
     sourcePage: 'samples-workspace',
     sampleStatus: 'Pending',
     createdOn: '06/03/2026, 10:13',
+    reportingDate: null,
+    delayed: undefined,
     sample: null,
   });
   const [testRequestsState, setTestRequestsState] = useState({
@@ -340,6 +344,8 @@ export default function App() {
       sampleStatus = 'Pending',
       createdOn = '06/03/2026, 10:13',
       sample = null,
+      reportingDate = sample?.reportingDate ?? null,
+      delayed = sample?.delayed,
     } = options;
 
     setSampleDetailsState({
@@ -348,6 +354,8 @@ export default function App() {
       sourcePage,
       sampleStatus,
       createdOn,
+      reportingDate,
+      delayed,
       sample,
     });
 
@@ -798,6 +806,11 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'template-edit') {
+      setActivePage('template-edit');
+      return;
+    }
+
     if (nextPage === 'organogram') {
       setActivePage('organogram');
       return;
@@ -819,6 +832,7 @@ export default function App() {
     }
 
     if (nextPage === 'all-samples') {
+      setAllSamplesInitialQuickFilter(options.initialQuickFilter ?? 'all');
       setActivePage('all-samples');
     }
   };
@@ -852,6 +866,8 @@ export default function App() {
         sourcePage={sampleDetailsState.sourcePage}
         sampleStatus={sampleDetailsState.sampleStatus}
         createdOn={sampleDetailsState.createdOn}
+        reportingDate={sampleDetailsState.reportingDate}
+        delayed={sampleDetailsState.delayed}
         sample={sampleDetailsState.sample}
         sampleCreationFlowSessionId={sampleCreationFlowRef.current.id}
         sampleCreationFlowStartedAt={sampleCreationFlowRef.current.startedAt}
@@ -1041,6 +1057,7 @@ export default function App() {
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
         sampleCardViewMode={sampleCardViewMode}
         onSampleCardViewModeChange={setSampleCardViewMode}
+        initialQuickFilter={allSamplesInitialQuickFilter}
       />
     );
   }
@@ -1285,6 +1302,17 @@ export default function App() {
     );
   }
 
+  if (activePage === 'template-edit') {
+    return (
+      <TemplateEditPage
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
   if (activePage === 'organogram') {
     return (
       <OrganogramPage
@@ -1419,6 +1447,8 @@ export default function App() {
               sourcePage: sampleEditorState.sourcePage,
               sampleStatus: sampleEditorState.sample.status ?? 'Pending',
               createdOn: sampleEditorState.sample.createdOn ?? '06/03/2026, 10:13',
+              reportingDate: sampleEditorState.sample.reportingDate ?? null,
+              delayed: sampleEditorState.sample.delayed,
             });
             return;
           }

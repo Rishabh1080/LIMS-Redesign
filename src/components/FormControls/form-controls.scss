@@ -439,13 +439,67 @@
   box-shadow: var(--smplfy-shadow-floating-panel) !important;
 }
 
+.smplfy-rich-dropdown-search {
+  padding: 0 var(--smplfy-button-gap) var(--smplfy-button-gap);
+}
+
+.smplfy-rich-dropdown-search .input-group {
+  --smplfy-field-current-border: var(--smplfy-field-border-default);
+  --smplfy-field-current-bg: var(--smplfy-field-bg);
+  --smplfy-field-current-text: var(--smplfy-field-text);
+  --smplfy-field-current-placeholder: var(--smplfy-field-placeholder);
+  --smplfy-field-current-shadow: none;
+
+  flex-wrap: nowrap;
+  min-height: var(--smplfy-field-height);
+  height: var(--smplfy-field-height);
+  border: var(--smplfy-field-border-width) solid var(--smplfy-field-current-border);
+  border-radius: var(--smplfy-field-radius);
+  background-color: var(--smplfy-field-current-bg);
+  box-shadow: var(--smplfy-field-current-shadow);
+  overflow: hidden;
+}
+
+.smplfy-rich-dropdown-search .input-group:focus-within {
+  --smplfy-field-current-border: var(--smplfy-field-border-focused);
+  --smplfy-field-current-shadow: var(--smplfy-field-shadow-focused);
+}
+
+.smplfy-rich-dropdown-search .input-group-text {
+  min-height: calc(var(--smplfy-field-height) - (var(--smplfy-field-border-width) * 2));
+  padding: 0 var(--smplfy-field-padding-inline-compact);
+  border: 0;
+  background: transparent;
+  color: var(--smplfy-field-icon-color);
+}
+
+.smplfy-rich-dropdown-search .smplfy-form-control.form-control {
+  min-height: calc(var(--smplfy-field-height) - (var(--smplfy-field-border-width) * 2));
+  height: calc(var(--smplfy-field-height) - (var(--smplfy-field-border-width) * 2));
+  padding-inline: 0 var(--smplfy-field-padding-inline);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .smplfy-rich-dropdown-menu.card .list-group {
-  max-height: calc(var(--smplfy-semantic-size-control-height-medium) * 4);
+  max-height: calc(
+    var(--smplfy-semantic-size-control-height-medium)
+    * var(--smplfy-rich-dropdown-visible-items, 4)
+  );
   padding-inline: 0;
   overflow-x: hidden;
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-gutter: auto;
+}
+
+.smplfy-rich-dropdown-empty {
+  padding: 10px 16px;
+  font-size: var(--smplfy-search-result-font-size);
+  line-height: var(--smplfy-search-result-line-height);
+  letter-spacing: var(--smplfy-search-result-letter-spacing);
 }
 
 .smplfy-rich-dropdown-option.list-group-item {

@@ -10,6 +10,7 @@ import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import SampleCard, { SampleCardViewToggle } from '../components/SampleCard/SampleCard';
 import { getSamplesByCategory, sampleCategories } from '../data/samplesDb';
+import { isSampleDelayed } from '../utils/sampleDelay';
 import '../styles.scss';
 import './all-samples-listing-page.scss';
 
@@ -115,7 +116,79 @@ const filterConfig = [
   },
 ];
 
-function ListingTabs({ activeTab, onTabChange }) {
+const quickFilterOptions = [
+  { key: 'all', label: 'All', countLabel: 'total samples' },
+  { key: 'pending', label: 'Pending', countLabel: 'pending samples' },
+  { key: 'in-transit', label: 'In transit', countLabel: 'in transit samples' },
+  { key: 'delayed', label: 'Delayed', countLabel: 'delayed samples' },
+];
+
+function getQuickFilterOption(filterKey) {
+  return quickFilterOptions.find((option) => option.key === filterKey) ?? quickFilterOptions[0];
+}
+
+function matchesQuickFilter(sample, filterKey) {
+  const option = getQuickFilterOption(filterKey);
+  const delayed = isSampleDelayed(sample);
+
+  if (option.key === 'all') {
+    return true;
+  }
+
+  if (option.key === 'pending') {
+    return sample.status === 'Pending' && !delayed;
+  }
+
+  if (option.key === 'in-transit') {
+    return sample.status !== 'Pending' && !delayed;
+  }
+
+  if (option.key === 'delayed') {
+    return delayed;
+  }
+
+  return false;
+}
+
+function getQuickFilterCountLabel(count, filterKey) {
+  const option = getQuickFilterOption(filterKey);
+  return `${count} ${option.countLabel}`;
+}
+
+function sampleMatchesSearchAndFilters(sample, query, filters) {
+  const matchesSearch = !query
+    || [
+      sample.id,
+      sample.representative,
+      sample.reference,
+      sample.requestMode,
+      sample.status,
+      sample.reportingDate,
+      sample.createdOn,
+      sample.remnantId,
+      sample.testedAt,
+      sample.testedBy,
+      sample.retentionDate,
+      sample.disposalDate,
+      sample.disposalRemarks,
+    ]
+      .join(' ')
+      .toLowerCase()
+      .includes(query);
+
+  const matchesFilters = Object.entries(filters).every(([key, filterValue]) => {
+    if (!filterValue) {
+      return true;
+    }
+
+    const sampleValue = String(sample[key] ?? '').toLowerCase();
+    return sampleValue.includes(String(filterValue).toLowerCase());
+  });
+
+  return matchesSearch && matchesFilters;
+}
+
+function ListingTabs({ activeTab, onTabChange, tabCounts = {} }) {
   const leftTabs = sampleCategories.filter((tab) => tab.group === 'left');
   const rightTabs = sampleCategories.filter((tab) => tab.group === 'right');
 
@@ -132,7 +205,10 @@ function ListingTabs({ activeTab, onTabChange }) {
                   active={activeTab === tab.key}
                   onClick={() => onTabChange(tab.key)}
                 >
-                  {tab.label}
+                  <span className="d-inline-flex align-items-center gap-2">
+                    <span>{tab.label}</span>
+                    <span className="smplfy-all-samples-nav-count">{tabCounts[tab.key] ?? 0}</span>
+                  </span>
                 </NavSelector>
               ))}
             </div>
@@ -147,7 +223,10 @@ function ListingTabs({ activeTab, onTabChange }) {
                   active={activeTab === tab.key}
                   onClick={() => onTabChange(tab.key)}
                 >
-                  {tab.label}
+                  <span className="d-inline-flex align-items-center gap-2">
+                    <span>{tab.label}</span>
+                    <span className="smplfy-all-samples-nav-count">{tabCounts[tab.key] ?? 0}</span>
+                  </span>
                 </NavSelector>
               ))}
             </div>
@@ -286,13 +365,49 @@ function FiltersDrawer({ open, draftFilters, onChange, onApply, onCancel }) {
   );
 }
 
-function ListingBody({ samples, onOpenSample, onEditSample, viewMode, onViewModeChange }) {
+function ListingQuickFilters({ activeFilter, onFilterChange, filterCounts = {} }) {
+  return (
+    <div className="smplfy-all-samples-quick-filters nav nav-pills p-1 bg-white border rounded d-inline-flex align-items-center flex-wrap gap-1 mb-3">
+      {quickFilterOptions.map((option) => (
+        <NavSelector
+          key={option.key}
+          size="medium"
+          className="text-nowrap"
+          active={activeFilter === option.key}
+          onClick={() => onFilterChange(option.key)}
+        >
+          <span className="d-inline-flex align-items-center gap-2">
+            <span>{option.label}</span>
+            <span className="smplfy-all-samples-nav-count">{filterCounts[option.key] ?? 0}</span>
+          </span>
+        </NavSelector>
+      ))}
+    </div>
+  );
+}
+
+function ListingBody({
+  samples,
+  onOpenSample,
+  onEditSample,
+  viewMode,
+  onViewModeChange,
+  quickFilter,
+  onQuickFilterChange,
+  countLabel,
+  filterCounts,
+}) {
   return (
     <main className="smplfy-all-samples-page bg-body-tertiary flex-grow-1">
       <div className="container-fluid px-4">
         <div className="w-100">
-          <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap text-secondary fw-medium">
-            <span>{samples.length} Total Samples</span>
+          <ListingQuickFilters
+            activeFilter={quickFilter}
+            onFilterChange={onQuickFilterChange}
+            filterCounts={filterCounts}
+          />
+          <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap pb-2">
+            <span className="small text-secondary fw-normal smplfy-all-samples-count-label">{countLabel}</span>
             <SampleCardViewToggle value={viewMode} onChange={onViewModeChange} />
           </div>
 
@@ -379,6 +494,7 @@ function RetainedListing({
                             sourcePage: 'all-samples',
                             sampleStatus: sample.status,
                             createdOn: sample.createdOn,
+                            sample,
                           })
                         }
                       >
@@ -448,6 +564,7 @@ function DisposedListing({ samples, onOpenSample }) {
                             sourcePage: 'all-samples',
                             sampleStatus: sample.status,
                             createdOn: sample.createdOn,
+                            sample,
                           })
                         }
                       >
@@ -467,6 +584,7 @@ function DisposedListing({ samples, onOpenSample }) {
                             sourcePage: 'all-samples',
                             sampleStatus: sample.status,
                             createdOn: sample.createdOn,
+                            sample,
                           })
                         }
                       >
@@ -582,9 +700,11 @@ export default function AllSamplesListingPage({
   onSidebarCollapsedChange,
   sampleCardViewMode,
   onSampleCardViewModeChange,
+  initialQuickFilter = 'all',
 }) {
   const [activeTab, setActiveTab] = useState('all-samples');
   const [searchValue, setSearchValue] = useState('');
+  const [quickFilter, setQuickFilter] = useState(initialQuickFilter);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState({
     status: '',
@@ -609,39 +729,35 @@ export default function AllSamplesListingPage({
   const visibleSamples = useMemo(() => {
     const categorySamples = getSamplesByCategory(activeTab);
     const query = searchValue.trim().toLowerCase();
-    return categorySamples.filter((sample) => {
-      const matchesSearch = !query
-        || [
-          sample.id,
-          sample.representative,
-          sample.reference,
-          sample.requestMode,
-          sample.status,
-          sample.reportingDate,
-          sample.createdOn,
-          sample.remnantId,
-          sample.testedAt,
-          sample.testedBy,
-          sample.retentionDate,
-          sample.disposalDate,
-          sample.disposalRemarks,
-        ]
-          .join(' ')
-          .toLowerCase()
-          .includes(query);
-
-      const matchesFilters = Object.entries(appliedFilters).every(([key, filterValue]) => {
-        if (!filterValue) {
-          return true;
-        }
-
-        const sampleValue = String(sample[key] ?? '').toLowerCase();
-        return sampleValue.includes(String(filterValue).toLowerCase());
-      });
-
-      return matchesSearch && matchesFilters;
-    });
+    return categorySamples.filter((sample) => sampleMatchesSearchAndFilters(sample, query, appliedFilters));
   }, [activeTab, searchValue, appliedFilters]);
+
+  const tabCounts = useMemo(() => {
+    const query = searchValue.trim().toLowerCase();
+
+    return sampleCategories.reduce((counts, tab) => {
+      counts[tab.key] = getSamplesByCategory(tab.key).filter((sample) =>
+        sampleMatchesSearchAndFilters(sample, query, appliedFilters),
+      ).length;
+      return counts;
+    }, {});
+  }, [searchValue, appliedFilters]);
+
+  const quickFilterCounts = useMemo(
+    () =>
+      quickFilterOptions.reduce((counts, option) => {
+        counts[option.key] = visibleSamples.filter((sample) => matchesQuickFilter(sample, option.key)).length;
+        return counts;
+      }, {}),
+    [visibleSamples],
+  );
+
+  const quickFilteredSamples = useMemo(
+    () => visibleSamples.filter((sample) => matchesQuickFilter(sample, quickFilter)),
+    [visibleSamples, quickFilter],
+  );
+
+  const quickFilterCountLabel = getQuickFilterCountLabel(quickFilteredSamples.length, quickFilter);
 
   useEffect(() => {
     if (!isRetainedTab) {
@@ -700,9 +816,11 @@ export default function AllSamplesListingPage({
       pageHeader={
         <ListingTabs
           activeTab={activeTab}
+          tabCounts={tabCounts}
           onTabChange={(nextTab) => {
             setActiveTab(nextTab);
             setSearchValue('');
+            setQuickFilter('all');
             resetRetainedState();
             setAppliedFilters({
               status: '',
@@ -778,11 +896,15 @@ export default function AllSamplesListingPage({
         />
       ) : (
         <ListingBody
-          samples={visibleSamples}
+          samples={quickFilteredSamples}
           onOpenSample={onOpenSample}
           onEditSample={onEditSample}
           viewMode={sampleCardViewMode}
           onViewModeChange={onSampleCardViewModeChange}
+          quickFilter={quickFilter}
+          onQuickFilterChange={setQuickFilter}
+          countLabel={quickFilterCountLabel}
+          filterCounts={quickFilterCounts}
         />
       )}
       <FiltersDrawer

@@ -1,8 +1,10 @@
 import { IconColumns2, IconLayoutBottombar, IconLayoutGrid } from '@tabler/icons-react';
+import AppIcon from '../AppIcon';
 import ParameterCircles, { getParameterSummary } from '../ParameterCircles/ParameterCircles';
 import SecondaryButton from '../SecondaryButton';
 import StatusPill from '../StatusPill';
 import { getStatusPresentation } from '../../status/statusRegistry';
+import { isSampleDelayed } from '../../utils/sampleDelay';
 import './SampleCard.scss';
 
 function joinClasses(...values) {
@@ -49,6 +51,19 @@ function getRowColsClass(itemCount) {
   const desktopCols = Math.min(count, 6);
 
   return `row-cols-${mobileCols} row-cols-md-${tabletCols} row-cols-xl-${desktopCols}`;
+}
+
+function DelayedSamplePill() {
+  return (
+    <StatusPill
+      color="red"
+      styleType="solid"
+      className="d-inline-flex align-items-center gap-1 text-white"
+    >
+      <AppIcon name="hourglass-low" size={14} stroke={2} />
+      Delayed
+    </StatusPill>
+  );
 }
 
 function SampleId({ sample, isOpenable, sourcePage, onOpenSample }) {
@@ -255,6 +270,7 @@ function SampleCardGrid({
   const isOpenable =
     sample.status === 'Under Analysis' || sample.status === 'Pending' || sample.status === 'Completed';
   const isEditable = sample.status === 'Pending' && typeof onEditSample === 'function';
+  const isDelayed = isSampleDelayed(sample);
   const { approvedCount, totalCount, sortedParameters } = getParameterSummary(sample.parameters);
   const dataItems = buildDataItems(sample, extraMetaFields, extraDateFields);
   const dataGridClass = getRowColsClass(dataItems.length);
@@ -264,14 +280,18 @@ function SampleCardGrid({
       <div className="card-header bg-transparent d-flex align-items-center gap-2">
         <SampleId sample={sample} isOpenable={isOpenable} sourcePage={sourcePage} onOpenSample={onOpenSample} />
         <SampleStatus sample={sample} />
-        {isEditable ? (
-          <SecondaryButton
-            size="medium"
-            className="ms-auto"
-            onClick={() => onEditSample(sample, { sourcePage })}
-          >
-            Edit
-          </SecondaryButton>
+        {isDelayed || isEditable ? (
+          <div className="ms-auto d-flex align-items-center gap-2">
+            {isDelayed ? <DelayedSamplePill /> : null}
+            {isEditable ? (
+              <SecondaryButton
+                size="medium"
+                onClick={() => onEditSample(sample, { sourcePage })}
+              >
+                Edit
+              </SecondaryButton>
+            ) : null}
+          </div>
         ) : null}
       </div>
 

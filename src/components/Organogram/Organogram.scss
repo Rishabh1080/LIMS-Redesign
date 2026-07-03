@@ -1,0 +1,165 @@
+.smplfy-organogram {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  touch-action: none;
+  background: var(--bs-white);
+}
+
+.smplfy-organogram-panning {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.smplfy-organogram-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.smplfy-organogram-canvas-animated {
+  transition: transform 280ms ease-out;
+}
+
+.smplfy-organogram-edges {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.smplfy-organogram-edge {
+  fill: none;
+  stroke: #cbd2da;
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.smplfy-organogram-node-shell {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--smplfy-organogram-node-width);
+  height: var(--smplfy-organogram-node-height);
+  transition: transform 280ms ease-out;
+  animation: smplfy-organogram-node-enter 180ms ease-out both;
+}
+
+.smplfy-organogram-node {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 12px 20px;
+  gap: 12px;
+  overflow: hidden;
+  text-align: center;
+  background: var(--smplfy-organogram-node-bg);
+  border: 1px solid #d0d5dc;
+  border-radius: 8px;
+}
+
+.smplfy-organogram-node-avatar {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 48px;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  color: #000;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  background: #fff;
+  border: 1px solid #d0d5dc;
+  border-radius: 50%;
+}
+
+.smplfy-organogram-node-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  gap: 4px;
+}
+
+.smplfy-organogram-node-name,
+.smplfy-organogram-node-role {
+  width: 162px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.smplfy-organogram-node-name {
+  color: #000b13;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19px;
+  letter-spacing: -0.04em;
+}
+
+.smplfy-organogram-node-role {
+  color: #6c737f;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  letter-spacing: -0.02em;
+}
+
+.smplfy-organogram-node-toggle {
+  position: absolute;
+  z-index: 2;
+  bottom: -8px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  color: #6c737f;
+  background: #fff;
+  border: 1px solid #cbd2da;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.smplfy-organogram-node-toggle:hover {
+  color: var(--smplfy-primitive-neutral-900);
+  border-color: #9aa4b2;
+}
+
+.smplfy-organogram-node-toggle:focus-visible {
+  outline: 2px solid var(--bs-primary);
+  outline-offset: 2px;
+}
+
+@keyframes smplfy-organogram-node-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smplfy-organogram-canvas-animated,
+  .smplfy-organogram-node-shell {
+    transition: none;
+    animation: none;
+  }
+}

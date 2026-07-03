@@ -11,6 +11,7 @@ import DataTable from '../components/DataTable';
 import StatusPill from '../components/StatusPill';
 import { getAnalyticsElapsedTime, trackEvent } from '../analytics/posthog';
 import { getStatusPresentation } from '../status/statusRegistry';
+import { isSampleDelayed } from '../utils/sampleDelay';
 import './sample-details-page.scss';
 
 const carpetImage =
@@ -174,6 +175,8 @@ function DetailsHeader({
   sampleId,
   sampleStatus,
   createdOn,
+  reportingDate,
+  delayed,
   reviewRequested,
   onBack,
   onEditSample,
@@ -186,6 +189,7 @@ function DetailsHeader({
   const isCompleted = sampleStatus === 'Completed';
   const { date, time } = splitDateTime(createdOn);
   const statusPresentation = getStatusPresentation('sample', sampleStatus);
+  const isDelayed = isSampleDelayed({ reportingDate, delayed });
 
   return (
     <section className="smplfy-sample-details-header bg-white border-bottom">
@@ -205,6 +209,16 @@ function DetailsHeader({
               <StatusPill color={statusPresentation.color} styleType={statusPresentation.styleType}>
                 {statusPresentation.label}
               </StatusPill>
+              {isDelayed ? (
+                <StatusPill
+                  color="red"
+                  styleType="solid"
+                  className="d-inline-flex align-items-center gap-1 text-white"
+                >
+                  <AppIcon name="hourglass-low" size={14} stroke={2} />
+                  Delayed
+                </StatusPill>
+              ) : null}
             </div>
             <div className="d-inline-flex gap-2 text-secondary fw-medium">
               <span>{date}</span>
@@ -639,6 +653,8 @@ export default function SampleDetailsPage({
   sourcePage = 'samples-workspace',
   sampleStatus = 'Pending',
   createdOn = '06/03/2026, 10:13',
+  reportingDate = null,
+  delayed,
   sample = null,
   onBack,
   onEditSample,
@@ -752,6 +768,8 @@ export default function SampleDetailsPage({
           sampleId={sampleId}
           sampleStatus={sampleStatus}
           createdOn={createdOn}
+          reportingDate={reportingDate ?? sample?.reportingDate}
+          delayed={delayed ?? sample?.delayed}
           reviewRequested={reviewRequested}
           onBack={onBack}
           onEditSample={onEditSample}
