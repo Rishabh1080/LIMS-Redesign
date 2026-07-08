@@ -32,6 +32,7 @@ import TempReportPage from './pages/TempReportPage';
 import TestRequestsHomePage from './pages/TestRequestsHomePage';
 import TestRequestsListingPage from './pages/TestRequestsListingPage';
 import TrDetailsPage from './pages/TrDetailsPage';
+import { allSamplesDb } from './data/samplesDb';
 import { initialInstrumentServices, isBreakdownServiceType } from './data/instrumentServices';
 import {
   createAnalyticsSessionId,
@@ -368,6 +369,19 @@ export default function App() {
     }
 
     setActivePage('sample-details');
+  };
+
+  const openOriginalSampleDetails = (sampleId) => {
+    const originalSample = allSamplesDb.find((sample) => sample.id === sampleId);
+
+    openSampleDetails(sampleId, {
+      sourcePage: 'all-samples',
+      sampleStatus: originalSample?.status ?? 'Pending',
+      createdOn: originalSample?.createdOn ?? '06/03/2026, 10:13',
+      reportingDate: originalSample?.reportingDate ?? null,
+      delayed: originalSample?.delayed,
+      sample: originalSample ?? null,
+    });
   };
 
   const openInstrumentDetails = (instrumentId, instrumentName, options = {}) => {
@@ -901,6 +915,7 @@ export default function App() {
                 sourcePage: sampleDetailsState.sourcePage,
               })
         }
+        onOpenOriginalSample={openOriginalSampleDetails}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}

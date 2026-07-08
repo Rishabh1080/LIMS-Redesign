@@ -343,6 +343,16 @@
   height: 31px;
 }
 
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table th:first-child,
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table td:first-child {
+  width: 44px;
+  text-align: center;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table .smplfy-badge.badge {
+  white-space: nowrap;
+}
+
 .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body aside {
   width: 360px;
   min-height: 0;

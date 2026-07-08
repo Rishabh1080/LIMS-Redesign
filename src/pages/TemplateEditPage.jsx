@@ -87,8 +87,6 @@ const widgetOptions = [
 ].sort((first, second) => first.localeCompare(second))
   .map((label) => ({ value: label, label }));
 
-const indexOptions = ['1', '2', '3', '4', '5', '6'].map((label) => ({ value: label, label }));
-
 const masterOptions = [
   'Customer',
   'Instrument',
@@ -111,10 +109,137 @@ const roleOptions = [
 const columnDisplayOptions = [
   { key: 'coa', label: 'Show in CoA', checked: true },
   { key: 'dataTemplate', label: 'Show in Data Template', checked: true },
-  { key: 'nabl', label: 'Show in NABL', checked: false },
-  { key: 'nonNabl', label: 'Show in Non-NABL', checked: false },
-  { key: 'finalResult', label: 'Is Final Result?', checked: true },
+  { key: 'nabl', label: 'Show in NABL', checked: true },
+  { key: 'nonNabl', label: 'Show in Non-NABL', checked: true },
+  { key: 'finalResult', label: 'Is Final Result?', checked: false },
 ];
+
+const styleWidthOptions = [
+  { value: 'col', label: 'Auto' },
+  ...Array.from({ length: 12 }, (_, index) => {
+    const value = `col-${index + 1}`;
+    return { value, label: String(index + 1) };
+  }),
+];
+
+const styleMarginOptions = [
+  { value: '', label: 'None' },
+  { value: 'mt-2', label: 'Small' },
+  { value: 'mt-4', label: 'Large' },
+];
+
+const alignmentOptions = [
+  { key: '', label: 'Left', className: '' },
+  { key: 'text-center', label: 'Center', className: 'text-center' },
+  { key: 'text-end', label: 'Right', className: 'text-end' },
+];
+
+const fontWeightOptions = [
+  { key: '', label: 'Normal', className: '' },
+  { key: 'fw-bold', label: 'Bold', className: 'fw-bold' },
+  { key: 'fw-bolder', label: 'Extra Bold', className: 'fw-bolder' },
+];
+
+const borderClassBySide = {
+  top: 'border-top',
+  right: 'border-right',
+  bottom: 'border-bottom',
+  left: 'border-left',
+};
+
+const widthClassSet = new Set(styleWidthOptions.map((option) => option.value));
+const alignmentClassSet = new Set(['text-start', 'text-center', 'text-end']);
+const fontWeightClassSet = new Set(['fw-normal', 'fw-bold', 'fw-bolder']);
+const borderClassSet = new Set(Object.values(borderClassBySide));
+const marginTopClassSet = new Set(['mt-2', 'mt-4']);
+
+function tokenizeClassString(className = '') {
+  return String(className)
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function parseBootstrapClassString(className = '') {
+  const style = {
+    width: 'col',
+    alignment: '',
+    fontWeight: '',
+    borders: {
+      top: false,
+      right: false,
+      bottom: false,
+      left: false,
+    },
+    marginTop: '',
+    advancedClasses: '',
+  };
+  const advancedClasses = [];
+
+  tokenizeClassString(className).forEach((classToken) => {
+    if (widthClassSet.has(classToken)) {
+      style.width = classToken;
+      return;
+    }
+
+    if (alignmentClassSet.has(classToken)) {
+      style.alignment = classToken === 'text-start' ? 'text-start' : classToken;
+      return;
+    }
+
+    if (fontWeightClassSet.has(classToken)) {
+      style.fontWeight = classToken === 'fw-normal' ? 'fw-normal' : classToken;
+      return;
+    }
+
+    if (borderClassSet.has(classToken)) {
+      const matchingSide = Object.entries(borderClassBySide)
+        .find(([, sideClass]) => sideClass === classToken)?.[0];
+      if (matchingSide) {
+        style.borders[matchingSide] = true;
+      }
+      return;
+    }
+
+    if (marginTopClassSet.has(classToken)) {
+      style.marginTop = classToken;
+      return;
+    }
+
+    advancedClasses.push(classToken);
+  });
+
+  style.advancedClasses = advancedClasses.join(' ');
+  return style;
+}
+
+function buildBootstrapClassString(style) {
+  const classes = [];
+  if (style.width) {
+    classes.push(style.width);
+  }
+
+  if (style.alignment) {
+    classes.push(style.alignment);
+  }
+
+  if (style.fontWeight) {
+    classes.push(style.fontWeight);
+  }
+
+  Object.entries(borderClassBySide).forEach(([side, className]) => {
+    if (style.borders?.[side]) {
+      classes.push(className);
+    }
+  });
+
+  if (style.marginTop) {
+    classes.push(style.marginTop);
+  }
+
+  classes.push(...tokenizeClassString(style.advancedClasses));
+  return Array.from(new Set(classes)).join(' ');
+}
 
 function cloneColumn(column) {
   return {
@@ -273,6 +398,27 @@ function findContainer(containers, containerId) {
       for (const column of row.columns) {
         if (column.nestedContainer) {
           const nestedMatch = findContainer([column.nestedContainer], containerId);
+          if (nestedMatch) {
+            return nestedMatch;
+          }
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+function findColumn(containers, columnId) {
+  for (const container of containers) {
+    for (const row of container.rows) {
+      for (const column of row.columns) {
+        if (column.id === columnId) {
+          return column;
+        }
+
+        if (column.nestedContainer) {
+          const nestedMatch = findColumn([column.nestedContainer], columnId);
           if (nestedMatch) {
             return nestedMatch;
           }
@@ -905,6 +1051,157 @@ function BulkActionBar({
   );
 }
 
+function StyleClassControls({ value, onChange }) {
+  const style = parseBootstrapClassString(value);
+  const selectedAlignment = style.alignment === 'text-center' || style.alignment === 'text-end'
+    ? style.alignment
+    : '';
+  const selectedFontWeight = style.fontWeight === 'fw-bold' || style.fontWeight === 'fw-bolder'
+    ? style.fontWeight
+    : '';
+
+  const updateStyle = (updater) => {
+    const currentStyle = parseBootstrapClassString(value);
+    const nextStyle = typeof updater === 'function'
+      ? updater(currentStyle)
+      : { ...currentStyle, ...updater };
+    onChange(buildBootstrapClassString(nextStyle));
+  };
+
+  return (
+    <div className="smplfy-template-style-controls d-flex flex-column gap-3">
+      <div className="row g-3">
+        <div className="col-12 col-md-4">
+          <FormElement
+            type="rich-dropdown"
+            label="Width"
+            inputProps={{
+              value: style.width,
+              options: styleWidthOptions,
+              maxVisibleItems: 8,
+              onChange: (event) => updateStyle({ width: event.target.value || 'col' }),
+            }}
+          />
+        </div>
+
+        <div className="col-12 col-md-4">
+          <div className="smplfy-template-style-field d-flex flex-column gap-2">
+            <span className="smplfy-form-label form-label mb-0">Text Alignment</span>
+            <div className="btn-group w-100" role="group" aria-label="Text alignment">
+              {alignmentOptions.map((option) => (
+                <button
+                  type="button"
+                  className={`smplfy-btn btn btn-sm ${
+                    selectedAlignment === option.key ? 'btn-primary' : 'btn-outline-secondary'
+                  }`}
+                  key={option.label}
+                  onClick={() => updateStyle({ alignment: option.className })}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="col-12 col-md-4">
+          <div className="smplfy-template-style-field d-flex flex-column gap-2">
+            <span className="smplfy-form-label form-label mb-0">Font Weight</span>
+            <div className="btn-group w-100" role="group" aria-label="Font weight">
+              {fontWeightOptions.map((option) => (
+                <button
+                  type="button"
+                  className={`smplfy-btn btn btn-sm ${
+                    selectedFontWeight === option.key ? 'btn-primary' : 'btn-outline-secondary'
+                  }`}
+                  key={option.label}
+                  onClick={() => updateStyle({ fontWeight: option.className })}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="col-12 col-md-6">
+          <div className="smplfy-template-style-field d-flex flex-column gap-2">
+            <span className="smplfy-form-label form-label mb-0">Borders</span>
+            <div className="smplfy-template-border-picker d-flex align-items-center gap-3">
+              <div className="smplfy-template-border-preview">
+                {Object.keys(borderClassBySide).map((side) => (
+                  <button
+                    type="button"
+                    className={`smplfy-template-border-preview-edge is-${side} ${
+                      style.borders[side] ? 'is-active' : ''
+                    }`}
+                    aria-label={`Toggle ${side} border`}
+                    aria-pressed={style.borders[side]}
+                    key={side}
+                    onClick={() => updateStyle((currentStyle) => ({
+                      ...currentStyle,
+                      borders: {
+                        ...currentStyle.borders,
+                        [side]: !currentStyle.borders[side],
+                      },
+                    }))}
+                  />
+                ))}
+              </div>
+              <div className="smplfy-template-border-actions d-grid gap-2">
+                {Object.keys(borderClassBySide).map((side) => (
+                  <button
+                    type="button"
+                    className={`smplfy-btn btn btn-sm ${
+                      style.borders[side] ? 'btn-primary' : 'btn-outline-secondary'
+                    }`}
+                    aria-pressed={style.borders[side]}
+                    key={side}
+                    onClick={() => updateStyle((currentStyle) => ({
+                      ...currentStyle,
+                      borders: {
+                        ...currentStyle.borders,
+                        [side]: !currentStyle.borders[side],
+                      },
+                    }))}
+                  >
+                    {side.charAt(0).toUpperCase() + side.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-12 col-md-6">
+          <FormElement
+            type="rich-dropdown"
+            label="Top Margin"
+            inputProps={{
+              value: style.marginTop,
+              options: styleMarginOptions,
+              maxVisibleItems: 3,
+              onChange: (event) => updateStyle({ marginTop: event.target.value }),
+            }}
+          />
+        </div>
+
+        <div className="col-12">
+          <FormElement
+            type="text"
+            label="Advanced Classes"
+            inputProps={{
+              value: style.advancedClasses,
+              placeholder: 'eg. text-danger',
+              onChange: (event) => updateStyle({ advancedClasses: event.target.value }),
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function BulkStyleModal({ open, value, onChange, onApply, onClose }) {
   return (
     <Modal
@@ -913,7 +1210,9 @@ function BulkStyleModal({ open, value, onChange, onApply, onClose }) {
       titleId="template-bulk-style-modal-title"
       titleIcon="edit"
       onClose={onClose}
-      size="md"
+      size="lg"
+      cardClassName="smplfy-template-style-dialog"
+      className="smplfy-template-style-modal"
       actions={(
         <>
           <button type="button" className="smplfy-btn btn btn-outline-secondary btn-sm" onClick={onClose}>
@@ -925,16 +1224,7 @@ function BulkStyleModal({ open, value, onChange, onApply, onClose }) {
         </>
       )}
     >
-      <FormElement
-        type="text"
-        label="Classes"
-        helperText="Enter one or more Bootstrap classes separated by spaces."
-        inputProps={{
-          value,
-          placeholder: 'eg. col-lg-6 text-center',
-          onChange: (event) => onChange(event.target.value),
-        }}
-      />
+      <StyleClassControls value={value} onChange={onChange} />
     </Modal>
   );
 }
@@ -1569,10 +1859,8 @@ function ColumnSettingsSection({ title, description, children }) {
   );
 }
 
-function ColumnSettingsContent() {
-  const [index, setIndex] = useState('');
+function ColumnSettingsContent({ classValue, onClassChange }) {
   const [widget, setWidget] = useState('Text Widget');
-  const [displayClass, setDisplayClass] = useState('col');
   const [master, setMaster] = useState('');
   const [editRole, setEditRole] = useState('');
   const [viewRole, setViewRole] = useState('');
@@ -1591,21 +1879,9 @@ function ColumnSettingsContent() {
     <div className="smplfy-template-column-settings d-flex flex-column gap-3">
       <ColumnSettingsSection
         title="Layout"
-        description="Control the widget type, display class, and column ordering."
+        description="Control the widget type, display class, and master data."
       >
         <div className="row g-3">
-          <div className="col-12 col-lg-6">
-            <FormElement
-              type="rich-dropdown"
-              label="Index"
-              inputProps={{
-                value: index,
-                placeholder: 'Select index',
-                options: indexOptions,
-                onChange: (event) => setIndex(event.target.value),
-              }}
-            />
-          </div>
           <div className="col-12 col-lg-6">
             <FormElement
               type="rich-dropdown"
@@ -1622,14 +1898,7 @@ function ColumnSettingsContent() {
             />
           </div>
           <div className="col-12">
-            <FormElement
-              type="text"
-              label="Class"
-              inputProps={{
-                value: displayClass,
-                onChange: (event) => setDisplayClass(event.target.value),
-              }}
-            />
+            <StyleClassControls value={classValue} onChange={onClassChange} />
           </div>
           <div className="col-12 col-lg-6">
             <FormElement
@@ -1702,12 +1971,26 @@ function ColumnSettingsContent() {
   );
 }
 
-function SettingsModal({ target, onClose }) {
+function SettingsModal({ target, targetColumn, onClose, onSaveColumnClass }) {
   const entityName = target?.type
     ? `${target.type.charAt(0).toUpperCase()}${target.type.slice(1)} Settings`
     : 'Settings';
   const isContainerSettings = target?.type === 'container';
   const isColumnSettings = target?.type === 'column';
+  const [columnClassValue, setColumnClassValue] = useState('');
+
+  useEffect(() => {
+    if (isColumnSettings) {
+      setColumnClassValue(targetColumn?.customClass ?? '');
+    }
+  }, [isColumnSettings, targetColumn?.id, targetColumn?.customClass]);
+
+  const handleColumnSave = () => {
+    if (target?.id) {
+      onSaveColumnClass?.(target.id, columnClassValue);
+    }
+    onClose();
+  };
 
   return (
     <Modal
@@ -1717,6 +2000,7 @@ function SettingsModal({ target, onClose }) {
       titleIcon={isContainerSettings ? undefined : 'settings'}
       onClose={onClose}
       size={isColumnSettings ? 'xl' : isContainerSettings ? 'lg' : 'md'}
+      cardClassName={isColumnSettings ? 'smplfy-template-column-settings-dialog' : ''}
       className={[
         isContainerSettings ? 'smplfy-template-settings-modal' : '',
         isColumnSettings ? 'smplfy-template-column-settings-modal' : '',
@@ -1741,7 +2025,7 @@ function SettingsModal({ target, onClose }) {
             <button type="button" className="smplfy-btn btn btn-outline-secondary btn-sm" onClick={onClose}>
               Close
             </button>
-            <button type="button" className="smplfy-btn btn btn-primary btn-sm" onClick={onClose}>
+            <button type="button" className="smplfy-btn btn btn-primary btn-sm" onClick={handleColumnSave}>
               Save
             </button>
           </>
@@ -1751,7 +2035,10 @@ function SettingsModal({ target, onClose }) {
       {isContainerSettings ? (
         <ContainerSettingsContent />
       ) : isColumnSettings ? (
-        <ColumnSettingsContent />
+        <ColumnSettingsContent
+          classValue={columnClassValue}
+          onClassChange={setColumnClassValue}
+        />
       ) : (
         <div className="smplfy-template-modal-empty text-secondary">
           Properties for this {target?.type ?? 'entity'} will appear here.
@@ -1808,6 +2095,9 @@ export default function TemplateEditPage({
   const [copyStatus, setCopyStatus] = useState('');
   const selectedColumnIds = collectColumnSelectionIds(containers, columnSelectionSources);
   const selectedIds = selectionType === 'column' ? selectedColumnIds : selectedEntityIds;
+  const settingsTargetColumn = settingsTarget?.type === 'column'
+    ? findColumn(containers, settingsTarget.id)
+    : null;
 
   const clearSelection = () => {
     setSelectionType(null);
@@ -2237,7 +2527,17 @@ export default function TemplateEditPage({
         </section>
       </main>
 
-      <SettingsModal target={settingsTarget} onClose={() => setSettingsTarget(null)} />
+      <SettingsModal
+        target={settingsTarget}
+        targetColumn={settingsTargetColumn}
+        onClose={() => setSettingsTarget(null)}
+        onSaveColumnClass={(columnId, className) => {
+          setContainers((current) => updateSelectedColumns(current, new Set([columnId]), (column) => ({
+            ...column,
+            customClass: className.trim(),
+          })));
+        }}
+      />
       <WidgetModal widget={widgetTarget} onClose={() => setWidgetTarget(null)} />
       <BulkStyleModal
         open={bulkStyleOpen}
@@ -2258,7 +2558,13 @@ export default function TemplateEditPage({
         selectionType={selectionType}
         selectionCount={selectedIds.length}
         pasteFlow={pasteFlow}
-        onOpenStyling={() => setBulkStyleOpen(true)}
+        onOpenStyling={() => {
+          const selectedColumns = collectColumnsByIds(containers, new Set(selectedColumnIds));
+          const firstClass = selectedColumns[0]?.customClass ?? '';
+          const hasSameClass = selectedColumns.every((column) => (column.customClass ?? '') === firstClass);
+          setBulkClassValue(hasSameClass ? firstClass : '');
+          setBulkStyleOpen(true);
+        }}
         onSelectChildColumns={handlers.onSelectChildColumns}
         onClone={handlers.onBulkClone}
         onStartPaste={handlers.onStartPaste}

@@ -381,6 +381,29 @@ function ProductWiseDetails() {
   );
 }
 
+function AmendmentSampleNotice({ originalSampleId, onOpenOriginalSample }) {
+  if (!originalSampleId) {
+    return null;
+  }
+
+  return (
+    <section className="smplfy-card card smplfy-sample-amendment-notice">
+      <div className="card-body d-flex align-items-center gap-2 flex-wrap">
+        <div className="d-flex align-items-center gap-2 min-w-0">
+          <span className="text-dark fw-medium text-truncate">This is an amended sample.</span>
+        </div>
+        <button
+          type="button"
+          className="smplfy-btn btn btn-link p-0 border-0 text-decoration-none flex-shrink-0"
+          onClick={() => onOpenOriginalSample?.(originalSampleId)}
+        >
+          View original sample
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function ActionRequiredPanel({ resolved, onTakeAction }) {
   if (resolved) {
     return (
@@ -660,6 +683,7 @@ export default function SampleDetailsPage({
   onEditSample,
   onOpenTestRequests,
   onOpenCoaReport,
+  onOpenOriginalSample,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -751,6 +775,8 @@ export default function SampleDetailsPage({
 
   const sourceLabel = sourcePage === 'all-samples' ? 'All Samples' : 'Samples Workspace';
   const activeNav = sourcePage === 'all-samples' ? 'all-samples' : 'samples-workspace';
+  const isAmendmentSample = sample?.category === 'amendment-samples';
+  const originalSampleId = isAmendmentSample ? sample?.originalSampleId : null;
   const breadcrumbs = [
     { key: sourcePage, label: sourceLabel },
     { key: sampleId, label: sampleId, current: true },
@@ -782,6 +808,10 @@ export default function SampleDetailsPage({
       <main className="smplfy-sample-details-page bg-body-tertiary p-4 min-vh-100">
         <div className="smplfy-sample-details-layout d-grid">
           <div className="smplfy-sample-details-main-panel">
+            <AmendmentSampleNotice
+              originalSampleId={originalSampleId}
+              onOpenOriginalSample={onOpenOriginalSample}
+            />
             <div className="smplfy-card card overflow-hidden">
               <BasicSampleDetails />
               <ProductWiseDetails />

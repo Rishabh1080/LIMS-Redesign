@@ -134,6 +134,7 @@ const samplesByCategory = {
       reportingDate: '09/03/2026, 05:00',
       parameters: ['amber', 'sky', 'coral', 'mint', 'green'],
       category: 'amendment-samples',
+      originalSampleId: 'IICT/2025-2026/1107',
     },
     {
       id: 'IICT/2025-2026/1131',
@@ -146,6 +147,7 @@ const samplesByCategory = {
       reportingDate: '09/03/2026, 07:30',
       parameters: ['slate', 'mint', 'green', 'amber', 'sky', 'sage'],
       category: 'amendment-samples',
+      originalSampleId: 'IICT/2025-2026/1120',
     },
   ],
   complaint: [

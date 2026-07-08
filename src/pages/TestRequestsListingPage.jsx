@@ -129,19 +129,21 @@ const allocationTabs = [
   { key: 'material', label: 'Material' },
 ];
 
+const allocationCertificationColumn = 'Has Valid Certification?';
+
 const allocationTableByTab = {
   analyst: {
-    columns: ['Sr.', 'User Name', '# of TR for Parameter', 'Last Tested On', 'Worload (Man Days)', 'Has Valid Certification?', 'On leave?', 'Workload Sheet'],
+    columns: ['Sr.', 'User Name', '# of TR for Parameter', 'Last Tested On', 'Worload (Man Days)', allocationCertificationColumn, 'On leave?', 'Workload Sheet'],
     rows: [
-      ['1', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
+      ['1', 'Technical Assistant', '19', '01-04-2026', '115506', 'Yes', 'No', 'Link'],
       ['2', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
-      ['3', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
+      ['3', 'Technical Assistant', '19', '01-04-2026', '115506', 'Yes', 'No', 'Link'],
       ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
       ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
+      ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'Yes', 'No', 'Link'],
       ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
       ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
-      ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
-      ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
+      ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'Yes', 'No', 'Link'],
       ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
       ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
       ['4', 'Technical Assistant', '19', '01-04-2026', '115506', 'No', 'No', 'Link'],
@@ -150,25 +152,79 @@ const allocationTableByTab = {
     ],
   },
   instrument: {
-    columns: ['Sr.', 'Instrument Name', 'Last Calibrated At', 'Overall Workload'],
+    columns: ['Sr.', 'Instrument Name', 'Status', 'Last Calibrated At', 'Overall Workload'],
     rows: [
-      ['1', 'Technical Assistant', '01-04-2026', '12'],
-      ['2', 'Technical Assistant', '01-04-2026', '12'],
-      ['3', 'Technical Assistant', '01-04-2026', '12'],
+      ['1', 'Stabinger Viscometer', 'Calibrated', '01-04-2026', '12'],
+      ['2', 'UV-Vis Spectrophotometer', 'Not calibrated', '01-04-2026', '12'],
+      ['3', 'Gas Chromatograph', 'Breakdown', '01-04-2026', '12'],
     ],
   },
   material: {
-    columns: ['Sr.', 'Material Name', 'Required Quantity', 'Available Quantity'],
+    columns: ['Sr.', 'Material Name', 'Status', 'Required Quantity', 'Available Quantity'],
     rows: [
-      ['1', '5% Concentrated NaOH', '1000', '2500'],
-      ['2', '5% Concentrated NaOH', '1000', '2500'],
-      ['3', '5% Concentrated NaOH', '1000', '2500'],
-      ['4', '5% Concentrated NaOH', '1000', '2500'],
+      ['1', '5% Concentrated NaOH', 'In stock', '1000', '2500'],
+      ['2', 'Eriochrome Black T Indicator', 'In stock', '1000', '2500'],
+      ['3', 'Sulphuric Acid', 'Out of Stock', '1000', '0'],
+      ['4', 'Potassium Permanganate', 'In stock', '1000', '2500'],
     ],
   },
 };
 
 const allocationTemplate = 'Worksheet & Raw Data Register- NABL(Total Alkalinity as CaCO3 mg/l)';
+
+const allocationStatusPresentationByLabel = {
+  Calibrated: { color: 'green', styleType: 'neutral' },
+  'Not calibrated': { color: 'yellow', styleType: 'neutral' },
+  Breakdown: { color: 'red', styleType: 'solid', className: 'text-white' },
+  'In stock': { color: 'green', styleType: 'neutral' },
+  'Out of Stock': { color: 'red', styleType: 'solid', className: 'text-white' },
+};
+
+const allocationCertificationPresentationByLabel = {
+  Yes: { color: 'green', styleType: 'solid', className: 'text-white' },
+  No: { color: 'red', styleType: 'neutral' },
+};
+
+function AllocationTableCell({ cell, column }) {
+  const statusPresentation = allocationStatusPresentationByLabel[cell];
+  const certificationPresentation = column === allocationCertificationColumn
+    ? allocationCertificationPresentationByLabel[cell]
+    : null;
+
+  if (cell === 'Link') {
+    return (
+      <button type="button" className="smplfy-link link-primary btn btn-link p-0 text-start text-decoration-none">
+        Link
+      </button>
+    );
+  }
+
+  if (certificationPresentation) {
+    return (
+      <StatusPill
+        color={certificationPresentation.color}
+        styleType={certificationPresentation.styleType}
+        className={certificationPresentation.className}
+      >
+        {cell}
+      </StatusPill>
+    );
+  }
+
+  if (statusPresentation) {
+    return (
+      <StatusPill
+        color={statusPresentation.color}
+        styleType={statusPresentation.styleType}
+        className={statusPresentation.className}
+      >
+        {cell}
+      </StatusPill>
+    );
+  }
+
+  return cell;
+}
 
 function buildRequestRows(viewMode) {
   if (viewMode === 'approved') {
@@ -289,11 +345,7 @@ function AllocationModal({
                     <tr key={`${activeTab}-${rowIndex}`}>
                       {row.map((cell, cellIndex) => (
                         <td key={`${activeTab}-${rowIndex}-${cellIndex}`}>
-                          {cell === 'Link' ? (
-                            <button type="button" className="smplfy-link link-primary btn btn-link p-0 text-start text-decoration-none">
-                              Link
-                            </button>
-                          ) : cell}
+                          <AllocationTableCell cell={cell} column={table.columns[cellIndex]} />
                         </td>
                       ))}
                     </tr>
