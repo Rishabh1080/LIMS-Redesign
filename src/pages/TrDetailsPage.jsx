@@ -591,7 +591,6 @@ export default function TrDetailsPage({
   const [methodDraft, setMethodDraft] = useState('');
   const [methods, setMethods] = useState(initialMethods);
   const [selectedMethodId, setSelectedMethodId] = useState(initialMethods[0]?.id ?? '');
-  const previousMethodCountRef = useRef(initialMethods.length);
   const sourceLabelByPage = {
     'all-samples': 'All Samples',
     'samples-workspace': 'Samples Workspace',
@@ -627,14 +626,6 @@ export default function TrDetailsPage({
       window.clearTimeout(toastTimerRef.current);
     };
   }, [initialToast, onInitialToastConsumed]);
-
-  useEffect(() => {
-    const previousCount = previousMethodCountRef.current;
-    if (methods.length > 1 && previousCount <= 1) {
-      onSidebarCollapsedChange?.(true);
-    }
-    previousMethodCountRef.current = methods.length;
-  }, [methods.length, onSidebarCollapsedChange]);
 
   const handleRemnantSubmit = (remnantAvailable) => {
     setRemnantModalOpen(false);

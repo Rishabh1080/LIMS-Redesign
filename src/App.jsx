@@ -597,7 +597,6 @@ export default function App() {
 
   const openTempReport = (sampleId, options = {}) => {
     const { sourcePage = 'samples-workspace', reportId = 'URLS/2026/64' } = options;
-    setSidebarCollapsed(true);
 
     setTempReportState({
       sampleId,
@@ -609,7 +608,6 @@ export default function App() {
 
   const openFinalisedReport = (sampleId, options = {}) => {
     const { sourcePage = 'samples-workspace', reportId = 'URLS/2026/64', origin = 'temp-report' } = options;
-    setSidebarCollapsed(true);
     setFinalisedReportState({ sampleId, sourcePage, reportId, origin });
     setActivePage('finalised-report');
   };
@@ -742,7 +740,6 @@ export default function App() {
     }
 
     if (nextPage === 'dashboard') {
-      setSidebarCollapsed(true);
       setActivePage('dashboard');
       return;
     }

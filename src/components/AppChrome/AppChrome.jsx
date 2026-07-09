@@ -1,5 +1,5 @@
 import { IconFolder } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import companyLogo from '../../../assets/logo-l.png';
 import Badge from '../Badge';
 import AppIcon from '../AppIcon';
@@ -48,6 +48,8 @@ const adminHubNavigationItem = {
   opensInNewTab: true,
 };
 
+let isDesktopSidebarPointerInside = false;
+
 function SidebarNavButton({
   item,
   activeNav,
@@ -69,6 +71,8 @@ function SidebarNavButton({
       className={`sidebar-link btn text-start ${
         item.key === activeNav ? 'is-active' : ''
       } ${hasBadge ? 'smplfy-sidebar-link-with-badge' : ''} ${
+        item.opensInNewTab ? 'smplfy-sidebar-link-with-external' : ''
+      } ${
         collapsed && hasBadge ? 'smplfy-sidebar-link-with-dot' : ''
       } ${className}`}
       aria-label={item.opensInNewTab ? `${item.label} (opens in a new tab)` : item.label}
@@ -84,21 +88,21 @@ function SidebarNavButton({
       {showIcon ? (
         <span className="smplfy-sidebar-link-icon">
           <AppIcon name={item.icon} size={20} />
-          {collapsed && hasBadge ? <span className="smplfy-sidebar-link-dot" /> : null}
+          {hasBadge ? <span className="smplfy-sidebar-link-dot" aria-hidden="true" /> : null}
         </span>
       ) : null}
-      {collapsed && item.initials ? (
+      {item.initials ? (
         <span className="smplfy-sidebar-child-initials" aria-hidden="true">
           {item.initials}
         </span>
       ) : null}
       <span className="sidebar-link-text">{item.label}</span>
-      {hasBadge && !collapsed ? (
+      {hasBadge ? (
         <Badge className="smplfy-sidebar-link-badge" tone="danger" size="small" shape="circle">
           {badgeCounts[item.badgeKey]}
         </Badge>
       ) : null}
-      {item.opensInNewTab && !collapsed ? (
+      {item.opensInNewTab ? (
         <span className="smplfy-sidebar-link-external" aria-hidden="true">
           <AppIcon name="external-link" size={14} stroke={2} />
         </span>
@@ -176,10 +180,17 @@ function SidebarFolderItem({
   );
 }
 
-function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeCounts = {} }) {
+function Sidebar({
+  activeNav,
+  collapsed = false,
+  collapsedTooltipsEnabled = collapsed,
+  onItemClick,
+  onNavigate,
+  badgeCounts = {},
+}) {
   const [floatingTooltip, setFloatingTooltip] = useState(null);
   const showFloatingTooltip = (label, event) => {
-    if (!collapsed) {
+    if (!collapsedTooltipsEnabled) {
       return;
     }
 
@@ -255,7 +266,7 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
           badgeCounts={badgeCounts}
         />
       </div>
-      {collapsed && floatingTooltip ? (
+      {collapsedTooltipsEnabled && floatingTooltip ? (
         <span
           className="smplfy-sidebar-floating-tooltip"
           style={{ top: `${floatingTooltip.top}px` }}
@@ -268,7 +279,9 @@ function Sidebar({ activeNav, collapsed = false, onItemClick, onNavigate, badgeC
   );
 }
 
-function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], onNavigate }) {
+function GlobalHeader({ mobileSidebarOpen, sidebarCollapsed, onToggleSidebar, breadcrumbs = [], onNavigate }) {
+  const navigationExpanded = mobileSidebarOpen || !sidebarCollapsed;
+
   return (
     <header className="global-header">
       <div className="container-fluid h-100">
@@ -278,8 +291,8 @@ function GlobalHeader({ mobileSidebarOpen, onToggleSidebar, breadcrumbs = [], on
               <div className="header-nav-toggle-wrap">
                 <button
                   className="header-nav-toggle btn"
-                  aria-label={mobileSidebarOpen ? 'Close navigation' : 'Toggle navigation'}
-                  aria-expanded={mobileSidebarOpen}
+                  aria-label={navigationExpanded ? 'Collapse navigation' : 'Expand navigation'}
+                  aria-expanded={navigationExpanded}
                   onClick={onToggleSidebar}
                 >
                   <AppIcon name={mobileSidebarOpen ? 'close' : 'menu'} />
@@ -359,11 +372,13 @@ export default function AppChrome({
   children,
   onNavigate,
   breadcrumbs = [],
-  sidebarCollapsed = false,
+  sidebarCollapsed = true,
   onSidebarCollapsedChange,
   sidebarBadgeCounts = {},
 }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [sidebarHoverExpanded, setSidebarHoverExpanded] = useState(() => isDesktopSidebarPointerInside);
+  const desktopSidebarShellRef = useRef(null);
   const requestsForMeSidebarBadgeCount = requestSections.reduce(
     (sum, section) => sum + (section.count ?? 0),
     0,
@@ -374,6 +389,22 @@ export default function AppChrome({
     'test-requests-home': testRequestsSidebarBadgeCount,
     ...sidebarBadgeCounts,
   };
+  const desktopSidebarHoverExpanded = sidebarCollapsed && sidebarHoverExpanded;
+
+  useEffect(() => {
+    if (!sidebarCollapsed) {
+      setSidebarHoverExpanded(false);
+      return undefined;
+    }
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      const shellHovered = desktopSidebarShellRef.current?.matches(':hover') ?? isDesktopSidebarPointerInside;
+      isDesktopSidebarPointerInside = shellHovered;
+      setSidebarHoverExpanded(shellHovered);
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [activeNav, sidebarCollapsed]);
 
   const handleToggleSidebar = () => {
     if (window.innerWidth < 992) {
@@ -381,7 +412,21 @@ export default function AppChrome({
       return;
     }
 
+    setSidebarHoverExpanded(false);
     onSidebarCollapsedChange?.(!sidebarCollapsed);
+  };
+
+  const handleDesktopSidebarPointerEnter = () => {
+    isDesktopSidebarPointerInside = true;
+
+    if (sidebarCollapsed) {
+      setSidebarHoverExpanded(true);
+    }
+  };
+
+  const handleDesktopSidebarPointerLeave = () => {
+    isDesktopSidebarPointerInside = false;
+    setSidebarHoverExpanded(false);
   };
 
   return (
@@ -401,11 +446,17 @@ export default function AppChrome({
       </div>
 
       <div
-        className={`sidebar-shell sidebar-shell-desktop ${sidebarCollapsed ? 'is-collapsed' : ''}`}
+        className={`sidebar-shell sidebar-shell-desktop ${sidebarCollapsed ? 'is-collapsed' : ''} ${
+          desktopSidebarHoverExpanded ? 'is-hover-expanded' : ''
+        }`}
+        ref={desktopSidebarShellRef}
+        onMouseEnter={handleDesktopSidebarPointerEnter}
+        onMouseLeave={handleDesktopSidebarPointerLeave}
       >
         <Sidebar
           activeNav={activeNav}
           collapsed={sidebarCollapsed}
+          collapsedTooltipsEnabled={sidebarCollapsed && !desktopSidebarHoverExpanded}
           onNavigate={onNavigate}
           badgeCounts={resolvedSidebarBadgeCounts}
         />
@@ -414,6 +465,7 @@ export default function AppChrome({
       <div className="lims-main min-vh-100">
         <GlobalHeader
           mobileSidebarOpen={mobileSidebarOpen}
+          sidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={handleToggleSidebar}
           breadcrumbs={breadcrumbs}
           onNavigate={onNavigate}
