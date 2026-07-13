@@ -1,5 +1,5 @@
 import { IconFolder } from '@tabler/icons-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import companyLogo from '../../../assets/logo-l.png';
 import Badge from '../Badge';
 import AppIcon from '../AppIcon';
@@ -33,6 +33,7 @@ const navigationSections = [
       { label: 'Instruments', icon: 'tool', key: 'instruments' },
       { label: 'Trainings', icon: 'checklist', key: 'trainings' },
       { label: 'Reports', icon: 'file-text', key: 'reports' },
+      { label: 'Design Handoff', icon: 'file-description', key: 'design-handoff' },
       { label: 'Template Edit', icon: 'file-text', key: 'template-edit' },
       { label: 'Organogram', icon: 'admin-personnel', key: 'organogram' },
       { label: 'Daily Checks', icon: 'checklist', key: 'daily-check' },
@@ -49,6 +50,10 @@ const adminHubNavigationItem = {
 };
 
 let isDesktopSidebarPointerInside = false;
+const sidebarNavScrollTopByKey = {
+  desktop: 0,
+  mobile: 0,
+};
 
 function SidebarNavButton({
   item,
@@ -187,8 +192,10 @@ function Sidebar({
   onItemClick,
   onNavigate,
   badgeCounts = {},
+  scrollPersistenceKey = 'desktop',
 }) {
   const [floatingTooltip, setFloatingTooltip] = useState(null);
+  const sidebarNavRef = useRef(null);
   const showFloatingTooltip = (label, event) => {
     if (!collapsedTooltipsEnabled) {
       return;
@@ -204,6 +211,20 @@ function Sidebar({
     setFloatingTooltip(null);
   };
 
+  useLayoutEffect(() => {
+    const navElement = sidebarNavRef.current;
+
+    if (!navElement) {
+      return;
+    }
+
+    navElement.scrollTop = sidebarNavScrollTopByKey[scrollPersistenceKey] ?? 0;
+  }, [scrollPersistenceKey]);
+
+  const handleNavScroll = (event) => {
+    sidebarNavScrollTopByKey[scrollPersistenceKey] = event.currentTarget.scrollTop;
+  };
+
   return (
     <aside className={`lims-sidebar d-flex flex-column ${collapsed ? 'is-collapsed' : ''}`}>
       <div className="sidebar-brand d-flex align-items-center border-bottom">
@@ -216,7 +237,11 @@ function Sidebar({
         </div>
       </div>
 
-      <div className="sidebar-nav flex-grow-1">
+      <div
+        className="sidebar-nav flex-grow-1"
+        ref={sidebarNavRef}
+        onScroll={handleNavScroll}
+      >
         {navigationSections.map((section) => (
           <section className="sidebar-section" key={section.title}>
             <div className="sidebar-label">
@@ -442,6 +467,7 @@ export default function AppChrome({
           onNavigate={onNavigate}
           onItemClick={() => setMobileSidebarOpen(false)}
           badgeCounts={resolvedSidebarBadgeCounts}
+          scrollPersistenceKey="mobile"
         />
       </div>
 
@@ -459,6 +485,7 @@ export default function AppChrome({
           collapsedTooltipsEnabled={sidebarCollapsed && !desktopSidebarHoverExpanded}
           onNavigate={onNavigate}
           badgeCounts={resolvedSidebarBadgeCounts}
+          scrollPersistenceKey="desktop"
         />
       </div>
 

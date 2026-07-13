@@ -182,6 +182,7 @@ function DetailsHeader({
   onEditSample,
   onOpenTestRequests,
   onOpenCoaReport,
+  onOpenProformaInvoice,
   onRequestReview,
 }) {
   const isPending = sampleStatus === 'Pending';
@@ -190,6 +191,11 @@ function DetailsHeader({
   const { date, time } = splitDateTime(createdOn);
   const statusPresentation = getStatusPresentation('sample', sampleStatus);
   const isDelayed = isSampleDelayed({ reportingDate, delayed });
+  const headerActionItems = sampleHeaderActionItems.map((item) => (
+    item.key === 'proforma-invoice'
+      ? { ...item, onClick: onOpenProformaInvoice }
+      : item
+  ));
 
   return (
     <section className="smplfy-sample-details-header bg-white border-bottom">
@@ -279,7 +285,7 @@ function DetailsHeader({
               ) : null}
             </>
           )}
-          <MoreActionButton items={sampleHeaderActionItems} />
+          <MoreActionButton items={headerActionItems} />
         </div>
       </div>
     </section>
@@ -683,6 +689,7 @@ export default function SampleDetailsPage({
   onEditSample,
   onOpenTestRequests,
   onOpenCoaReport,
+  onOpenProformaInvoice,
   onOpenOriginalSample,
   onNavigate,
   sidebarCollapsed,
@@ -801,6 +808,7 @@ export default function SampleDetailsPage({
           onEditSample={onEditSample}
           onOpenTestRequests={onOpenTestRequests}
           onOpenCoaReport={onOpenCoaReport}
+          onOpenProformaInvoice={onOpenProformaInvoice}
           onRequestReview={() => setReviewModalOpen(true)}
         />
       }

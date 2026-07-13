@@ -6,6 +6,7 @@ import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
 import CustomFormListingPage from './pages/CustomFormListingPage';
 import DashboardPage from './pages/DashboardPage';
 import DatasheetPage from './pages/DatasheetPage';
+import DesignHandoffPage from './pages/DesignHandoffPage';
 import DocumentDetailsPage from './pages/DocumentDetailsPage';
 import DocumentManagementPage from './pages/DocumentManagementPage';
 import EnvironmentDataPage from './pages/EnvironmentDataPage';
@@ -18,6 +19,7 @@ import InstrumentsPage from './pages/InstrumentsPage';
 import InstrumentDetailsPage from './pages/InstrumentDetailsPage';
 import NewInstrumentPage from './pages/NewInstrumentPage';
 import OrganogramPage from './pages/OrganogramPage';
+import ProformaInvoicePage from './pages/ProformaInvoicePage';
 import TrainingAttendancePage from './pages/TrainingAttendancePage';
 import TrainingsPage, { defaultTrainings } from './pages/TrainingsPage';
 import RequestsForMePage from './pages/RequestsForMePage';
@@ -253,6 +255,10 @@ export default function App() {
     sourcePage: 'samples-workspace',
     reportId: 'URLS/2026/64',
     origin: 'temp-report',
+  });
+  const [proformaInvoiceState, setProformaInvoiceState] = useState({
+    sampleId: 'IICT/2025-2026/1101',
+    sourcePage: 'samples-workspace',
   });
   const [instrumentToast, setInstrumentToast] = useState(null);
   const [instrumentServices, setInstrumentServices] = useState(initialInstrumentServices);
@@ -612,6 +618,16 @@ export default function App() {
     setActivePage('finalised-report');
   };
 
+  const openProformaInvoice = (sampleId, options = {}) => {
+    const { sourcePage = 'samples-workspace' } = options;
+
+    setProformaInvoiceState({
+      sampleId,
+      sourcePage,
+    });
+    setActivePage('proforma-invoice');
+  };
+
   const openTrDetails = (sampleId, options = {}) => {
     const {
       sourcePage = 'all-samples',
@@ -817,6 +833,11 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'design-handoff') {
+      setActivePage('design-handoff');
+      return;
+    }
+
     if (nextPage === 'template-edit') {
       setActivePage('template-edit');
       return;
@@ -911,6 +932,11 @@ export default function App() {
             : openCoaReport(sampleDetailsState.sampleId, {
                 sourcePage: sampleDetailsState.sourcePage,
               })
+        }
+        onOpenProformaInvoice={() =>
+          openProformaInvoice(sampleDetailsState.sampleId, {
+            sourcePage: sampleDetailsState.sourcePage,
+          })
         }
         onOpenOriginalSample={openOriginalSampleDetails}
         onNavigate={handleNavigate}
@@ -1050,6 +1076,20 @@ export default function App() {
         onBack={() =>
           setActivePage(finalisedReportState.origin === 'sample-details' ? 'sample-details' : 'temp-report')
         }
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'proforma-invoice') {
+    return (
+      <ProformaInvoicePage
+        sampleId={proformaInvoiceState.sampleId}
+        sourcePage={proformaInvoiceState.sourcePage}
+        onBack={() => setActivePage('sample-details')}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
@@ -1306,6 +1346,17 @@ export default function App() {
       <ReportDetailsPage
         report={reportDetailsState.report}
         onBack={() => setActivePage('reports')}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'design-handoff') {
+    return (
+      <DesignHandoffPage
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
