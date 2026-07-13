@@ -1,21 +1,27 @@
 .smplfy-design-handoff-list {
-  max-width: 720px;
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px !important;
 }
 
-.smplfy-design-handoff-card.card {
+.smplfy-design-handoff-card.card.btn {
   --bs-card-border-width: var(--smplfy-card-border-width);
   --bs-card-border-color: var(--smplfy-primitive-neutral-300);
   --bs-card-border-radius: var(--smplfy-card-radius);
   --bs-card-bg: var(--smplfy-primitive-neutral-100);
 
-  min-height: 64px;
-  padding: 14px 16px;
+  min-height: 56px;
+  width: 100%;
+  padding: 12px 12px 12px 16px;
   border: var(--bs-card-border-width) solid var(--bs-card-border-color);
   background: var(--bs-card-bg);
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  text-align: left;
   box-shadow: none;
   cursor: pointer;
   transform: none;
@@ -25,29 +31,44 @@
     color var(--smplfy-field-transition);
 }
 
-.smplfy-design-handoff-card.card:hover,
-.smplfy-design-handoff-card.card:focus-visible {
+.smplfy-design-handoff-card.card.btn:hover,
+.smplfy-design-handoff-card.card.btn:focus-visible {
   border-color: var(--smplfy-primitive-neutral-400);
   background: var(--smplfy-primitive-blue-50);
   outline: none;
 }
 
 .smplfy-design-handoff-card-title {
+  min-width: 0;
   color: var(--smplfy-primitive-neutral-900);
   font-size: 16px;
   line-height: 20px;
   font-weight: 600;
   letter-spacing: -0.03em;
+  text-align: left;
 }
 
-.smplfy-design-handoff-card-icon {
-  width: 32px;
-  min-width: 32px;
-  height: 32px;
-  border: 1px solid var(--smplfy-primitive-neutral-300);
-  border-radius: var(--smplfy-card-radius);
-  background: var(--smplfy-primitive-neutral-100);
-  color: var(--smplfy-primitive-neutral-700);
+.smplfy-design-handoff-card-action {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--smplfy-primitive-neutral-600);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity var(--smplfy-field-transition),
+    transform var(--smplfy-field-transition),
+    color var(--smplfy-field-transition);
+}
+
+.smplfy-design-handoff-card.card.btn:hover .smplfy-design-handoff-card-action,
+.smplfy-design-handoff-card.card.btn:focus-visible .smplfy-design-handoff-card-action {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--smplfy-primitive-blue-600);
 }
 
 .smplfy-design-handoff-node-modal-dialog {
@@ -225,12 +246,20 @@
 }
 
 @media (max-width: 991.98px) {
+  .smplfy-design-handoff-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .smplfy-design-handoff-action-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 575.98px) {
+  .smplfy-design-handoff-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .smplfy-design-handoff-action-grid {
     grid-template-columns: minmax(0, 1fr);
   }

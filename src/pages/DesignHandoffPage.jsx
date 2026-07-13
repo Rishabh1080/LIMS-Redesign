@@ -247,18 +247,13 @@ export default function DesignHandoffPage({
           <div className="smplfy-design-handoff-list d-flex flex-column gap-2">
             <button
               type="button"
-              className="smplfy-card card smplfy-design-handoff-card text-start"
+              className="smplfy-card card btn smplfy-design-handoff-card text-start"
               onClick={() => setNodeDetailsModalOpen(true)}
             >
-              <span className="d-flex align-items-center gap-3 min-w-0">
-                <span className="smplfy-design-handoff-card-icon d-inline-flex align-items-center justify-content-center flex-shrink-0">
-                  <AppIcon name="file-description" size={20} />
-                </span>
-                <span className="smplfy-design-handoff-card-title text-truncate">
-                  Node Details Modal
-                </span>
+              <span className="smplfy-design-handoff-card-title text-truncate">
+                Node Details Modal
               </span>
-              <span className="text-secondary flex-shrink-0" aria-hidden="true">
+              <span className="smplfy-design-handoff-card-action text-secondary flex-shrink-0" aria-hidden="true">
                 <AppIcon name="chevron-right" />
               </span>
             </button>

@@ -4,7 +4,6 @@ import AppIcon from '../components/AppIcon';
 import { FormElement } from '../components/FormControls';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import StatusPill from '../components/StatusPill';
 import { reportItems } from '../data/reportsData';
 import './environment-data-page.scss';
 import './reports-page.scss';
@@ -17,13 +16,6 @@ const reportFilterConfig = [
     options: ['Testing', 'Monitoring', 'Checks', 'Reference'],
   },
 ];
-
-const reportTypeColor = {
-  Testing: 'blue',
-  Monitoring: 'green',
-  Checks: 'yellow',
-  Reference: 'gray',
-};
 
 function ReportsHeader() {
   return (
@@ -245,23 +237,15 @@ export default function ReportsPage({
                   <button
                     key={report.id}
                     type="button"
-                    className="smplfy-card card smplfy-report-list-card w-100 text-start"
+                    className="smplfy-card card btn smplfy-report-list-card text-start"
                     onClick={() => onOpenReport?.(report)}
-                  >
-                    <span className="smplfy-report-list-card-main">
-                      <span className="smplfy-report-list-card-title">{report.name}</span>
-                    </span>
-                    <span className="smplfy-report-list-card-meta">
-                      <StatusPill color={reportTypeColor[report.type] ?? 'gray'}>
-                        {report.type}
-                      </StatusPill>
-                      <span className="smplfy-report-list-card-date">
-                        Updated {report.updatedOn}
+                    >
+                      <span className="smplfy-report-list-card-main">
+                        <span className="smplfy-report-list-card-title">{report.name}</span>
                       </span>
-                    </span>
-                    <span className="smplfy-report-list-card-action" aria-hidden="true">
-                      <AppIcon name="chevron-right" />
-                    </span>
+                      <span className="smplfy-report-list-card-action" aria-hidden="true">
+                        <AppIcon name="chevron-right" />
+                      </span>
                   </button>
                 ))}
               </div>
