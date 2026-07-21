@@ -1,0 +1,32 @@
+.smplfy-training-attendance-table.table {
+  --smplfy-table-hover-bg: var(--smplfy-table-bg);
+  --smplfy-table-cell-padding-y: 8px;
+}
+
+.smplfy-training-attendance-table.table th:last-child,
+.smplfy-training-attendance-table.table td:last-child {
+  width: 132px;
+  min-width: 132px;
+  max-width: 132px;
+}
+
+.smplfy-training-attendance-table.table tbody tr,
+.smplfy-training-attendance-table.table tbody td {
+  height: 56px;
+}
+
+.smplfy-training-attendance-table.table-hover > tbody > tr:hover > * {
+  --bs-table-accent-bg: var(--smplfy-table-bg);
+  background-color: var(--smplfy-table-bg);
+  color: var(--smplfy-table-text);
+}
+
+.smplfy-training-assessment-table.table {
+  --smplfy-table-hover-bg: var(--smplfy-table-bg);
+}
+
+.smplfy-training-assessment-table.table-hover > tbody > tr:hover > * {
+  --bs-table-accent-bg: var(--smplfy-table-bg);
+  background-color: var(--smplfy-table-bg);
+  color: var(--smplfy-table-text);
+}

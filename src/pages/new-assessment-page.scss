@@ -1,0 +1,13 @@
+.smplfy-assessment-upload-zone {
+  min-height: 200px;
+  border: 1px dashed var(--smplfy-primitive-neutral-400);
+  background: var(--smplfy-primitive-neutral-100);
+  transition:
+    border-color var(--smplfy-field-transition),
+    background-color var(--smplfy-field-transition);
+}
+
+.smplfy-assessment-upload-zone.is-dragging {
+  border-color: var(--smplfy-primitive-blue-500);
+  background: var(--smplfy-primitive-blue-50);
+}

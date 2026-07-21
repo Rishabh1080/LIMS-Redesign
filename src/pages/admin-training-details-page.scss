@@ -1,0 +1,76 @@
+.smplfy-admin-training-content {
+  width: 100%;
+}
+
+.smplfy-admin-training-info-table.table,
+.smplfy-admin-training-attendance-table.table,
+.smplfy-admin-training-assessment-table.table {
+  --smplfy-table-min-width: 0;
+
+  width: 100%;
+  table-layout: fixed;
+}
+
+.smplfy-admin-training-attendance-table.table input[type="time"] {
+  width: 100%;
+}
+
+.smplfy-admin-training-attendance-table.table th:first-child,
+.smplfy-admin-training-attendance-table.table td:first-child {
+  width: auto;
+}
+
+.smplfy-admin-training-attendance-table.table th:nth-child(2),
+.smplfy-admin-training-attendance-table.table td:nth-child(2),
+.smplfy-admin-training-attendance-table.table th:nth-child(3),
+.smplfy-admin-training-attendance-table.table td:nth-child(3) {
+  width: 160px;
+  min-width: 160px;
+  max-width: 160px;
+}
+
+.smplfy-admin-training-info-table.table th {
+  width: 132px;
+  min-width: 132px;
+  max-width: 132px;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.smplfy-admin-training-info-table.table td {
+  width: auto;
+  line-height: 1.5;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+.smplfy-admin-training-assessment-table.table th:first-child,
+.smplfy-admin-training-assessment-table.table td:first-child {
+  width: 22%;
+}
+
+.smplfy-admin-training-assessment-table.table th:nth-child(2),
+.smplfy-admin-training-assessment-table.table td:nth-child(2),
+.smplfy-admin-training-assessment-table.table th:nth-child(3),
+.smplfy-admin-training-assessment-table.table td:nth-child(3) {
+  width: 14%;
+}
+
+.smplfy-admin-training-assessment-table.table th:nth-child(4),
+.smplfy-admin-training-assessment-table.table td:nth-child(4),
+.smplfy-admin-training-assessment-table.table th:nth-child(5),
+.smplfy-admin-training-assessment-table.table td:nth-child(5) {
+  width: 15%;
+}
+
+.smplfy-admin-training-assessment-table.table th:last-child,
+.smplfy-admin-training-assessment-table.table td:last-child {
+  width: 20%;
+}
+
+.smplfy-admin-training-content .table-hover > tbody > tr:hover > * {
+  --bs-table-accent-bg: var(--smplfy-table-bg);
+  background-color: var(--smplfy-table-bg);
+  color: var(--smplfy-table-text);
+}

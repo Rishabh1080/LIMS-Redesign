@@ -18,9 +18,13 @@ import AllServicesPage from './pages/AllServicesPage';
 import InstrumentsPage from './pages/InstrumentsPage';
 import InstrumentDetailsPage from './pages/InstrumentDetailsPage';
 import NewInstrumentPage from './pages/NewInstrumentPage';
+import NewAssessmentPage from './pages/NewAssessmentPage';
+import AssessmentInstructionsPage from './pages/AssessmentInstructionsPage';
 import OrganogramPage from './pages/OrganogramPage';
 import ProformaInvoicePage from './pages/ProformaInvoicePage';
-import TrainingAttendancePage from './pages/TrainingAttendancePage';
+import AdminTrainingDetailsPage from './pages/AdminTrainingDetailsPage';
+import TrainingDetailsPage from './pages/TrainingDetailsPage';
+import TrainingManagementPage from './pages/TrainingManagementPage';
 import TrainingsPage, { defaultTrainings } from './pages/TrainingsPage';
 import RequestsForMePage from './pages/RequestsForMePage';
 import ReportDetailsPage from './pages/ReportDetailsPage';
@@ -51,6 +55,12 @@ function getInitialPage() {
   }
 
   return 'dashboard';
+}
+
+function formatAssessmentDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value))) return value;
+  const [year, month, day] = value.split('-');
+  return `${day}/${month}/${year}`;
 }
 
 const instrumentCatalog = [
@@ -305,9 +315,22 @@ export default function App() {
     sourcePage: 'all-samples',
     datasheetId: 'URLS/TR/00031',
   });
-  const [trainingAttendanceState, setTrainingAttendanceState] = useState({
+  const [trainingDetailsState, setTrainingDetailsState] = useState({
     id: null,
-    name: 'Training',
+  });
+  const [assessmentFlowState, setAssessmentFlowState] = useState({
+    trainingId: null,
+    assessmentId: null,
+  });
+  const [completedAssessmentIds, setCompletedAssessmentIds] = useState([]);
+  const [managedTrainings, setManagedTrainings] = useState(() => defaultTrainings.map((training) => ({
+    ...training,
+    assessments: (training.assessments ?? []).map((assessment) => ({ ...assessment })),
+  })));
+  const [adminTrainingDetailsState, setAdminTrainingDetailsState] = useState({ id: null });
+  const [editAssessmentState, setEditAssessmentState] = useState({
+    trainingId: null,
+    assessmentId: null,
   });
 
   const getSampleCreationFlowProps = (properties = {}) => ({
@@ -652,12 +675,26 @@ export default function App() {
     setActivePage('datasheet');
   };
 
-  const openTrainingAttendance = (trainingId, trainingName) => {
-    setTrainingAttendanceState({
+  const openTrainingDetails = (trainingId) => {
+    setTrainingDetailsState({
       id: trainingId,
-      name: trainingName,
     });
-    setActivePage('training-attendance');
+    setActivePage('training-details');
+  };
+
+  const openAssessmentInstructions = (trainingId, assessmentId) => {
+    setAssessmentFlowState({ trainingId, assessmentId });
+    setActivePage('assessment-instructions');
+  };
+
+  const openManagedTraining = (trainingId) => {
+    setAdminTrainingDetailsState({ id: trainingId });
+    setActivePage('admin-training-details');
+  };
+
+  const openManagedAssessmentEditor = (trainingId, assessmentId = null) => {
+    setEditAssessmentState({ trainingId, assessmentId });
+    setActivePage(assessmentId ? 'edit-assessment' : 'new-managed-assessment');
   };
 
   const openNewSample = (options = {}) => {
@@ -835,6 +872,16 @@ export default function App() {
 
     if (nextPage === 'design-handoff') {
       setActivePage('design-handoff');
+      return;
+    }
+
+    if (nextPage === 'new-assessment') {
+      setActivePage('new-assessment');
+      return;
+    }
+
+    if (nextPage === 'training-management') {
+      setActivePage('training-management');
       return;
     }
 
@@ -1307,7 +1354,7 @@ export default function App() {
   if (activePage === 'trainings') {
     return (
       <TrainingsPage
-        onOpenAttendance={(id, name) => openTrainingAttendance(id, name)}
+        onOpenTraining={openTrainingDetails}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
@@ -1316,17 +1363,51 @@ export default function App() {
     );
   }
 
-  if (activePage === 'training-attendance') {
+  if (activePage === 'training-details') {
+    const selectedTraining = defaultTrainings.find((training) => training.id === trainingDetailsState.id)
+      ?? defaultTrainings[0];
+
     return (
-      <TrainingAttendancePage
-        trainingName={trainingAttendanceState.name}
+      <TrainingDetailsPage
+        training={selectedTraining}
         onBack={() => setActivePage('trainings')}
+        completedAssessmentIds={completedAssessmentIds}
+        onStartAssessment={(assessmentId) => (
+          openAssessmentInstructions(selectedTraining.id, assessmentId)
+        )}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
       />
     );
+  }
+
+  if (activePage === 'assessment-instructions') {
+    const selectedTraining = defaultTrainings.find(
+      (training) => training.id === assessmentFlowState.trainingId,
+    ) ?? defaultTrainings[0];
+    const selectedAssessment = selectedTraining.assessments?.find(
+      (assessment) => assessment.id === assessmentFlowState.assessmentId,
+    ) ?? selectedTraining.assessments?.[0];
+
+    if (selectedAssessment) {
+      return (
+        <AssessmentInstructionsPage
+          assessment={selectedAssessment}
+          training={selectedTraining}
+          onBack={() => setActivePage('training-details')}
+          onSubmit={() => {
+            setCompletedAssessmentIds((currentIds) => (
+              currentIds.includes(selectedAssessment.id)
+                ? currentIds
+                : [...currentIds, selectedAssessment.id]
+            ));
+            setActivePage('training-details');
+          }}
+        />
+      );
+    }
   }
 
   if (activePage === 'reports') {
@@ -1357,6 +1438,148 @@ export default function App() {
   if (activePage === 'design-handoff') {
     return (
       <DesignHandoffPage
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'training-management') {
+    return (
+      <TrainingManagementPage
+        trainings={managedTrainings}
+        onOpenTraining={openManagedTraining}
+        onDeleteTraining={(trainingId) => {
+          setManagedTrainings((current) => current.filter((training) => training.id !== trainingId));
+        }}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'admin-training-details') {
+    const selectedTraining = managedTrainings.find(
+      (training) => training.id === adminTrainingDetailsState.id,
+    ) ?? managedTrainings[0];
+
+    if (selectedTraining) {
+      return (
+        <AdminTrainingDetailsPage
+          training={selectedTraining}
+          onBack={() => setActivePage('training-management')}
+          onEdit={() => {}}
+          onDelete={() => {
+            setManagedTrainings((current) => (
+              current.filter((training) => training.id !== selectedTraining.id)
+            ));
+            setActivePage('training-management');
+          }}
+          onCreateAssessment={() => openManagedAssessmentEditor(selectedTraining.id)}
+          onEditAssessment={(assessmentId) => (
+            openManagedAssessmentEditor(selectedTraining.id, assessmentId)
+          )}
+          onNavigate={handleNavigate}
+          sidebarCollapsed={sidebarCollapsed}
+          onSidebarCollapsedChange={setSidebarCollapsed}
+          sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+        />
+      );
+    }
+  }
+
+  if (activePage === 'new-managed-assessment') {
+    const selectedTraining = managedTrainings.find(
+      (training) => training.id === editAssessmentState.trainingId,
+    );
+
+    if (selectedTraining) {
+      return (
+        <NewAssessmentPage
+          trainings={managedTrainings}
+          initialTrainingId={selectedTraining.id}
+          onSubmitAssessment={(newAssessment) => {
+            setManagedTrainings((current) => current.map((training) => (
+              training.id === newAssessment.trainingId
+                ? {
+                    ...training,
+                    assessments: [
+                      ...(training.assessments ?? []),
+                      {
+                        ...newAssessment,
+                        id: `assessment-${Date.now()}`,
+                        from: formatAssessmentDate(newAssessment.from),
+                        to: formatAssessmentDate(newAssessment.to),
+                        status: 'pending',
+                        scoreAvailable: false,
+                      },
+                    ],
+                  }
+                : training
+            )));
+          }}
+          onBack={() => setActivePage('admin-training-details')}
+          onNavigate={handleNavigate}
+          sidebarCollapsed={sidebarCollapsed}
+          onSidebarCollapsedChange={setSidebarCollapsed}
+          sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+        />
+      );
+    }
+  }
+
+  if (activePage === 'edit-assessment') {
+    const selectedTraining = managedTrainings.find(
+      (training) => training.id === editAssessmentState.trainingId,
+    );
+    const selectedAssessment = selectedTraining?.assessments?.find(
+      (assessment) => assessment.id === editAssessmentState.assessmentId,
+    );
+
+    if (selectedTraining && selectedAssessment) {
+      return (
+        <NewAssessmentPage
+          mode="edit"
+          trainings={managedTrainings}
+          initialTrainingId={selectedTraining.id}
+          assessment={selectedAssessment}
+          onSubmitAssessment={(updatedAssessment) => {
+            setManagedTrainings((current) => current.map((training) => (
+              training.id === selectedTraining.id
+                ? {
+                    ...training,
+                    assessments: training.assessments.map((assessment) => (
+                      assessment.id === selectedAssessment.id
+                        ? {
+                            ...assessment,
+                            ...updatedAssessment,
+                            from: formatAssessmentDate(updatedAssessment.from),
+                            to: formatAssessmentDate(updatedAssessment.to),
+                          }
+                        : assessment
+                    )),
+                  }
+                : training
+            )));
+          }}
+          onBack={() => setActivePage('admin-training-details')}
+          onNavigate={handleNavigate}
+          sidebarCollapsed={sidebarCollapsed}
+          onSidebarCollapsedChange={setSidebarCollapsed}
+          sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+        />
+      );
+    }
+  }
+
+  if (activePage === 'new-assessment') {
+    return (
+      <NewAssessmentPage
+        onBack={() => setActivePage('design-handoff')}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}

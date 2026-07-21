@@ -23,10 +23,13 @@
   letter-spacing: -0.02em;
 }
 
-.smplfy-sample-details-header .d-flex.flex-column > .d-inline-flex {
+.smplfy-sample-details-header .d-flex.flex-column > .d-inline-flex,
+.smplfy-sample-details-header .d-flex.flex-column > .text-secondary {
   color: var(--smplfy-primitive-neutral-600);
   font-size: 14px;
+  line-height: 1.2;
   font-weight: 500;
+  letter-spacing: -0.03em;
 }
 
 .smplfy-sample-details-page {

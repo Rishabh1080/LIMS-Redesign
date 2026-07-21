@@ -1,5 +1,6 @@
 import {
   IconAlertCircle,
+  IconAlertTriangle,
   IconActivity,
   IconAdjustmentsHorizontal,
   IconAffiliate,
@@ -60,6 +61,7 @@ import {
 
 const iconMap = {
   'alert-circle': IconAlertCircle,
+  'alert-triangle': IconAlertTriangle,
   activity: IconActivity,
   'admin-configurations': IconAdjustmentsHorizontal,
   'admin-eln': IconAffiliate,
