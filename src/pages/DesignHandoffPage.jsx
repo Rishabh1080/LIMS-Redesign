@@ -332,6 +332,11 @@ export default function DesignHandoffPage({
       onClick: () => setNodeDetailsModalOpen(true),
     },
     {
+      key: 'nested-decision-rules',
+      label: 'Nested Decision Rules',
+      onClick: () => onNavigate?.('nested-decision-rules'),
+    },
+    {
       key: 'task-access-error',
       label: 'Error 1',
       onClick: () => setTaskAccessErrorModalOpen(true),

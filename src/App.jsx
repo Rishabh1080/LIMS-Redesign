@@ -2,6 +2,7 @@ import AllSamplesListingPage from './pages/AllSamplesListingPage';
 import { useEffect, useRef, useState } from 'react';
 import AdminHubPage from './pages/AdminHubPage';
 import NewSampleCustomerDetailsPage from './pages/NewSampleCustomerDetailsPage';
+import NestedDecisionRulesPage from './pages/NestedDecisionRulesPage';
 import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
 import CustomFormListingPage from './pages/CustomFormListingPage';
 import DashboardPage from './pages/DashboardPage';
@@ -875,6 +876,11 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'nested-decision-rules') {
+      setActivePage('nested-decision-rules');
+      return;
+    }
+
     if (nextPage === 'new-assessment') {
       setActivePage('new-assessment');
       return;
@@ -1438,6 +1444,18 @@ export default function App() {
   if (activePage === 'design-handoff') {
     return (
       <DesignHandoffPage
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'nested-decision-rules') {
+    return (
+      <NestedDecisionRulesPage
+        onBack={() => setActivePage('design-handoff')}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
