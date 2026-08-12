@@ -331,10 +331,20 @@ export default function DesignHandoffPage({
       label: 'Node Details Modal',
       onClick: () => setNodeDetailsModalOpen(true),
     },
+    // {
+    //   key: 'nested-decision-rules',
+    //   label: 'Nested Decision Rules',
+    //   onClick: () => onNavigate?.('nested-decision-rules'),
+    // },
+    // {
+    //   key: 'nested-decision-rules-2',
+    //   label: 'Nested Decision Rules 2',
+    //   onClick: () => onNavigate?.('nested-decision-rules-2'),
+    // },
     {
-      key: 'nested-decision-rules',
-      label: 'Nested Decision Rules',
-      onClick: () => onNavigate?.('nested-decision-rules'),
+      key: 'decision-rule',
+      label: 'Decision rule',
+      onClick: () => onNavigate?.('decision-rule'),
     },
     {
       key: 'task-access-error',

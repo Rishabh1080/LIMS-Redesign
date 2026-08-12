@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import AdminHubPage from './pages/AdminHubPage';
 import NewSampleCustomerDetailsPage from './pages/NewSampleCustomerDetailsPage';
 import NestedDecisionRulesPage from './pages/NestedDecisionRulesPage';
+import NestedDecisionRulesTwoPage from './pages/NestedDecisionRulesTwoPage';
+import DecisionRulePage from './pages/DecisionRulePage';
 import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
 import CustomFormListingPage from './pages/CustomFormListingPage';
 import DashboardPage from './pages/DashboardPage';
@@ -881,6 +883,16 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'nested-decision-rules-2') {
+      setActivePage('nested-decision-rules-2');
+      return;
+    }
+
+    if (nextPage === 'decision-rule') {
+      setActivePage('decision-rule');
+      return;
+    }
+
     if (nextPage === 'new-assessment') {
       setActivePage('new-assessment');
       return;
@@ -1455,6 +1467,30 @@ export default function App() {
   if (activePage === 'nested-decision-rules') {
     return (
       <NestedDecisionRulesPage
+        onBack={() => setActivePage('design-handoff')}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'nested-decision-rules-2') {
+    return (
+      <NestedDecisionRulesTwoPage
+        onBack={() => setActivePage('design-handoff')}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'decision-rule') {
+    return (
+      <DecisionRulePage
         onBack={() => setActivePage('design-handoff')}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}

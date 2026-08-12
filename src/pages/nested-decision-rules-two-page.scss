@@ -1,0 +1,72 @@
+.smplfy-nested-decision-rules-two-page {
+  --bs-tertiary-bg: var(--page-bg);
+}
+
+.smplfy-nested-decision-rules-two-page .smplfy-card.card {
+  --bs-card-bg: var(--surface);
+  --bs-card-border-color: var(--border-card);
+}
+
+.smplfy-nested-decision-rules-two-page .card-header {
+  border-color: var(--border-card) !important;
+}
+
+.smplfy-nested-decision-rules-two-edit-card {
+  width: min(100%, 920px);
+}
+
+.smplfy-nested-decision-rules-two-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+
+.smplfy-nested-decision-rules-two-field-full {
+  grid-column: 1 / -1;
+}
+
+.smplfy-nested-decision-rules-two-checkbox {
+  width: fit-content;
+  min-height: 24px;
+  color: var(--smplfy-primitive-neutral-900);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  cursor: pointer;
+}
+
+.smplfy-nested-decision-rules-two-checkbox .smplfy-form-check-input {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.smplfy-nested-decision-rules-two-page .smplfy-table th:last-child,
+.smplfy-nested-decision-rules-two-page .smplfy-table td:last-child {
+  width: 1%;
+}
+
+@media (max-width: 767.98px) {
+  .smplfy-nested-decision-rules-two-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .smplfy-nested-decision-rules-two-field-full {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .smplfy-nested-decision-rules-two-page {
+    padding: 16px !important;
+  }
+
+  .smplfy-nested-decision-rules-two-header {
+    padding-inline: 16px !important;
+  }
+
+  .smplfy-nested-decision-rules-two-page .card-header,
+  .smplfy-nested-decision-rules-two-page .card-body {
+    padding: 16px !important;
+  }
+}
