@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { SAMPLE_FORM_EXPERIMENT_FLAG, trackEvent, useFeatureFlagVariant } from '../analytics/posthog';
 import AppIcon from '../components/AppIcon';
-import Checkbox from '../components/Checkbox/Checkbox';
-import { FormElement } from '../components/FormControls';
+import DataTable from '../components/DataTable';
+import { FormElement, InputFieldDropdown } from '../components/FormControls';
+import NavSelector from '../components/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import Stepper from '../components/Stepper/Stepper';
@@ -11,6 +12,7 @@ import './new-sample-customer-details-page.scss';
 const wizardSteps = [
   'Customer Details',
   'Basic Details',
+  'Sample Details',
   'Product Details',
   'Additional Details',
 ];
@@ -37,25 +39,67 @@ const additionalDetailsRows = [
 
 const parameterRows = [
   {
-    parameter: 'Bursting Strength',
-    method: 'IS 1963',
-    size: '12 g',
+    id: 'parameter-row-1',
+    parameter: 'pH',
+    method: 'IS 3025 (Part 11)',
     charges: '250',
     time: '5 days',
   },
   {
-    parameter: 'Colour Fastness',
-    method: 'AATCC 61',
-    size: '10 g',
+    id: 'parameter-row-2',
+    parameter: 'Chloride Content',
+    method: 'ASTM D512',
     charges: '300',
     time: '3 days',
   },
   {
-    parameter: 'Abrasion Resistance',
-    method: 'ISO 12947',
-    size: '14 g',
+    id: 'parameter-row-3',
+    parameter: 'Lead (Pb)',
+    method: 'EPA 6020B',
     charges: '450',
     time: '7 days',
+  },
+];
+
+const chemicalParameterOptions = [
+  'pH',
+  'Chloride Content',
+  'Lead (Pb)',
+  'Total Dissolved Solids',
+  'Chemical Oxygen Demand',
+];
+
+const chemicalTestMethodOptions = [
+  'IS 3025 (Part 11)',
+  'ASTM D512',
+  'EPA 6020B',
+  'IS 3025 (Part 16)',
+  'IS 3025 (Part 58)',
+];
+
+const sampleProductOptions = [
+  'Cotton Fabric',
+  'Industrial Solvent',
+  'Drinking Water',
+  'Pharmaceutical Raw Material',
+];
+
+const sampleCategoryOptions = [
+  'Textiles',
+  'Chemicals',
+  'Water',
+  'Pharmaceuticals',
+];
+
+const sampleDetailRows = [
+  {
+    id: 'sample-detail-row-1',
+    product: 'Cotton Fabric',
+    category: 'Textiles',
+    quantity: '1',
+    sampleSize: '200 g',
+    quality: 'Standard',
+    imageUpload: 'sample-image.jpg',
   },
 ];
 
@@ -79,30 +123,8 @@ const stepFields = [
     mandatory: false,
     placeholder,
   })),
-  [
-    { key: 'category', label: 'Category', type: 'dropdown', mandatory: true, placeholder: 'Select sample category' },
-    { key: 'product', label: 'Product', type: 'dropdown', mandatory: true, placeholder: 'Select product' },
-    { key: 'description', label: 'Description', type: 'text', mandatory: false, placeholder: 'Sample Description' },
-    { key: 'quantity', label: 'Quantity', type: 'text', mandatory: true, placeholder: '0' },
-    {
-      key: 'sampleSize',
-      label: 'Sample Size',
-      type: 'split',
-      mandatory: true,
-      placeholder: 'Value',
-      unitPlaceholder: 'Unit',
-    },
-    { key: 'quality', label: 'Quality', type: 'text', mandatory: false, placeholder: 'Quality of sample' },
-    {
-      key: 'identificationMark',
-      label: 'Identification Mark',
-      type: 'text',
-      mandatory: false,
-      placeholder: 'if any',
-    },
-    { key: 'condition', label: 'Condition', type: 'text', mandatory: false, placeholder: 'eg. good, fair' },
-    { key: 'imageUpload', label: 'Image Upload', type: 'text', mandatory: false, placeholder: 'if any' },
-  ],
+  [],
+  [],
   additionalDetailsRows.map(([label, placeholder, icon], index) => ({
     key: `additional-${index}`,
     label,
@@ -129,15 +151,6 @@ const initialFormValues = {
   receivingDate: '19 March 2026',
   customer: '',
   customerAddress: '',
-  category: '',
-  product: '',
-  description: '',
-  quantity: '',
-  sampleSize: { value: '', unit: '' },
-  quality: '',
-  identificationMark: '',
-  condition: '',
-  imageUpload: '',
   'basic-0': '',
   'basic-1': '',
   'basic-2': '',
@@ -191,15 +204,6 @@ function buildEditFormValues(sample) {
     receivingDate,
     customer: sample.representative ?? 'Anita Desai',
     customerAddress: `${sample.representative ?? 'Customer'} Address`,
-    category: getSampleType(sample),
-    product: sample.reference ?? sample.id ?? 'Sample Product',
-    description: `Sample ${sample.id ?? ''}`.trim(),
-    quantity: '1',
-    sampleSize: { value: '200', unit: 'g' },
-    quality: 'Standard',
-    identificationMark: sample.id ?? '',
-    condition: 'Good',
-    imageUpload: 'sample-image.jpg',
     'basic-0': 'Standard Sampling Plan',
     'basic-1': sample.createdOn ?? '11:23 AM 19 March 2026',
     'basic-2': sample.representative ?? 'Consumer Sample',
@@ -215,13 +219,52 @@ function buildEditFormValues(sample) {
   };
 }
 
-function buildParameterFormRows(mode) {
-  const checked = mode === 'edit';
+function buildParameterFormRows() {
+  return parameterRows.map((row) => ({ ...row }));
+}
 
-  return parameterRows.map((row) => ({
+function buildSampleDetailFormRows() {
+  return sampleDetailRows.map((row) => ({
     ...row,
-    checked,
+    description: 'Cotton fabric sample for chemical testing',
+    identificationMark: 'CF-001',
+    condition: 'Good',
+    parameterRows: buildParameterFormRows(),
   }));
+}
+
+function createTableRowId(prefix) {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return `${prefix}-${crypto.randomUUID()}`;
+  }
+
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function createEmptySampleDetailRow() {
+  return {
+    id: createTableRowId('sample-detail-row'),
+    product: '',
+    category: '',
+    quantity: '',
+    sampleSize: '',
+    quality: '',
+    description: '',
+    identificationMark: '',
+    condition: '',
+    imageUpload: '',
+    parameterRows: [createEmptyParameterRow()],
+  };
+}
+
+function createEmptyParameterRow() {
+  return {
+    id: createTableRowId('parameter-row'),
+    parameter: '',
+    method: '',
+    charges: '',
+    time: '',
+  };
 }
 
 function isFilledValue(type, value) {
@@ -268,7 +311,17 @@ function getStepFieldSummary(stepIndex, formValues) {
 function getParameterSummary(parameterFormRows) {
   return {
     parameter_count: parameterFormRows.length,
-    selected_parameter_count: parameterFormRows.filter((row) => row.checked).length,
+    selected_parameter_count: parameterFormRows.length,
+  };
+}
+
+function getAllParameterRows(sampleDetailFormRows) {
+  return sampleDetailFormRows.flatMap((row) => row.parameterRows ?? []);
+}
+
+function getSampleDetailSummary(sampleDetailFormRows) {
+  return {
+    sample_detail_row_count: sampleDetailFormRows.length,
   };
 }
 
@@ -524,294 +577,317 @@ function BasicDetailsSection({ formValues, fieldErrors, onFieldChange, onFieldFo
   );
 }
 
+function SampleDetailsSection({ rows, onRowChange, onAddRow, onDeleteRow }) {
+  return (
+    <FormSection id="new-sample-sample-details" title="Sample Details">
+      <div className="container-fluid smplfy-new-sample-table-content">
+        <DataTable className="smplfy-new-sample-data-table smplfy-new-sample-summary-table">
+          <thead>
+            <tr>
+              <th scope="col">Sr no.</th>
+              <th scope="col">Product</th>
+              <th scope="col">Category</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Sample Size</th>
+              <th scope="col">Quality</th>
+              <th scope="col">Image Upload</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr key={row.id}>
+                <td>{index + 1}</td>
+                <td>
+                  <InputFieldDropdown
+                    aria-label={`Product ${index + 1}`}
+                    value={row.product}
+                    placeholder="Select product"
+                    options={sampleProductOptions}
+                    onChange={(event) => onRowChange(row.id, 'product', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <InputFieldDropdown
+                    aria-label={`Category ${index + 1}`}
+                    value={row.category}
+                    placeholder="Select category"
+                    options={sampleCategoryOptions}
+                    onChange={(event) => onRowChange(row.id, 'category', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="smplfy-form-control form-control"
+                    aria-label={`Quantity ${index + 1}`}
+                    value={row.quantity}
+                    onChange={(event) => onRowChange(row.id, 'quantity', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="smplfy-form-control form-control"
+                    aria-label={`Sample size ${index + 1}`}
+                    value={row.sampleSize}
+                    onChange={(event) => onRowChange(row.id, 'sampleSize', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="smplfy-form-control form-control"
+                    aria-label={`Quality ${index + 1}`}
+                    value={row.quality}
+                    onChange={(event) => onRowChange(row.id, 'quality', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="smplfy-form-control form-control"
+                    aria-label={`Image upload ${index + 1}`}
+                    value={row.imageUpload}
+                    onChange={(event) => onRowChange(row.id, 'imageUpload', event.target.value)}
+                  />
+                </td>
+                <td>
+                  <SecondaryButton
+                    size="medium"
+                    tone="danger"
+                    leftIcon="trash"
+                    className="px-2"
+                    aria-label={`Delete sample row ${index + 1}`}
+                    onClick={() => onDeleteRow(row.id)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </DataTable>
+        <div className="smplfy-new-sample-table-action">
+          <SecondaryButton size="medium" leftIcon="plus" onClick={onAddRow}>Add row</SecondaryButton>
+        </div>
+      </div>
+    </FormSection>
+  );
+}
+
 function ProductDetailsSection({
-  formValues,
-  fieldErrors,
-  onFieldChange,
-  onFieldFocus,
-  onFieldBlur,
-  parameterFormRows,
-  onParameterRowChange,
+  products,
+  activeProductId,
+  onProductSelect,
+  onProductFieldChange,
+  parameterRows: rows,
+  onParameterRowChange: onRowChange,
+  onAddParameterRow: onAddRow,
+  onDeleteParameterRow: onDeleteRow,
 }) {
+  const activeProduct = products.find((product) => product.id === activeProductId) ?? products[0] ?? null;
+
   return (
     <FormSection id="new-sample-product-details" title="Product Details">
-      <div className="container-fluid p-4">
-        <div className="d-flex align-items-center justify-content-between gap-3 mb-4">
-          <div className="d-inline-flex align-items-center gap-2 h5 fw-semibold text-body mb-0">
-            <span className="smplfy-badge badge text-bg-primary rounded-circle d-inline-flex align-items-center justify-content-center">1</span>
-            <span>Product 1</span>
-          </div>
-
-          <button
-            className="smplfy-btn btn btn-outline-danger btn-sm"
-            type="button"
-            aria-label="Delete product"
-          >
-            <AppIcon name="trash" />
-          </button>
+      <div className="container-fluid smplfy-new-sample-table-content">
+        <div
+          className="d-flex align-items-center justify-content-start smplfy-new-sample-product-selector"
+          role="tablist"
+          aria-label="Select product"
+        >
+          {products.map((product, index) => {
+            const isActive = product.id === activeProduct?.id;
+            return (
+              <NavSelector
+                key={product.id}
+                type="button"
+                size="medium"
+                role="tab"
+                aria-selected={isActive}
+                active={isActive}
+                className="text-nowrap"
+                onClick={() => onProductSelect(product.id)}
+              >
+                {product.product || `Product ${index + 1}`}
+              </NavSelector>
+            );
+          })}
         </div>
 
-        <div className="row g-4">
-          <div className="col-lg-6">
-            <FormElement
-              type="dropdown"
-              mandatory
-              label="Category"
-              message={fieldErrors.category}
-              messageTone="error"
-              inputProps={getFieldInputProps(
-                stepFields[2][0],
-                formValues,
-                onFieldChange,
-                Boolean(fieldErrors.category),
-                onFieldFocus,
-                onFieldBlur,
-              )}
-            />
-          </div>
+        <div className="smplfy-new-sample-product-content">
+          {activeProduct ? (
+            <>
+            <div className="row g-3 smplfy-new-sample-product-fields">
+              <div className="col-12 col-lg-6">
+                <FormElement
+                  type="dropdown"
+                  label="Category"
+                  inputProps={{
+                    value: activeProduct.category,
+                    placeholder: 'Select category',
+                    options: sampleCategoryOptions,
+                    onChange: (event) => onProductFieldChange(activeProduct.id, 'category', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-lg-6">
+                <FormElement
+                  type="dropdown"
+                  label="Product"
+                  inputProps={{
+                    value: activeProduct.product,
+                    placeholder: 'Select product',
+                    options: sampleProductOptions,
+                    onChange: (event) => onProductFieldChange(activeProduct.id, 'product', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12">
+                <FormElement
+                  type="text"
+                  label="Description"
+                  inputProps={{
+                    value: activeProduct.description,
+                    placeholder: 'Sample description',
+                    onChange: (event) => onProductFieldChange(activeProduct.id, 'description', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-xl-3">
+                <FormElement
+                  type="text"
+                  label="Quantity"
+                  inputProps={{
+                    value: activeProduct.quantity,
+                    placeholder: '0',
+                    onChange: (event) => onProductFieldChange(activeProduct.id, 'quantity', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-xl-3">
+                <FormElement
+                  type="text"
+                  label="Sample Size"
+                  inputProps={{
+                    value: activeProduct.sampleSize,
+                    placeholder: 'eg. 200 g',
+                    onChange: (event) => onProductFieldChange(activeProduct.id, 'sampleSize', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-xl-3">
+                <FormElement
+                  type="text"
+                  label="Quality"
+                  inputProps={{
+                    value: activeProduct.quality,
+                    placeholder: 'Quality',
+                    onChange: (event) => onProductFieldChange(activeProduct.id, 'quality', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-md-6 col-xl-3">
+                <FormElement
+                  type="text"
+                  label="Condition"
+                  inputProps={{
+                    value: activeProduct.condition,
+                    placeholder: 'eg. Good',
+                    onChange: (event) => onProductFieldChange(activeProduct.id, 'condition', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-lg-6">
+                <FormElement
+                  type="text"
+                  label="Identification Mark"
+                  inputProps={{
+                    value: activeProduct.identificationMark,
+                    placeholder: 'If any',
+                    onChange: (event) => onProductFieldChange(activeProduct.id, 'identificationMark', event.target.value),
+                  }}
+                />
+              </div>
+              <div className="col-12 col-lg-6">
+                <FormElement
+                  type="text"
+                  label="Image Upload"
+                  inputProps={{
+                    value: activeProduct.imageUpload,
+                    placeholder: 'Image reference',
+                    onChange: (event) => onProductFieldChange(activeProduct.id, 'imageUpload', event.target.value),
+                  }}
+                />
+              </div>
+            </div>
 
-          <div className="col-lg-6">
-            <FormElement
-              type="dropdown"
-              mandatory
-              label="Product"
-              message={fieldErrors.product}
-              messageTone="error"
-              inputProps={getFieldInputProps(
-                stepFields[2][1],
-                formValues,
-                onFieldChange,
-                Boolean(fieldErrors.product),
-                onFieldFocus,
-                onFieldBlur,
-              )}
-            />
-          </div>
-
-          <div className="col-12">
-            <FormElement
-              type="text"
-              label="Description"
-              inputProps={getFieldInputProps(
-                stepFields[2][2],
-                formValues,
-                onFieldChange,
-                false,
-                onFieldFocus,
-                onFieldBlur,
-              )}
-            />
-          </div>
-
-          <div className="col-lg-6">
-            <FormElement
-              type="text"
-              mandatory
-              label="Quantity"
-              message={fieldErrors.quantity}
-              messageTone="error"
-              inputProps={getFieldInputProps(
-                stepFields[2][3],
-                formValues,
-                onFieldChange,
-                Boolean(fieldErrors.quantity),
-                onFieldFocus,
-                onFieldBlur,
-              )}
-            />
-          </div>
-
-          <div className="col-lg-6">
-            <FormElement
-              type="split"
-              mandatory
-              label="Sample Size"
-              message={fieldErrors.sampleSize}
-              messageTone="error"
-              inputProps={getFieldInputProps(
-                stepFields[2][4],
-                formValues,
-                onFieldChange,
-                Boolean(fieldErrors.sampleSize),
-                onFieldFocus,
-                onFieldBlur,
-              )}
-            />
-          </div>
-
-          <div className="col-lg-6">
-            <FormElement
-              type="text"
-              label="Quality"
-              inputProps={getFieldInputProps(
-                stepFields[2][5],
-                formValues,
-                onFieldChange,
-                false,
-                onFieldFocus,
-                onFieldBlur,
-              )}
-            />
-          </div>
-
-          <div className="col-lg-6">
-            <FormElement
-              type="text"
-              label="Identification Mark"
-              inputProps={getFieldInputProps(
-                stepFields[2][6],
-                formValues,
-                onFieldChange,
-                false,
-                onFieldFocus,
-                onFieldBlur,
-              )}
-            />
-          </div>
-
-          <div className="col-lg-6">
-            <FormElement
-              type="text"
-              label="Condition"
-              inputProps={getFieldInputProps(
-                stepFields[2][7],
-                formValues,
-                onFieldChange,
-                false,
-                onFieldFocus,
-                onFieldBlur,
-              )}
-            />
-          </div>
-
-          <div className="col-lg-6">
-            <FormElement
-              type="text"
-              label="Image Upload"
-              inputProps={getFieldInputProps(
-                stepFields[2][8],
-                formValues,
-                onFieldChange,
-                false,
-                onFieldFocus,
-                onFieldBlur,
-              )}
-            />
-          </div>
-        </div>
-
-        <div className="d-flex align-items-center justify-content-between gap-3 mt-4 mb-3 flex-wrap">
-          <h3 className="h5 fw-semibold text-body mb-0">Parameter Data</h3>
-          <button className="smplfy-btn btn btn-link p-0 text-decoration-underline" type="button">Auto-fill parameters</button>
-        </div>
-
-        <div className="table-responsive">
-          <table className="smplfy-table table table-borderless align-middle mb-0">
-            <thead>
-              <tr>
-                <th scope="col">
-                  <Checkbox
-                    checked={parameterFormRows.length > 0 && parameterFormRows.every((row) => row.checked)}
-                    ariaLabel="Select all parameters"
-                    onChange={(nextChecked) => {
-                      parameterFormRows.forEach((_, index) => {
-                        onParameterRowChange(index, 'checked', nextChecked);
-                      });
-                    }}
-                  />
-                </th>
-                <th scope="col">Parameter</th>
-                <th scope="col">Test Method</th>
-                <th scope="col">Req. Size</th>
-                <th scope="col">Charges</th>
-                <th scope="col">Est. Time</th>
-                <th scope="col">
-                  <button
-                    className="smplfy-btn btn btn-outline-danger btn-sm"
-                    type="button"
-                    aria-label="Delete parameter group"
-                  >
-                    <AppIcon name="trash" />
-                  </button>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {parameterFormRows.map((row, index) => (
-                <tr key={`${row.parameter}-${index}`}>
-                  <td>
-                    <Checkbox
-                      checked={row.checked}
-                      ariaLabel={`Select ${row.parameter}`}
-                      onChange={(nextChecked) => onParameterRowChange(index, 'checked', nextChecked)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      className="smplfy-form-control form-control"
-                      aria-label="Parameter"
-                      value={row.parameter}
-                      onChange={(event) => onParameterRowChange(index, 'parameter', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      className="smplfy-form-control form-control"
-                      aria-label="Test method"
-                      value={row.method}
-                      onChange={(event) => onParameterRowChange(index, 'method', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      className="smplfy-form-control form-control"
-                      aria-label="Required size"
-                      value={row.size}
-                      onChange={(event) => onParameterRowChange(index, 'size', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      className="smplfy-form-control form-control"
-                      aria-label="Charges"
-                      value={row.charges}
-                      onChange={(event) => onParameterRowChange(index, 'charges', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      className="smplfy-form-control form-control"
-                      aria-label="Estimated time"
-                      value={row.time}
-                      onChange={(event) => onParameterRowChange(index, 'time', event.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <button
-                      className="smplfy-btn btn btn-outline-danger btn-sm"
-                      type="button"
-                      aria-label={`Delete ${row.parameter}`}
-                    >
-                      <AppIcon name="trash" />
-                    </button>
-                  </td>
+            <h3 className="h5 fw-semibold text-body smplfy-new-sample-parameter-title">Parameter Data</h3>
+            <DataTable className="smplfy-new-sample-data-table smplfy-new-sample-parameter-table">
+              <thead>
+                <tr>
+                  <th scope="col">Sr no.</th>
+                  <th scope="col">Parameter</th>
+                  <th scope="col">Test Method</th>
+                  <th scope="col">Charges</th>
+                  <th scope="col">Est. Time</th>
+                  <th scope="col">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <button className="smplfy-btn btn btn-outline-secondary w-100 mt-2" type="button">
-            <AppIcon name="plus" />
-            <span>Add New Parameter</span>
-          </button>
+              </thead>
+              <tbody>
+                {rows.map((row, index) => (
+                  <tr key={row.id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <InputFieldDropdown
+                        aria-label={`Parameter ${index + 1}`}
+                        value={row.parameter}
+                        placeholder="Select parameter"
+                        options={chemicalParameterOptions}
+                        onChange={(event) => onRowChange(row.id, 'parameter', event.target.value)}
+                      />
+                    </td>
+                    <td>
+                      <InputFieldDropdown
+                        aria-label={`Test method ${index + 1}`}
+                        value={row.method}
+                        placeholder="Select test method"
+                        options={chemicalTestMethodOptions}
+                        onChange={(event) => onRowChange(row.id, 'method', event.target.value)}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        className="smplfy-form-control form-control"
+                        aria-label={`Charges ${index + 1}`}
+                        value={row.charges}
+                        onChange={(event) => onRowChange(row.id, 'charges', event.target.value)}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        className="smplfy-form-control form-control"
+                        aria-label={`Estimated time ${index + 1}`}
+                        value={row.time}
+                        onChange={(event) => onRowChange(row.id, 'time', event.target.value)}
+                      />
+                    </td>
+                    <td>
+                      <SecondaryButton
+                        size="medium"
+                        tone="danger"
+                        leftIcon="trash"
+                        className="px-2"
+                        aria-label={`Delete parameter row ${index + 1}`}
+                        onClick={() => onDeleteRow(row.id)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </DataTable>
+            <div className="smplfy-new-sample-table-action">
+              <SecondaryButton size="medium" leftIcon="plus" onClick={onAddRow}>Add row</SecondaryButton>
+            </div>
+            </>
+          ) : (
+            <p className="text-secondary mb-0 p-3">Add a product in Sample Details to configure its product data.</p>
+          )}
         </div>
-
-        <hr className="my-4" />
-
-        <button className="smplfy-btn btn btn-outline-secondary w-100 py-3" type="button">
-          <AppIcon name="plus" />
-          <span>Add New Product</span>
-        </button>
       </div>
     </FormSection>
   );
@@ -822,7 +898,7 @@ function AdditionalDetailsSection({ formValues, fieldErrors, onFieldChange, onFi
     <FormSection id="new-sample-additional-details" title="Additional Details">
       <div className="container-fluid p-4">
         <div className="row g-4">
-          {stepFields[3].map((field) => (
+          {stepFields[4].map((field) => (
             <div className="col-lg-6" key={field.key}>
               <FormElement
                 type={field.type}
@@ -862,8 +938,16 @@ function CustomerForm({
   mode,
   sampleTitle,
   onStepChange,
+  sampleDetailFormRows,
+  onSampleDetailRowChange,
+  onAddSampleDetailRow,
+  onDeleteSampleDetailRow,
+  activeProductId,
+  onProductSelect,
   parameterFormRows,
   onParameterRowChange,
+  onAddParameterRow,
+  onDeleteParameterRow,
 }) {
   const sections = [
     <CustomerDetailsSection
@@ -882,15 +966,23 @@ function CustomerForm({
       onFieldFocus={onFieldFocus}
       onFieldBlur={onFieldBlur}
     />,
+    <SampleDetailsSection
+      key="sample"
+      rows={sampleDetailFormRows}
+      onRowChange={onSampleDetailRowChange}
+      onAddRow={onAddSampleDetailRow}
+      onDeleteRow={onDeleteSampleDetailRow}
+    />,
     <ProductDetailsSection
       key="product"
-      formValues={formValues}
-      fieldErrors={fieldErrors}
-      onFieldChange={onFieldChange}
-      onFieldFocus={onFieldFocus}
-      onFieldBlur={onFieldBlur}
-      parameterFormRows={parameterFormRows}
+      products={sampleDetailFormRows}
+      activeProductId={activeProductId}
+      onProductSelect={onProductSelect}
+      onProductFieldChange={onSampleDetailRowChange}
+      parameterRows={parameterFormRows}
       onParameterRowChange={onParameterRowChange}
+      onAddParameterRow={onAddParameterRow}
+      onDeleteParameterRow={onDeleteParameterRow}
     />,
     <AdditionalDetailsSection
       key="additional"
@@ -967,21 +1059,32 @@ export default function NewSampleCustomerDetailsPage({
   );
   const [currentStep, setCurrentStep] = useState(0);
   const [formValues, setFormValues] = useState(mode === 'edit' ? buildEditFormValues(sample) : initialFormValues);
-  const [parameterFormRows, setParameterFormRows] = useState(buildParameterFormRows(mode));
+  const [sampleDetailFormRows, setSampleDetailFormRows] = useState(buildSampleDetailFormRows);
+  const [activeProductId, setActiveProductId] = useState(sampleDetailRows[0]?.id ?? null);
   const [fieldErrors, setFieldErrors] = useState({});
+  const activeProduct = sampleDetailFormRows.find((row) => row.id === activeProductId)
+    ?? sampleDetailFormRows[0]
+    ?? null;
+  const parameterFormRows = activeProduct?.parameterRows ?? [];
+  const allParameterFormRows = useMemo(
+    () => getAllParameterRows(sampleDetailFormRows),
+    [sampleDetailFormRows],
+  );
   const sampleTitle = mode === 'edit' ? getSampleDisplayName(sample) : 'New Sample';
   const currentCrumbLabel = mode === 'edit' ? `Edit ${sampleTitle}` : 'New Sample';
   const formId = 'new-sample-v2-form';
   const formSessionRef = useRef(createFormSessionId());
+  const formInputRef = useRef({ mode, sample });
   const startedAtRef = useRef(getNow());
   const stepStartedAtRef = useRef(getNow());
   const lastInteractionAtRef = useRef(getNow());
   const trackedStartRef = useRef(false);
   const lastViewedStepRef = useRef(null);
   const outcomeRef = useRef(null);
+  const abandonmentTimerRef = useRef(null);
   const fieldChangeCountsRef = useRef({});
   const fieldFocusStateRef = useRef({});
-  const parameterFormRowsRef = useRef(parameterFormRows);
+  const sampleDetailFormRowsRef = useRef(sampleDetailFormRows);
   const analyticsContext = useMemo(() => ({
     form_name: sampleFormName,
     form_variant: formVariant,
@@ -994,7 +1097,7 @@ export default function NewSampleCustomerDetailsPage({
   }), [formVariant, isExperimentReady, mode, parentLabel, sample, sampleCreationFlowSessionId]);
   const analyticsContextRef = useRef(analyticsContext);
   analyticsContextRef.current = analyticsContext;
-  parameterFormRowsRef.current = parameterFormRows;
+  sampleDetailFormRowsRef.current = sampleDetailFormRows;
 
   const captureFormEvent = (eventName, properties = {}) => {
     trackEvent(eventName, {
@@ -1029,6 +1132,11 @@ export default function NewSampleCustomerDetailsPage({
   }, [formVariant, isExperimentReady, mode, onSampleFormVariantChange]);
 
   useEffect(() => {
+    if (formInputRef.current.mode === mode && formInputRef.current.sample === sample) {
+      return;
+    }
+
+    formInputRef.current = { mode, sample };
     formSessionRef.current = createFormSessionId();
     startedAtRef.current = getNow();
     stepStartedAtRef.current = getNow();
@@ -1040,7 +1148,9 @@ export default function NewSampleCustomerDetailsPage({
     fieldFocusStateRef.current = {};
     setCurrentStep(0);
     setFormValues(mode === 'edit' ? buildEditFormValues(sample) : initialFormValues);
-    setParameterFormRows(buildParameterFormRows(mode));
+    const nextSampleDetailRows = buildSampleDetailFormRows();
+    setSampleDetailFormRows(nextSampleDetailRows);
+    setActiveProductId(nextSampleDetailRows[0]?.id ?? null);
     setFieldErrors({});
   }, [mode, sample]);
 
@@ -1063,14 +1173,15 @@ export default function NewSampleCustomerDetailsPage({
     captureFormEvent('sample_form_started', {
       step_count: wizardSteps.length,
       ...getStepFieldSummary(currentStep, formValues),
-      ...getParameterSummary(parameterFormRows),
+      ...getSampleDetailSummary(sampleDetailFormRows),
+      ...getParameterSummary(allParameterFormRows),
     });
     captureFormEvent('sample_form_step_viewed', {
       step_index: currentStep,
       step_name: getStepName(currentStep),
       ...getStepFieldSummary(currentStep, formValues),
     });
-  }, [currentStep, formValues, formVariant, isExperimentReady, parameterFormRows]);
+  }, [allParameterFormRows, currentStep, formValues, formVariant, isExperimentReady, sampleDetailFormRows]);
 
   useEffect(() => {
     if (!trackedStartRef.current || lastViewedStepRef.current === currentStep) {
@@ -1087,20 +1198,28 @@ export default function NewSampleCustomerDetailsPage({
     });
   }, [currentStep, formValues]);
 
-  useEffect(() => () => {
-    if (!trackedStartRef.current || outcomeRef.current) {
-      return;
-    }
+  useEffect(() => {
+    window.clearTimeout(abandonmentTimerRef.current);
 
-    trackEvent('sample_form_abandoned', {
-      ...analyticsContextRef.current,
-      form_session_id: formSessionRef.current,
-      elapsed_ms: getElapsedTime(startedAtRef.current),
-      step_index: lastViewedStepRef.current,
-      step_name: getStepName(lastViewedStepRef.current ?? 0),
-      ...getFieldInteractionSummary(fieldChangeCountsRef.current),
-      ...getParameterSummary(parameterFormRowsRef.current),
-    });
+    return () => {
+      // A zero-delay timer avoids the simulated unmount/remount performed by React Strict Mode.
+      abandonmentTimerRef.current = window.setTimeout(() => {
+        if (!trackedStartRef.current || outcomeRef.current) {
+          return;
+        }
+
+        trackEvent('sample_form_abandoned', {
+          ...analyticsContextRef.current,
+          form_session_id: formSessionRef.current,
+          elapsed_ms: getElapsedTime(startedAtRef.current),
+          step_index: lastViewedStepRef.current,
+          step_name: getStepName(lastViewedStepRef.current ?? 0),
+          ...getFieldInteractionSummary(fieldChangeCountsRef.current),
+          ...getSampleDetailSummary(sampleDetailFormRowsRef.current),
+          ...getParameterSummary(getAllParameterRows(sampleDetailFormRowsRef.current)),
+        });
+      }, 0);
+    };
   }, []);
 
   const handleFieldChange = (key, value) => {
@@ -1200,7 +1319,8 @@ export default function NewSampleCustomerDetailsPage({
         step_duration_ms: getElapsedTime(stepStartedAtRef.current),
         ...getStepFieldSummary(currentStep, formValues),
         ...getFieldInteractionSummary(fieldChangeCountsRef.current),
-        ...getParameterSummary(parameterFormRows),
+        ...getSampleDetailSummary(sampleDetailFormRows),
+        ...getParameterSummary(allParameterFormRows),
       });
     }
 
@@ -1212,7 +1332,8 @@ export default function NewSampleCustomerDetailsPage({
       step_duration_ms: getElapsedTime(stepStartedAtRef.current),
       ...getStepFieldSummary(currentStep, formValues),
       ...getFieldInteractionSummary(fieldChangeCountsRef.current),
-      ...getParameterSummary(parameterFormRows),
+      ...getSampleDetailSummary(sampleDetailFormRows),
+      ...getParameterSummary(allParameterFormRows),
     });
     lastInteractionAtRef.current = getNow();
 
@@ -1227,7 +1348,65 @@ export default function NewSampleCustomerDetailsPage({
 
     captureHesitationIfNeeded('next');
     lastInteractionAtRef.current = getNow();
-    setCurrentStep((step) => Math.min(wizardSteps.length - 1, step + 1));
+    const nextStep = Math.min(wizardSteps.length - 1, currentStep + 1);
+
+    if (nextStep === currentStep) {
+      return;
+    }
+
+    captureFormEvent('sample_form_step_completed', {
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      step_duration_ms: getElapsedTime(stepStartedAtRef.current),
+      next_step_index: nextStep,
+      next_step_name: getStepName(nextStep),
+      ...getStepFieldSummary(currentStep, formValues),
+      ...getFieldInteractionSummary(fieldChangeCountsRef.current),
+    });
+    setCurrentStep(nextStep);
+  };
+
+  const handlePrevious = () => {
+    const previousStep = Math.max(0, currentStep - 1);
+
+    if (previousStep === currentStep) {
+      return;
+    }
+
+    captureHesitationIfNeeded('previous');
+    lastInteractionAtRef.current = getNow();
+    captureFormEvent('sample_form_backtracked', {
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      step_duration_ms: getElapsedTime(stepStartedAtRef.current),
+      from_step_index: currentStep,
+      from_step_name: getStepName(currentStep),
+      to_step_index: previousStep,
+      to_step_name: getStepName(previousStep),
+    });
+    setCurrentStep(previousStep);
+  };
+
+  const handleStepChange = (stepIndex) => {
+    if (stepIndex === currentStep) {
+      return;
+    }
+
+    lastInteractionAtRef.current = getNow();
+    captureFormEvent(
+      stepIndex < currentStep ? 'sample_form_backtracked' : 'sample_form_step_jumped',
+      {
+        step_index: currentStep,
+        step_name: getStepName(currentStep),
+        step_duration_ms: getElapsedTime(stepStartedAtRef.current),
+        from_step_index: currentStep,
+        from_step_name: getStepName(currentStep),
+        to_step_index: stepIndex,
+        to_step_name: getStepName(stepIndex),
+        skipped_step_count: Math.max(0, stepIndex - currentStep - 1),
+      },
+    );
+    setCurrentStep(stepIndex);
   };
 
   const handleCancel = () => {
@@ -1238,27 +1417,127 @@ export default function NewSampleCustomerDetailsPage({
       total_duration_ms: getElapsedTime(startedAtRef.current),
       step_duration_ms: getElapsedTime(stepStartedAtRef.current),
       ...getFieldInteractionSummary(fieldChangeCountsRef.current),
-      ...getParameterSummary(parameterFormRows),
+      ...getSampleDetailSummary(sampleDetailFormRows),
+      ...getParameterSummary(allParameterFormRows),
     });
     lastInteractionAtRef.current = getNow();
     onBackToWorkspace?.();
   };
 
-  const handleParameterRowChange = (rowIndex, field, value) => {
+  const handleSampleDetailRowChange = (rowId, field, value) => {
+    const rowIndex = sampleDetailFormRows.findIndex((row) => row.id === rowId);
+    lastInteractionAtRef.current = getNow();
+    captureFormEvent('sample_form_sample_detail_changed', {
+      row_index: rowIndex,
+      field_key: field,
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      ...getSampleDetailSummary(sampleDetailFormRows),
+    });
+
+    setSampleDetailFormRows((current) => current.map((row) => (
+      row.id === rowId ? { ...row, [field]: value } : row
+    )));
+  };
+
+  const handleAddSampleDetailRow = () => {
+    const nextRow = createEmptySampleDetailRow();
+    lastInteractionAtRef.current = getNow();
+    captureFormEvent('sample_form_sample_detail_row_added', {
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      ...getSampleDetailSummary(sampleDetailFormRows),
+    });
+    setSampleDetailFormRows((current) => [...current, nextRow]);
+    if (!activeProductId) {
+      setActiveProductId(nextRow.id);
+    }
+  };
+
+  const handleDeleteSampleDetailRow = (rowId) => {
+    const rowIndex = sampleDetailFormRows.findIndex((row) => row.id === rowId);
+    lastInteractionAtRef.current = getNow();
+    captureFormEvent('sample_form_sample_detail_row_deleted', {
+      row_index: rowIndex,
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      ...getSampleDetailSummary(sampleDetailFormRows),
+    });
+    const remainingRows = sampleDetailFormRows.filter((row) => row.id !== rowId);
+    setSampleDetailFormRows(remainingRows);
+    if (activeProductId === rowId) {
+      setActiveProductId(remainingRows[0]?.id ?? null);
+    }
+  };
+
+  const handleProductSelect = (productId) => {
+    lastInteractionAtRef.current = getNow();
+    setActiveProductId(productId);
+    captureFormEvent('sample_form_product_selected', {
+      product_id: productId,
+      product_index: sampleDetailFormRows.findIndex((row) => row.id === productId),
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+    });
+  };
+
+  const handleParameterRowChange = (rowId, field, value) => {
+    const rowIndex = parameterFormRows.findIndex((row) => row.id === rowId);
     lastInteractionAtRef.current = getNow();
     captureFormEvent('sample_form_parameter_changed', {
       row_index: rowIndex,
       field_key: field,
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
       ...getParameterSummary(parameterFormRows),
     });
 
-    setParameterFormRows((current) =>
-      current.map((row, index) => (
-        index === rowIndex
-          ? { ...row, [field]: value }
-          : row
-      )),
-    );
+    setSampleDetailFormRows((current) => current.map((product) => (
+      product.id === activeProduct?.id
+        ? {
+            ...product,
+            parameterRows: (product.parameterRows ?? []).map((row) => (
+              row.id === rowId ? { ...row, [field]: value } : row
+            )),
+          }
+        : product
+    )));
+  };
+
+  const handleAddParameterRow = () => {
+    lastInteractionAtRef.current = getNow();
+    captureFormEvent('sample_form_parameter_row_added', {
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      ...getParameterSummary(parameterFormRows),
+    });
+    setSampleDetailFormRows((current) => current.map((product) => (
+      product.id === activeProduct?.id
+        ? {
+            ...product,
+            parameterRows: [...(product.parameterRows ?? []), createEmptyParameterRow()],
+          }
+        : product
+    )));
+  };
+
+  const handleDeleteParameterRow = (rowId) => {
+    const rowIndex = parameterFormRows.findIndex((row) => row.id === rowId);
+    lastInteractionAtRef.current = getNow();
+    captureFormEvent('sample_form_parameter_row_deleted', {
+      row_index: rowIndex,
+      step_index: currentStep,
+      step_name: getStepName(currentStep),
+      ...getParameterSummary(parameterFormRows),
+    });
+    setSampleDetailFormRows((current) => current.map((product) => (
+      product.id === activeProduct?.id
+        ? {
+            ...product,
+            parameterRows: (product.parameterRows ?? []).filter((row) => row.id !== rowId),
+          }
+        : product
+    )));
   };
 
   return (
@@ -1273,21 +1552,23 @@ export default function NewSampleCustomerDetailsPage({
           onFieldChange={handleFieldChange}
           onFieldFocus={handleFieldFocus}
           onFieldBlur={handleFieldBlur}
-          onPrev={() => {
-            lastInteractionAtRef.current = getNow();
-            setCurrentStep((step) => Math.max(0, step - 1));
-          }}
+          onPrev={handlePrevious}
           onNext={handleNext}
           onComplete={handleComplete}
           onCancel={handleCancel}
           mode={mode}
           sampleTitle={sampleTitle}
-          onStepChange={(stepIndex) => {
-            lastInteractionAtRef.current = getNow();
-            setCurrentStep(stepIndex);
-          }}
+          onStepChange={handleStepChange}
+          sampleDetailFormRows={sampleDetailFormRows}
+          onSampleDetailRowChange={handleSampleDetailRowChange}
+          onAddSampleDetailRow={handleAddSampleDetailRow}
+          onDeleteSampleDetailRow={handleDeleteSampleDetailRow}
+          activeProductId={activeProduct?.id ?? null}
+          onProductSelect={handleProductSelect}
           parameterFormRows={parameterFormRows}
           onParameterRowChange={handleParameterRowChange}
+          onAddParameterRow={handleAddParameterRow}
+          onDeleteParameterRow={handleDeleteParameterRow}
         />
       </main>
     </div>

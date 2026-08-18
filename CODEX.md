@@ -43,6 +43,7 @@ The standard is:
 
 - `New Sample-Customer Details`
 - `New Sample-Basic Details`
+- `New Sample-Sample Details`
 - `New Sample-Product Details`
 - `New Sample-Additional Details`
 

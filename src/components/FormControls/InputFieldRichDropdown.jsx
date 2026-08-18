@@ -43,9 +43,11 @@ export default function InputFieldRichDropdown({
   const rootRef = useRef(null);
   const menuRef = useRef(null);
   const searchInputRef = useRef(null);
+  const focusedIndexRef = useRef(-1);
   const [open, setOpen] = useState(false);
   const [menuStyle, setMenuStyle] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const isDisabled = disabled || state === 'disabled';
   const isInvalid = state === 'error' || ariaInvalid === 'true';
   const normalizedOptions = normalizeOptions(options);
@@ -106,6 +108,23 @@ export default function InputFieldRichDropdown({
       if (event.key === 'Escape') {
         setOpen(false);
         onBlur?.({ target: { value } });
+      } else if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        setFocusedIndex((current) => {
+          const opts = menuRef.current?.querySelectorAll('.smplfy-rich-dropdown-option');
+          const max = (opts?.length ?? 1) - 1;
+          return Math.min(max, current + 1);
+        });
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        setFocusedIndex((current) => Math.max(0, current - 1));
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        const opts = menuRef.current?.querySelectorAll('.smplfy-rich-dropdown-option');
+        const idx = focusedIndexRef.current;
+        if (opts && opts[idx]) {
+          opts[idx].click();
+        }
       }
     };
 
@@ -119,6 +138,11 @@ export default function InputFieldRichDropdown({
       ? window.requestAnimationFrame(() => searchInputRef.current?.focus())
       : null;
 
+    setFocusedIndex(() => {
+      const currentIndex = filteredOptions.findIndex((opt) => opt.value === value);
+      return currentIndex >= 0 ? currentIndex : 0;
+    });
+
     return () => {
       if (focusFrame) {
         window.cancelAnimationFrame(focusFrame);
@@ -130,10 +154,43 @@ export default function InputFieldRichDropdown({
     };
   }, [open, onBlur, opensUp, searchable, value]);
 
+  useEffect(() => {
+    if (open) {
+      setFocusedIndex(0);
+    }
+  }, [open, searchQuery]);
+
+  useEffect(() => {
+    focusedIndexRef.current = focusedIndex;
+  }, [focusedIndex]);
+
+  useEffect(() => {
+    if (!open || focusedIndex < 0) return;
+    const opts = menuRef.current?.querySelectorAll('.smplfy-rich-dropdown-option');
+    if (opts && opts[focusedIndex]) {
+      opts[focusedIndex].scrollIntoView({ block: 'nearest' });
+    }
+  }, [open, focusedIndex]);
+
   const handleSelect = (nextValue) => {
     onChange?.({ target: { value: nextValue } });
     setOpen(false);
     onBlur?.({ target: { value: nextValue } });
+
+    // Move focus to the next field
+    requestAnimationFrame(() => {
+      const trigger = rootRef.current?.querySelector('.smplfy-rich-dropdown-trigger');
+      if (!trigger) return;
+
+      const form = trigger.closest('form') || document.body;
+      const allFocusable = Array.from(form.querySelectorAll(
+        'button:not(:disabled):not(.btn-close), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+      ));
+      const currentIndex = allFocusable.indexOf(trigger);
+      if (currentIndex >= 0 && currentIndex < allFocusable.length - 1) {
+        allFocusable[currentIndex + 1].focus();
+      }
+    });
   };
 
   return (
@@ -169,6 +226,12 @@ export default function InputFieldRichDropdown({
         aria-describedby={ariaDescribedBy}
         aria-invalid={ariaInvalid}
         onClick={() => setOpen((current) => !current)}
+        onKeyDown={(event) => {
+          if (!open && (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Enter' || event.key === ' ')) {
+            event.preventDefault();
+            setOpen(true);
+          }
+        }}
         {...props}
       >
         <span className={joinClasses('smplfy-rich-dropdown-value', !selectedOption && 'text-secondary')}>
@@ -226,6 +289,20 @@ export default function InputFieldRichDropdown({
                     if (event.key === 'Escape') {
                       setOpen(false);
                       onBlur?.({ target: { value } });
+                    } else if (event.key === 'ArrowDown') {
+                      event.preventDefault();
+                      setFocusedIndex((current) => {
+                        const max = filteredOptions.length - 1;
+                        return Math.min(max, current + 1);
+                      });
+                    } else if (event.key === 'ArrowUp') {
+                      event.preventDefault();
+                      setFocusedIndex((current) => Math.max(0, current - 1));
+                    } else if (event.key === 'Enter') {
+                      event.preventDefault();
+                      if (focusedIndex >= 0 && filteredOptions[focusedIndex]) {
+                        handleSelect(filteredOptions[focusedIndex].value);
+                      }
                     }
                   }}
                   aria-label={searchPlaceholder}
@@ -234,8 +311,9 @@ export default function InputFieldRichDropdown({
             </div>
           ) : null}
           <div className="list-group list-group-flush overflow-auto">
-            {filteredOptions.length ? filteredOptions.map((option) => {
+            {filteredOptions.length ? filteredOptions.map((option, index) => {
               const isSelected = option.value === value;
+              const isFocused = index === focusedIndex;
 
               return (
                 <button
@@ -246,10 +324,12 @@ export default function InputFieldRichDropdown({
                     'list-group-item',
                     'list-group-item-action',
                     isSelected && 'active',
+                    isFocused && 'smplfy-rich-dropdown-option-focused',
                   )}
                   role="option"
                   aria-selected={isSelected}
                   onClick={() => handleSelect(option.value)}
+                  onMouseEnter={() => setFocusedIndex(index)}
                 >
                   <span className="smplfy-rich-dropdown-option-label">{option.label}</span>
                   {option.rightLabel ? (

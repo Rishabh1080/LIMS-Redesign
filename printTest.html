@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Shipping Label</title>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+<style>
+
+@page{
+    size:100mm 150mm;
+    margin:0;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.label{
+
+    width:100mm;
+    height:150mm;
+
+    box-sizing:border-box;
+
+    padding:6mm;
+
+    border:none;
+
+}
+
+h1{
+
+    margin:0;
+    font-size:26px;
+
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+    margin-top:8mm;
+
+}
+
+td{
+
+    padding:3px 0;
+    font-size:16px;
+
+}
+
+.barcode{
+
+    margin-top:10mm;
+    text-align:center;
+
+}
+
+.footer{
+
+    margin-top:8mm;
+    font-size:14px;
+    text-align:center;
+
+}
+
+button{
+
+    margin:20px;
+
+    padding:10px 20px;
+
+    font-size:16px;
+
+}
+
+@media print{
+
+button{
+
+display:none;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<button onclick="window.print()">
+Print Label
+</button>
+
+<style>
+    * {
+      box-sizing: border-box;
+    }
+ 
+    body {
+      margin: 0;
+      background: #eee;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+ 
+    .label {
+      position: relative;
+      width: 354px;
+      height: 177px;
+      background: #fff;
+      border: none;
+      overflow: hidden;
+      
+      /* --- ADJUST THESE TWO VALUES TO CENTER THE PRINT --- */
+      margin-top: 8px;  /* Increase to push DOWN */
+      margin-left: 12px; /* Increase to push RIGHT */
+    }
+ 
+    .header {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 354px;
+      height: 40.1px;
+      border-bottom: none;
+    }
+ 
+    .logo {
+      position: absolute;
+      left: 7.1px;
+      top: 9.4px;
+      width: 62.5px;
+      height: 20.1px;
+      object-fit: contain;
+    }
+ 
+    .company {
+      position: absolute;
+      left: 90.9px;
+      top: 9.4px;
+      font-size: 16.5px;
+      line-height: 21.2px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+ 
+    .content {
+      position: absolute;
+      left: 7.1px;
+      top: 49.6px;
+      width: 338.7px;
+      display: flex;
+      flex-direction: column;
+      gap: 3.5px;
+    }
+ 
+    .row {
+      display: flex;
+      align-items: flex-end;
+      width: 100%;
+      height: 15.3px;
+    }
+ 
+    .pair {
+      display: flex;
+      align-items: flex-end;
+      gap: 4.7px;
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+    }
+ 
+    .label-text {
+      font-size: 10.6px;
+      line-height: 14.2px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+ 
+    .value-text {
+      font-size: 11.8px;
+      line-height: 15.3px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+ 
+    .barcode-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 132.2px;
+      height: 40.1px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+ 
+    #barcode {
+      display: block;
+    }
+</style>
+</head>
+ 
+<body>
+<div class="label">
+<div class="header">
+<img
+        class="logo"
+        alt="Veedol Logo"
+        src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MyIgaGVpZ2h0PSIxNyIgdmlld0JveD0iMCAwIDUzIDE3Ij4KPHJlY3QgeD0iLjUiIHk9Ii41IiB3aWR0aD0iNTIiIGhlaWdodD0iMTYiIHJ4PSIyIiBmaWxsPSIjZmZmIiBzdHJva2U9IiMwMDAiLz4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjIxIiBoZWlnaHQ9IjE3IiByeD0iMiIgZmlsbD0iIzAwMCIvPgo8ZyBmaWxsPSIjZmZmIj4KPHBhdGggZD0iTTQgNWg4bDEuNSAzaC03eiIvPgo8cGF0aCBkPSJNNCA4aDkuNUwxMiAxMUg2eiIvPgo8cGF0aCBkPSJNMjAgNWgtN2wtMS41IDNIMTh6Ii8+CjxwYXRoIGQ9Ik0yMCA4aC04LjVsMS41IDNoNXoiLz4KPHBhdGggZD0iTTggNGg3bC0zIDl6Ii8+CjwvZz4KPHRleHQgeD0iMjMiIHk9IjEyIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI4LjgiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwMDAiPlZlZWRvbDwvdGV4dD4KPC9zdmc+"
+      />
+ 
+      <div class="company">Veedol Corporation Limited</div>
+</div>
+ 
+    <div class="content">
+<div class="row">
+<div class="pair">
+<span class="label-text">Product Name:</span>
+<span class="value-text">Kubota New Diesel Engine Oil</span>
+</div>
+</div>
+ 
+      <div class="row">
+<div class="pair">
+<span class="label-text">Batch No:</span>
+<span class="value-text">F/03/2026- FA</span>
+</div>
+ 
+        <div class="pair">
+<span class="label-text">Sample ID:</span>
+<span class="value-text">FP-F/002912</span>
+</div>
+</div>
+ 
+      <div class="row">
+<div class="pair">
+<span class="label-text">Manufactured On:</span>
+<span class="value-text">01/07/2026</span>
+</div>
+ 
+        <div class="pair">
+<span class="label-text">Tested On:</span>
+<span class="value-text">09/07/2026</span>
+</div>
+</div>
+ 
+      <div class="row">
+<div class="pair">
+<span class="label-text">Only Dispose After:</span>
+<span class="value-text">20/07/2026</span>
+</div>
+ 
+        <div class="pair">
+<span class="label-text">Storage:</span>
+<span class="value-text">15-35 C</span>
+</div>
+</div>
+</div>
+ 
+    <div class="barcode-wrap">
+<svg id="barcode"></svg>
+</div>
+</div>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+<script>
+    JsBarcode("#barcode", "123456789012", {
+      format: "CODE128",
+      width: 1.3,         /* Thin, crisp lines just like the bottle reference */
+      height: 28,         /* Taller lines make it easier for hardware to scan */
+      displayValue: true,
+      fontSize: 11,       
+      textMargin: 3,
+      margin: 0,
+      background: "#ffffff",
+      lineColor: "#000000"
+    });
+</script>
+
+
+</body>
+</html>

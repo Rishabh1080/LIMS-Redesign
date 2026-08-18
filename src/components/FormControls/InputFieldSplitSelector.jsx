@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import AppIcon from '../AppIcon';
+import InputFieldRichDropdown from './InputFieldRichDropdown';
 import './form-controls.scss';
 
 function joinClasses(...values) {
@@ -71,37 +71,26 @@ export default function InputFieldSplitSelector({
         }}
         {...props}
       />
-      <div className="input-group-text position-relative p-0">
-        <select
-          className={joinClasses(
-            'smplfy-form-select',
-            'form-select',
-            isInvalid && 'is-invalid',
-          )}
-          value={selectedUnit}
-          disabled={isDisabled}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          onChange={(event) => {
-            const nextUnit = event.target.value;
-            setSelectedUnit(nextUnit);
-            onChange?.({
-              target: {
-                value: inputValue,
-                unit: nextUnit,
-              },
-            });
-          }}
-        >
-          <option value="">{unitPlaceholder}</option>
-          {units.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-        <AppIcon name="chevron-down" className="position-absolute top-50 translate-middle-y pe-none" />
-      </div>
+      <InputFieldRichDropdown
+        className="smplfy-split-unit-dropdown"
+        value={selectedUnit}
+        options={units}
+        placeholder={unitPlaceholder}
+        disabled={isDisabled}
+        state={isInvalid ? 'error' : undefined}
+        aria-label={props['aria-label'] ? `${props['aria-label']} unit` : 'Unit'}
+        onBlur={onBlur}
+        onChange={(event) => {
+          const nextUnit = event.target.value;
+          setSelectedUnit(nextUnit);
+          onChange?.({
+            target: {
+              value: inputValue,
+              unit: nextUnit,
+            },
+          });
+        }}
+      />
     </div>
   );
 }

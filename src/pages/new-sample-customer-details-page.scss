@@ -36,10 +36,21 @@
   background: var(--smplfy-primitive-neutral-200);
 }
 
+.smplfy-new-sample-page > main.flex-fill {
+  padding: 0;
+  height: auto;
+  display: block;
+}
+
+.smplfy-long-form-variant .row > .col-lg-6 {
+  flex: 0 0 25%;
+  max-width: 25%;
+}
+
 .smplfy-new-sample-page > main > .smplfy-card.card {
-  width: min(1230px, 100%);
+  width: 100%;
   height: 100%;
-  margin: 0 auto;
+  margin: 0;
   border: 0;
   border-radius: 12px;
   overflow: hidden;
@@ -92,6 +103,7 @@
 }
 
 .smplfy-new-sample-page > main > .smplfy-card.card > .d-grid > .d-flex {
+  width: 100%;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -104,7 +116,7 @@
 }
 
 .smplfy-new-sample-page form section > .container-fluid {
-  padding: 40px 40px 24px !important;
+  padding: 24px !important;
 }
 
 .smplfy-new-sample-page form section .row {
@@ -116,7 +128,8 @@
   color: var(--smplfy-primitive-neutral-800);
   font-size: 20px;
   line-height: 24px;
-  font-weight: 500 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
 }
 
 .smplfy-new-sample-page form section .smplfy-badge.rounded-circle {
@@ -127,44 +140,203 @@
   font-weight: 500;
 }
 
-.smplfy-new-sample-page form section .table-responsive:has(> .smplfy-table.table) {
-  border: 0;
-  border-radius: 0;
+.smplfy-new-sample-page form section > .container-fluid.smplfy-new-sample-table-content {
+  padding: 0 !important;
 }
 
-.smplfy-new-sample-page form section .smplfy-table.table {
-  --smplfy-table-min-width: 900px;
-  --smplfy-table-head-bg: transparent;
-  --smplfy-table-hover-bg: transparent;
-  --smplfy-table-cell-padding-y: 4px;
-  --smplfy-table-cell-padding-x: 8px;
-  --smplfy-table-head-padding-y: 4px;
+.smplfy-new-sample-page form section .smplfy-new-sample-product-selector {
+  margin: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-product-selector .smplfy-nav-link {
+  flex: 0 0 auto;
+  min-height: 56px;
+  height: 56px;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-product-content {
+  padding: 12px;
+}
+
+.smplfy-new-sample-page form section .row.smplfy-new-sample-product-fields {
+  margin: 0;
+  padding: 12px;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-parameter-title {
+  margin: 12px 12px 0;
+}
+
+.smplfy-new-sample-page form section .table-responsive:has(> .smplfy-new-sample-data-table) {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.smplfy-new-sample-page form section > .smplfy-new-sample-table-content > .table-responsive:has(> .smplfy-new-sample-data-table) {
+  padding: 24px 24px 12px;
+}
+
+.smplfy-new-sample-page form section > .smplfy-new-sample-table-content > .smplfy-new-sample-table-action {
+  padding: 0 24px 12px;
+}
+
+.smplfy-new-sample-page form section .smplfy-table.table.smplfy-new-sample-data-table {
+  --smplfy-table-min-width: 720px;
+  --smplfy-table-head-bg: var(--smplfy-primitive-neutral-200);
+  --smplfy-table-cell-padding-y: 8px;
+  --smplfy-table-cell-padding-x: 12px;
+  --smplfy-table-head-padding-y: 8px;
   --smplfy-table-head-font-size: 14px;
   --smplfy-table-head-line-height: 20px;
   --smplfy-table-head-font-weight: 500;
   --smplfy-table-cell-font-size: 14px;
   --smplfy-table-cell-line-height: 20px;
   --smplfy-table-cell-font-weight: 500;
+
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--smplfy-table-border);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.smplfy-new-sample-page form section .smplfy-table.table th:first-child,
-.smplfy-new-sample-page form section .smplfy-table.table td:first-child {
-  width: 28px;
-  padding-left: 0;
+.smplfy-new-sample-page form section .smplfy-new-sample-data-table > :not(caption) > * > * {
+  border: 0;
+  border-right: 1px solid var(--smplfy-table-border);
+  border-bottom: 1px solid var(--smplfy-table-border);
 }
 
-.smplfy-new-sample-page form section .smplfy-table.table th:last-child,
-.smplfy-new-sample-page form section .smplfy-table.table td:last-child {
-  width: 40px;
-  padding-right: 0;
+.smplfy-new-sample-page form section .smplfy-new-sample-data-table tr > *:last-child {
+  border-right: 0;
 }
 
-.smplfy-new-sample-page form section .smplfy-table.table .smplfy-form-control.form-control {
+.smplfy-new-sample-page form section .smplfy-new-sample-data-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-summary-table th,
+.smplfy-new-sample-page form section .smplfy-new-sample-summary-table td {
+  white-space: nowrap;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-summary-table th:first-child,
+.smplfy-new-sample-page form section .smplfy-new-sample-summary-table td:first-child {
+  width: 72px;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-parameter-table {
+  --smplfy-table-min-width: 880px;
+  --smplfy-table-hover-bg: transparent;
+
+  table-layout: fixed;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-summary-table {
+  --smplfy-table-min-width: 1180px;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-data-table th:first-child,
+.smplfy-new-sample-page form section .smplfy-new-sample-data-table td:first-child {
+  width: 72px;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-data-table th:last-child,
+.smplfy-new-sample-page form section .smplfy-new-sample-data-table td:last-child {
+  width: 80px;
+  text-align: center;
+}
+
+.smplfy-new-sample-page form section .smplfy-new-sample-data-table .smplfy-form-control.form-control {
   background: var(--smplfy-primitive-neutral-200);
 }
 
-.smplfy-new-sample-page form section .smplfy-btn.btn.w-100 {
-  border-style: dashed;
+.smplfy-new-sample-page form section .smplfy-new-sample-table-action {
+  display: flex;
+  justify-content: flex-end;
+  padding-inline: 12px;
+}
+
+.smplfy-original-sample-page .smplfy-new-customer-trigger {
+  width: var(--smplfy-field-height) !important;
+  min-width: var(--smplfy-field-height) !important;
+  min-height: var(--smplfy-field-height);
+  height: var(--smplfy-field-height);
+  flex: 0 0 auto;
+}
+
+.smplfy-original-sample-page .smplfy-select-field.flex-grow-1 {
+  min-width: 0;
+}
+
+.smplfy-original-sample-page .smplfy-rich-dropdown-field {
+  width: 100%;
+  min-width: 0;
+}
+
+.smplfy-original-sample-page .smplfy-basic-details-icon-button {
+  width: var(--smplfy-field-height) !important;
+  min-width: var(--smplfy-field-height) !important;
+  min-height: var(--smplfy-field-height);
+  height: var(--smplfy-field-height);
+  flex: 0 0 auto;
+}
+
+.smplfy-original-sample-page .smplfy-original-product-block {
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+}
+
+.smplfy-original-sample-page .smplfy-original-product-block + .smplfy-original-product-block {
+  padding-top: 32px;
+}
+
+.smplfy-original-sample-page .smplfy-original-product-block:last-of-type {
+  border-bottom: 0;
+}
+
+.smplfy-original-sample-page .smplfy-btn.btn-primary:focus-visible {
+  outline: 2px solid var(--smplfy-primitive-blue-500);
+  outline-offset: 2px;
+}
+
+#original-sample-product-details > .d-flex > .nav-tabs > .nav-link:focus-visible {
+  outline: 2px solid var(--smplfy-primitive-blue-500);
+  outline-offset: -2px;
+}
+
+#original-sample-product-details > .d-flex > .nav-tabs > .smplfy-nav-link.nav-link::after {
+  inset-block-end: auto;
+  inset-block-start: 0;
+}
+
+#original-sample-product-details > .d-flex > .nav-tabs > .smplfy-nav-link.nav-link:not(.active)::after {
+  display: none;
+}
+
+#original-sample-product-details > .d-flex > .nav-tabs > .nav-link:first-child:focus-visible {
+  border-top-left-radius: 12px;
+}
+
+#original-sample-product-details > .d-flex > .nav-tabs > .smplfy-nav-link.nav-link {
+  --bs-nav-link-font-size: 16px;
+  --bs-nav-link-font-weight: 600;
+  --bs-nav-link-padding-x: calc(var(--smplfy-nav-link-padding-x) + 4px);
+}
+
+.smplfy-original-sample-page .smplfy-card.card:has(#original-sample-product-details) {
+  overflow: hidden;
+}
+
+.smplfy-quick-add-customer-modal {
+  --smplfy-modal-custom-width: 760px;
+}
+
+.smplfy-quick-add-customer-modal .smplfy-form-control.form-control.smplfy-form-textarea {
+  min-height: 96px;
 }
 
 .smplfy-new-sample-page form > .d-grid > .d-flex > .d-flex:last-child {

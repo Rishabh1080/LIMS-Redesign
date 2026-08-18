@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/sample_creation_2",
+      "destination": "/index.html"
+    }
+  ]
+}

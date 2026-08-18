@@ -432,7 +432,7 @@
 
 .smplfy-rich-dropdown-menu.card {
   z-index: calc(var(--smplfy-modal-z-index) + 10);
-  padding: var(--smplfy-button-gap) 0;
+  padding: 4px 0;
   border: 1px solid var(--smplfy-primitive-neutral-400);
   border-radius: var(--smplfy-field-radius);
   background: var(--smplfy-field-bg);
@@ -440,7 +440,7 @@
 }
 
 .smplfy-rich-dropdown-search {
-  padding: 0 var(--smplfy-button-gap) var(--smplfy-button-gap);
+  padding: 4px var(--smplfy-button-gap) var(--smplfy-button-gap);
 }
 
 .smplfy-rich-dropdown-search .input-group {
@@ -488,7 +488,7 @@
     var(--smplfy-semantic-size-control-height-medium)
     * var(--smplfy-rich-dropdown-visible-items, 4)
   );
-  padding-inline: 0;
+  padding: var(--smplfy-button-gap) 0;
   overflow-x: hidden;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -525,6 +525,16 @@
 .smplfy-rich-dropdown-option.list-group-item:hover,
 .smplfy-rich-dropdown-option.list-group-item:focus-visible {
   background-color: var(--smplfy-search-result-hover-bg);
+}
+
+.smplfy-rich-dropdown-option.list-group-item.smplfy-rich-dropdown-option-focused {
+  background-color: var(--smplfy-search-result-hover-bg);
+  outline: none;
+}
+
+.smplfy-rich-dropdown-option.list-group-item.smplfy-rich-dropdown-option-focused ~ .smplfy-rich-dropdown-option.list-group-item:hover,
+.list-group:has(.smplfy-rich-dropdown-option-focused) > .smplfy-rich-dropdown-option.list-group-item:not(.smplfy-rich-dropdown-option-focused):hover {
+  background-color: transparent;
 }
 
 .smplfy-rich-dropdown-option.list-group-item:active,
@@ -633,21 +643,24 @@
   grid-template-columns: minmax(var(--smplfy-button-space-0), 1fr) var(--smplfy-field-split-unit-width);
 }
 
-.smplfy-split-field > .input-group-text {
-  position: relative;
+.smplfy-split-field > .smplfy-split-unit-dropdown {
   min-height: inherit;
+  height: inherit;
   border: 0;
   border-left: var(--smplfy-field-border-width) solid var(--smplfy-field-divider);
   border-radius: 0;
   background: transparent;
+  box-shadow: none;
 }
 
-.smplfy-split-field .smplfy-form-select.form-select {
-  padding-inline: var(--smplfy-field-padding-inline-compact) calc(var(--smplfy-field-icon-size) + var(--smplfy-field-padding-inline-compact));
+.smplfy-split-field .smplfy-split-unit-dropdown .smplfy-rich-dropdown-trigger.btn.form-control {
+  padding-inline: var(--smplfy-field-padding-inline-compact);
 }
 
-.smplfy-split-field .position-absolute {
-  right: var(--smplfy-field-select-icon-offset);
+.smplfy-split-field .smplfy-split-unit-dropdown .smplfy-rich-dropdown-trigger.btn.form-control:focus-visible {
+  outline: 2px solid var(--smplfy-field-border-focused);
+  outline-offset: -2px;
+  border-radius: 0;
 }
 
 .smplfy-toast.toast {

@@ -237,7 +237,7 @@ function ListingTabs({ activeTab, onTabChange, tabCounts = {} }) {
   );
 }
 
-function ListingSearch({ activeTab, searchValue, onSearchChange, onOpenFilters, actions = null }) {
+function ListingSearch({ activeTab, searchValue, onSearchChange, onOpenFilters, onNewSample, actions = null }) {
   const activeCategoryLabel =
     sampleCategories.find((tab) => tab.key === activeTab)?.label ?? 'All Samples';
 
@@ -272,7 +272,14 @@ function ListingSearch({ activeTab, searchValue, onSearchChange, onOpenFilters, 
                   <span>All Filters</span>
             </button>
           </div>
-          {actions ? <div className="col d-flex justify-content-end">{actions}</div> : null}
+          <div className="col d-flex justify-content-end gap-2">
+            {actions}
+            {onNewSample ? (
+              <PrimaryButton leftIcon="plus" onClick={onNewSample}>
+                New Sample
+              </PrimaryButton>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>
@@ -696,6 +703,7 @@ export default function AllSamplesListingPage({
   onNavigate,
   onOpenSample,
   onEditSample,
+  onNewSample,
   sidebarCollapsed,
   onSidebarCollapsedChange,
   sampleCardViewMode,
@@ -846,6 +854,7 @@ export default function AllSamplesListingPage({
         activeTab={activeTab}
         searchValue={searchValue}
         onSearchChange={setSearchValue}
+        onNewSample={onNewSample}
         onOpenFilters={() => {
           setDraftFilters(appliedFilters);
           setFiltersOpen(true);

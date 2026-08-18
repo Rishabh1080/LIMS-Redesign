@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { GaugeChart } from 'echarts/charts';
+import { GaugeChart, PieChart } from 'echarts/charts';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import AppChrome from '../components/AppChrome/AppChrome';
@@ -12,10 +12,14 @@ import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import ReportBreakdownConfirmationModal from '../components/ReportBreakdownConfirmationModal';
 import ResolveBreakdownModal from '../components/ResolveBreakdownModal';
 import SecondaryButton from '../components/SecondaryButton';
-import { getServiceTimelineDate, initialInstrumentServices, isBreakdownServiceType } from '../data/instrumentServices';
+import {
+  getServiceTimelineDate,
+  initialInstrumentServices,
+  isBreakdownServiceType,
+} from '../data/instrumentServices';
 import './instruments-page.scss';
 
-echarts.use([GaugeChart, CanvasRenderer]);
+echarts.use([GaugeChart, PieChart, CanvasRenderer]);
 
 const defaultInstruments = [
   { id: 'inst-001', name: 'Stabinger Viscometer', lab: 'Central Lab', uid: 'SVM4K9', serialNo: 'AP-3001-26', make: 'Anton Paar', modelNo: 'SVM 3001', lastServiceOn: '14/04/2026', calibrated: 'Yes', nextServiceOn: '14/10/2026' },
@@ -24,11 +28,6 @@ const defaultInstruments = [
   { id: 'inst-004', name: 'Atomic Absorption Spectrometer', lab: 'Metals Lab', uid: 'AAS73X', serialNo: 'PE-900T-26', make: 'PerkinElmer', modelNo: 'PinAAcle 900T', lastServiceOn: '05/04/2026', calibrated: 'No', nextServiceOn: '05/10/2026' },
   { id: 'inst-005', name: 'pH Meter', lab: 'QC Lab', uid: 'PHM62D', serialNo: 'MT-SC-26', make: 'Mettler Toledo', modelNo: 'SevenCompact', lastServiceOn: '22/03/2026', calibrated: 'Yes', nextServiceOn: '22/06/2026' },
 ];
-
-const instrumentHealth = {
-  calibrated: 27,
-  total: 30,
-};
 
 const initialInstrumentFilters = {
   status: '',
@@ -382,20 +381,144 @@ function InstrumentHealthGauge({ calibrated, total }) {
   );
 }
 
-function InstrumentHealthCard() {
+const calibrationBreakdownItems = [
+  { key: 'calibrated', label: 'Calibrated', color: '#00b242', labelColor: '#00792b' },
+  { key: 'notCalibrated', label: 'Not calibrated', color: '#ffcfcc', labelColor: '#ff2725' },
+  { key: 'noCalibrationData', label: 'No Service', color: '#e6e8eb', labelColor: '#6c737f' },
+];
+
+const instrumentCalibrationBreakdown = {
+  calibrated: 5,
+  notCalibrated: 2,
+  noCalibrationData: 1,
+};
+
+function CalibrationBreakdownPie({ breakdown }) {
+  const chartRef = useRef(null);
+  const total = Object.values(breakdown).reduce((sum, value) => sum + value, 0);
+  const calibratedPercentage = total > 0 ? Math.round((breakdown.calibrated / total) * 100) : 0;
+
+  useEffect(() => {
+    const chartNode = chartRef.current;
+
+    if (!chartNode) return undefined;
+
+    const chart = echarts.init(chartNode, null, { renderer: 'canvas' });
+
+    chart.setOption({
+      animation: false,
+      color: calibrationBreakdownItems.map((item) => item.color),
+      series: [
+        {
+          type: 'pie',
+          silent: true,
+          clockwise: true,
+          startAngle: 90,
+          radius: ['55%', '75%'],
+          center: ['50%', '50%'],
+          avoidLabelOverlap: false,
+          minShowLabelAngle: 0,
+          padAngle: 1,
+          itemStyle: {
+            borderColor: '#ffffff',
+            borderWidth: 1,
+            borderRadius: 5,
+          },
+          label: {
+            show: true,
+            position: 'outside',
+            formatter: '{c}',
+            alignTo: 'none',
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 17,
+            fontWeight: 400,
+            distanceToLabelLine: 2,
+          },
+          labelLine: {
+            show: true,
+            length: 4,
+            length2: 2,
+            smooth: false,
+            lineStyle: {
+              width: 1,
+              opacity: 0,
+            },
+          },
+          labelLayout: {
+            hideOverlap: false,
+          },
+          data: calibrationBreakdownItems.map((item) => ({
+            name: item.label,
+            value: breakdown[item.key],
+            label: {
+              color: item.labelColor,
+            },
+          })),
+        },
+      ],
+    }, { notMerge: true, lazyUpdate: false });
+
+    const resizeObserver = new ResizeObserver(() => chart.resize());
+    resizeObserver.observe(chartNode);
+
+    return () => {
+      resizeObserver.disconnect();
+      chart.dispose();
+    };
+  }, [breakdown]);
+
+  const accessibleSummary = calibrationBreakdownItems
+    .map((item) => `${item.label}: ${breakdown[item.key]}`)
+    .join('. ');
+
   return (
-    <section className="smplfy-card card">
+    <div className="smplfy-calibration-breakdown">
+      <div className="smplfy-calibration-breakdown-content">
+        <div className="smplfy-calibration-breakdown-graphic">
+          <div
+            ref={chartRef}
+            className="smplfy-calibration-breakdown-chart"
+            role="img"
+            aria-label={`${accessibleSummary}. Total instruments: ${total}.`}
+          />
+          <div className="smplfy-calibration-breakdown-center" aria-hidden="true">
+            <strong>{calibratedPercentage}%</strong>
+            <span>Calibrated</span>
+          </div>
+        </div>
+        <ul className="smplfy-calibration-breakdown-legend list-unstyled mb-0" aria-hidden="true">
+          {calibrationBreakdownItems.map((item) => (
+            <li key={item.key}>
+              <span className="smplfy-calibration-breakdown-swatch" style={{ backgroundColor: item.color }} />
+              <span className="smplfy-calibration-breakdown-legend-label">{item.label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function InstrumentHealthCard() {
+  const breakdown = instrumentCalibrationBreakdown;
+  const total = Object.values(breakdown).reduce((sum, value) => sum + value, 0);
+
+  return (
+    <section className="smplfy-card smplfy-instruments-health-card card">
       <div className="card-header bg-white d-flex align-items-center">
         <InstrumentCardTitle>Instrument Health</InstrumentCardTitle>
       </div>
-      <div className="card-body d-flex flex-column align-items-center justify-content-center text-center">
-        <InstrumentHealthGauge
-          calibrated={instrumentHealth.calibrated}
-          total={instrumentHealth.total}
-        />
-        <span className="badge rounded-pill bg-success-subtle border border-success-subtle text-success px-3 py-2 fw-medium">
-          {instrumentHealth.calibrated}/{instrumentHealth.total} Instruments are calibrated.
-        </span>
+      <div className="card-body smplfy-instruments-health-overview">
+        <div className="smplfy-instruments-health-summary d-flex flex-column align-items-center justify-content-center text-center">
+          <InstrumentHealthGauge
+            calibrated={breakdown.calibrated}
+            total={total}
+          />
+          <span className="badge rounded-pill bg-success-subtle border border-success-subtle text-success px-3 py-2 fw-medium">
+            {breakdown.calibrated}/{total} Instruments are calibrated.
+          </span>
+        </div>
+        <CalibrationBreakdownPie breakdown={breakdown} />
       </div>
     </section>
   );

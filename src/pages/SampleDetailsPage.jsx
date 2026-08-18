@@ -292,16 +292,51 @@ function DetailsHeader({
   );
 }
 
-function BasicSampleDetails() {
+function DetailsAccordion({ id, title, expanded, onToggle, children, className = '' }) {
+  const headingId = `${id}-heading`;
+  const panelId = `${id}-panel`;
+
   return (
-    <section>
-      <div className="card-header">
-        <h2 className="card-title mb-0">Basic Sample Details</h2>
+    <section
+      className={`smplfy-card card overflow-hidden smplfy-sample-details-accordion${expanded ? ' is-expanded' : ''}${className ? ` ${className}` : ''}`}
+    >
+      <div className="card-header p-0" id={headingId}>
+        <button
+          type="button"
+          className="smplfy-sample-details-accordion-toggle"
+          aria-expanded={expanded}
+          aria-controls={panelId}
+          onClick={onToggle}
+        >
+          <span className="card-title mb-0">{title}</span>
+          <AppIcon name={expanded ? 'chevron-up' : 'chevron-down'} size={20} stroke={2} />
+        </button>
       </div>
-      <div className="card-body p-0">
-        <DetailGrid items={basicSampleDetails} columns={4} />
-      </div>
+      {expanded ? (
+        <div
+          className="card-body p-0"
+          id={panelId}
+          role="region"
+          aria-labelledby={headingId}
+        >
+          {children}
+        </div>
+      ) : null}
     </section>
+  );
+}
+
+function BasicSampleDetails({ expanded, onToggle }) {
+  return (
+    <DetailsAccordion
+      id="basic-sample-details"
+      title="Basic Sample Details"
+      expanded={expanded}
+      onToggle={onToggle}
+      className="smplfy-sample-details-basic-card"
+    >
+      <DetailGrid items={basicSampleDetails} columns={4} />
+    </DetailsAccordion>
   );
 }
 
@@ -370,20 +405,21 @@ function ProductCard({ product }) {
   );
 }
 
-function ProductWiseDetails() {
+function ProductWiseDetails({ expanded, onToggle }) {
   return (
-    <section>
-      <div className="card-header">
-        <h2 className="card-title mb-0">Product-wise Details</h2>
+    <DetailsAccordion
+      id="product-wise-details"
+      title="Product-wise Details"
+      expanded={expanded}
+      onToggle={onToggle}
+      className="smplfy-sample-details-products-card"
+    >
+      <div className="smplfy-sample-details-products vstack gap-3">
+        {products.map((product) => (
+          <ProductCard product={product} key={product.id} />
+        ))}
       </div>
-      <div className="card-body p-0">
-        <div className="smplfy-sample-details-products vstack gap-3">
-          {products.map((product) => (
-            <ProductCard product={product} key={product.id} />
-          ))}
-        </div>
-      </div>
-    </section>
+    </DetailsAccordion>
   );
 }
 
@@ -704,6 +740,8 @@ export default function SampleDetailsPage({
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [approvalActionModalOpen, setApprovalActionModalOpen] = useState(false);
   const [approvalActionResolved, setApprovalActionResolved] = useState(false);
+  const [basicDetailsExpanded, setBasicDetailsExpanded] = useState(true);
+  const [productDetailsExpanded, setProductDetailsExpanded] = useState(false);
   const [sendTo, setSendTo] = useState('');
   const [comments, setComments] = useState('');
   const trackedSuccessToastRef = useRef(null);
@@ -820,10 +858,14 @@ export default function SampleDetailsPage({
               originalSampleId={originalSampleId}
               onOpenOriginalSample={onOpenOriginalSample}
             />
-            <div className="smplfy-card card overflow-hidden">
-              <BasicSampleDetails />
-              <ProductWiseDetails />
-            </div>
+            <BasicSampleDetails
+              expanded={basicDetailsExpanded}
+              onToggle={() => setBasicDetailsExpanded((isExpanded) => !isExpanded)}
+            />
+            <ProductWiseDetails
+              expanded={productDetailsExpanded}
+              onToggle={() => setProductDetailsExpanded((isExpanded) => !isExpanded)}
+            />
           </div>
           <aside className="smplfy-sample-details-rail">
             <ActionRequiredPanel

@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import posthog from 'posthog-js';
+import {
+  installLocalSampleFlowAnalyticsApi,
+  recordLocalSampleFlowEvent,
+} from './localSampleFlowAnalytics';
 
 const POSTHOG_TOKEN = import.meta.env.VITE_PUBLIC_POSTHOG_TOKEN;
 const POSTHOG_HOST = import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com';
@@ -43,6 +47,8 @@ export function isAnalyticsEnabled() {
 }
 
 export function initAnalytics() {
+  installLocalSampleFlowAnalyticsApi();
+
   if (!isAnalyticsEnabled()) {
     return null;
   }
@@ -74,11 +80,14 @@ export function initAnalytics() {
 }
 
 export function trackEvent(eventName, properties = {}) {
+  const cleanedProperties = cleanProperties(properties);
+  recordLocalSampleFlowEvent(eventName, cleanedProperties);
+
   if (!isAnalyticsEnabled()) {
     return;
   }
 
-  posthog.capture(eventName, cleanProperties(properties));
+  posthog.capture(eventName, cleanedProperties);
 }
 
 export function trackPageView(pageName, properties = {}) {

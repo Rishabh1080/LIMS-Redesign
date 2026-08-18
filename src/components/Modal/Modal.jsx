@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import AppIcon from '../AppIcon';
 import './modal.scss';
 
@@ -17,6 +18,54 @@ const sizeClassByName = {
   xl: 'modal-xl',
 };
 
+const FOCUSABLE_SELECTOR = 'a[href], button:not(:disabled), textarea:not(:disabled), input:not(:disabled), select:not(:disabled), [tabindex]:not([tabindex="-1"])';
+
+function useFocusTrap(ref, open) {
+  const previousFocusRef = useRef(null);
+
+  useEffect(() => {
+    if (!open || !ref.current) return;
+
+    previousFocusRef.current = document.activeElement;
+
+    const firstFocusable = ref.current.querySelector(FOCUSABLE_SELECTOR);
+    if (firstFocusable) {
+      requestAnimationFrame(() => firstFocusable.focus());
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key !== 'Tab') return;
+
+      const focusableElements = ref.current.querySelectorAll(FOCUSABLE_SELECTOR);
+      if (!focusableElements.length) return;
+
+      const first = focusableElements[0];
+      const last = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey) {
+        if (document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      if (previousFocusRef.current && previousFocusRef.current.focus) {
+        previousFocusRef.current.focus();
+      }
+    };
+  }, [open, ref]);
+}
+
 export default function Modal({
   open,
   title,
@@ -35,6 +84,9 @@ export default function Modal({
   showCloseButton = true,
   closeLabel = 'Close modal',
 }) {
+  const modalRef = useRef(null);
+  useFocusTrap(modalRef, open);
+
   if (!open) {
     return null;
   }
@@ -42,7 +94,7 @@ export default function Modal({
   const sizeClass = sizeClassByName[String(size || 'md').toLowerCase()] ?? '';
 
   return (
-    <div className="smplfy-modal modal show d-block" role="dialog" aria-modal="true" aria-labelledby={titleId}>
+    <div ref={modalRef} className="smplfy-modal modal show d-block" role="dialog" aria-modal="true" aria-labelledby={titleId}>
       <div className="modal-backdrop show" onClick={onClose} />
       <div className={joinClasses('modal-dialog modal-dialog-centered', sizeClass, cardClassName)}>
         <div className={joinClasses('modal-content', className)}>

@@ -11,6 +11,14 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [sitepingApiPlugin(), react()],
+  build: {
+    rollupOptions: {
+      input: {
+        app: path.resolve(dirname, 'index.html'),
+        sampleFlowAnalytics: path.resolve(dirname, 'sample-flow-analytics.html'),
+      },
+    },
+  },
   server: {
     allowedHosts: ['unfeloniously-noncranking-deja.ngrok-free.dev']
   },

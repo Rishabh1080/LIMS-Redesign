@@ -5,6 +5,7 @@ import NewSampleCustomerDetailsPage from './pages/NewSampleCustomerDetailsPage';
 import NestedDecisionRulesPage from './pages/NestedDecisionRulesPage';
 import NestedDecisionRulesTwoPage from './pages/NestedDecisionRulesTwoPage';
 import DecisionRulePage from './pages/DecisionRulePage';
+import OriginalSampleCreationPage from './pages/OriginalSampleCreationPage';
 import CoaReportSelectionPage from './pages/CoaReportSelectionPage';
 import CustomFormListingPage from './pages/CustomFormListingPage';
 import DashboardPage from './pages/DashboardPage';
@@ -53,8 +54,16 @@ import {
 import { requestSections } from './data/requestsForMeData';
 
 function getInitialPage() {
-  if (typeof window !== 'undefined' && window.location.hash === '#admin-hub') {
-    return 'admin-hub';
+  if (typeof window !== 'undefined') {
+    const normalizedPath = window.location.pathname.replace(/\/+$/, '');
+
+    if (normalizedPath.endsWith('/sample_creation_2') || window.location.hash === '#sample_creation_2') {
+      return 'sample-creation-v2';
+    }
+
+    if (window.location.hash === '#admin-hub') {
+      return 'admin-hub';
+    }
   }
 
   return 'dashboard';
@@ -1169,6 +1178,15 @@ export default function App() {
         onNavigate={handleNavigate}
         onOpenSample={openSampleDetails}
         onEditSample={openEditSample}
+        onNewSample={() => {
+          setSampleEditorState({
+            mode: 'create',
+            sample: null,
+            sourcePage: 'all-samples',
+            parentLabel: 'All Samples',
+          });
+          setActivePage('new-sample-long-form');
+        }}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
@@ -1769,14 +1787,36 @@ export default function App() {
     );
   }
 
+  if (activePage === 'new-sample-long-form') {
+    return (
+      <OriginalSampleCreationPage
+        mode={sampleEditorState.mode}
+        sample={sampleEditorState.sample}
+        parentLabel={sampleEditorState.parentLabel}
+        layout="long-form"
+        sampleCreationFlowSessionId={sampleCreationFlowRef.current.id}
+        onBackToWorkspace={() =>
+          setActivePage(sampleEditorState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
+        }
+        onComplete={() => {
+          openSampleDetails('IICT/2025-2026/1101', {
+            initialToast: 'sample-created',
+            sourcePage: sampleEditorState.sourcePage,
+            sampleStatus: 'Pending',
+            createdOn: '06/03/2026, 10:13',
+          });
+        }}
+      />
+    );
+  }
+
   if (activePage === 'new-sample-customer-details') {
     return (
-      <NewSampleCustomerDetailsPage
+      <OriginalSampleCreationPage
         mode={sampleEditorState.mode}
         sample={sampleEditorState.sample}
         parentLabel={sampleEditorState.parentLabel}
         sampleCreationFlowSessionId={sampleCreationFlowRef.current.id}
-        onSampleFormVariantChange={handleSampleFormVariantChange}
         onBackToWorkspace={() =>
           setActivePage(sampleEditorState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
         }
@@ -1803,6 +1843,34 @@ export default function App() {
           openSampleDetails('IICT/2025-2026/1101', {
             initialToast: 'sample-created',
             sourcePage: sampleEditorState.sourcePage,
+            sampleStatus: 'Pending',
+            createdOn: '06/03/2026, 10:13',
+          });
+        }}
+      />
+    );
+  }
+
+  if (activePage === 'sample-creation-v2') {
+    return (
+      <NewSampleCustomerDetailsPage
+        mode="create"
+        sample={null}
+        parentLabel="Samples Workspace"
+        sampleCreationFlowSessionId={sampleCreationFlowRef.current.id}
+        onSampleFormVariantChange={handleSampleFormVariantChange}
+        onBackToWorkspace={() => setActivePage('workspace')}
+        onComplete={() => {
+          trackEvent('sample_creation_flow_create_resolved', getSampleCreationFlowProps({
+            source_page: 'samples-workspace',
+            target_page: 'sample-details',
+            sample_status: 'Pending',
+            toast_key: 'sample-created',
+          }));
+
+          openSampleDetails('IICT/2025-2026/1101', {
+            initialToast: 'sample-created',
+            sourcePage: 'samples-workspace',
             sampleStatus: 'Pending',
             createdOn: '06/03/2026, 10:13',
           });

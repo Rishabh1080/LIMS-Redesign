@@ -77,24 +77,64 @@ body:has(.smplfy-sample-details-page) siteping-widget {
 
 .smplfy-sample-details-main-panel {
   min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 16px;
 }
 
-.smplfy-sample-details-main-panel > .smplfy-card.card.overflow-hidden {
+.smplfy-sample-details-main-panel > .smplfy-sample-details-accordion {
   width: 100%;
-  min-height: 994px;
   border: 0;
+  background: var(--smplfy-primitive-neutral-100);
   outline: var(--smplfy-card-border-width) solid var(--smplfy-sample-details-border);
 }
 
-.smplfy-sample-details-main-panel > .smplfy-card.card.overflow-hidden > section > .card-header {
-  height: 45px;
-  padding: 12px 24px;
+.smplfy-sample-details-accordion > .card-header {
+  min-height: 48px;
   border-bottom: 0;
+  background: var(--smplfy-primitive-neutral-100);
+}
+
+.smplfy-sample-details-accordion.is-expanded > .card-header {
   background: var(--smplfy-sample-details-section-bg);
 }
 
+.smplfy-sample-details-accordion-toggle {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--smplfy-sample-details-text);
+  text-align: left;
+}
+
+.smplfy-sample-details-accordion-toggle:hover {
+  background: var(--smplfy-sample-details-section-bg);
+}
+
+.smplfy-sample-details-accordion-toggle:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--smplfy-primitive-blue-500);
+  outline-offset: -2px;
+}
+
+.smplfy-sample-details-accordion-toggle svg {
+  flex: 0 0 auto;
+  color: var(--smplfy-sample-details-muted);
+}
+
+.smplfy-sample-details-accordion > .card-body {
+  border-top: var(--smplfy-card-border-width) solid var(--smplfy-sample-details-border);
+}
+
 .smplfy-sample-amendment-notice.card {
-  margin-bottom: 16px;
   border: 0;
   background: var(--smplfy-primitive-yellow-100);
   outline: var(--smplfy-card-border-width) solid var(--smplfy-sample-details-border);
@@ -154,7 +194,7 @@ body:has(.smplfy-sample-details-page) siteping-widget {
 }
 
 .smplfy-sample-details-products {
-  padding: 12px 16px 0;
+  padding: 12px 16px 16px;
 }
 
 .smplfy-sample-details-products > .smplfy-card.card {
@@ -457,7 +497,7 @@ body:has(.smplfy-sample-details-page) siteping-widget {
     gap: 16px;
   }
 
-  .smplfy-sample-details-main-panel > .smplfy-card.card.overflow-hidden > section:first-child .smplfy-sample-details-fields > .col {
+  .smplfy-sample-details-basic-card .smplfy-sample-details-fields > .col {
     width: 50%;
   }
 }
