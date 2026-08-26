@@ -709,6 +709,8 @@ export default function AllSamplesListingPage({
   sampleCardViewMode,
   onSampleCardViewModeChange,
   initialQuickFilter = 'all',
+  initialToast = null,
+  onInitialToastConsumed,
 }) {
   const [activeTab, setActiveTab] = useState('all-samples');
   const [searchValue, setSearchValue] = useState('');
@@ -807,6 +809,13 @@ export default function AllSamplesListingPage({
     setToastVisible(true);
     toastTimerRef.current = window.setTimeout(() => setToastVisible(false), 5000);
   };
+
+  useEffect(() => {
+    if (!initialToast) return;
+
+    showToast(initialToast);
+    onInitialToastConsumed?.();
+  }, [initialToast, onInitialToastConsumed]);
 
   useEffect(() => {
     return () => {

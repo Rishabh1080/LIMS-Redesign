@@ -11,6 +11,7 @@ export default function InputFieldText({
   value = '',
   placeholder = '',
   className = '',
+  variant = 'default',
   type = 'text',
   disabled = false,
   onChange,
@@ -23,6 +24,7 @@ export default function InputFieldText({
   const isDisabled = disabled || state === 'disabled';
   const isInvalid = state === 'error';
   const isFilled = filled || Boolean(inputValue);
+  const isTableCell = variant === 'table-cell';
 
   return (
     <input
@@ -33,6 +35,7 @@ export default function InputFieldText({
         !isFilled && 'smplfy-form-empty',
         state === 'hover' && 'smplfy-form-hover',
         state === 'focused' && 'smplfy-form-focused',
+        isTableCell && 'smplfy-field-table-cell',
         className,
       )}
       type={type}

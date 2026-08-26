@@ -432,7 +432,7 @@
 
 .smplfy-rich-dropdown-menu.card {
   z-index: calc(var(--smplfy-modal-z-index) + 10);
-  padding: 4px 0;
+  padding: 4px 0 0;
   border: 1px solid var(--smplfy-primitive-neutral-400);
   border-radius: var(--smplfy-field-radius);
   background: var(--smplfy-field-bg);
@@ -738,4 +738,61 @@
 
   margin-left: var(--smplfy-toast-close-margin-start);
   flex: 0 0 var(--smplfy-toast-icon-size);
+}
+
+/* Spreadsheet-density variant: the table cell provides the border and focus ring. */
+.smplfy-field-table-cell {
+  --smplfy-field-height: 37px;
+  --smplfy-field-radius: 0;
+  --smplfy-field-padding-inline: 8px;
+  --smplfy-field-padding-inline-compact: 8px;
+  --smplfy-field-action-width: 32px;
+  --smplfy-field-bg: var(--smplfy-primitive-neutral-100);
+  --smplfy-field-bg-empty: var(--smplfy-primitive-neutral-100);
+  --smplfy-field-border-default: transparent;
+  --smplfy-field-border-hover: transparent;
+  --smplfy-field-shadow-focused: none;
+
+  width: 100%;
+  min-width: 0;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: var(--smplfy-primitive-neutral-100) !important;
+  box-shadow: none;
+}
+
+.smplfy-form-control.form-control.smplfy-field-table-cell,
+.smplfy-field-table-cell .smplfy-form-control.form-control,
+.smplfy-field-table-cell .smplfy-file-display.form-control,
+.smplfy-field-table-cell .smplfy-rich-dropdown-trigger.btn.form-control {
+  min-height: 37px;
+  height: 37px;
+  padding-inline: 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  font-family: var(--smplfy-field-font-family);
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  box-shadow: none;
+}
+
+.smplfy-form-control.form-control.smplfy-field-table-cell:focus,
+.smplfy-select-field.smplfy-field-table-cell:focus-within,
+.smplfy-date-field.input-group.smplfy-field-table-cell:focus-within,
+.smplfy-file-field.input-group.smplfy-field-table-cell:focus-within {
+  outline: none;
+  box-shadow: none;
+}
+
+.smplfy-field-table-cell .smplfy-date-button.btn,
+.smplfy-field-table-cell .smplfy-file-button.btn {
+  min-height: 37px;
+  height: 37px;
+}
+
+.smplfy-field-table-cell .smplfy-file-button.btn::before {
+  inset-block: 0;
 }

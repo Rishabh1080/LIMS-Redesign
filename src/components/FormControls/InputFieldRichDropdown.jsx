@@ -26,11 +26,13 @@ export default function InputFieldRichDropdown({
   placeholder = '',
   options = [],
   className = '',
+  variant = 'default',
   disabled = false,
   menuPlacement = 'bottom',
   searchable = false,
   searchPlaceholder = 'Search',
   maxVisibleItems = 4,
+  suggestion = '',
   onChange,
   onBlur,
   id,
@@ -50,6 +52,7 @@ export default function InputFieldRichDropdown({
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const isDisabled = disabled || state === 'disabled';
   const isInvalid = state === 'error' || ariaInvalid === 'true';
+  const isTableCell = variant === 'table-cell';
   const normalizedOptions = normalizeOptions(options);
   const filteredOptions = searchable && searchQuery.trim()
     ? normalizedOptions.filter((option) => {
@@ -65,6 +68,9 @@ export default function InputFieldRichDropdown({
     })
     : normalizedOptions;
   const selectedOption = normalizedOptions.find((option) => option.value === value);
+  const suggestedOption = normalizedOptions.find((option) => option.value === suggestion);
+  const suggestionLabel = suggestedOption?.label ?? suggestion;
+  const hasSuggestion = !selectedOption && Boolean(suggestionLabel);
   const isFilled = state === 'filled' || Boolean(selectedOption);
   const triggerId = id ?? `rich-dropdown-${generatedId}`;
   const listId = `${triggerId}-listbox`;
@@ -84,12 +90,14 @@ export default function InputFieldRichDropdown({
         return;
       }
 
+      const menuWidth = Math.max(rect.width, isTableCell ? 320 : rect.width);
+
       setMenuStyle({
         position: 'fixed',
         top: opensUp ? 'auto' : `${rect.bottom + 8}px`,
         bottom: opensUp ? `${window.innerHeight - rect.top + 8}px` : 'auto',
         left: `${rect.left}px`,
-        width: `${rect.width}px`,
+        width: `${menuWidth}px`,
         zIndex: 1065,
       });
     };
@@ -205,6 +213,7 @@ export default function InputFieldRichDropdown({
         !isFilled && 'smplfy-form-empty',
         state === 'hover' && 'smplfy-form-hover',
         state === 'focused' && 'smplfy-form-focused',
+        isTableCell && 'smplfy-field-table-cell',
         className,
       )}
     >
@@ -226,16 +235,39 @@ export default function InputFieldRichDropdown({
         aria-describedby={ariaDescribedBy}
         aria-invalid={ariaInvalid}
         onClick={() => setOpen((current) => !current)}
+        onBlur={(event) => {
+          const nextTarget = event.relatedTarget;
+          if (
+            !rootRef.current?.contains(nextTarget)
+            && !menuRef.current?.contains(nextTarget)
+          ) {
+            onBlur?.({ target: { value } });
+          }
+        }}
         onKeyDown={(event) => {
+          if (!open && event.key === 'Enter' && hasSuggestion) {
+            event.preventDefault();
+            event.stopPropagation();
+            handleSelect(suggestion);
+            return;
+          }
+
           if (!open && (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Enter' || event.key === ' ')) {
             event.preventDefault();
+            event.stopPropagation();
             setOpen(true);
           }
         }}
         {...props}
       >
-        <span className={joinClasses('smplfy-rich-dropdown-value', !selectedOption && 'text-secondary')}>
-          {selectedOption?.label ?? placeholder}
+        <span
+          className={joinClasses(
+            'smplfy-rich-dropdown-value',
+            !selectedOption && 'text-secondary',
+            hasSuggestion && 'smplfy-field-suggestion',
+          )}
+        >
+          {selectedOption?.label ?? suggestionLabel ?? placeholder}
         </span>
         {selectedOption?.rightLabel ? (
           <span className="smplfy-rich-dropdown-meta">

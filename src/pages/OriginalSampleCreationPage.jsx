@@ -1,13 +1,22 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, memo, useEffect, useMemo, useRef, useState } from 'react';
 import { trackEvent } from '../analytics/posthog';
 import AppIcon from '../components/AppIcon';
 import DataTable from '../components/DataTable';
-import { FormElement, InputFieldRichDropdown } from '../components/FormControls';
+import {
+  FormElement,
+  InputFieldDate,
+  InputFieldFile,
+  InputFieldRichDropdown,
+  InputFieldSplitSelector,
+  InputFieldText,
+} from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import NavSelector from '../components/NavSelector/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
+import SampleCountStepper from '../components/SampleCountStepper';
 import SecondaryButton from '../components/SecondaryButton';
 import Stepper from '../components/Stepper/Stepper';
+import { generateAutoFillData } from '../utils/bulkAutoFill';
 import './new-sample-customer-details-page.scss';
 
 const wizardSteps = ['Customer Details', 'Basic Details', 'Product Details', 'Additional Details'];
@@ -372,6 +381,827 @@ function createProduct(seed = {}) {
 
 function getSampleDisplayName(sample) {
   return sample?.id || 'New Sample';
+}
+
+function createBulkParameterRow(seed = {}) {
+  return {
+    id: createId('bulk-parameter'),
+    parameter: '',
+    method: '',
+    charges: '',
+    time: '',
+    ...seed,
+  };
+}
+
+const bulkParameterAutoFillRows = [
+  { parameter: 'Yarn Count', method: 'IS 1315:1977', charges: '650', time: '3 days' },
+  { parameter: 'Single Yarn Strength', method: 'IS 1670:1991', charges: '850', time: '4 days' },
+  { parameter: 'Twist in Yarn', method: 'IS 832:1985', charges: '600', time: '3 days' },
+];
+
+function createBulkRow(seed = {}) {
+  return {
+    id: createId('bulk-row'),
+    category: '',
+    product: '',
+    sampleSize: { value: '', unit: '' },
+    reportNumber: '',
+    customerRef: '',
+    sampleDrawnBy: '',
+    natureOfSample: '',
+    specification: '',
+    stampedBy: '',
+    heatNo: '',
+    poNo: '',
+    make: '',
+    poSrNo: '',
+    refDate: '',
+    parameters: [createBulkParameterRow()],
+    ...seed,
+  };
+}
+
+const bulkCategoryOptions = ['Pharma', 'Non-Pharma', 'R&D'];
+const bulkProductOptions = ['Pharma', 'Non-Pharma', 'R&D'];
+const bulkSampleSizeUnitOptions = ['g', 'kg', 'mg', 'ml', 'L', 'Units'];
+const requiredBulkColumnKeys = new Set(['category', 'product', 'reportNumber']);
+
+const bulkColumns = [
+  { key: 'category', label: 'Category', width: 146 },
+  { key: 'product', label: 'Product', width: 146 },
+  { key: 'parameters', label: 'Parameters', width: 124, type: 'parameters' },
+  { key: 'reportNumber', label: 'Report No.', width: 174 },
+  { key: 'customerRef', label: 'Customer Ref.', width: 146 },
+  { key: 'sampleDrawnBy', label: 'Sample Drawn By', width: 146 },
+  { key: 'natureOfSample', label: '#Nature of Sample', width: 156 },
+  { key: 'specification', label: '#Specification', width: 146 },
+  { key: 'stampedBy', label: 'Stamped By', width: 130 },
+  { key: 'heatNo', label: '#Heat No', width: 119 },
+  { key: 'poNo', label: '#PO No.', width: 119 },
+  { key: 'make', label: '#Make', width: 119 },
+  { key: 'poSrNo', label: 'PO Sr No.', width: 119 },
+  { key: 'refDate', label: 'Ref. Date', width: 146 },
+  { key: 'sampleSize', label: 'Sample Size', width: 190, type: 'sample-size' },
+];
+
+const REPORT_NUMBER_YEAR = '2026';
+const duplicateBulkColumnKeys = bulkColumns
+  .map(({ key }) => key)
+  .filter((key) => !['parameters', 'reportNumber'].includes(key));
+
+function formatReportNumber(sequence) {
+  return `IICT/${REPORT_NUMBER_YEAR}/${String(sequence).padStart(4, '0')}`;
+}
+
+function findDuplicateBulkRowIds(rows) {
+  const signatures = new Map();
+  const duplicateIds = new Set();
+
+  rows.forEach((row) => {
+    const values = duplicateBulkColumnKeys.map((key) => {
+      const value = row[key];
+      if (value && typeof value === 'object') {
+        return JSON.stringify(
+          Object.fromEntries(
+            Object.entries(value).map(([nestedKey, nestedValue]) => (
+              [nestedKey, String(nestedValue ?? '').trim()]
+            )),
+          ),
+        );
+      }
+      return String(value ?? '').trim();
+    });
+    if (values.every((value) => value === '' || value === '{"value":"","unit":""}')) return;
+
+    const parameterValues = (row.parameters ?? []).map(({ id: _id, ...parameter }) => (
+      Object.fromEntries(
+        Object.entries(parameter).map(([key, value]) => [key, String(value ?? '').trim()]),
+      )
+    ));
+    const signature = JSON.stringify([...values, parameterValues]);
+    const matchingIds = signatures.get(signature) ?? [];
+    matchingIds.forEach((id) => duplicateIds.add(id));
+    if (matchingIds.length) duplicateIds.add(row.id);
+    signatures.set(signature, [...matchingIds, row.id]);
+  });
+
+  return duplicateIds;
+}
+
+const bulkActionColumnWidth = 120;
+const bulkTableWidth = 56
+  + bulkColumns.reduce((total, column) => total + column.width, 0)
+  + bulkActionColumnWidth;
+
+const BulkSampleParameterDetails = memo(function BulkSampleParameterDetails({
+  row,
+  rowIndex,
+  onParameterChange,
+  onAddParameter,
+  onDeleteParameter,
+  onAutoFillParameters,
+}) {
+  const parameters = row.parameters ?? [];
+
+  const renderDropdown = (parameter, field, options, placeholder) => (
+    <InputFieldRichDropdown
+      variant="table-cell"
+      aria-label={`${placeholder} ${parameters.indexOf(parameter) + 1} for sample ${rowIndex + 1}`}
+      value={parameter[field] || ''}
+      options={options}
+      placeholder={placeholder}
+      searchable
+      onChange={(event) => onParameterChange(row.id, parameter.id, field, event.target.value)}
+    />
+  );
+
+  const renderText = (parameter, field, label, placeholder = '') => (
+    <InputFieldText
+      variant="table-cell"
+      aria-label={`${label} ${parameters.indexOf(parameter) + 1} for sample ${rowIndex + 1}`}
+      value={parameter[field] || ''}
+      placeholder={placeholder}
+      onChange={(event) => onParameterChange(row.id, parameter.id, field, event.target.value)}
+    />
+  );
+
+  return (
+    <section
+      id={`bulk-row-${row.id}-details`}
+      className="smplfy-bulk-parameter-panel"
+      aria-label={`Parameter and testing details for sample ${rowIndex + 1}`}
+    >
+      <div className="smplfy-bulk-parameter-panel-header">
+        <h3>Testing details</h3>
+        <div className="smplfy-bulk-parameter-panel-header-actions">
+          <SecondaryButton
+            size="small"
+            leftIcon="plus"
+            onClick={() => onAddParameter(row.id)}
+          >
+            Parameter
+          </SecondaryButton>
+          <PrimaryButton
+            size="small"
+            leftIcon="refresh"
+            disabled={!row.category || !row.product}
+            onClick={() => onAutoFillParameters(row.id)}
+          >
+            Auto-fill parameters
+          </PrimaryButton>
+        </div>
+      </div>
+      <div className="smplfy-bulk-parameter-table-wrap">
+        <table className="smplfy-bulk-parameter-table">
+          <caption className="visually-hidden">Testing parameters for sample {rowIndex + 1}</caption>
+          <colgroup>
+            <col className="smplfy-bulk-parameter-serial-col" />
+            <col className="smplfy-bulk-parameter-name-col" />
+            <col className="smplfy-bulk-parameter-method-col" />
+            <col className="smplfy-bulk-parameter-charge-col" />
+            <col className="smplfy-bulk-parameter-time-col" />
+            <col className="smplfy-bulk-parameter-action-col" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">Sr no.</th>
+              <th scope="col">Parameter</th>
+              <th scope="col">Test method</th>
+              <th scope="col">Charges</th>
+              <th scope="col">Est. time</th>
+              <th scope="col"><span className="visually-hidden">Action</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {parameters.map((parameter, parameterIndex) => (
+              <tr key={parameter.id}>
+                <th scope="row">{parameterIndex + 1}</th>
+                <td>{renderDropdown(parameter, 'parameter', parameterOptions, 'Select parameter')}</td>
+                <td>{renderDropdown(parameter, 'method', testMethodOptions, 'Select test method')}</td>
+                <td>{renderText(parameter, 'charges', 'Charges', '0.00')}</td>
+                <td>{renderText(parameter, 'time', 'Estimated time', 'e.g. 3 days')}</td>
+                <td>
+                  <SecondaryButton
+                    size="small"
+                    tone="danger"
+                    leftIcon="trash"
+                    aria-label={`Delete parameter ${parameterIndex + 1} from sample ${rowIndex + 1}`}
+                    disabled={parameters.length === 1}
+                    onClick={() => onDeleteParameter(row.id, parameter.id)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+});
+
+function BulkSampleTable({
+  rows,
+  errors,
+  canUndoAutoFill,
+  onRowChange,
+  onRowCountChange,
+  onAddRow,
+  canPasteRow,
+  onCopyRow,
+  onPasteRow,
+  onDeleteRow,
+  onParameterChange,
+  onAddParameter,
+  onDeleteParameter,
+  onAutoFillParameters,
+  onAutoFill,
+  onUndoAutoFill,
+}) {
+  const headerViewportRef = useRef(null);
+  const viewportRef = useRef(null);
+  const tableRef = useRef(null);
+  const horizontalTrackRef = useRef(null);
+  const scrollbarDragRef = useRef(null);
+  const touchRef = useRef(null);
+  const [expandedRowId, setExpandedRowId] = useState(() => rows[0]?.id ?? null);
+  const [activeSuggestionCell, setActiveSuggestionCell] = useState(null);
+  const lastColumnValuesRef = useRef({});
+  const [scrollMetrics, setScrollMetrics] = useState({
+    left: 0,
+    clientWidth: 0,
+    scrollWidth: 0,
+    horizontalTrackSize: 0,
+  });
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    const table = tableRef.current;
+
+    if (!viewport) {
+      return undefined;
+    }
+
+    const updateMetrics = () => {
+      if (headerViewportRef.current) {
+        headerViewportRef.current.scrollLeft = viewport.scrollLeft;
+      }
+
+      const viewportWidth = `${viewport.clientWidth}px`;
+      if (viewport.style.getPropertyValue('--smplfy-bulk-viewport-width') !== viewportWidth) {
+        viewport.style.setProperty('--smplfy-bulk-viewport-width', viewportWidth);
+      }
+
+      setScrollMetrics({
+        left: viewport.scrollLeft,
+        clientWidth: viewport.clientWidth,
+        scrollWidth: viewport.scrollWidth,
+        horizontalTrackSize: horizontalTrackRef.current?.clientWidth ?? 0,
+      });
+    };
+
+    const clampHorizontalScroll = (left) => {
+      const maxLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+      viewport.scrollLeft = Math.min(maxLeft, Math.max(0, left));
+      updateMetrics();
+    };
+
+    const pageScroller = viewport.closest('main');
+
+    const scrollPageBy = (delta) => {
+      if (!pageScroller) return;
+
+      const maxTop = Math.max(0, pageScroller.scrollHeight - pageScroller.clientHeight);
+      pageScroller.scrollTop = Math.min(maxTop, Math.max(0, pageScroller.scrollTop + delta));
+    };
+
+    const handleWheel = (event) => {
+      const lineSize = 16;
+      const pageSize = pageScroller?.clientHeight ?? viewport.clientHeight;
+      const scale = event.deltaMode === WheelEvent.DOM_DELTA_LINE
+        ? lineSize
+        : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+          ? pageSize
+          : 1;
+      const isVerticalGesture = Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+
+      event.preventDefault();
+
+      if (isVerticalGesture) {
+        scrollPageBy(event.deltaY * scale);
+        return;
+      }
+
+      clampHorizontalScroll(viewport.scrollLeft + (event.deltaX * scale));
+    };
+
+    const handleTouchStart = (event) => {
+      if (event.touches.length !== 1) {
+        touchRef.current = null;
+        return;
+      }
+
+      const touch = event.touches[0];
+      touchRef.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+        left: viewport.scrollLeft,
+      };
+    };
+
+    const handleTouchMove = (event) => {
+      if (event.touches.length !== 1 || !touchRef.current) return;
+
+      const touch = event.touches[0];
+      const deltaX = touchRef.current.x - touch.clientX;
+      const deltaY = touchRef.current.y - touch.clientY;
+
+      event.preventDefault();
+
+      if (Math.abs(deltaY) >= Math.abs(deltaX)) {
+        scrollPageBy(deltaY);
+        touchRef.current = {
+          ...touchRef.current,
+          x: touch.clientX,
+          y: touch.clientY,
+        };
+        return;
+      }
+
+      clampHorizontalScroll(touchRef.current.left + deltaX);
+    };
+
+    const clearTouch = () => {
+      touchRef.current = null;
+    };
+
+    let focusScrollFrame = null;
+
+    const handleCellFocus = (event) => {
+      const cell = event.target.closest('td');
+      if (!cell || cell.classList.contains('smplfy-bulk-action-cell')) return;
+
+      if (focusScrollFrame !== null) {
+        cancelAnimationFrame(focusScrollFrame);
+      }
+
+      focusScrollFrame = requestAnimationFrame(() => {
+        focusScrollFrame = null;
+
+        const row = cell.parentElement;
+        const serialCell = row?.querySelector('.smplfy-bulk-serial-cell');
+        const actionCell = row?.querySelector('.smplfy-bulk-action-cell');
+        const viewportRect = viewport.getBoundingClientRect();
+        const cellRect = cell.getBoundingClientRect();
+        const visibleLeft = serialCell?.getBoundingClientRect().right ?? viewportRect.left;
+        const visibleRight = actionCell?.getBoundingClientRect().left ?? viewportRect.right;
+
+        if (cellRect.right > visibleRight) {
+          clampHorizontalScroll(viewport.scrollLeft + (cellRect.right - visibleRight));
+        } else if (cellRect.left < visibleLeft) {
+          clampHorizontalScroll(viewport.scrollLeft - (visibleLeft - cellRect.left));
+        }
+      });
+    };
+
+    const resizeObserver = new ResizeObserver(updateMetrics);
+    resizeObserver.observe(viewport);
+    if (table) resizeObserver.observe(table);
+    if (horizontalTrackRef.current) resizeObserver.observe(horizontalTrackRef.current);
+
+    viewport.addEventListener('scroll', updateMetrics, { passive: true });
+    viewport.addEventListener('wheel', handleWheel, { passive: false });
+    viewport.addEventListener('touchstart', handleTouchStart, { passive: true });
+    viewport.addEventListener('touchmove', handleTouchMove, { passive: false });
+    viewport.addEventListener('touchend', clearTouch, { passive: true });
+    viewport.addEventListener('touchcancel', clearTouch, { passive: true });
+    table?.addEventListener('focusin', handleCellFocus);
+    updateMetrics();
+
+    return () => {
+      if (focusScrollFrame !== null) cancelAnimationFrame(focusScrollFrame);
+      resizeObserver.disconnect();
+      viewport.removeEventListener('scroll', updateMetrics);
+      viewport.removeEventListener('wheel', handleWheel);
+      viewport.removeEventListener('touchstart', handleTouchStart);
+      viewport.removeEventListener('touchmove', handleTouchMove);
+      viewport.removeEventListener('touchend', clearTouch);
+      viewport.removeEventListener('touchcancel', clearTouch);
+      table?.removeEventListener('focusin', handleCellFocus);
+    };
+  }, []);
+
+  const horizontalTrackSize = Math.max(0, scrollMetrics.horizontalTrackSize - 8);
+  const maxScrollLeft = Math.max(0, scrollMetrics.scrollWidth - scrollMetrics.clientWidth);
+  const horizontalThumbSize = maxScrollLeft > 0
+    ? Math.max(48, horizontalTrackSize * (scrollMetrics.clientWidth / scrollMetrics.scrollWidth))
+    : horizontalTrackSize;
+  const horizontalThumbOffset = maxScrollLeft > 0
+    ? (scrollMetrics.left / maxScrollLeft) * Math.max(0, horizontalTrackSize - horizontalThumbSize)
+    : 0;
+
+  const setHorizontalScroll = (value) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    viewport.scrollLeft = Math.min(maxScrollLeft, Math.max(0, value));
+  };
+
+  const handleScrollbarTrackPointerDown = (event) => {
+    if (event.target !== event.currentTarget) return;
+
+    const track = horizontalTrackRef.current;
+    if (!track) return;
+
+    const rect = track.getBoundingClientRect();
+    const pointer = event.clientX - rect.left - 4;
+    const availableTrack = Math.max(1, horizontalTrackSize - horizontalThumbSize);
+
+    setHorizontalScroll(((pointer - (horizontalThumbSize / 2)) / availableTrack) * maxScrollLeft);
+  };
+
+  const handleScrollbarThumbPointerDown = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    scrollbarDragRef.current = {
+      pointerId: event.pointerId,
+      startPointer: event.clientX,
+      startScroll: scrollMetrics.left,
+    };
+  };
+
+  const handleScrollbarThumbPointerMove = (event) => {
+    const drag = scrollbarDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    const availableTrack = Math.max(1, horizontalTrackSize - horizontalThumbSize);
+    setHorizontalScroll(
+      drag.startScroll + ((event.clientX - drag.startPointer) / availableTrack) * maxScrollLeft,
+    );
+  };
+
+  const handleScrollbarThumbPointerUp = (event) => {
+    if (scrollbarDragRef.current?.pointerId === event.pointerId) {
+      scrollbarDragRef.current = null;
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const handleScrollbarKeyDown = (event) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    let next = viewport.scrollLeft;
+
+    if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = maxScrollLeft;
+    else if (event.key === 'PageUp') next -= viewport.clientWidth;
+    else if (event.key === 'PageDown') next += viewport.clientWidth;
+    else if (event.key === 'ArrowLeft') next -= 40;
+    else if (event.key === 'ArrowRight') next += 40;
+    else return;
+
+    event.preventDefault();
+    setHorizontalScroll(next);
+  };
+
+  const toggleRowExpanded = (rowId) => {
+    setExpandedRowId((current) => (current === rowId ? null : rowId));
+  };
+
+  const handleBulkCellChange = (rowId, columnKey, value) => {
+    const hasValue = value && typeof value === 'object'
+      ? Object.values(value).some((part) => String(part ?? '').trim())
+      : Boolean(String(value ?? '').trim());
+
+    if (hasValue) {
+      lastColumnValuesRef.current[columnKey] = value && typeof value === 'object'
+        ? { ...value }
+        : value;
+    }
+    onRowChange(rowId, columnKey, value);
+  };
+
+  const renderCell = (row, column) => {
+    if (column.type === 'parameters') {
+      const parameterCount = (row.parameters ?? []).filter((parameter) => (
+        ['parameter', 'method', 'charges', 'time'].some((field) => (
+          String(parameter[field] ?? '').trim()
+        ))
+      )).length;
+      const expanded = expandedRowId === row.id;
+
+      return (
+        <button
+          type="button"
+          className="smplfy-bulk-parameters-toggle"
+          aria-expanded={expanded}
+          aria-controls={`bulk-row-${row.id}-details`}
+          aria-label={`${expanded ? 'Collapse' : 'Expand'} ${parameterCount} testing parameters`}
+          onClick={() => toggleRowExpanded(row.id)}
+        >
+          <span>{parameterCount}</span>
+          <AppIcon name="chevron-down" size={16} stroke={2} aria-hidden="true" />
+        </button>
+      );
+    }
+
+    if (column.type === 'sample-size') {
+      const cellId = `${row.id}-${column.key}`;
+      const rowIndex = rows.findIndex((candidate) => candidate.id === row.id);
+      const currentValue = row.sampleSize ?? { value: '', unit: '' };
+      const fallbackValue = rows
+        .slice(0, rowIndex)
+        .reverse()
+        .find((candidate) => (
+          String(candidate.sampleSize?.value ?? '').trim()
+          || String(candidate.sampleSize?.unit ?? '').trim()
+        ))
+        ?.sampleSize;
+      const rememberedValue = lastColumnValuesRef.current.sampleSize;
+      const suggestion = activeSuggestionCell === cellId
+        && !currentValue.value
+        && !currentValue.unit
+        ? rememberedValue ?? fallbackValue ?? { value: '', unit: '' }
+        : { value: '', unit: '' };
+      const hasSuggestion = Boolean(suggestion.value || suggestion.unit);
+
+      return (
+        <InputFieldSplitSelector
+          value={currentValue.value}
+          unit={currentValue.unit}
+          units={bulkSampleSizeUnitOptions}
+          placeholder={suggestion.value || 'Value'}
+          unitPlaceholder="Unit"
+          unitSuggestion={suggestion.unit}
+          className={`smplfy-field-table-cell smplfy-bulk-sample-size-field${hasSuggestion ? ' smplfy-field-suggestion' : ''}`}
+          aria-label="Sample Size"
+          onFocus={() => setActiveSuggestionCell(cellId)}
+          onBlur={() => setActiveSuggestionCell((current) => (current === cellId ? null : current))}
+          onKeyDown={(event) => {
+            if (event.key !== 'Enter' || !hasSuggestion) return;
+            event.preventDefault();
+            event.stopPropagation();
+            handleBulkCellChange(row.id, 'sampleSize', { ...suggestion });
+          }}
+          onChange={(event) => handleBulkCellChange(row.id, 'sampleSize', {
+            value: event.target.value,
+            unit: event.target.unit,
+          })}
+        />
+      );
+    }
+
+    const isRequired = requiredBulkColumnKeys.has(column.key);
+    const hasError = Boolean(errors?.[`bulk-${row.id}-${column.key}`]);
+    const cellId = `${row.id}-${column.key}`;
+    const rowIndex = rows.findIndex((candidate) => candidate.id === row.id);
+    const fallbackValue = rows
+      .slice(0, rowIndex)
+      .reverse()
+      .find((candidate) => String(candidate[column.key] ?? '').trim())
+      ?.[column.key] ?? '';
+    const suggestion = activeSuggestionCell === cellId && !row[column.key]
+      ? lastColumnValuesRef.current[column.key] ?? fallbackValue
+      : '';
+    const sharedProps = {
+      variant: 'table-cell',
+      state: hasError ? 'error' : undefined,
+      className: suggestion ? 'smplfy-field-suggestion' : undefined,
+      'aria-label': column.label,
+      'aria-invalid': hasError || undefined,
+      'aria-required': isRequired || undefined,
+      required: isRequired,
+      onFocus: () => setActiveSuggestionCell(cellId),
+      onBlur: () => setActiveSuggestionCell((current) => (current === cellId ? null : current)),
+    };
+
+    const acceptSuggestion = (event) => {
+      if (event.key !== 'Enter' || !suggestion || row[column.key]) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      handleBulkCellChange(row.id, column.key, suggestion);
+    };
+
+    const renderDropdown = (options, placeholder = 'Select') => (
+      <InputFieldRichDropdown
+        {...sharedProps}
+        value={row[column.key]}
+        options={options}
+        placeholder={placeholder}
+        suggestion={suggestion}
+        searchable
+        onChange={(event) => handleBulkCellChange(row.id, column.key, event.target.value)}
+      />
+    );
+
+    switch (column.key) {
+      case 'category':
+        return renderDropdown(bulkCategoryOptions, 'Select category');
+      case 'product':
+        return renderDropdown(bulkProductOptions, 'Select product');
+      case 'refDate':
+        return (
+          <InputFieldDate
+            {...sharedProps}
+            value={row.refDate || ''}
+            placeholder={suggestion || 'DD/MM/YYYY'}
+            onKeyDown={acceptSuggestion}
+            onChange={(event) => handleBulkCellChange(row.id, 'refDate', event.target.value)}
+          />
+        );
+      default:
+        return (
+          <InputFieldText
+            {...sharedProps}
+            value={row[column.key] || ''}
+            placeholder={suggestion}
+            onKeyDown={acceptSuggestion}
+            onChange={(event) => handleBulkCellChange(row.id, column.key, event.target.value)}
+          />
+        );
+    }
+  };
+
+  return (
+    <div className="smplfy-bulk-sample-area">
+      <div className="smplfy-bulk-action-center">
+        <div className="smplfy-bulk-action-center-header">
+          <SampleCountStepper
+            value={rows.length}
+            onChange={onRowCountChange}
+            onDecrement={() => onDeleteRow(rows[rows.length - 1]?.id)}
+            onIncrement={onAddRow}
+          />
+          <PrimaryButton
+            size="medium"
+            leftIcon="refresh"
+            className="smplfy-bulk-auto-fill-button"
+            disabled={rows.length < 3}
+            onClick={onAutoFill}
+          >
+            Auto-fill
+          </PrimaryButton>
+          <SecondaryButton
+            size="medium"
+            disabled={!canUndoAutoFill}
+            onClick={onUndoAutoFill}
+          >
+            Undo
+          </SecondaryButton>
+        </div>
+      </div>
+      <div className="smplfy-bulk-sample-frame">
+        <div ref={headerViewportRef} className="smplfy-bulk-sample-header-viewport">
+          <table
+            className="smplfy-bulk-sample-table smplfy-bulk-sample-header-table"
+            style={{ width: `${bulkTableWidth}px`, minWidth: `${bulkTableWidth}px` }}
+          >
+            <caption className="visually-hidden">Bulk sample column headers</caption>
+            <colgroup>
+              <col style={{ width: '56px' }} />
+              {bulkColumns.map((column) => (
+                <col key={column.key} style={{ width: `${column.width}px` }} />
+              ))}
+              <col style={{ width: `${bulkActionColumnWidth}px` }} />
+            </colgroup>
+            <thead>
+              <tr className="smplfy-bulk-field-row">
+                <th scope="col" className="smplfy-bulk-serial-cell">Sr no.</th>
+                {bulkColumns.map((column) => (
+                  <th key={column.key} scope="col">
+                    {column.label}
+                    {requiredBulkColumnKeys.has(column.key) ? (
+                      <span className="smplfy-bulk-required" aria-hidden="true"> *</span>
+                    ) : null}
+                  </th>
+                ))}
+                <th scope="col" className="smplfy-bulk-action-header">Action</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div ref={viewportRef} className="smplfy-bulk-sample-viewport">
+          <table
+            ref={tableRef}
+            className="smplfy-bulk-sample-table"
+            style={{ width: `${bulkTableWidth}px`, minWidth: `${bulkTableWidth}px` }}
+          >
+            <caption className="visually-hidden">Bulk sample details</caption>
+            <colgroup>
+              <col style={{ width: '56px' }} />
+              {bulkColumns.map((column) => (
+                <col key={column.key} style={{ width: `${column.width}px` }} />
+              ))}
+              <col style={{ width: `${bulkActionColumnWidth}px` }} />
+            </colgroup>
+            <tbody>
+              {rows.map((row, index) => {
+                const expanded = expandedRowId === row.id;
+
+                return (
+                  <Fragment key={row.id}>
+                    <tr className={`smplfy-bulk-data-row${expanded ? ' is-expanded' : ''}`}>
+                      <th scope="row" className="smplfy-bulk-serial-cell">
+                        <button
+                          type="button"
+                          className="smplfy-bulk-row-toggle"
+                          aria-expanded={expanded}
+                          aria-controls={`bulk-row-${row.id}-details`}
+                          aria-label={`${expanded ? 'Collapse' : 'Expand'} parameter and testing details for row ${index + 1}`}
+                          onClick={() => toggleRowExpanded(row.id)}
+                        >
+                          <span>{index + 1}</span>
+                          <AppIcon
+                            name="chevron-down"
+                            size={16}
+                            stroke={2}
+                            aria-hidden="true"
+                          />
+                        </button>
+                      </th>
+                      {bulkColumns.map((column) => (
+                        <td key={column.key}>{renderCell(row, column)}</td>
+                      ))}
+                      <td className="smplfy-bulk-action-cell">
+                        <div className="smplfy-bulk-action-buttons">
+                          <SecondaryButton
+                            size="small"
+                            leftIcon="copy"
+                            aria-label={`Copy row ${index + 1}`}
+                            onClick={() => onCopyRow(row.id)}
+                          />
+                          <SecondaryButton
+                            size="small"
+                            leftIcon="clipboard-text"
+                            aria-label={`Paste into row ${index + 1}`}
+                            disabled={!canPasteRow}
+                            onClick={() => onPasteRow(row.id)}
+                          />
+                          <SecondaryButton
+                            size="small"
+                            tone="danger"
+                            leftIcon="trash"
+                            aria-label={`Delete row ${index + 1}`}
+                            disabled={rows.length === 1}
+                            onClick={() => onDeleteRow(row.id)}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className={`smplfy-bulk-detail-row${expanded ? ' is-expanded' : ''}`}>
+                      <td colSpan={bulkColumns.length + 2}>
+                        <div className="smplfy-bulk-detail-transition">
+                          <div
+                            className="smplfy-bulk-detail-transition-inner"
+                            aria-hidden={!expanded}
+                            inert={!expanded}
+                          >
+                            <BulkSampleParameterDetails
+                              row={row}
+                              rowIndex={index}
+                              onParameterChange={onParameterChange}
+                              onAddParameter={onAddParameter}
+                              onDeleteParameter={onDeleteParameter}
+                              onAutoFillParameters={onAutoFillParameters}
+                            />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </Fragment>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <div
+          ref={horizontalTrackRef}
+          className="smplfy-bulk-scrollbar smplfy-bulk-scrollbar-horizontal"
+          role="scrollbar"
+          aria-label="Scroll table horizontally"
+          aria-orientation="horizontal"
+          aria-valuemin={0}
+          aria-valuemax={Math.round(maxScrollLeft)}
+          aria-valuenow={Math.round(scrollMetrics.left)}
+          onPointerDown={handleScrollbarTrackPointerDown}
+        >
+          <span
+            className="smplfy-bulk-scrollbar-thumb"
+            style={{
+              width: `${horizontalThumbSize}px`,
+              transform: `translateX(${horizontalThumbOffset}px)`,
+            }}
+            onPointerDown={handleScrollbarThumbPointerDown}
+            onPointerMove={handleScrollbarThumbPointerMove}
+            onPointerUp={handleScrollbarThumbPointerUp}
+            onPointerCancel={handleScrollbarThumbPointerUp}
+          />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function TopBar({ parentLabel, currentLabel, onBack }) {
@@ -1006,8 +1836,95 @@ function ProductDetailsSection({ products, errors, onProductChange, onAddProduct
   );
 }
 
-function TabbedProductDetailsSection({ products, errors, activeProductId, onProductSelect, onProductChange, onAddProduct, onDeleteProduct, onParameterChange, onAutoFillParameters, onAddParameter, onDeleteParameter }) {
+function TabbedProductDetailsSection({ products, errors, activeProductId, onProductSelect, onProductChange, onAddProduct, onDeleteProduct, onParameterChange, onAutoFillParameters, onAddParameter, onDeleteParameter, plain = false, showTitle = false }) {
   const activeProduct = products.find((p) => p.id === activeProductId) ?? products[0];
+
+  if (plain) {
+    return (
+      <FormSection id="original-sample-product-details" title="Product Details" showTitle={showTitle}>
+        <div className="container-fluid p-4 smplfy-original-product-details">
+          {activeProduct ? (
+            <div key={activeProduct.id}>
+              <div className="row g-4">
+                <div className="col-lg-6">
+                  <FormElement
+                    type="rich-dropdown"
+                    mandatory
+                    label="Category"
+                    message={errors[`product-${activeProduct.id}-category`]}
+                    messageTone="error"
+                    inputProps={{
+                      value: activeProduct.category,
+                      state: errors[`product-${activeProduct.id}-category`] ? 'error' : undefined,
+                      options: categoryOptions,
+                      placeholder: 'Select sample category',
+                      searchable: true,
+                      onChange: (event) => onProductChange(activeProduct.id, 'category', event.target.value),
+                    }}
+                  />
+                </div>
+                <div className="col-lg-6">
+                  <FormElement
+                    type="rich-dropdown"
+                    mandatory
+                    label="Product"
+                    message={errors[`product-${activeProduct.id}-product`]}
+                    messageTone="error"
+                    inputProps={{
+                      value: activeProduct.product,
+                      state: errors[`product-${activeProduct.id}-product`] ? 'error' : undefined,
+                      options: productOptionsByCategory[activeProduct.category] ?? [],
+                      placeholder: activeProduct.category ? 'Select product' : 'Select category first',
+                      disabled: !activeProduct.category,
+                      searchable: true,
+                      onChange: (event) => onProductChange(activeProduct.id, 'product', event.target.value),
+                    }}
+                  />
+                </div>
+                <div className="col-lg-6">
+                  <FormElement
+                    type="split"
+                    label="Sample Size"
+                    inputProps={{
+                      value: activeProduct.sampleSize.value,
+                      unit: activeProduct.sampleSize.unit,
+                      placeholder: 'Value',
+                      unitPlaceholder: 'Unit',
+                      onChange: (event) => onProductChange(activeProduct.id, 'sampleSize', {
+                        value: event.target.value,
+                        unit: event.target.unit,
+                      }),
+                    }}
+                  />
+                </div>
+                <div className="col-lg-6">
+                  <FormElement
+                    type="file"
+                    label="Image Upload"
+                    inputProps={{
+                      value: activeProduct.imageUpload,
+                      accept: 'image/*',
+                      placeholder: 'Upload sample image',
+                      onChange: (event) => onProductChange(activeProduct.id, 'imageUpload', event.target.value),
+                    }}
+                  />
+                </div>
+              </div>
+
+              <ParameterTable
+                rows={activeProduct.parameters}
+                canAutoFill={Boolean(activeProduct.category && activeProduct.product)}
+                onAutoFill={() => onAutoFillParameters(activeProduct.id)}
+                onChange={(rowId, field, value) => onParameterChange(activeProduct.id, rowId, field, value)}
+                onAdd={() => onAddParameter(activeProduct.id)}
+                onDelete={(rowId) => onDeleteParameter(activeProduct.id, rowId)}
+              />
+            </div>
+          ) : null}
+        </div>
+      </FormSection>
+    );
+  }
 
   return (
     <section id="original-sample-product-details" aria-labelledby="original-sample-product-details-title">
@@ -1211,12 +2128,248 @@ export default function OriginalSampleCreationPage({
   const [products, setProducts] = useState(() => [createProduct()]);
   const [customerModalOpen, setCustomerModalOpen] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
-  const [formVariant, setFormVariant] = useState(layout === 'long-form' ? 'long-form' : null);
+  const [formVariant, setFormVariant] = useState(layout === 'long-form' ? 'new' : null);
   const [activeProductTabId, setActiveProductTabId] = useState(null);
+  const [bulkModeEnabled, setBulkModeEnabled] = useState(false);
+  const [bulkState, setBulkState] = useState(() => ({
+    rows: [
+      createBulkRow({ reportNumber: formatReportNumber(1) }),
+      createBulkRow({ reportNumber: formatReportNumber(2) }),
+    ],
+    nextReportSequence: 3,
+    copiedRow: null,
+    autoFillUndo: null,
+  }));
+  const bulkRows = bulkState.rows;
+  const duplicateBulkRowIds = useMemo(
+    () => findDuplicateBulkRowIds(bulkRows),
+    [bulkRows],
+  );
   const formRef = useRef(null);
   const formId = 'new-sample-original-form';
   const sampleTitle = mode === 'edit' ? getSampleDisplayName(sample) : 'New Sample';
   const activeProductTab = activeProductTabId ?? products[0]?.id ?? null;
+
+  const updateBulkRow = (rowId, field, value) => {
+    clearFieldErrors(`bulk-${rowId}-${field}`);
+    setBulkState((current) => ({
+      ...current,
+      rows: current.rows.map((row) => (
+        row.id === rowId ? { ...row, [field]: value } : row
+      )),
+    }));
+  };
+
+  const updateBulkParameter = (rowId, parameterId, field, value) => {
+    setBulkState((current) => ({
+      ...current,
+      rows: current.rows.map((row) => (
+        row.id === rowId
+          ? {
+              ...row,
+              parameters: row.parameters.map((parameter) => (
+                parameter.id === parameterId ? { ...parameter, [field]: value } : parameter
+              )),
+            }
+          : row
+      )),
+    }));
+  };
+
+  const addBulkParameter = (rowId) => {
+    setBulkState((current) => ({
+      ...current,
+      rows: current.rows.map((row) => (
+        row.id === rowId
+          ? { ...row, parameters: [...row.parameters, createBulkParameterRow()] }
+          : row
+      )),
+    }));
+  };
+
+  const autoFillBulkParameters = (rowId) => {
+    setBulkState((current) => ({
+      ...current,
+      rows: current.rows.map((row) => (
+        row.id === rowId && row.category && row.product
+          ? {
+              ...row,
+              parameters: bulkParameterAutoFillRows.map((parameter) => (
+                createBulkParameterRow(parameter)
+              )),
+            }
+          : row
+      )),
+    }));
+  };
+
+  const deleteBulkParameter = (rowId, parameterId) => {
+    setBulkState((current) => ({
+      ...current,
+      rows: current.rows.map((row) => (
+        row.id === rowId && row.parameters.length > 1
+          ? {
+              ...row,
+              parameters: row.parameters.filter((parameter) => parameter.id !== parameterId),
+            }
+          : row
+      )),
+    }));
+  };
+
+  const addBulkRow = () => {
+    setBulkState((current) => ({
+      ...current,
+      rows: [
+        ...current.rows,
+        createBulkRow({ reportNumber: formatReportNumber(current.nextReportSequence) }),
+      ],
+      nextReportSequence: current.nextReportSequence + 1,
+    }));
+  };
+
+  const copyBulkRow = (rowId) => {
+    setBulkState((current) => {
+      const source = current.rows.find((row) => row.id === rowId);
+      if (!source) return current;
+
+      const { id: _sourceId, reportNumber: _reportNumber, parameters = [], ...valuesToCopy } = source;
+      return {
+        ...current,
+        copiedRow: {
+          ...valuesToCopy,
+          sampleSize: { ...source.sampleSize },
+          parameters: parameters.map(({ id: _parameterId, ...parameter }) => ({ ...parameter })),
+        },
+      };
+    });
+  };
+
+  const pasteBulkRow = (rowId) => {
+    if (!bulkState.copiedRow) return;
+
+    setFieldErrors((current) => Object.fromEntries(
+      Object.entries(current).filter(([key]) => !key.startsWith(`bulk-${rowId}-`)),
+    ));
+    setBulkState((current) => {
+      if (!current.copiedRow) return current;
+
+      return {
+        ...current,
+        rows: current.rows.map((row) => (
+          row.id === rowId
+            ? createBulkRow({
+                ...current.copiedRow,
+                id: row.id,
+                reportNumber: row.reportNumber,
+                sampleSize: { ...current.copiedRow.sampleSize },
+                parameters: current.copiedRow.parameters.map((parameter) => (
+                  createBulkParameterRow(parameter)
+                )),
+              })
+            : row
+        )),
+      };
+    });
+  };
+
+  const setBulkRowCount = (nextCount) => {
+    setBulkState((current) => {
+      if (nextCount === current.rows.length) return current;
+
+      if (nextCount < current.rows.length) {
+        return { ...current, rows: current.rows.slice(0, nextCount) };
+      }
+
+      const addedCount = nextCount - current.rows.length;
+      const addedRows = Array.from({ length: addedCount }, (_, index) => (
+        createBulkRow({
+          reportNumber: formatReportNumber(current.nextReportSequence + index),
+        })
+      ));
+
+      return {
+        ...current,
+        rows: [...current.rows, ...addedRows],
+        nextReportSequence: current.nextReportSequence + addedCount,
+      };
+    });
+  };
+
+  const deleteBulkRow = (rowId) => {
+    setBulkState((current) => ({
+      ...current,
+      rows: current.rows.length > 1
+        ? current.rows.filter((row) => row.id !== rowId)
+        : current.rows,
+    }));
+  };
+
+  const autoFillBulkRows = () => {
+    setBulkState((current) => {
+      if (current.rows.length < 3) return current;
+
+      const generatedRows = generateAutoFillData(
+        current.rows[0],
+        current.rows[1],
+        current.rows.length,
+      );
+      const autoFillUndo = {};
+
+      const rows = current.rows.map((row, index) => {
+        if (index < 2) return row;
+
+        const generatedRow = generatedRows[index - 2];
+        const changes = {};
+        const nextRow = { ...row };
+
+        bulkColumns.forEach(({ key, type }) => {
+          if (type === 'parameters' || key === 'reportNumber') return;
+
+          const generatedValue = generatedRow[key];
+          const nextValue = generatedValue && typeof generatedValue === 'object'
+            ? { ...generatedValue }
+            : generatedValue;
+          if (!Object.is(row[key], nextValue)) {
+            changes[key] = { before: row[key], after: nextValue };
+            nextRow[key] = nextValue;
+          }
+        });
+
+        if (Object.keys(changes).length) autoFillUndo[row.id] = changes;
+        return nextRow;
+      });
+
+      return {
+        ...current,
+        rows,
+        autoFillUndo: Object.keys(autoFillUndo).length ? autoFillUndo : null,
+      };
+    });
+  };
+
+  const undoAutoFillBulkRows = () => {
+    setBulkState((current) => {
+      if (!current.autoFillUndo) return current;
+
+      const rows = current.rows.map((row) => {
+        const changes = current.autoFillUndo[row.id];
+        if (!changes) return row;
+
+        let nextRow = row;
+        Object.entries(changes).forEach(([key, change]) => {
+          if (Object.is(nextRow[key], change.after)) {
+            if (nextRow === row) nextRow = { ...row };
+            nextRow[key] = change.before;
+          }
+        });
+
+        return nextRow;
+      });
+
+      return { ...current, rows, autoFillUndo: null };
+    });
+  };
 
   useEffect(() => {
     if (layout === 'long-form' && formRef.current) {
@@ -1367,7 +2520,32 @@ export default function OriginalSampleCreationPage({
       requireValue('customerAddress', values.customerAddress);
     }
 
-    if (stepIndex === 2) {
+    if (bulkModeEnabled) {
+      const reportNumberRows = new Map();
+
+      bulkRows.forEach((row, rowIndex) => {
+        requiredBulkColumnKeys.forEach((key) => {
+          const column = bulkColumns.find((item) => item.key === key);
+          requireValue(
+            `bulk-${row.id}-${key}`,
+            row[key],
+            `${column?.label ?? key} is required in row ${rowIndex + 1}.`,
+          );
+        });
+
+        const reportNumber = String(row.reportNumber ?? '').trim();
+        if (reportNumber) {
+          const matchingRows = reportNumberRows.get(reportNumber) ?? [];
+          matchingRows.forEach(({ id, index }) => {
+            nextErrors[`bulk-${id}-reportNumber`] = `Report No. must be unique; it is also used in row ${rowIndex + 1}.`;
+            nextErrors[`bulk-${row.id}-reportNumber`] = `Report No. must be unique; it is also used in row ${index + 1}.`;
+          });
+          reportNumberRows.set(reportNumber, [...matchingRows, { id: row.id, index: rowIndex }]);
+        }
+      });
+    }
+
+    if (!bulkModeEnabled && stepIndex === 2) {
       products.forEach((product) => {
         requireValue(`product-${product.id}-category`, product.category, 'Select a category.');
         requireValue(`product-${product.id}-product`, product.product, 'Select a product.');
@@ -1399,10 +2577,19 @@ export default function OriginalSampleCreationPage({
       ...analyticsContext,
       step_index: currentStep,
       step_name: wizardSteps[currentStep],
-      product_count: products.length,
-      parameter_count: products.reduce((count, product) => count + product.parameters.length, 0),
+      product_count: bulkModeEnabled ? bulkRows.length : products.length,
+      parameter_count: bulkModeEnabled
+        ? 0
+        : products.reduce((count, product) => count + product.parameters.length, 0),
       customer_created_in_flow: !initialCustomers.some((customer) => customer.id === values.customerId),
+      bulk_sample_creation: bulkModeEnabled,
     });
+
+    if (bulkModeEnabled) {
+      onComplete?.({ values, bulkRows, customers, bulk: true });
+      return;
+    }
+
     onComplete?.({ values, products, customers });
   };
 
@@ -1427,6 +2614,33 @@ export default function OriginalSampleCreationPage({
   const tabbedProductSection = (
     <TabbedProductDetailsSection
       key="product-tabbed"
+      products={products}
+      errors={fieldErrors}
+      activeProductId={activeProductTab}
+      onProductSelect={setActiveProductTabId}
+      onProductChange={updateProduct}
+      onAddProduct={handleAddProduct}
+      onDeleteProduct={handleDeleteProductTabbed}
+      onParameterChange={updateParameter}
+      onAutoFillParameters={handleAutoFillParameters}
+      onAddParameter={(productId) => setProducts((current) => current.map((product) => (
+        product.id === productId
+          ? { ...product, parameters: [...product.parameters, createParameterRow()] }
+          : product
+      )))}
+      onDeleteParameter={(productId, rowId) => setProducts((current) => current.map((product) => (
+        product.id === productId
+          ? { ...product, parameters: product.parameters.filter((row) => row.id !== rowId) }
+          : product
+      )))}
+      showTitle={showSectionTitles}
+    />
+  );
+
+  const plainProductSection = (
+    <TabbedProductDetailsSection
+      key="product-plain"
+      plain
       products={products}
       errors={fieldErrors}
       activeProductId={activeProductTab}
@@ -1497,6 +2711,7 @@ export default function OriginalSampleCreationPage({
 
   if (layout === 'long-form') {
     const variantOptions = [
+      { value: 'new', label: 'New' },
       { value: '50-50-split', label: '50-50 Split' },
       { value: 'long-form', label: 'Long Form' },
     ];
@@ -1508,7 +2723,7 @@ export default function OriginalSampleCreationPage({
           currentLabel={mode === 'edit' ? `Edit ${sampleTitle}` : 'New Base Sample'}
           onBack={onBackToWorkspace}
         />
-        <div className="d-flex align-items-center justify-content-between gap-3 bg-white border-bottom px-4 py-3">
+        <div className="d-flex align-items-center justify-content-between gap-3 bg-white border-bottom px-4 py-3 flex-wrap">
           <div className="d-flex align-items-center gap-3 min-w-0">
             <SecondaryButton size="medium" className="px-0 flex-shrink-0" aria-label="Go back" onClick={onBackToWorkspace}>
               <AppIcon name="chevron-left" />
@@ -1516,10 +2731,24 @@ export default function OriginalSampleCreationPage({
             <h1 className="h6 fw-semibold text-body mb-0">{mode === 'edit' ? `Edit ${sampleTitle}` : 'New Base Sample'}</h1>
           </div>
           <div className="d-flex align-items-center gap-3">
+            <div className="form-check form-switch mb-0 d-flex align-items-center gap-2">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="bulk-sample-creation-toggle"
+                checked={bulkModeEnabled}
+                onChange={(event) => setBulkModeEnabled(event.target.checked)}
+              />
+              <label className="form-check-label mb-0" htmlFor="bulk-sample-creation-toggle">
+                Bulk sample creation
+              </label>
+            </div>
             <select
               className="form-select form-select-sm"
               style={{ width: 'auto' }}
               value={formVariant}
+              disabled={bulkModeEnabled}
               onChange={(event) => setFormVariant(event.target.value)}
             >
               {variantOptions.map((opt) => (
@@ -1532,7 +2761,50 @@ export default function OriginalSampleCreationPage({
           </div>
         </div>
 
-        {formVariant === '50-50-split' ? (
+        {bulkModeEnabled ? (
+          <main className="flex-fill overflow-auto smplfy-long-form-variant">
+            <div className="d-flex flex-column" style={{ gap: '12px', padding: '16px 32px' }}>
+              <div className="smplfy-card card">{sections[0]}</div>
+              <BulkSampleTable
+                rows={bulkRows}
+                errors={fieldErrors}
+                canUndoAutoFill={Boolean(bulkState.autoFillUndo)}
+                onRowChange={updateBulkRow}
+                onRowCountChange={setBulkRowCount}
+                onAddRow={addBulkRow}
+                canPasteRow={Boolean(bulkState.copiedRow)}
+                onCopyRow={copyBulkRow}
+                onPasteRow={pasteBulkRow}
+                onDeleteRow={deleteBulkRow}
+                onParameterChange={updateBulkParameter}
+                onAddParameter={addBulkParameter}
+                onDeleteParameter={deleteBulkParameter}
+                onAutoFillParameters={autoFillBulkParameters}
+                onAutoFill={autoFillBulkRows}
+                onUndoAutoFill={undoAutoFillBulkRows}
+              />
+            </div>
+          </main>
+        ) : formVariant === 'new' ? (
+          <main className="flex-fill overflow-auto smplfy-long-form-variant">
+            <form
+              ref={formRef}
+              id={formId}
+              style={{ padding: '16px 32px' }}
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleSubmit();
+              }}
+            >
+              <div className="d-flex flex-column" style={{ gap: '12px' }}>
+                <div className="smplfy-card card">{sections[0]}</div>
+                <div className="smplfy-card card">{sections[1]}</div>
+                <div className="smplfy-card card">{plainProductSection}</div>
+                <div className="smplfy-card card">{sections[3]}</div>
+              </div>
+            </form>
+          </main>
+        ) : formVariant === '50-50-split' ? (
           <main className="flex-fill overflow-auto">
             <form
               ref={formRef}

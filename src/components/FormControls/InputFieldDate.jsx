@@ -132,6 +132,7 @@ export default function InputFieldDate({
   value = '',
   placeholder = 'DD/MM/YYYY',
   className = '',
+  variant = 'default',
   disabled = false,
   min,
   max,
@@ -158,6 +159,7 @@ export default function InputFieldDate({
   const isDisabled = disabled || state === 'disabled';
   const isFilled = state === 'filled' || Boolean(textValue);
   const isInvalid = state === 'error';
+  const isTableCell = variant === 'table-cell';
   const visualState = isDisabled
     ? 'disabled'
     : state === 'hover'
@@ -177,6 +179,7 @@ export default function InputFieldDate({
         !isFilled && 'smplfy-form-empty',
         visualState === 'hover' && 'smplfy-form-hover',
         visualState === 'focused' && 'smplfy-form-focused',
+        isTableCell && 'smplfy-field-table-cell',
         className,
       )}
     >

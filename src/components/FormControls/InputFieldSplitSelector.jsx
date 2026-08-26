@@ -13,6 +13,7 @@ export default function InputFieldSplitSelector({
   units = ['g', 'kg', 'ml', 'L'],
   placeholder = 'Value',
   unitPlaceholder = 'Unit',
+  unitSuggestion = '',
   className = '',
   disabled = false,
   onChange,
@@ -76,9 +77,11 @@ export default function InputFieldSplitSelector({
         value={selectedUnit}
         options={units}
         placeholder={unitPlaceholder}
+        suggestion={unitSuggestion}
         disabled={isDisabled}
         state={isInvalid ? 'error' : undefined}
         aria-label={props['aria-label'] ? `${props['aria-label']} unit` : 'Unit'}
+        onFocus={onFocus}
         onBlur={onBlur}
         onChange={(event) => {
           const nextUnit = event.target.value;

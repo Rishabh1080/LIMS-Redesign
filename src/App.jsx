@@ -257,6 +257,7 @@ export default function App() {
     delayed: undefined,
     sample: null,
   });
+  const [allSamplesToast, setAllSamplesToast] = useState(null);
   const [testRequestsState, setTestRequestsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
@@ -423,6 +424,23 @@ export default function App() {
       delayed: originalSample?.delayed,
       sample: originalSample ?? null,
     });
+  };
+
+  const openBulkSamplesListing = (payload, sourcePage) => {
+    const sampleCount = payload?.bulkRows?.length ?? 0;
+    const message = `${sampleCount} ${sampleCount === 1 ? 'sample' : 'samples'} created`;
+
+    trackEvent('sample_creation_flow_create_resolved', getSampleCreationFlowProps({
+      source_page: sourcePage,
+      target_page: 'all-samples',
+      sample_status: 'Pending',
+      bulk_sample_creation: true,
+      sample_count: sampleCount,
+      toast_message: message,
+    }));
+
+    setAllSamplesToast(message);
+    setActivePage('all-samples');
   };
 
   const openInstrumentDetails = (instrumentId, instrumentName, options = {}) => {
@@ -1193,6 +1211,8 @@ export default function App() {
         sampleCardViewMode={sampleCardViewMode}
         onSampleCardViewModeChange={setSampleCardViewMode}
         initialQuickFilter={allSamplesInitialQuickFilter}
+        initialToast={allSamplesToast}
+        onInitialToastConsumed={() => setAllSamplesToast(null)}
       />
     );
   }
@@ -1798,7 +1818,12 @@ export default function App() {
         onBackToWorkspace={() =>
           setActivePage(sampleEditorState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
         }
-        onComplete={() => {
+        onComplete={(payload) => {
+          if (payload?.bulk) {
+            openBulkSamplesListing(payload, sampleEditorState.sourcePage);
+            return;
+          }
+
           openSampleDetails('IICT/2025-2026/1101', {
             initialToast: 'sample-created',
             sourcePage: sampleEditorState.sourcePage,
@@ -1820,7 +1845,12 @@ export default function App() {
         onBackToWorkspace={() =>
           setActivePage(sampleEditorState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
         }
-        onComplete={() => {
+        onComplete={(payload) => {
+          if (payload?.bulk) {
+            openBulkSamplesListing(payload, sampleEditorState.sourcePage);
+            return;
+          }
+
           if (sampleEditorState.mode === 'edit' && sampleEditorState.sample) {
             openSampleDetails(sampleEditorState.sample.id, {
               initialToast: 'Sample Updated.',

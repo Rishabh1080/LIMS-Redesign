@@ -28,6 +28,7 @@ export default function InputFieldFile({
   placeholder = '',
   accept = '.pdf,.doc,.docx',
   className = '',
+  variant = 'default',
   disabled = false,
   onChange,
   ...props
@@ -43,6 +44,7 @@ export default function InputFieldFile({
   const isDisabled = disabled || state === 'disabled';
   const isInvalid = state === 'error';
   const isFilled = state === 'filled' || Boolean(displayValue);
+  const isTableCell = variant === 'table-cell';
 
   return (
     <div
@@ -53,6 +55,7 @@ export default function InputFieldFile({
         !isFilled && 'smplfy-form-empty',
         state === 'hover' && 'smplfy-form-hover',
         state === 'focused' && 'smplfy-form-focused',
+        isTableCell && 'smplfy-field-table-cell',
         className,
       )}
     >
