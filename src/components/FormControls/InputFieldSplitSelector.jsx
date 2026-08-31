@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo } from 'react';
 import InputFieldRichDropdown from './InputFieldRichDropdown';
 import './form-controls.scss';
 
@@ -6,7 +6,7 @@ function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
 }
 
-export default function InputFieldSplitSelector({
+export default memo(function InputFieldSplitSelector({
   state = 'default',
   value = '',
   unit = '',
@@ -21,20 +21,9 @@ export default function InputFieldSplitSelector({
   onBlur,
   ...props
 }) {
-  const [inputValue, setInputValue] = useState(value);
-  const [selectedUnit, setSelectedUnit] = useState(unit);
-
-  useEffect(() => {
-    setInputValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    setSelectedUnit(unit);
-  }, [unit]);
-
   const isDisabled = disabled || state === 'disabled';
   const isInvalid = state === 'error';
-  const isFilled = state === 'filled' || state === 'expanded' || Boolean(inputValue) || Boolean(selectedUnit);
+  const isFilled = state === 'filled' || state === 'expanded' || Boolean(value) || Boolean(unit);
 
   return (
     <div
@@ -55,18 +44,16 @@ export default function InputFieldSplitSelector({
           isInvalid && 'is-invalid',
         )}
         type="text"
-        value={inputValue}
+        value={value}
         placeholder={placeholder}
         disabled={isDisabled}
         onFocus={onFocus}
         onBlur={onBlur}
         onChange={(event) => {
-          const nextValue = event.target.value;
-          setInputValue(nextValue);
           onChange?.({
             target: {
-              value: nextValue,
-              unit: selectedUnit,
+              value: event.target.value,
+              unit,
             },
           });
         }}
@@ -74,7 +61,7 @@ export default function InputFieldSplitSelector({
       />
       <InputFieldRichDropdown
         className="smplfy-split-unit-dropdown"
-        value={selectedUnit}
+        value={unit}
         options={units}
         placeholder={unitPlaceholder}
         suggestion={unitSuggestion}
@@ -84,16 +71,14 @@ export default function InputFieldSplitSelector({
         onFocus={onFocus}
         onBlur={onBlur}
         onChange={(event) => {
-          const nextUnit = event.target.value;
-          setSelectedUnit(nextUnit);
           onChange?.({
             target: {
-              value: inputValue,
-              unit: nextUnit,
+              value,
+              unit: event.target.value,
             },
           });
         }}
       />
     </div>
   );
-}
+});

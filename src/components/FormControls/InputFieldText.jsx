@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { memo } from 'react';
 import './form-controls.scss';
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
 }
 
-export default function InputFieldText({
+export default memo(function InputFieldText({
   state = 'default',
   filled = false,
   value = '',
@@ -17,13 +17,9 @@ export default function InputFieldText({
   onChange,
   ...props
 }) {
-  const [inputValue, setInputValue] = useState(value);
-  useEffect(() => {
-    setInputValue(value);
-  }, [value]);
   const isDisabled = disabled || state === 'disabled';
   const isInvalid = state === 'error';
-  const isFilled = filled || Boolean(inputValue);
+  const isFilled = filled || Boolean(value);
   const isTableCell = variant === 'table-cell';
 
   return (
@@ -39,14 +35,11 @@ export default function InputFieldText({
         className,
       )}
       type={type}
-      value={inputValue}
+      value={value}
       placeholder={placeholder}
       disabled={isDisabled}
-      onChange={(event) => {
-        setInputValue(event.target.value);
-        onChange?.(event);
-      }}
+      onChange={onChange}
       {...props}
     />
   );
-}
+});

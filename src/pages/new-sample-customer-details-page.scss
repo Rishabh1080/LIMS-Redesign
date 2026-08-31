@@ -422,7 +422,7 @@
 
 .smplfy-bulk-sample-table tbody th,
 .smplfy-bulk-sample-table tbody td {
-  height: 38px;
+  height: 40px;
   color: var(--smplfy-primitive-neutral-800);
   font-family: 'Inter', sans-serif;
   font-size: 14px;
@@ -455,21 +455,34 @@
   background: #eff8ff;
 }
 
+
+
 .smplfy-bulk-sample-table tr > :last-child {
   border-right: 0;
 }
 
-.smplfy-bulk-sample-table tbody tr:last-child > * {
+.smplfy-bulk-sample-table tbody tr:last-child:not(.smplfy-bulk-virtual-spacer) > * {
   border-bottom: 0;
+}
+
+.smplfy-bulk-sample-table tbody .smplfy-bulk-virtual-spacer > td {
+  padding: 0;
+  border: 0;
+  background: #ffffff;
+  pointer-events: none;
+}
+
+.smplfy-bulk-sample-table tbody .smplfy-bulk-virtual-spacer:hover > td {
+  background: #ffffff;
 }
 
 .smplfy-bulk-sample-table .smplfy-bulk-serial-cell {
   position: sticky;
   left: 0;
   z-index: 6;
-  width: 56px;
-  min-width: 56px;
-  max-width: 56px;
+  width: 112px;
+  min-width: 112px;
+  max-width: 112px;
   padding: 10px 8px;
   background: #eff8ff;
   text-align: center;
@@ -511,7 +524,7 @@
 
 .smplfy-bulk-action-buttons {
   width: 100%;
-  height: 37px;
+  height: 39px;
   padding: 3px 8px;
   display: flex;
   align-items: center;
@@ -529,7 +542,7 @@
 
 .smplfy-bulk-parameters-toggle {
   width: 100%;
-  height: 37px;
+  height: 39px;
   padding: 0 8px;
   display: flex;
   align-items: center;
@@ -559,10 +572,23 @@
   outline-offset: -2px;
 }
 
+/* Sample rows are 40px; inner controls fill the cell minus its 1px bottom border. */
+.smplfy-bulk-sample-table > tbody > tr > td > .smplfy-field-table-cell {
+  --smplfy-field-height: 39px;
+}
+
+.smplfy-bulk-sample-table > tbody > tr > td > .smplfy-form-control.form-control.smplfy-field-table-cell,
+.smplfy-bulk-sample-table > tbody > tr > td > .smplfy-field-table-cell .smplfy-form-control.form-control,
+.smplfy-bulk-sample-table > tbody > tr > td > .smplfy-field-table-cell .smplfy-rich-dropdown-trigger.btn.form-control,
+.smplfy-bulk-sample-table > tbody > tr > td > .smplfy-field-table-cell .smplfy-date-button.btn {
+  min-height: 39px;
+  height: 39px;
+}
+
 .smplfy-bulk-sample-size-field {
   --smplfy-field-split-unit-width: 78px;
 
-  height: 37px;
+  height: 39px;
 }
 
 .smplfy-bulk-sample-size-field .smplfy-split-unit-dropdown {
@@ -734,16 +760,22 @@
 
 .smplfy-bulk-row-toggle {
   width: 100%;
-  height: 38px;
+  height: 40px;
   padding: 0 8px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 4px;
   border: 0;
   background: transparent;
   color: var(--smplfy-primitive-neutral-800);
-  font: inherit;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  text-align: left;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -979,4 +1011,280 @@
 .smplfy-bulk-sample-table .smplfy-field-suggestion .smplfy-rich-dropdown-value {
   color: var(--smplfy-primitive-neutral-400) !important;
   opacity: 1;
+}
+
+/* Modal bulk creation: shared form on the left, per-sample varying fields on the right. */
+/*
+ * Bulk pane width model:
+ *   A = fixed cols (sr no + action) + sum of unique data cols (min 148px, grows with label)
+ *   B = A + card padding
+ * B hugs its content until it would exceed 40% of the layout, then it is capped
+ * and only the middle table columns scroll horizontally.
+ */
+.smplfy-modal-bulk-layout {
+  --smplfy-modal-bulk-serial-width: 80px;
+  --smplfy-modal-bulk-action-width: 68px;
+  --smplfy-modal-bulk-column-min: 148px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+}
+
+/* Other card headers are px-4 py-3 around a 24px line, so 56px total. */
+.smplfy-modal-bulk-header {
+  min-height: 56px;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.smplfy-modal-bulk-form {
+  flex: 1 1 60%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.smplfy-modal-bulk-table-pane {
+  flex: 0 1 auto;
+  width: max-content;
+  min-width: 0;
+  max-width: 40%;
+}
+
+.smplfy-modal-bulk-table-pane > .smplfy-card.card {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Tighter than the form cards so the table keeps as much width as possible. */
+.smplfy-modal-bulk-body {
+  width: max-content;
+  min-width: 0;
+  max-width: 100%;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.smplfy-modal-bulk-empty {
+  min-height: 200px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.smplfy-modal-bulk-empty p {
+  max-width: 320px;
+  color: var(--smplfy-primitive-neutral-600);
+}
+
+/* The design system caps large modals at 544px, too narrow for a two-column checklist. */
+.smplfy-modal-bulk-selector-modal {
+  --smplfy-modal-custom-width: 720px;
+}
+
+.smplfy-modal > .modal-dialog.smplfy-modal-bulk-selector-modal .modal-footer {
+  border-top: 1px solid var(--smplfy-modal-divider);
+}
+
+/* Compact stepper so the toolbar row stays on a single line. */
+.smplfy-modal-bulk-area .smplfy-sample-count-label {
+  font-size: 14px;
+}
+
+.smplfy-modal-bulk-area .smplfy-sample-count-control {
+  width: 104px;
+  height: 32px;
+  grid-template-columns: 28px 48px 28px;
+}
+
+.smplfy-modal-bulk-area .smplfy-sample-count-button,
+.smplfy-modal-bulk-area .smplfy-sample-count-value {
+  height: 30px;
+  font-size: 14px;
+}
+
+.smplfy-modal-bulk-area .smplfy-sample-count-value {
+  width: 48px;
+}
+
+.smplfy-bulk-managed-field .smplfy-bulk-managed-value {
+  height: var(--smplfy-field-height);
+  padding: 0 var(--smplfy-field-padding-x, 12px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px dashed var(--smplfy-primitive-neutral-400);
+  border-radius: var(--smplfy-field-radius);
+  background: var(--smplfy-primitive-neutral-200);
+  color: var(--smplfy-primitive-neutral-600);
+  font-family: var(--smplfy-field-font-family);
+  font-size: var(--smplfy-field-font-size);
+}
+
+.smplfy-modal-bulk-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0 24px;
+}
+
+.smplfy-modal-bulk-selector > section:last-child {
+  margin-bottom: 0 !important;
+}
+
+.smplfy-modal-bulk-selector-item.form-check {
+  min-height: var(--smplfy-form-check-hit-size);
+  margin: 0;
+  padding-left: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.smplfy-modal-bulk-selector-item .form-check-label {
+  min-height: var(--smplfy-form-check-hit-size);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  line-height: 20px;
+}
+
+.smplfy-modal-bulk-area {
+  width: max-content;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.smplfy-modal-bulk-frame {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* The outset border overlay is for the original bulk table and clips the last column here. */
+.smplfy-bulk-sample-frame.smplfy-modal-bulk-frame::after {
+  content: none;
+}
+
+/*
+ * Horizontal only: no vertical scroll or max-height. The card grows for every
+ * row, while the native scrollbar is hidden in favor of the persistent track.
+ */
+.smplfy-modal-bulk-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: calc(var(--smplfy-card-radius) - 1px) calc(var(--smplfy-card-radius) - 1px) 0 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+  scroll-behavior: auto;
+  touch-action: pan-x;
+}
+
+.smplfy-modal-bulk-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.smplfy-modal-bulk-frame > .smplfy-bulk-scrollbar-horizontal {
+  position: relative;
+  bottom: auto;
+}
+
+/*
+ * Auto layout lets a unique field grow past its 148px minimum for a long label.
+ * max-content makes the table width equal the fixed columns plus natural unique
+ * columns; the pane caps that result at 40% before overflow begins.
+ */
+.smplfy-bulk-sample-table.smplfy-modal-bulk-table {
+  width: max-content;
+  min-width: 100%;
+  table-layout: auto;
+}
+
+.smplfy-modal-bulk-serial-col {
+  width: var(--smplfy-modal-bulk-serial-width);
+}
+
+.smplfy-modal-bulk-action-col {
+  width: var(--smplfy-modal-bulk-action-width);
+}
+
+/* Unique data columns: 148px floor, growing with the header label. */
+.smplfy-bulk-sample-table.smplfy-modal-bulk-table thead th:not(.smplfy-bulk-serial-cell):not(.smplfy-bulk-action-header) {
+  min-width: var(--smplfy-modal-bulk-column-min);
+  white-space: nowrap;
+}
+
+/* Sr no. and Action are fixed-width, opaque frozen columns. */
+.smplfy-bulk-sample-table.smplfy-modal-bulk-table .smplfy-bulk-serial-cell {
+  position: sticky;
+  left: 0;
+  z-index: 6;
+  width: var(--smplfy-modal-bulk-serial-width);
+  min-width: var(--smplfy-modal-bulk-serial-width);
+  max-width: var(--smplfy-modal-bulk-serial-width);
+  padding-inline: 0;
+  border-right: 1px solid #e6e8eb;
+  background: var(--smplfy-primitive-blue-100);
+}
+
+.smplfy-bulk-sample-table.smplfy-modal-bulk-table .smplfy-bulk-action-header,
+.smplfy-bulk-sample-table.smplfy-modal-bulk-table .smplfy-bulk-action-cell {
+  position: sticky;
+  right: 0;
+  z-index: 6;
+  width: var(--smplfy-modal-bulk-action-width);
+  min-width: var(--smplfy-modal-bulk-action-width);
+  max-width: var(--smplfy-modal-bulk-action-width);
+  border-left: 1px solid #e6e8eb;
+  background: #ffffff;
+}
+
+.smplfy-bulk-sample-table.smplfy-modal-bulk-table thead .smplfy-bulk-serial-cell,
+.smplfy-bulk-sample-table.smplfy-modal-bulk-table .smplfy-bulk-action-header {
+  z-index: 11;
+  background: #eff8ff;
+}
+
+.smplfy-bulk-sample-table.smplfy-modal-bulk-table .smplfy-bulk-action-header {
+  padding-inline: 8px;
+  text-align: center;
+}
+
+.smplfy-bulk-sample-table.smplfy-modal-bulk-table .smplfy-bulk-action-buttons {
+  padding-inline: 8px;
+}
+
+/* No vertical scrolling means the header itself does not need a top offset. */
+.smplfy-modal-bulk-area .smplfy-bulk-sample-table thead th {
+  top: auto;
+}
+
+.smplfy-modal-bulk-serial-label {
+  padding: 0 6px;
+  display: block;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import AppIcon from '../AppIcon';
 import './form-controls.scss';
@@ -53,7 +53,7 @@ export default function InputFieldRichDropdown({
   const isDisabled = disabled || state === 'disabled';
   const isInvalid = state === 'error' || ariaInvalid === 'true';
   const isTableCell = variant === 'table-cell';
-  const normalizedOptions = normalizeOptions(options);
+  const normalizedOptions = useMemo(() => normalizeOptions(options), [options]);
   const filteredOptions = searchable && searchQuery.trim()
     ? normalizedOptions.filter((option) => {
       const query = searchQuery.trim().toLowerCase();
