@@ -1032,9 +1032,9 @@
   padding: 16px;
 }
 
-/* Other card headers are px-4 py-3 around a 24px line, so 56px total. */
+/* Match the standard section header's content, padding, and 1px divider. */
 .smplfy-modal-bulk-header {
-  min-height: 56px;
+  min-height: 57px;
   padding: 8px 24px;
   display: flex;
   align-items: center;

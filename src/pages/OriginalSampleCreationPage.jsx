@@ -3003,7 +3003,9 @@ export default function OriginalSampleCreationPage({
   const [products, setProducts] = useState(() => [createProduct()]);
   const [customerModalOpen, setCustomerModalOpen] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
-  const [formVariant, setFormVariant] = useState(layout === 'long-form' ? 'new' : null);
+  const [formVariant, setFormVariant] = useState(
+    layout === 'long-form' ? (mode === 'create' ? 'modal-bulk' : 'new') : null,
+  );
   const [activeProductTabId, setActiveProductTabId] = useState(null);
   const [bulkModeEnabled, setBulkModeEnabled] = useState(false);
   const [modalBulkSelectorOpen, setModalBulkSelectorOpen] = useState(false);
