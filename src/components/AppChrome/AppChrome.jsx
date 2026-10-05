@@ -1,5 +1,5 @@
 import { IconFolder } from '@tabler/icons-react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import companyLogo from '../../../assets/logo-l.png';
 import Badge from '../Badge';
 import AppIcon from '../AppIcon';
@@ -25,16 +25,21 @@ const navigationSections = [
     items: [
       { label: 'Requests for me', icon: 'requests-for-me', key: 'requests-for-me', badgeKey: 'requests-for-me' },
       { label: 'Test Requests', icon: 'test-requests', key: 'test-requests-home', badgeKey: 'test-requests-home' },
+      { label: 'All inwards', icon: 'materials', key: 'all-products' },
+      { label: 'All samples', icon: 'workspace', key: 'all-samples-table' },
+      { label: 'Design Handoff', icon: 'file-description', key: 'design-handoff' },
+    ],
+  },
+  {
+    title: 'MODULES',
+    items: [
       { label: 'Document Management', icon: 'file-description', key: 'document-management-2' },
-      { label: 'All Samples', icon: 'workspace', key: 'all-samples' },
       { label: 'Environment Data', icon: 'cloud-data', key: 'environment-data' },
       { label: 'Leave Records', icon: 'leave-records', key: 'leave-records' },
       { label: 'Materials', icon: 'materials', key: 'materials' },
       { label: 'Instruments', icon: 'tool', key: 'instruments' },
       { label: 'Trainings', icon: 'checklist', key: 'trainings' },
       { label: 'Reports', icon: 'file-text', key: 'reports' },
-      { label: 'Design Handoff', icon: 'file-description', key: 'design-handoff' },
-      { label: 'Template Edit', icon: 'file-text', key: 'template-edit' },
       { label: 'Organogram', icon: 'admin-personnel', key: 'organogram' },
       { label: 'Daily Checks', icon: 'checklist', key: 'daily-check' },
       { label: 'Supplier Management', icon: 'materials', key: 'supplier-management' },
@@ -54,6 +59,29 @@ const sidebarNavScrollTopByKey = {
   desktop: 0,
   mobile: 0,
 };
+
+// Which nav sections the user has collapsed. Persisted so the choice survives a
+// reload. Storage can throw (private mode, disabled cookies), so every access
+// is guarded and falls back to "nothing collapsed".
+const COLLAPSED_SECTIONS_STORAGE_KEY = 'lims.sidebar.collapsedSections';
+
+function readCollapsedSections() {
+  try {
+    const raw = window.localStorage.getItem(COLLAPSED_SECTIONS_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return Array.isArray(parsed) ? parsed.filter((title) => typeof title === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeCollapsedSections(titles) {
+  try {
+    window.localStorage.setItem(COLLAPSED_SECTIONS_STORAGE_KEY, JSON.stringify(titles));
+  } catch {
+    // Preference is a nicety; ignore storage failures.
+  }
+}
 
 function SidebarNavButton({
   item,
@@ -193,6 +221,8 @@ function Sidebar({
   onNavigate,
   badgeCounts = {},
   scrollPersistenceKey = 'desktop',
+  collapsedSections = [],
+  onToggleSection,
 }) {
   const [floatingTooltip, setFloatingTooltip] = useState(null);
   const sidebarNavRef = useRef(null);
@@ -242,12 +272,38 @@ function Sidebar({
         ref={sidebarNavRef}
         onScroll={handleNavScroll}
       >
-        {navigationSections.map((section) => (
+        {navigationSections.map((section) => {
+          const sectionCollapsed = collapsedSections.includes(section.title);
+          const panelId = `sidebar-section-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+          return (
           <section className="sidebar-section" key={section.title}>
-            <div className="sidebar-label">
+            {/* Always a toggle, in every sidebar width. In icon-only mode the
+                48px label has no room for the chevron, so it is hidden there,
+                but the row still toggles. */}
+            <button
+              type="button"
+              className={`sidebar-label sidebar-label-toggle${sectionCollapsed ? ' is-collapsed' : ''}`}
+              aria-expanded={!sectionCollapsed}
+              aria-controls={panelId}
+              onClick={() => onToggleSection?.(section.title)}
+            >
               <span>{section.title}</span>
-            </div>
-            <div className="d-grid gap-1">
+              <AppIcon
+                className="sidebar-label-chevron"
+                name={sectionCollapsed ? 'chevron-right' : 'chevron-down'}
+                size={16}
+                stroke={2}
+              />
+            </button>
+            {/* `d-grid` is display:grid !important, which beats the `hidden`
+                attribute, so the collapsed state swaps the class outright
+                rather than relying on `hidden` alone. */}
+            <div
+              className={sectionCollapsed ? 'd-none' : 'd-grid gap-1'}
+              id={panelId}
+              hidden={sectionCollapsed}
+            >
               {section.items.map((item) =>
                 item.type === 'folder' ? (
                   <SidebarFolderItem
@@ -277,7 +333,8 @@ function Sidebar({
               )}
             </div>
           </section>
-        ))}
+          );
+        })}
       </div>
       <div className="sidebar-footer border-top">
         <SidebarNavButton
@@ -403,6 +460,18 @@ export default function AppChrome({
 }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [sidebarHoverExpanded, setSidebarHoverExpanded] = useState(() => isDesktopSidebarPointerInside);
+  // Held here rather than in Sidebar so the desktop and mobile copies agree.
+  const [collapsedSections, setCollapsedSections] = useState(readCollapsedSections);
+  const handleToggleSection = useCallback((title) => {
+    setCollapsedSections((current) => {
+      const next = current.includes(title)
+        ? current.filter((entry) => entry !== title)
+        : [...current, title];
+
+      writeCollapsedSections(next);
+      return next;
+    });
+  }, []);
   const desktopSidebarShellRef = useRef(null);
   const requestsForMeSidebarBadgeCount = requestSections.reduce(
     (sum, section) => sum + (section.count ?? 0),
@@ -468,6 +537,8 @@ export default function AppChrome({
           onItemClick={() => setMobileSidebarOpen(false)}
           badgeCounts={resolvedSidebarBadgeCounts}
           scrollPersistenceKey="mobile"
+          collapsedSections={collapsedSections}
+          onToggleSection={handleToggleSection}
         />
       </div>
 
@@ -486,6 +557,8 @@ export default function AppChrome({
           onNavigate={onNavigate}
           badgeCounts={resolvedSidebarBadgeCounts}
           scrollPersistenceKey="desktop"
+          collapsedSections={collapsedSections}
+          onToggleSection={handleToggleSection}
         />
       </div>
 

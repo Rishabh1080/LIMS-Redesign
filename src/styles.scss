@@ -210,6 +210,46 @@ body {
   white-space: nowrap;
 }
 
+/* Collapsible section header. The whole row is the hit target. Selector is
+   element + 3 classes so it outranks `.lims-sidebar.is-collapsed .sidebar-label`,
+   which would otherwise force justify-content back to flex-start. */
+.lims-sidebar button.sidebar-label.sidebar-label-toggle {
+  width: 100%;
+  justify-content: space-between;
+  gap: 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lims-sidebar button.sidebar-label.sidebar-label-toggle:hover {
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.lims-sidebar button.sidebar-label.sidebar-label-toggle:focus-visible {
+  outline: 2px solid var(--smplfy-primitive-blue-400);
+  outline-offset: -2px;
+}
+
+.sidebar-label-chevron {
+  flex: 0 0 auto;
+  opacity: 0.85;
+  transition: transform 160ms ease;
+}
+
+/* Icon-only rail: the label is 48px wide and centred, so there is no room for
+   the chevron. The row still toggles, and hover-expanding shows it again.
+   `!important` is needed because AppIcon sets `display: block` inline. */
+.sidebar-shell-desktop.is-collapsed:not(.is-hover-expanded)
+  .lims-sidebar.is-collapsed
+  .sidebar-label-chevron {
+  display: none !important;
+}
+
 .sidebar-link,
 .btn.sidebar-link {
   position: relative;

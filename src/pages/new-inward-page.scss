@@ -1,0 +1,922 @@
+/* New Inward creation page. Mirrors the sample creation visual language:
+   64px breadcrumb bar, white action header, tab strip, tinted scroll area. */
+
+.smplfy-inward-page {
+  height: 100vh;
+  overflow: hidden;
+  --smplfy-inward-testing-drawer-motion: 240ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.smplfy-inward-page > header {
+  min-height: 64px;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.smplfy-inward-page > header > .d-inline-flex {
+  gap: 8px !important;
+  color: var(--smplfy-primitive-neutral-600);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.smplfy-inward-page > header .text-body {
+  color: var(--smplfy-primitive-neutral-800) !important;
+}
+
+.smplfy-inward-page > header > .d-flex {
+  gap: 8px !important;
+}
+
+.smplfy-inward-page > header .smplfy-btn.btn {
+  min-height: 40px;
+}
+
+/* Action header ---------------------------------------------------------- */
+
+.smplfy-inward-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+  background: var(--smplfy-primitive-neutral-100);
+}
+
+.smplfy-inward-title {
+  margin: 0;
+  color: var(--smplfy-primitive-neutral-800);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Square icon buttons that sit next to a field and match its height. Border
+   color matches the adjacent field's rest state rather than the button's own
+   (darker) outline-secondary border, so the pair reads as one control. */
+.smplfy-inward-page .smplfy-inward-icon-button {
+  width: var(--smplfy-field-height) !important;
+  min-width: var(--smplfy-field-height) !important;
+  min-height: var(--smplfy-field-height);
+  height: var(--smplfy-field-height);
+  flex: 0 0 auto;
+  --bs-btn-border-color: var(--smplfy-field-border-default);
+  --bs-btn-hover-border-color: var(--smplfy-field-border-hover);
+  --bs-btn-active-border-color: var(--smplfy-field-border-hover);
+}
+
+/* Tabs ------------------------------------------------------------------- */
+
+.smplfy-inward-tabs {
+  flex-shrink: 0;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+  background: var(--smplfy-primitive-neutral-100);
+}
+
+.smplfy-inward-tabs .nav.nav-tabs {
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+/* Scroll area ------------------------------------------------------------ */
+
+.smplfy-inward-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--smplfy-primitive-neutral-200);
+}
+
+.smplfy-inward-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+/* Section cards ---------------------------------------------------------- */
+
+.smplfy-inward-section.smplfy-card.card {
+  margin: 0;
+  border: 1px solid var(--smplfy-primitive-neutral-300);
+  border-radius: var(--smplfy-card-radius, 12px);
+  background: var(--smplfy-primitive-neutral-100);
+  overflow: visible;
+  box-shadow:
+    0 1px 2px rgba(11, 18, 24, 0.04),
+    0 4px 12px rgba(11, 18, 24, 0.04);
+}
+
+.smplfy-inward-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  min-height: 64px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+}
+
+.smplfy-inward-section-title {
+  margin: 0;
+  color: var(--smplfy-primitive-neutral-800);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-inward-section-body {
+  padding: 24px;
+}
+
+/* Sub-heading inside a card body (e.g. the parameter table's own "Testing
+   Details" label when it lives inside Product Details rather than a
+   separate card). One size down from the card title. */
+.smplfy-inward-subsection-title {
+  color: var(--smplfy-primitive-neutral-800);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* "Modal first"'s setup modal: three field groups (Customer, Product
+   identity, Basic details), each rendered as a label + a row of toggle
+   chips that wrap. Stacked full-width sections instead of three side-by-side
+   columns - a fixed 3-column grid stretched every group to the height of
+   the tallest one (Basic details' ten fields), leaving Customer's single
+   field floating in a mostly-empty column. Wrapping chips size each
+   group's row count to its own field count instead. */
+.smplfy-inward-modal-first-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.smplfy-inward-modal-first-group + .smplfy-inward-modal-first-group {
+  padding-top: 20px;
+  border-top: 1px solid var(--smplfy-primitive-neutral-300);
+}
+
+.smplfy-inward-modal-first-group-title {
+  color: var(--smplfy-primitive-neutral-700);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+}
+
+.smplfy-inward-modal-first-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Toggle chip: a pill button whose only visual difference between states is
+   background/border/text color plus a check glyph that fades in - no layout
+   shift between checked and unchecked, so clicking one doesn't jostle its
+   neighbors. */
+.smplfy-inward-modal-first-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--smplfy-primitive-neutral-300);
+  border-radius: var(--smplfy-badge-radius-pill, 999px);
+  background: var(--smplfy-primitive-neutral-100);
+  color: var(--smplfy-primitive-neutral-800);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--smplfy-field-transition, 150ms ease),
+    border-color var(--smplfy-field-transition, 150ms ease),
+    color var(--smplfy-field-transition, 150ms ease);
+}
+
+.smplfy-inward-modal-first-chip:hover {
+  border-color: var(--smplfy-primitive-neutral-400);
+  background: var(--smplfy-primitive-neutral-200);
+}
+
+.smplfy-inward-modal-first-chip:focus-visible {
+  outline: none;
+  box-shadow: var(--smplfy-button-focus-ring-secondary);
+}
+
+.smplfy-inward-modal-first-chip.is-active {
+  border-color: var(--smplfy-primitive-blue-400);
+  background: var(--smplfy-primitive-blue-75);
+  color: var(--smplfy-primitive-blue-700);
+}
+
+.smplfy-inward-modal-first-chip.is-active:hover {
+  border-color: var(--smplfy-primitive-blue-450);
+  background: var(--smplfy-primitive-blue-100);
+}
+
+.smplfy-inward-modal-first-chip.is-active:focus-visible {
+  box-shadow: var(--smplfy-button-focus-ring-primary);
+}
+
+/* Check glyph: reserved space always present (no width jump on toggle),
+   only its circle + tick fade/scale in once the chip becomes active. */
+.smplfy-inward-modal-first-chip-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--smplfy-primitive-neutral-400);
+  color: transparent;
+  transition:
+    background-color var(--smplfy-field-transition, 150ms ease),
+    border-color var(--smplfy-field-transition, 150ms ease),
+    color var(--smplfy-field-transition, 150ms ease);
+}
+
+.smplfy-inward-modal-first-chip.is-active .smplfy-inward-modal-first-chip-check {
+  border-color: var(--smplfy-primitive-blue-500);
+  background: var(--smplfy-primitive-blue-500);
+  color: var(--smplfy-primitive-neutral-100);
+}
+
+/* Every count stepper on this page (the header-actions one and the compact
+   one beside a card title) uses 32x32 +/- buttons. Width and height are both
+   set explicitly on the buttons themselves, not inferred from the grid
+   column, so they can't drift apart the way relying on grid-template-columns
+   alone did before. */
+.smplfy-inward-page .smplfy-sample-count-control {
+  height: 32px;
+  grid-template-columns: 32px 48px 32px;
+}
+
+.smplfy-inward-page .smplfy-sample-count-button {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+}
+
+.smplfy-inward-page .smplfy-sample-count-value {
+  width: 48px;
+  height: 32px;
+  font-size: 14px;
+}
+
+.smplfy-inward-count-stepper-compact .smplfy-sample-count-control {
+  width: 112px;
+}
+
+/* "More details" toggle --------------------------------------------------- */
+
+/* A field-shaped column of its own, sibling to Billing Address rather than
+   packed into that field's label row, so its input-row slot sits at the same
+   level as every other field's input. The empty label row above it is a
+   spacer matching the real label rows' height. The button itself uses the
+   shared .smplfy-field-shell-button base (form-controls.scss); only the
+   link colour and hover fill are specific to this toggle. */
+.smplfy-inward-more-details-field {
+  justify-content: flex-end;
+}
+
+.smplfy-inward-page .smplfy-inward-more-details-toggle.btn {
+  color: var(--smplfy-primitive-blue-500);
+}
+
+.smplfy-inward-page .smplfy-inward-more-details-toggle.btn:hover {
+  color: var(--smplfy-primitive-blue-600);
+  background: var(--smplfy-primitive-blue-100);
+}
+
+.smplfy-inward-page .smplfy-inward-more-details-toggle.btn:focus-visible {
+  outline: 2px solid var(--smplfy-primitive-blue-500);
+  outline-offset: 1px;
+}
+
+/* Workflow toggle -------------------------------------------------------- */
+
+.smplfy-inward-switch.form-check.form-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 0;
+  margin: 0;
+  padding-left: 0;
+}
+
+.smplfy-inward-switch .form-check-input {
+  flex-shrink: 0;
+  margin: 0;
+  float: none;
+}
+
+.smplfy-inward-switch .form-check-label {
+  margin: 0;
+  color: var(--smplfy-primitive-neutral-700);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Error dialog ----------------------------------------------------------- */
+
+/* Only the header icon carries the error tone; the rest of the dialog stays
+   standard. Overrides the colour Modal.scss sets on header icons. */
+.smplfy-inward-error-modal .modal-header > div > svg {
+  color: var(--smplfy-primitive-red-500);
+}
+
+/* Bulk actions row (single-page version) ---------------------------------
+   Sits in the card body above the table, not the card header, since it only
+   applies once rows are checked rather than acting on the table unconditionally. */
+/* Action center: Undo/Redo, Auto-fill/Copy/Paste/Delete, and a status line,
+   above the Case 1 product grid (and reused above Product-wise Basic
+   Details). Sits in the card body above the table, same placement as the
+   bulk actions bar below. */
+.smplfy-inward-action-center {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  padding: 10px 0;
+}
+
+.smplfy-inward-action-center-status {
+  color: var(--smplfy-primitive-neutral-700);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* Select all / Clear selection / Invert selection: plain text links next to
+   the status line, not buttons - they're secondary to the actual
+   Copy/Paste/Delete actions on the right, so they stay visually quiet. */
+.smplfy-inward-selection-link-button {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--smplfy-primitive-blue-500);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.smplfy-inward-selection-link-button:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.smplfy-inward-selection-link-button:disabled {
+  color: var(--smplfy-primitive-neutral-400);
+  cursor: not-allowed;
+}
+
+/* Delayed hover tooltip for icon-only buttons: any element with a
+   data-tooltip attribute gets a small dark label above it, but only after
+   the pointer has sat still over the button for 1.2s (transition-delay on
+   opacity, not a JS timer) - a fast pass-over never triggers it. Pure CSS,
+   so it works on every icon-only button that adopts data-tooltip without
+   needing a wrapper component per button. */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--smplfy-primitive-neutral-800);
+  color: var(--smplfy-primitive-neutral-100);
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  transition-delay: 0s;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+  transition-delay: 1.2s;
+}
+
+/* Shared/Product-wise segmented toggle, next to Basic Details' title. Quick
+   prototype-grade: two plain buttons in a pill frame, not a shared design
+   system component. */
+.smplfy-inward-mode-toggle-wrap {
+  position: relative;
+}
+
+.smplfy-inward-mode-toggle {
+  display: inline-flex;
+  border: 1px solid var(--smplfy-primitive-neutral-300);
+  border-radius: var(--smplfy-field-radius);
+  overflow: hidden;
+}
+
+.smplfy-inward-mode-toggle-option {
+  border: 0;
+  background: var(--smplfy-primitive-neutral-100);
+  color: var(--smplfy-primitive-neutral-700);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+.smplfy-inward-mode-toggle-option.is-disabled-look {
+  color: var(--smplfy-primitive-neutral-400);
+}
+
+.smplfy-inward-mode-toggle-option.active {
+  background: var(--smplfy-primitive-blue-500);
+  color: var(--smplfy-primitive-neutral-100);
+}
+
+.smplfy-inward-mode-toggle-option + .smplfy-inward-mode-toggle-option {
+  border-left: 1px solid var(--smplfy-primitive-neutral-300);
+}
+
+.smplfy-inward-mode-toggle-hint {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 10;
+  width: 240px;
+  padding: 8px 10px;
+  border-radius: var(--smplfy-field-radius);
+  background: var(--smplfy-primitive-neutral-800);
+  color: var(--smplfy-primitive-neutral-100);
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+.smplfy-inward-bulk-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--smplfy-primitive-neutral-300);
+  border-radius: var(--smplfy-field-radius);
+  background: var(--smplfy-primitive-neutral-200);
+}
+
+.smplfy-inward-bulk-actions-label {
+  color: var(--smplfy-primitive-neutral-700);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Tables ----------------------------------------------------------------- */
+
+.smplfy-inward-table-frame {
+  position: relative;
+  border: 1px solid var(--smplfy-primitive-neutral-300);
+  border-radius: var(--smplfy-card-radius, 12px);
+  background: var(--smplfy-primitive-neutral-100);
+  overflow: hidden;
+}
+
+/* Horizontal scroll only: the table grows to fit its rows so there is never a
+   scrollbar inside it. Dropdown menus are portalled, so nothing is clipped.
+   position: relative makes this the containing block for the column/row
+   selection overlay below, so the overlay scrolls with the table instead of
+   staying fixed while the table scrolls under it. */
+.smplfy-inward-table-viewport {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* The product grid's column/row selection frame - one rectangle, positioned
+   and sized in JS from the actual selected cells' measured geometry, drawn
+   on top of the table. This replaces an earlier attempt at stitching the
+   frame together from each cell's own border/box-shadow: every cell in the
+   table has its own independent 1px border, and neighbouring cells' borders
+   don't reliably line up pixel-for-pixel (subpixel layout rounding puts them
+   a fraction of a pixel apart), so that approach always left visible seams
+   at row boundaries. A single overlay has no seams to have. */
+.smplfy-inward-selection-overlay {
+  position: absolute;
+  z-index: 5;
+  border: 2px solid var(--smplfy-primitive-blue-500);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.smplfy-inward-table {
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  background: var(--smplfy-primitive-neutral-100);
+  color: var(--smplfy-primitive-neutral-800);
+  font-family: 'Inter', sans-serif;
+}
+
+.smplfy-inward-table th,
+.smplfy-inward-table td {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid var(--smplfy-primitive-neutral-300);
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+  background: var(--smplfy-primitive-neutral-100);
+  vertical-align: middle;
+}
+
+.smplfy-inward-table th:last-child,
+.smplfy-inward-table td:last-child {
+  border-right: 0;
+}
+
+/* Transparent rather than 0: the frame's own border already draws the visible
+   edge here, but a 0-width border also removes the 1px of table height that
+   reserves room for the focus overlay's border-bottom below. Without it, the
+   table's rendered height (and so the frame's overflow:hidden clip boundary)
+   sits flush with the cell content, and that last pixel of the active-cell
+   border gets clipped instead of drawn. */
+.smplfy-inward-table tbody tr:last-child > th,
+.smplfy-inward-table tbody tr:last-child > td {
+  border-bottom: 1px solid transparent;
+}
+
+/* Not sticky: the table never scrolls vertically, so there is nothing to stick
+   to and a sticky header would only create stacking surprises. */
+.smplfy-inward-table thead th {
+  height: 36px;
+  padding: 10px 8px;
+  background: var(--smplfy-primitive-blue-100);
+  color: var(--smplfy-primitive-neutral-800);
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  text-align: left;
+  white-space: nowrap;
+  transition: background-color var(--smplfy-field-transition);
+}
+
+/* Hover on every header cell and every first-column (serial) cell, on every
+   table on the page: one shade darker than their resting blue-100. Purely
+   visual by default; .smplfy-inward-selectable-header layers click-to-select
+   on top of this where a selection actually does something (the product
+   grid's column/row picks, wired below). */
+.smplfy-inward-table thead th:hover,
+.smplfy-inward-serial-cell:hover,
+.smplfy-inward-checkbox-cell:hover {
+  background: var(--smplfy-primitive-blue-200) !important;
+}
+
+.smplfy-inward-required {
+  color: var(--smplfy-primitive-red-600);
+}
+
+.smplfy-inward-table tbody th,
+.smplfy-inward-table tbody td {
+  height: 40px;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* Case 1's product grid specifically (Category/Product/Sample Size/Batch +
+   checkbox/serial/Testing Details) - taller rows than the rest of the page's
+   tables, since its cells now carry more (a status badge, a labeled button,
+   sometimes a note) and needed the breathing room. */
+.smplfy-inward-product-table tbody th,
+.smplfy-inward-product-table tbody td {
+  height: 56px;
+}
+
+/* Raise the active cell so focus rings sit above neighbouring borders.
+   Excludes the checkbox column (a plain checkbox needs its own focus ring,
+   not a cell border wrapping the whole td) and the Testing Details column
+   (its badge button already has its own active/focus state - a cell border
+   on top of that reads as two competing selection states on one control). */
+.smplfy-inward-table tbody td:focus-within:not(:has(.smplfy-form-check-input)):not(.smplfy-inward-testing-details-cell),
+.smplfy-inward-table tbody td:has(.smplfy-rich-dropdown-field.show) {
+  position: relative;
+  z-index: 3;
+}
+
+.smplfy-inward-table tbody td:focus-within:not(:has(.smplfy-form-check-input)):not(.smplfy-inward-testing-details-cell)::after,
+.smplfy-inward-table tbody td:has(.smplfy-rich-dropdown-field.show)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border: 1px solid var(--smplfy-primitive-blue-500);
+  pointer-events: none;
+}
+
+/* First (count/serial) column of every table on this page matches the header
+   row's blue, so the header colour and the row-number column read as one
+   consistent accent rather than the header being blue and the count column
+   a different neutral grey. Case 1's product grid also has a checkbox
+   column ahead of the serial column - same blue, so it reads as part of the
+   same pinned "identity" strip rather than a separate plain-white column. */
+.smplfy-inward-serial-cell,
+.smplfy-inward-checkbox-cell {
+  padding: 0 12px !important;
+  background: var(--smplfy-primitive-blue-100) !important;
+}
+
+/* Product-wise Basic Details table only: ten columns wide, so it scrolls
+   horizontally - the Product column stays pinned to the left edge of that
+   scroll instead of scrolling away with the rest. z-index keeps it above
+   the scrolled-under cells but below the selection overlay (z-index 5). */
+.smplfy-inward-sticky-first-col {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+/* Case 1's product grid: the checkbox and Product (serial) columns pin to
+   the left edge while Category/Product/Sample Size/Batch scroll underneath,
+   and Testing Details pins to the right edge - so the row's identity and
+   its testing-status badge both stay visible no matter how far the middle
+   columns are scrolled. Left offsets are the other pinned column's own
+   fixed width (see caseOneProductCheckboxWidth/productSerialWidth in JS);
+   changing either width means updating the offset here too, there's no way
+   to express "sum of preceding sticky columns" in plain CSS. */
+.smplfy-inward-sticky-checkbox-col {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+.smplfy-inward-sticky-serial-col {
+  position: sticky;
+  left: 48px;
+  z-index: 2;
+}
+
+/* Right-pinned column needs its own shadow to read as "pinned" the way the
+   left-pinned columns' blue background already does - a plain white/tinted
+   cell butted against scrolled content has no other visual seam. */
+.smplfy-inward-sticky-testing-details-col {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  box-shadow: -4px 0 8px -2px rgba(15, 23, 42, 0.12);
+}
+
+/* Column and row selection ------------------------------------------------
+   On the product grid specifically, header cells and first-column cells are
+   also click targets: click a header to select that whole column (scopes
+   "Auto-fill column"), click a serial cell to select that whole row. A
+   selection stays on the darker hover shade so it's visible without hovering,
+   every cell in the selected column/row gets a light tint, and a single
+   measured overlay (.smplfy-inward-selection-overlay, rendered in JS) draws
+   the blue frame around the whole column/row on top of everything else. */
+.smplfy-inward-selectable-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.smplfy-inward-selectable-header.is-selected,
+.smplfy-inward-selectable-header.is-selected:hover {
+  background: var(--smplfy-primitive-blue-200) !important;
+}
+
+.smplfy-inward-selectable-header:focus-visible {
+  position: relative;
+  z-index: 2;
+  outline: 2px solid var(--smplfy-primitive-blue-500);
+  outline-offset: -2px;
+}
+
+/* Light tint fills every cell in the selected column/row so the selection
+   reads clearly even outside the frame overlay's 2px edge (e.g. behind a
+   dropdown's caret). The frame itself is .smplfy-inward-selection-overlay
+   above, not drawn per-cell. */
+.smplfy-inward-table tbody td.smplfy-inward-column-selected,
+.smplfy-inward-table tbody th.smplfy-inward-row-selected {
+  background: var(--smplfy-primitive-blue-50);
+}
+
+.smplfy-inward-serial-label {
+  color: var(--smplfy-primitive-neutral-700);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.smplfy-inward-action-cell {
+  padding: 0 8px !important;
+  text-align: center;
+}
+
+/* The design system's "small" button preset is 32px; icon-only action
+   buttons on this page (Copy/Paste/Delete on product rows, Delete on
+   parameter rows) need to be 28x28 instead. --smplfy-button-current-height
+   also drives the icon-only width rule (.smplfy-btn:has(> svg:only-child)),
+   so overriding it here shrinks both dimensions together. */
+.smplfy-inward-action-cell .btn {
+  --smplfy-button-current-height: 28px;
+
+  min-height: 28px;
+  height: 28px;
+  padding-inline: 6px;
+}
+
+.smplfy-inward-testing-details-cell {
+  padding: 0 12px !important;
+}
+
+/* The design system's "small" button preset is 32px; this one needs to read
+   noticeably lighter than the Action column's icon buttons, so it gets its
+   own height rather than reusing an existing size token. */
+.smplfy-inward-testing-details-cell .smplfy-btn.btn {
+  --smplfy-button-current-height: 28px;
+
+  min-height: 28px;
+  height: 28px;
+}
+
+/* Case 1's Testing Details badge: a plain unstyled button wrapping a
+   StatusPill, so the whole pill is the click target (opens the drawer)
+   without a separate "Edit" button next to it. */
+.smplfy-inward-testing-details-badge-button {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.smplfy-inward-testing-details-copied-note {
+  color: var(--smplfy-primitive-neutral-600);
+  font-size: 12px;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+/* The badge itself (StatusPill) gets a trailing edit icon so it reads as a
+   button, not just a status label - the icon and the pill's own hover state
+   below are what carry that. */
+.smplfy-inward-testing-details-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.smplfy-inward-testing-details-badge-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* One shade darker across background, border, and text on hover - blue and
+   red are the only two tones the badge ever uses (has parameters / doesn't),
+   so both get an explicit override rather than a generic "darken" filter,
+   which would also darken the icon and any focus ring inconsistently. */
+.smplfy-inward-testing-details-badge-button:hover .smplfy-inward-testing-details-badge.text-primary.bg-primary-subtle {
+  background-color: var(--smplfy-primitive-blue-100) !important;
+  border-color: var(--smplfy-primitive-blue-450) !important;
+  color: var(--smplfy-primitive-blue-700) !important;
+}
+
+.smplfy-inward-testing-details-badge-button:hover .smplfy-inward-testing-details-badge.text-danger.bg-danger-subtle {
+  /* red-50 is nearly indistinguishable from the resting red-25 fill in this
+     palette, so red-100 is the step that actually reads as "darker". */
+  background-color: var(--smplfy-primitive-red-100) !important;
+  border-color: var(--smplfy-primitive-red-300) !important;
+  color: var(--smplfy-primitive-red-700) !important;
+}
+
+/* Per-product parameter grid sits inside a card, so it needs no scrollport.
+   Auto layout lets the serial column shrink to its content. */
+.smplfy-inward-parameter-grid {
+  table-layout: auto;
+}
+
+/* Same header treatment as the product table: blue background, dark text
+   (matches .smplfy-inward-table thead th; this rule only exists because
+   .smplfy-inward-parameter-grid needs table-layout: auto, which the base
+   rule doesn't set). */
+
+.smplfy-inward-parameter-grid .smplfy-inward-serial-cell {
+  width: 1%;
+  padding: 0 12px !important;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Testing details drawer (single-page version) --------------------------- */
+
+/* Stays mounted while closed (see the component), so it needs to animate its
+   own slide rather than relying on Bootstrap's JS-driven .showing class. */
+.smplfy-inward-testing-drawer.offcanvas {
+  --bs-offcanvas-width: 720px;
+  --bs-offcanvas-bg: var(--smplfy-primitive-neutral-100);
+
+  padding: 0;
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.18);
+  visibility: hidden;
+  transform: translateX(100%);
+  transition:
+    transform var(--smplfy-inward-testing-drawer-motion),
+    visibility var(--smplfy-inward-testing-drawer-motion);
+  z-index: 1045;
+}
+
+.smplfy-inward-testing-drawer.offcanvas.show {
+  visibility: visible;
+  transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smplfy-inward-testing-drawer.offcanvas {
+    transition: none;
+  }
+}
+
+.smplfy-inward-testing-drawer.offcanvas .offcanvas-header {
+  min-height: 40px;
+  padding: 24px 24px 20px;
+}
+
+.smplfy-inward-testing-drawer.offcanvas .offcanvas-title {
+  color: var(--smplfy-primitive-neutral-800);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-inward-testing-drawer.offcanvas .offcanvas-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.smplfy-inward-testing-drawer.offcanvas .offcanvas-footer {
+  flex-shrink: 0;
+  padding: 16px 24px;
+}
+
+@media (max-width: 767.98px) {
+  .smplfy-inward-testing-drawer.offcanvas {
+    --bs-offcanvas-width: 100%;
+  }
+}
+
+/* Toast ------------------------------------------------------------------ */
+
+.smplfy-inward-toast-region {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1080;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 991.98px) {
+  .smplfy-inward-header,
+  .smplfy-inward-tabs,
+  .smplfy-inward-content {
+    padding-inline: 16px;
+  }
+
+  .smplfy-inward-section-header,
+  .smplfy-inward-section-body {
+    padding-inline: 16px;
+  }
+}

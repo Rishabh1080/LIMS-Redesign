@@ -11,6 +11,10 @@ import CustomFormListingPage from './pages/CustomFormListingPage';
 import DashboardPage from './pages/DashboardPage';
 import DatasheetPage from './pages/DatasheetPage';
 import DesignHandoffPage from './pages/DesignHandoffPage';
+import NewInwardPage from './pages/NewInwardPage';
+import AllInwardsListingPage from './pages/AllInwardsListingPage';
+import AllSamplesTablePage from './pages/AllSamplesTablePage';
+import InwardDetailsPage from './pages/InwardDetailsPage';
 import DocumentDetailsPage from './pages/DocumentDetailsPage';
 import DocumentManagementPage from './pages/DocumentManagementPage';
 import EnvironmentDataPage from './pages/EnvironmentDataPage';
@@ -43,6 +47,7 @@ import TestRequestsHomePage from './pages/TestRequestsHomePage';
 import TestRequestsListingPage from './pages/TestRequestsListingPage';
 import TrDetailsPage from './pages/TrDetailsPage';
 import { allSamplesDb } from './data/samplesDb';
+import { getInwardBySampleId } from './data/inwardsDb';
 import { initialInstrumentServices, isBreakdownServiceType } from './data/instrumentServices';
 import {
   createAnalyticsSessionId,
@@ -63,6 +68,10 @@ function getInitialPage() {
 
     if (window.location.hash === '#admin-hub') {
       return 'admin-hub';
+    }
+
+    if (window.location.hash === '#new-inward') {
+      return 'new-inward';
     }
   }
 
@@ -258,6 +267,8 @@ export default function App() {
     sample: null,
   });
   const [allSamplesToast, setAllSamplesToast] = useState(null);
+  const [inwardDetailsState, setInwardDetailsState] = useState({ inward: null });
+  const [newInwardState, setNewInwardState] = useState({ sourcePage: 'design-handoff' });
   const [testRequestsState, setTestRequestsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
@@ -423,6 +434,34 @@ export default function App() {
       reportingDate: originalSample?.reportingDate ?? null,
       delayed: originalSample?.delayed,
       sample: originalSample ?? null,
+    });
+  };
+
+  const openInwardDetails = (inward, sourcePage = 'all-products') => {
+    setInwardDetailsState({ inward, sourcePage });
+    setActivePage('inward-details');
+  };
+
+  // The New Inward form is reachable from Design Handoff and from All inwards;
+  // the caller becomes the back target.
+  const openNewInward = (sourcePage = 'design-handoff') => {
+    setNewInwardState({ sourcePage });
+    setActivePage('new-inward');
+  };
+
+  // Opens the sample a product became, keeping the caller as the back target.
+  // Inward products are not in samplesDb, so status falls back to the inward's.
+  const openInwardSample = (product, sourcePage) => {
+    const knownSample = allSamplesDb.find((sample) => sample.id === product?.sampleId);
+    const inward = getInwardBySampleId(product?.sampleId);
+
+    openSampleDetails(product?.sampleId, {
+      sourcePage,
+      sampleStatus: knownSample?.status ?? inward?.status ?? 'Pending',
+      createdOn: knownSample?.createdOn ?? inward?.createdOn ?? '06/03/2026, 10:13',
+      reportingDate: knownSample?.reportingDate ?? null,
+      delayed: knownSample?.delayed,
+      sample: knownSample ?? null,
     });
   };
 
@@ -727,9 +766,20 @@ export default function App() {
     setActivePage(assessmentId ? 'edit-assessment' : 'new-managed-assessment');
   };
 
+  const parentLabelBySourcePage = {
+    'all-samples': 'All Samples',
+    'design-handoff': 'Design Handoff',
+  };
+
+  // Old sample creation flow's "back" destination, keyed by where it was opened from.
+  const sampleFormBackPageBySourcePage = {
+    'all-samples': 'all-samples',
+    'design-handoff': 'design-handoff',
+  };
+
   const openNewSample = (options = {}) => {
     const { sourcePage = 'samples-workspace' } = options;
-    const parentLabel = sourcePage === 'all-samples' ? 'All Samples' : 'Samples Workspace';
+    const parentLabel = parentLabelBySourcePage[sourcePage] ?? 'Samples Workspace';
 
     trackEvent('sample_creation_flow_new_sample_clicked', getSampleCreationFlowProps({
       from_page: activePage,
@@ -925,6 +975,22 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'new-inward') {
+      setNewInwardState({ sourcePage: 'design-handoff' });
+      setActivePage('new-inward');
+      return;
+    }
+
+    if (nextPage === 'all-products' || nextPage === 'all-samples-table') {
+      setActivePage(nextPage);
+      return;
+    }
+
+    if (nextPage === 'inward-details') {
+      setActivePage('inward-details');
+      return;
+    }
+
     if (nextPage === 'training-management') {
       setActivePage('training-management');
       return;
@@ -972,7 +1038,7 @@ export default function App() {
         trainings={defaultTrainings}
         onNavigate={handleNavigate}
         onOpenSample={openSampleDetails}
-        onNewSample={openNewSample}
+        onNewInward={() => openNewInward('dashboard')}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
@@ -993,12 +1059,17 @@ export default function App() {
         reportingDate={sampleDetailsState.reportingDate}
         delayed={sampleDetailsState.delayed}
         sample={sampleDetailsState.sample}
+        onGoToInward={(inward) => openInwardDetails(inward, 'sample-details')}
         sampleCreationFlowSessionId={sampleCreationFlowRef.current.id}
         sampleCreationFlowStartedAt={sampleCreationFlowRef.current.startedAt}
         sampleCreationFormVariant={sampleCreationFlowRef.current.formVariant}
-        onBack={() =>
-          setActivePage(sampleDetailsState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
-        }
+        onBack={() => {
+          const { sourcePage } = sampleDetailsState;
+          if (['all-samples', 'all-samples-table', 'inward-details', 'all-products'].includes(sourcePage)) {
+            return setActivePage(sourcePage);
+          }
+          return setActivePage('workspace');
+        }}
         onEditSample={() =>
           openEditSample(
             sampleDetailsState.sample ?? {
@@ -1495,6 +1566,7 @@ export default function App() {
     return (
       <DesignHandoffPage
         onNavigate={handleNavigate}
+        onNewSample={openNewSample}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
@@ -1668,6 +1740,80 @@ export default function App() {
     }
   }
 
+  if (activePage === 'all-products') {
+    return (
+      <AllInwardsListingPage
+        onNavigate={handleNavigate}
+        onOpenInward={openInwardDetails}
+        onNewInward={() => openNewInward('all-products')}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'all-samples-table') {
+    return (
+      <AllSamplesTablePage
+        onNavigate={handleNavigate}
+        onOpenSample={(product) => openInwardSample(product, 'all-samples-table')}
+        onOpenInward={(inward) => openInwardDetails(inward, 'all-samples-table')}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'inward-details') {
+    return (
+      <InwardDetailsPage
+        inward={inwardDetailsState.inward}
+        onNavigate={handleNavigate}
+        onBack={() => setActivePage(inwardDetailsState.sourcePage ?? 'all-products')}
+        onGoToSample={(product) => openInwardSample(product, 'inward-details')}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'new-inward') {
+    return (
+      <NewInwardPage
+        parentLabel={
+          newInwardState.sourcePage === 'all-products'
+            ? 'All inwards'
+            : newInwardState.sourcePage === 'dashboard'
+              ? 'Dashboard'
+              : 'Design Handoff'
+        }
+        onBack={() => setActivePage(newInwardState.sourcePage)}
+        onComplete={(payload) => {
+          const products = payload?.products ?? [];
+          const sampleCount = payload?.sampleCount ?? 1;
+          const unscopedCount = products.filter(
+            (product) => !(product.parameters ?? []).some((parameter) => (
+              ['parameter', 'method', 'charges', 'time'].some((field) => (
+                String(parameter?.[field] ?? '').trim()
+              ))
+            )),
+          ).length;
+          const sampleLabel = sampleCount === 1 ? 'sample' : 'samples';
+
+          setAllSamplesToast(
+            unscopedCount > 0
+              ? `${sampleCount} ${sampleLabel} created · ${unscopedCount} pending parameters`
+              : `${sampleCount} ${sampleLabel} created`,
+          );
+          setActivePage('all-samples');
+        }}
+      />
+    );
+  }
+
   if (activePage === 'new-assessment') {
     return (
       <NewAssessmentPage
@@ -1816,7 +1962,7 @@ export default function App() {
         layout="long-form"
         sampleCreationFlowSessionId={sampleCreationFlowRef.current.id}
         onBackToWorkspace={() =>
-          setActivePage(sampleEditorState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
+          setActivePage(sampleFormBackPageBySourcePage[sampleEditorState.sourcePage] ?? 'workspace')
         }
         onComplete={(payload) => {
           if (payload?.bulk) {
@@ -1843,7 +1989,7 @@ export default function App() {
         parentLabel={sampleEditorState.parentLabel}
         sampleCreationFlowSessionId={sampleCreationFlowRef.current.id}
         onBackToWorkspace={() =>
-          setActivePage(sampleEditorState.sourcePage === 'all-samples' ? 'all-samples' : 'workspace')
+          setActivePage(sampleFormBackPageBySourcePage[sampleEditorState.sourcePage] ?? 'workspace')
         }
         onComplete={(payload) => {
           if (payload?.bulk) {

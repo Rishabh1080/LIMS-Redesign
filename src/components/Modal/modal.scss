@@ -13,7 +13,7 @@
   --bs-modal-header-border-color: var(--smplfy-modal-divider);
   --bs-modal-padding: var(--smplfy-modal-body-padding);
   --bs-modal-footer-gap: var(--smplfy-modal-footer-gap);
-  --bs-modal-footer-border-width: var(--smplfy-button-space-0);
+  --bs-modal-footer-border-color: var(--smplfy-modal-divider);
 
   z-index: var(--smplfy-modal-z-index);
 }
@@ -134,7 +134,8 @@
 .smplfy-modal .modal-footer {
   min-height: var(--smplfy-modal-footer-min-height);
   padding: var(--smplfy-modal-footer-padding);
-  border-top: var(--smplfy-button-space-0);
+  /* Mirrors the header divider so the footer is visually anchored. */
+  border-top: 1px solid var(--smplfy-modal-divider);
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -7,15 +7,22 @@ import { FormElement, ToastNotification } from '../components/FormControls';
 import MoreActionButton from '../components/MoreActionButton';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
-import DataTable from '../components/DataTable';
 import StatusPill from '../components/StatusPill';
 import { getAnalyticsElapsedTime, trackEvent } from '../analytics/posthog';
 import { getStatusPresentation } from '../status/statusRegistry';
 import { isSampleDelayed } from '../utils/sampleDelay';
+import { getInwardById, getInwardBySampleId, getProductBySampleId } from '../data/inwardsDb';
+import {
+  DetailGrid,
+  ProductCard,
+  buildInwardDetailItems,
+} from './inwardDetailSections';
 import './sample-details-page.scss';
+import './product-details-page.scss';
 
-const carpetImage =
-  'data:image/png;base64,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';
+// Stands in for samples that predate the inward flow, so every sample page has
+// a coherent inward to show and link to.
+const FALLBACK_INWARD_ID = 'INW/2026/0147';
 
 const toastMessageByKey = {
   'sample-created': 'Sample Created.',
@@ -29,62 +36,6 @@ const sampleHeaderActionItems = [
   { key: 'add-final-comments', label: 'Add final comments', leftIcon: 'file-text' },
   { key: 'acknowledgement-receipt', label: 'Acknowledgement Receipt', leftIcon: 'file-text' },
   { key: 'proforma-invoice', label: 'Proforma Invoice', leftIcon: 'file-text' },
-];
-
-const basicSampleDetails = [
-  { label: 'Sample Receive Date', value: '14-05-2026' },
-  { label: 'Due Date', value: '11-06-2026' },
-  { label: 'Customer Name', value: 'Indian Art Gallery, Bhadohi' },
-  { label: 'Customer Address', value: 'Carpet City Chauri Road Bhadohi' },
-  { label: 'Customer Representative Name', value: 'Indian Art Gallery' },
-  { label: 'CR Contact Number', value: '8840498586' },
-  { label: 'Customer Request Letter', value: '-' },
-  { label: 'Request Received Mode', value: 'In-Person' },
-  { label: 'Sample Registration Date', value: '2026-05-15' },
-  { label: 'Customer Representative Email ID', value: 'NA' },
-  { label: 'Customer Reference', value: 'Carpet' },
-  { label: '', value: '' },
-];
-
-const productDetails = [
-  { label: 'Sample Qty.', value: '1' },
-  { label: 'Sample Size', value: '190' },
-  { label: 'Quality', value: 'Hand Tufted (Round)' },
-  { label: 'Identification', value: 'Maze Colour: Camel' },
-  { label: 'Condition', value: 'OK' },
-  { label: 'Description', value: 'Hand Tufted Carpet' },
-];
-
-const parameterRows = [
-  {
-    sr: '1',
-    parameter: 'Surface flammability of carpets and rugs',
-    testMethod: '16 CFR Part 1631',
-    size: '0',
-    charges: '3800',
-    estTime: '3',
-  },
-  {
-    sr: '2',
-    parameter: 'Quantitative chemical analysis for Overall composition of carpet',
-    testMethod: 'IS 2006:1988',
-    size: '0',
-    charges: '2000',
-    estTime: '3',
-  },
-  {
-    sr: '3',
-    parameter: 'Colour fastness to rubbing ( Dry & Wet)',
-    testMethod: '16 CFR Part 1631',
-    size: '0',
-    charges: '3800',
-    estTime: '3',
-  },
-];
-
-const products = [
-  { id: 'product-1', name: 'Carpets and Rugs' },
-  { id: 'product-2', name: 'Carpets and Rugs' },
 ];
 
 const activityItems = [
@@ -150,25 +101,6 @@ function splitDateTime(createdOn) {
     date: parts[0] || '06/03/2026',
     time: parts[1] || '10:13',
   };
-}
-
-function FieldValue({ label, value }) {
-  return (
-    <div className="col p-2">
-      {label ? <dt className="text-secondary fw-normal mb-1">{label}</dt> : null}
-      {value ? <dd className="fw-medium text-truncate mb-0">{value}</dd> : null}
-    </div>
-  );
-}
-
-function DetailGrid({ items, columns = 4 }) {
-  return (
-    <dl className={joinClasses('smplfy-sample-details-fields', 'row', `row-cols-${columns}`, 'g-0', 'mb-0')}>
-      {items.map((item, index) => (
-        <FieldValue key={`${item.label}-${index}`} label={item.label} value={item.value} />
-      ))}
-    </dl>
-  );
 }
 
 function DetailsHeader({
@@ -326,100 +258,48 @@ function DetailsAccordion({ id, title, expanded, onToggle, children, className =
   );
 }
 
-function BasicSampleDetails({ expanded, onToggle }) {
+/* The inward this sample came from. */
+function InwardDetailsCard({ inward, onGoToInward }) {
+  const items = buildInwardDetailItems(inward);
+
   return (
-    <DetailsAccordion
-      id="basic-sample-details"
-      title="Basic Sample Details"
-      expanded={expanded}
-      onToggle={onToggle}
-      className="smplfy-sample-details-basic-card"
-    >
-      <DetailGrid items={basicSampleDetails} columns={4} />
-    </DetailsAccordion>
-  );
-}
-
-function ProductTable() {
-  return (
-    <div className="table-responsive">
-      <DataTable responsive={false} className="table-bordered">
-        <colgroup>
-          <col />
-          <col />
-          <col />
-          <col />
-          <col />
-          <col />
-        </colgroup>
-        <thead>
-          <tr>
-            <th scope="col">Sr.</th>
-            <th scope="col">Parameter</th>
-            <th scope="col">Test Method</th>
-            <th scope="col">Size</th>
-            <th scope="col">Charges</th>
-            <th scope="col">Est. Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {parameterRows.map((row) => (
-            <tr key={`${row.sr}-${row.parameter}`}>
-              <td>{row.sr}</td>
-              <td>{row.parameter}</td>
-              <td>{row.testMethod}</td>
-              <td>{row.size}</td>
-              <td className="text-end">{row.charges}</td>
-              <td>{row.estTime}</td>
-            </tr>
-          ))}
-        </tbody>
-      </DataTable>
-    </div>
-  );
-}
-
-function ProductCard({ product }) {
-  return (
-    <article className="smplfy-card card overflow-hidden">
-      <div className="card-header">
-        <h3 className="card-title mb-0">{product.name}</h3>
-      </div>
-
-      <div className="card-body p-0">
-        <div className="row g-0">
-          <div className="col">
-            <DetailGrid items={productDetails} columns={3} />
-          </div>
-          <div className="col-auto p-2">
-            <div className="text-secondary fw-normal mb-1">Image (Click to expand)</div>
-            <img className="img-fluid d-block" src={carpetImage} alt="" />
-          </div>
-        </div>
-
-        <div className="px-4 pb-3 pt-2">
-          <ProductTable />
+    <section className="smplfy-card card overflow-hidden smplfy-sample-details-accordion is-expanded smplfy-sample-details-basic-card smplfy-product-details-sample-card">
+      <div className="card-header p-0" id="sample-inward-details-heading">
+        <div className="smplfy-product-details-card-header">
+          <span className="card-title mb-0">Inward Details</span>
+          <SecondaryButton
+            size="medium"
+            rightIcon="arrow-up-right"
+            onClick={() => onGoToInward?.(inward)}
+          >
+            Go to inward
+          </SecondaryButton>
         </div>
       </div>
-    </article>
+      <div className="card-body p-0" role="region" aria-labelledby="sample-inward-details-heading">
+        <DetailGrid items={items} columns={4} />
+      </div>
+    </section>
   );
 }
 
-function ProductWiseDetails({ expanded, onToggle }) {
+/* Same card as a product card on Inward Details, titled for this context. */
+function TestingDetailsCard({ product }) {
+  if (!product) return null;
+
   return (
-    <DetailsAccordion
-      id="product-wise-details"
-      title="Product-wise Details"
-      expanded={expanded}
-      onToggle={onToggle}
-      className="smplfy-sample-details-products-card"
-    >
-      <div className="smplfy-sample-details-products vstack gap-3">
-        {products.map((product) => (
-          <ProductCard product={product} key={product.id} />
-        ))}
+    <section className="smplfy-card card overflow-hidden smplfy-sample-details-accordion is-expanded smplfy-sample-details-testing-card">
+      <div className="card-header p-0" id="sample-testing-details-heading">
+        <div className="smplfy-product-details-card-header">
+          <span className="card-title mb-0">Testing details</span>
+        </div>
       </div>
-    </DetailsAccordion>
+      <div className="card-body p-0" role="region" aria-labelledby="sample-testing-details-heading">
+        <div className="smplfy-sample-details-products vstack gap-3">
+          <ProductCard product={product} title={product.name} />
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -727,6 +607,7 @@ export default function SampleDetailsPage({
   onOpenCoaReport,
   onOpenProformaInvoice,
   onOpenOriginalSample,
+  onGoToInward,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -740,8 +621,11 @@ export default function SampleDetailsPage({
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [approvalActionModalOpen, setApprovalActionModalOpen] = useState(false);
   const [approvalActionResolved, setApprovalActionResolved] = useState(false);
-  const [basicDetailsExpanded, setBasicDetailsExpanded] = useState(true);
-  const [productDetailsExpanded, setProductDetailsExpanded] = useState(false);
+  // Samples created through the inward flow resolve their own inward. The rest
+  // are older fixtures with no inward, so they borrow a representative one —
+  // the card and the "Go to inward" link then agree on where they point.
+  const sampleInward = getInwardBySampleId(sampleId) ?? getInwardById(FALLBACK_INWARD_ID);
+  const sampleProduct = getProductBySampleId(sampleId) ?? sampleInward?.products?.[0] ?? null;
   const [sendTo, setSendTo] = useState('');
   const [comments, setComments] = useState('');
   const trackedSuccessToastRef = useRef(null);
@@ -818,8 +702,21 @@ export default function SampleDetailsPage({
     showToast('approval-action-success');
   };
 
-  const sourceLabel = sourcePage === 'all-samples' ? 'All Samples' : 'Samples Workspace';
-  const activeNav = sourcePage === 'all-samples' ? 'all-samples' : 'samples-workspace';
+  // Where the viewer came from decides the breadcrumb and which sidebar item
+  // stays lit. Samples are reachable from the flat samples table, the card
+  // listing, and the workspace.
+  const sourceLabelByPage = {
+    'all-samples-table': 'All samples',
+    'all-samples': 'All Samples',
+    'inward-details': 'Inward Details',
+  };
+  const sourceLabel = sourceLabelByPage[sourcePage] ?? 'Samples Workspace';
+  const activeNavByPage = {
+    'all-samples-table': 'all-samples-table',
+    'all-samples': 'all-samples',
+    'inward-details': 'all-products',
+  };
+  const activeNav = activeNavByPage[sourcePage] ?? 'samples-workspace';
   const isAmendmentSample = sample?.category === 'amendment-samples';
   const originalSampleId = isAmendmentSample ? sample?.originalSampleId : null;
   const breadcrumbs = [
@@ -858,14 +755,8 @@ export default function SampleDetailsPage({
               originalSampleId={originalSampleId}
               onOpenOriginalSample={onOpenOriginalSample}
             />
-            <BasicSampleDetails
-              expanded={basicDetailsExpanded}
-              onToggle={() => setBasicDetailsExpanded((isExpanded) => !isExpanded)}
-            />
-            <ProductWiseDetails
-              expanded={productDetailsExpanded}
-              onToggle={() => setProductDetailsExpanded((isExpanded) => !isExpanded)}
-            />
+            <InwardDetailsCard inward={sampleInward} onGoToInward={onGoToInward} />
+            <TestingDetailsCard product={sampleProduct} />
           </div>
           <aside className="smplfy-sample-details-rail">
             <ActionRequiredPanel

@@ -91,12 +91,31 @@ export default function InputFieldRichDropdown({
       }
 
       const menuWidth = Math.max(rect.width, isTableCell ? 320 : rect.width);
+      const gap = 8;
+
+      // Keep the menu on screen. The requested placement wins whenever it
+      // fits; otherwise fall back to whichever side has more room, so a field
+      // near the bottom of the viewport does not open into empty space.
+      const menuHeight = menuRef.current?.offsetHeight || 240;
+      const spaceBelow = window.innerHeight - rect.bottom - gap;
+      const spaceAbove = rect.top - gap;
+      let placeUp = opensUp;
+
+      if (!placeUp && spaceBelow < menuHeight && spaceAbove > spaceBelow) {
+        placeUp = true;
+      } else if (placeUp && spaceAbove < menuHeight && spaceBelow > spaceAbove) {
+        placeUp = false;
+      }
+
+      // Same idea horizontally: table-cell menus have a fixed minimum width,
+      // so a right-edge column would otherwise overflow the window.
+      const maxLeft = Math.max(gap, window.innerWidth - menuWidth - gap);
 
       setMenuStyle({
         position: 'fixed',
-        top: opensUp ? 'auto' : `${rect.bottom + 8}px`,
-        bottom: opensUp ? `${window.innerHeight - rect.top + 8}px` : 'auto',
-        left: `${rect.left}px`,
+        top: placeUp ? 'auto' : `${rect.bottom + gap}px`,
+        bottom: placeUp ? `${window.innerHeight - rect.top + gap}px` : 'auto',
+        left: `${Math.max(gap, Math.min(rect.left, maxLeft))}px`,
         width: `${menuWidth}px`,
         zIndex: 1065,
       });
@@ -267,7 +286,7 @@ export default function InputFieldRichDropdown({
             hasSuggestion && 'smplfy-field-suggestion',
           )}
         >
-          {selectedOption?.label ?? suggestionLabel ?? placeholder}
+          {selectedOption?.label ?? (hasSuggestion ? suggestionLabel : placeholder)}
         </span>
         {selectedOption?.rightLabel ? (
           <span className="smplfy-rich-dropdown-meta">

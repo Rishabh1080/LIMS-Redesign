@@ -167,7 +167,7 @@ function SampleMetricCard({ onNavigate }) {
   );
 }
 
-function QuickActionsCard({ onNavigate, onNewSample }) {
+function QuickActionsCard({ onNavigate, onNewInward }) {
   return (
     <ActionCenterCard className="smplfy-action-center-quick-card">
       <ActionCenterCardHeader
@@ -183,9 +183,9 @@ function QuickActionsCard({ onNavigate, onNewSample }) {
         <PrimaryButton
           leftIcon="plus"
           className="w-100"
-          onClick={() => onNewSample?.({ sourcePage: 'all-samples' })}
+          onClick={() => onNewInward?.()}
         >
-          New sample
+          New Inward
         </PrimaryButton>
         <SecondaryButton
           size="medium"
@@ -410,7 +410,7 @@ function SamplesSummaryCard({ onNavigate }) {
 
 export default function DashboardPage({
   onNavigate,
-  onNewSample,
+  onNewInward,
   sidebarCollapsed,
   onSidebarCollapsedChange,
   sidebarBadgeCounts,
@@ -434,7 +434,7 @@ export default function DashboardPage({
               <SampleMetricCard onNavigate={onNavigate} />
             </div>
             <div className="smplfy-action-center-span-2">
-              <QuickActionsCard onNavigate={onNavigate} onNewSample={onNewSample} />
+              <QuickActionsCard onNavigate={onNavigate} onNewInward={onNewInward} />
             </div>
             <div className="smplfy-action-center-span-12">
               <SamplesSummaryCard onNavigate={onNavigate} />

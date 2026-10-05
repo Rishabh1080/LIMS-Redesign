@@ -8,22 +8,51 @@
   display: inline-flex;
   align-items: center;
   gap: var(--smplfy-field-label-gap);
-  min-height: var(--smplfy-field-font-size);
+  min-height: var(--smplfy-field-label-font-size);
 }
 
 .smplfy-form-label.form-label {
   margin: var(--smplfy-button-space-0);
   color: var(--smplfy-field-label-color);
   font-family: var(--smplfy-field-font-family);
-  font-size: var(--smplfy-field-font-size);
+  font-size: var(--smplfy-field-label-font-size);
   line-height: var(--smplfy-field-line-height);
   font-weight: var(--smplfy-field-label-font-weight);
 }
 
 .smplfy-form-required {
   color: var(--smplfy-field-required-color);
+  font-size: var(--smplfy-field-label-font-size);
+  line-height: var(--smplfy-field-line-height);
+}
+
+/*
+ * A button that sits in a form grid like a labelless field: same height and
+ * width as a real input, invisible border so it reserves exactly the space a
+ * bordered field would, and its content vertically centred the way a field's
+ * value is. For a button that needs to line up with real fields beside it
+ * (e.g. a "More details" toggle next to an address field) without visually
+ * looking like just another button floating in the row.
+ */
+.smplfy-field-shell-button.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-height: var(--smplfy-field-height);
+  height: var(--smplfy-field-height);
+  padding: 0 var(--smplfy-field-padding-inline-compact);
+  border: var(--smplfy-field-border-width) solid transparent;
+  border-radius: var(--smplfy-field-radius);
+  background: transparent;
+  font-family: var(--smplfy-field-font-family);
   font-size: var(--smplfy-field-font-size);
   line-height: var(--smplfy-field-line-height);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  box-shadow: none;
 }
 
 .smplfy-form-text.form-text,

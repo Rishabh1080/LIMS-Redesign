@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import './SampleCountStepper.scss';
 
+function joinClasses(...values) {
+  return values.filter(Boolean).join(' ');
+}
+
 export default function SampleCountStepper({
   value,
   min = 1,
@@ -8,6 +12,7 @@ export default function SampleCountStepper({
   onDecrement,
   onIncrement,
   label = 'No. of samples:',
+  className = '',
 }) {
   const [draftValue, setDraftValue] = useState(String(value));
 
@@ -25,10 +30,12 @@ export default function SampleCountStepper({
     if (nextValue !== value) onChange?.(nextValue);
   };
 
+  const accessibleLabel = label || 'Number of samples';
+
   return (
-    <div className="smplfy-sample-count-stepper">
-      <span className="smplfy-sample-count-label">{label}</span>
-      <div className="smplfy-sample-count-control" role="group" aria-label={label}>
+    <div className={joinClasses('smplfy-sample-count-stepper', className)}>
+      {label ? <span className="smplfy-sample-count-label">{label}</span> : null}
+      <div className="smplfy-sample-count-control" role="group" aria-label={accessibleLabel}>
         <button
           type="button"
           className="smplfy-sample-count-button"
@@ -43,7 +50,7 @@ export default function SampleCountStepper({
           type="number"
           min={min}
           step="1"
-          aria-label={label}
+          aria-label={accessibleLabel}
           value={draftValue}
           onChange={(event) => setDraftValue(event.target.value)}
           onBlur={commitValue}

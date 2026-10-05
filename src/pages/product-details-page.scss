@@ -1,0 +1,88 @@
+/* Inward Details / Sample Details shared tweaks. Layers onto
+   sample-details-page.scss. */
+
+/* Card header that carries a button instead of a collapse chevron. Same box as
+   .smplfy-sample-details-accordion-toggle so headers line up. */
+.smplfy-product-details-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 16px;
+}
+
+.smplfy-product-details-sample-card .smplfy-product-details-card-header > .card-title {
+  min-width: 0;
+}
+
+/* Inward Details has no side rail, so the body is a single column. */
+.smplfy-inward-details-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Section navigation ------------------------------------------------------ */
+
+/* Sits in the page header slot, above the scroll container, so it stays in view
+   without needing sticky positioning. */
+.smplfy-inward-section-nav {
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+  background: var(--smplfy-primitive-neutral-100);
+}
+
+/* Breathing room when a section is scrolled to. */
+.smplfy-inward-section-target {
+  scroll-margin-top: 16px;
+}
+
+@media (max-width: 991.98px) {
+  .smplfy-inward-section-nav {
+    padding-inline: 16px;
+  }
+}
+
+/* Product card header: title on the left, Go to sample on the right. */
+.smplfy-inward-product-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* The single product entry needs no container of its own inside the card.
+   sample-details-page.scss draws that ring with an outline rather than a
+   border, and sizes the card for an image column this page does not render. */
+.smplfy-product-details-page .smplfy-sample-details-products > .smplfy-card.card,
+.smplfy-sample-details-testing-card .smplfy-sample-details-products > .smplfy-card.card {
+  min-height: 0;
+  border: 0;
+  outline: 0;
+}
+
+/* Products stack sits flush against the card edges. */
+.smplfy-product-details-page .smplfy-sample-details-products,
+.smplfy-sample-details-testing-card .smplfy-sample-details-products {
+  padding: 0;
+}
+
+/* sample-details-page.scss pins that row to 128px for its 6-field grid with an
+   image column. These cards show more fields and no image, so the field grid
+   has to size to its content or it collides with the parameter table. */
+.smplfy-product-details-page .smplfy-sample-details-products > .smplfy-card.card > .card-body > .row,
+.smplfy-sample-details-testing-card .smplfy-sample-details-products > .smplfy-card.card > .card-body > .row {
+  height: auto;
+}
+
+/* A standalone product card is its own card on the page, so it keeps the ring
+   and radius that the nested variant drops. */
+.smplfy-inward-product-standalone > .smplfy-card.card {
+  border-radius: var(--smplfy-card-radius, 12px) !important;
+  outline: var(--smplfy-card-border-width) solid var(--smplfy-sample-details-border) !important;
+}

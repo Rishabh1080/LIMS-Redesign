@@ -5,6 +5,24 @@
   gap: 12px !important;
 }
 
+.smplfy-design-handoff-section-heading {
+  color: var(--smplfy-primitive-neutral-600);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.smplfy-design-handoff-card-deprecated.card.btn {
+  --bs-card-bg: var(--smplfy-primitive-neutral-50, #f6f7f8);
+  --bs-card-border-color: var(--smplfy-primitive-neutral-300);
+}
+
+.smplfy-design-handoff-card-deprecated .smplfy-design-handoff-card-title {
+  color: var(--smplfy-primitive-neutral-600);
+}
+
 .smplfy-design-handoff-card.card.btn {
   --bs-card-border-width: var(--smplfy-card-border-width);
   --bs-card-border-color: var(--smplfy-primitive-neutral-300);

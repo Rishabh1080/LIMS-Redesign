@@ -318,6 +318,7 @@ function TaskCooldownErrorModal({ open, onClose }) {
 
 export default function DesignHandoffPage({
   onNavigate,
+  onNewSample,
   sidebarCollapsed,
   onSidebarCollapsedChange,
   sidebarBadgeCounts,
@@ -362,9 +363,36 @@ export default function DesignHandoffPage({
       onClick: () => onNavigate?.('new-assessment'),
     },
     {
+      key: 'new-inward',
+      label: 'New Inward (Sample Creation)',
+      onClick: () => onNavigate?.('new-inward'),
+    },
+    {
+      key: 'template-edit',
+      label: 'Template Edit',
+      onClick: () => onNavigate?.('template-edit'),
+    },
+    {
       key: 'training-management',
       label: 'Training & Assessment Management',
       onClick: () => onNavigate?.('training-management'),
+    },
+  ];
+
+  // Superseded by the inward-based flow above, kept reachable for reference.
+  const deprecatedItems = [
+    {
+      // The sample-card listing with the IQC/ILC/PT/Retained/Disposed tabs. The
+      // sidebar's "All samples" now points at the flat samples table, so this is
+      // its entry point.
+      key: 'all-samples',
+      label: 'All Samples (old listing page)',
+      onClick: () => onNavigate?.('all-samples'),
+    },
+    {
+      key: 'new-sample-long-form',
+      label: 'New Sample (old creation form)',
+      onClick: () => onNewSample?.({ sourcePage: 'design-handoff' }),
     },
   ];
 
@@ -379,7 +407,7 @@ export default function DesignHandoffPage({
       pageHeader={<DesignHandoffHeader />}
     >
       <main className="smplfy-design-handoff-page bg-body-tertiary p-4 min-vh-100">
-        <div className="container-fluid px-0">
+        <div className="container-fluid px-0 d-flex flex-column gap-4">
           <div className="smplfy-design-handoff-list d-flex flex-column gap-2">
             {handoffItems.map((item) => (
               <button
@@ -397,6 +425,27 @@ export default function DesignHandoffPage({
               </button>
             ))}
           </div>
+
+          <section className="d-flex flex-column gap-2">
+            <h2 className="smplfy-design-handoff-section-heading mb-0">Deprecated</h2>
+            <div className="smplfy-design-handoff-list d-flex flex-column gap-2">
+              {deprecatedItems.map((item) => (
+                <button
+                  key={item.key}
+                  type="button"
+                  className="smplfy-card card btn smplfy-design-handoff-card smplfy-design-handoff-card-deprecated text-start"
+                  onClick={item.onClick}
+                >
+                  <span className="smplfy-design-handoff-card-title text-truncate">
+                    {item.label}
+                  </span>
+                  <span className="smplfy-design-handoff-card-action text-secondary flex-shrink-0" aria-hidden="true">
+                    <AppIcon name="chevron-right" />
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
       </main>
 

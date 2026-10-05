@@ -19,7 +19,10 @@ export function generateAutoFillData(row1, row2, targetRowCount) {
   return generatedRows;
 }
 
-function extrapolateValue(value1, value2, stepsAfterRow2) {
+// Exported so per-column auto-fill (single column, arbitrary anchor rows) can
+// reuse the same date/alphanumeric pattern detection as the whole-row version
+// above, instead of re-implementing it.
+export function extrapolateValue(value1, value2, stepsAfterRow2) {
   if (value1 === value2) return value1;
 
   if (typeof value1 === 'string' && typeof value2 === 'string') {
