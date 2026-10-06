@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
+import AppIcon from '../components/AppIcon';
 import DataTable from '../components/DataTable';
+import NavSelector from '../components/NavSelector/NavSelector';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
 import SecondaryButton from '../components/SecondaryButton';
 import StatusPill from '../components/StatusPill';
@@ -348,6 +350,80 @@ function AssessmentsCard({ assessments, onEditAssessment }) {
   );
 }
 
+function DocumentsCard({ documents, onDeleteDocument }) {
+  const openDocument = (document) => {
+    if (document.url && document.url !== '#') {
+      window.open(document.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  return (
+    <section className="smplfy-card card overflow-hidden">
+      <div className="card-header bg-white d-flex align-items-center px-3 py-3">
+        <h2 className="h6 mb-0 fw-semibold text-dark">Documents ({documents.length})</h2>
+      </div>
+      <div className="card-body p-3">
+        <div className="smplfy-admin-training-documents-frame">
+        <DataTable className="smplfy-admin-training-documents-table" responsive={false}>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Type</th>
+              <th scope="col">Size</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {documents.length ? documents.map((document) => (
+              <tr key={document.id}>
+                <td className="fw-semibold">
+                  <span className="d-inline-flex align-items-center gap-2">
+                    <AppIcon name="file-text" size={18} className="text-secondary flex-shrink-0" />
+                    <span className="text-truncate">{document.name}</span>
+                  </span>
+                </td>
+                <td className="text-nowrap">{document.type}</td>
+                <td className="text-nowrap">{document.size}</td>
+                <td>
+                  <div className="d-flex align-items-center gap-2">
+                    <SecondaryButton
+                      size="medium"
+                      leftIcon="eye"
+                      onClick={() => openDocument(document)}
+                    >
+                      View doc
+                    </SecondaryButton>
+                    <SecondaryButton
+                      size="medium"
+                      tone="destructive"
+                      leftIcon="trash"
+                      aria-label={`Delete ${document.name}`}
+                      title={`Delete ${document.name}`}
+                      onClick={() => onDeleteDocument?.(document.id)}
+                    />
+                  </div>
+                </td>
+              </tr>
+            )) : (
+              <tr>
+                <td colSpan="4" className="text-secondary text-center py-4">No documents uploaded.</td>
+              </tr>
+            )}
+          </tbody>
+        </DataTable>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const trainingTabs = [
+  { key: 'info', label: 'Training info' },
+  { key: 'attendance', label: 'Attendance' },
+  { key: 'assessments', label: 'Assessments' },
+  { key: 'documents', label: 'Documents' },
+];
+
 export default function AdminTrainingDetailsPage({
   training = defaultTrainings[0],
   onBack,
@@ -360,6 +436,19 @@ export default function AdminTrainingDetailsPage({
   onSidebarCollapsedChange,
   sidebarBadgeCounts,
 }) {
+  const [activeTab, setActiveTab] = useState('info');
+  const assessments = training.assessments ?? [];
+  const [documents, setDocuments] = useState(training.documents ?? []);
+
+  // A fresh training resets to the first tab and reloads its documents.
+  useEffect(() => {
+    setActiveTab('info');
+    setDocuments(training.documents ?? []);
+  }, [training.id, training.documents]);
+
+  const handleDeleteDocument = (documentId) => {
+    setDocuments((current) => current.filter((document) => document.id !== documentId));
+  };
   return (
     <AppChrome
       activeNav="design-handoff"
@@ -373,29 +462,42 @@ export default function AdminTrainingDetailsPage({
       onSidebarCollapsedChange={onSidebarCollapsedChange}
       sidebarBadgeCounts={sidebarBadgeCounts}
       pageHeader={(
-        <AdminTrainingHeader
-          training={training}
-          onBack={onBack}
-          onCreateAssessment={onCreateAssessment}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
+        <>
+          <AdminTrainingHeader
+            training={training}
+            onBack={onBack}
+            onCreateAssessment={onCreateAssessment}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+          <section className="smplfy-admin-training-tabs bg-white border-bottom">
+            <div className="nav nav-tabs flex-nowrap overflow-auto border-0" role="tablist" aria-label="Training sections">
+              {trainingTabs.map((tab) => (
+                <NavSelector
+                  key={tab.key}
+                  active={activeTab === tab.key}
+                  role="tab"
+                  aria-selected={activeTab === tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                >
+                  {tab.label}
+                </NavSelector>
+              ))}
+            </div>
+          </section>
+        </>
       )}
     >
       <main className="smplfy-sample-details-page bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0 d-flex flex-column gap-3 smplfy-admin-training-content">
-          <div className="row g-3 align-items-start">
-            <div className="col-12 col-xl-6">
-              <TrainingInfoCard training={training} />
-            </div>
-            <div className="col-12 col-xl-6">
-              <AttendanceCard training={training} />
-            </div>
-          </div>
-          <AssessmentsCard
-            assessments={training.assessments ?? []}
-            onEditAssessment={onEditAssessment}
-          />
+          {activeTab === 'info' ? <TrainingInfoCard training={training} /> : null}
+          {activeTab === 'attendance' ? <AttendanceCard training={training} /> : null}
+          {activeTab === 'assessments' ? (
+            <AssessmentsCard assessments={assessments} onEditAssessment={onEditAssessment} />
+          ) : null}
+          {activeTab === 'documents' ? (
+            <DocumentsCard documents={documents} onDeleteDocument={handleDeleteDocument} />
+          ) : null}
         </div>
       </main>
     </AppChrome>

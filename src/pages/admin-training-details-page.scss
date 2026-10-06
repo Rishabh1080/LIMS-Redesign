@@ -2,13 +2,63 @@
   width: 100%;
 }
 
+/* Full-width white tab bar sitting under the header, matching the Test
+   Request listing pattern: tabs on white with a full-width bottom border. */
+.smplfy-admin-training-tabs {
+  padding-inline: 24px;
+}
+
+.smplfy-admin-training-tabs .nav.nav-tabs {
+  gap: 4px;
+}
+
 .smplfy-admin-training-info-table.table,
 .smplfy-admin-training-attendance-table.table,
-.smplfy-admin-training-assessment-table.table {
+.smplfy-admin-training-assessment-table.table,
+.smplfy-admin-training-documents-table.table {
   --smplfy-table-min-width: 0;
 
   width: 100%;
   table-layout: fixed;
+}
+
+/* The .table-responsive wrapper (which normally carries the border + radius)
+   was removed to kill horizontal scroll. A collapsed-border <table> drops its
+   own outer border, so wrap it in a bordered frame instead. */
+.smplfy-admin-training-documents-frame {
+  border: var(--bs-border-width) solid var(--smplfy-table-border);
+  border-radius: var(--smplfy-table-radius);
+  overflow: hidden;
+}
+
+.smplfy-admin-training-documents-table.table th,
+.smplfy-admin-training-documents-table.table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.smplfy-admin-training-documents-table.table th:first-child,
+.smplfy-admin-training-documents-table.table td:first-child {
+  width: auto;
+}
+
+.smplfy-admin-training-documents-table.table td:first-child .text-truncate {
+  min-width: 0;
+}
+
+.smplfy-admin-training-documents-table.table th:nth-child(2),
+.smplfy-admin-training-documents-table.table td:nth-child(2),
+.smplfy-admin-training-documents-table.table th:nth-child(3),
+.smplfy-admin-training-documents-table.table td:nth-child(3) {
+  width: 96px;
+}
+
+.smplfy-admin-training-documents-table.table th:last-child,
+.smplfy-admin-training-documents-table.table td:last-child {
+  width: 196px;
+  white-space: nowrap;
+  overflow: visible;
 }
 
 .smplfy-admin-training-attendance-table.table input[type="time"] {
@@ -71,6 +121,19 @@
 
 .smplfy-admin-training-content .table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: var(--smplfy-table-bg);
+  background-color: var(--smplfy-table-bg);
+  color: var(--smplfy-table-text);
+}
+
+/* Documents table: no hover feedback at all. Neutralise both the design-system
+   hover variable and Bootstrap's hover-state background so rows never change. */
+.smplfy-admin-training-documents-table.table {
+  --smplfy-table-hover-bg: var(--smplfy-table-bg);
+}
+
+.smplfy-admin-training-documents-table.table-hover > tbody > tr:hover > * {
+  --bs-table-accent-bg: transparent;
+  --bs-table-bg-state: transparent;
   background-color: var(--smplfy-table-bg);
   color: var(--smplfy-table-text);
 }

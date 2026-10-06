@@ -16,6 +16,35 @@ export const defaultTrainings = [
       '18/07/2026': { checkIn: '09:18 AM', checkOut: '05:42 PM' },
       '19/07/2026': { checkIn: '09:31 AM', checkOut: '04:58 PM' },
     },
+    documents: [
+      {
+        id: 'training-001-doc-1',
+        name: 'GLP Training Handbook.pdf',
+        type: 'PDF',
+        size: '2.4 MB',
+        uploadedBy: 'Priya Nair',
+        uploadedAt: '16/07/2026',
+        url: '#',
+      },
+      {
+        id: 'training-001-doc-2',
+        name: 'Laboratory Safety Guidelines.pdf',
+        type: 'PDF',
+        size: '1.1 MB',
+        uploadedBy: 'Priya Nair',
+        uploadedAt: '16/07/2026',
+        url: '#',
+      },
+      {
+        id: 'training-001-doc-3',
+        name: 'Documentation Checklist.xlsx',
+        type: 'XLSX',
+        size: '340 KB',
+        uploadedBy: 'Deepak Cybit',
+        uploadedAt: '17/07/2026',
+        url: '#',
+      },
+    ],
     assessments: [
       {
         id: 'assessment-001',
@@ -90,6 +119,26 @@ export const defaultTrainings = [
       '17/07/2026': { checkIn: '09:24 AM', checkOut: '05:36 PM' },
       '18/07/2026': { checkIn: '09:18 AM', checkOut: '05:42 PM' },
     },
+    documents: [
+      {
+        id: 'training-004-doc-1',
+        name: 'Controlled Format Templates.docx',
+        type: 'DOCX',
+        size: '820 KB',
+        uploadedBy: 'Rishabh Gangwar',
+        uploadedAt: '15/07/2026',
+        url: '#',
+      },
+      {
+        id: 'training-004-doc-2',
+        name: 'Audit Readiness Review Notes.pdf',
+        type: 'PDF',
+        size: '1.6 MB',
+        uploadedBy: 'Rishabh Gangwar',
+        uploadedAt: '15/07/2026',
+        url: '#',
+      },
+    ],
     assessments: [
       {
         id: 'assessment-003',
