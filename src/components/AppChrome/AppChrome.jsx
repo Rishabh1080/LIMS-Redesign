@@ -38,6 +38,7 @@ const navigationSections = [
       { label: 'Leave Records', icon: 'leave-records', key: 'leave-records' },
       { label: 'Materials', icon: 'materials', key: 'materials' },
       { label: 'Instruments', icon: 'tool', key: 'instruments' },
+      { label: 'Equipment Log', icon: 'clipboard-list', key: 'equipment-log' },
       { label: 'Trainings', icon: 'checklist', key: 'trainings' },
       { label: 'Reports', icon: 'file-text', key: 'reports' },
       { label: 'Organogram', icon: 'admin-personnel', key: 'organogram' },

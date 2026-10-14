@@ -24,6 +24,14 @@ import MaterialsPage from './pages/MaterialsPage';
 import MaterialDetailsPage from './pages/MaterialDetailsPage';
 import AllServicesPage from './pages/AllServicesPage';
 import InstrumentsPage from './pages/InstrumentsPage';
+import EquipmentLogPage from './pages/EquipmentLogPage';
+import EquipmentLogBulkPage from './pages/EquipmentLogBulkPage';
+import {
+  initialRecordedLogs as initialEquipmentRecordedLogs,
+  getInstrumentLabel as getEquipmentInstrumentLabel,
+  getProductLabel as getEquipmentProductLabel,
+  getTodayDisplayDate as getEquipmentTodayDisplayDate,
+} from './data/equipmentLogsData';
 import InstrumentDetailsPage from './pages/InstrumentDetailsPage';
 import NewInstrumentPage from './pages/NewInstrumentPage';
 import NewAssessmentPage from './pages/NewAssessmentPage';
@@ -325,6 +333,7 @@ export default function App() {
     report: null,
   });
   const [customFormEntries, setCustomFormEntries] = useState(initialCustomFormEntries);
+  const [equipmentRecordedLogs, setEquipmentRecordedLogs] = useState(initialEquipmentRecordedLogs);
   const [trDetailsState, setTrDetailsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
@@ -569,6 +578,31 @@ export default function App() {
         ...(current[formId] ?? []),
       ],
     }));
+  };
+
+  const handleEquipmentLogRecorded = (log) => {
+    setEquipmentRecordedLogs((current) => [log, ...current]);
+  };
+
+  const handleEquipmentBulkUpload = (bulkRows) => {
+    const today = getEquipmentTodayDisplayDate();
+    const createdAt = Date.now();
+    const newLogs = bulkRows.map((row, index) => ({
+      id: `LOG-BULK-${createdAt}-${index}`,
+      date: today,
+      startTime: row.startTime,
+      endTime: row.endTime,
+      instrumentValue: row.instrument,
+      instrumentName: getEquipmentInstrumentLabel(row.instrument),
+      productValue: row.product,
+      productName: getEquipmentProductLabel(row.product),
+      batchNo: row.batchNo,
+      testValue: row.testValue,
+      doneBy: row.doneBy,
+    }));
+
+    setEquipmentRecordedLogs((current) => [...newLogs, ...current]);
+    setActivePage('equipment-log');
   };
 
   const handleServiceCreated = (service) => {
@@ -927,6 +961,16 @@ export default function App() {
 
     if (nextPage === 'instruments') {
       setActivePage('instruments');
+      return;
+    }
+
+    if (nextPage === 'equipment-log') {
+      setActivePage('equipment-log');
+      return;
+    }
+
+    if (nextPage === 'equipment-log-bulk') {
+      setActivePage('equipment-log-bulk');
       return;
     }
 
@@ -1470,6 +1514,33 @@ export default function App() {
         onServiceUpdate={handleServiceUpdated}
         onOpenInstrument={(id, name) => openInstrumentDetails(id, name)}
         onOpenService={openServiceDetails}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'equipment-log') {
+    return (
+      <EquipmentLogPage
+        recordedLogs={equipmentRecordedLogs}
+        onRecordLog={handleEquipmentLogRecorded}
+        onBulkUpload={() => setActivePage('equipment-log-bulk')}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'equipment-log-bulk') {
+    return (
+      <EquipmentLogBulkPage
+        onBack={() => setActivePage('equipment-log')}
+        onSubmit={handleEquipmentBulkUpload}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
