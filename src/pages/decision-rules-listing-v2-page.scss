@@ -1,0 +1,129 @@
+/* Decision Rules V2: adds a nested-rules toggle and parent/child row styling
+   on top of the shared listing styles. The version dropdown styles live in the
+   shared listing scss so both V1 and V2 can use them. All sizing, radius and
+   colour come from design-system tokens. */
+
+/* Actions header: label on the left, table-settings gear on the right edge. */
+.smplfy-dr-actions-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--smplfy-button-space-2);
+}
+
+.smplfy-dr-col-settings-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--smplfy-semantic-size-control-height-small);
+  height: var(--smplfy-semantic-size-control-height-small);
+  padding: 0;
+  border: 0;
+  border-radius: var(--smplfy-button-radius);
+  background: transparent;
+  color: var(--smplfy-table-muted-text);
+  cursor: pointer;
+}
+
+.smplfy-dr-col-settings-btn:hover {
+  background: var(--smplfy-primitive-neutral-300);
+  color: var(--smplfy-table-text);
+}
+
+.smplfy-dr-col-settings-btn:focus-visible {
+  outline: 2px solid var(--smplfy-field-border-focused);
+  outline-offset: 1px;
+}
+
+/* Empty state: message plus a "create with this combination" shortcut when
+   filters are active. */
+.smplfy-dr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--smplfy-button-space-3);
+}
+
+.smplfy-dr-empty-text {
+  font-size: var(--smplfy-field-font-size);
+}
+
+/* Nested-rules toggle in the header. */
+.smplfy-dr-nest-switch.form-check.form-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-2);
+  min-height: 0;
+  margin: 0;
+  padding-left: 0;
+}
+
+.smplfy-dr-nest-switch .form-check-input {
+  flex-shrink: 0;
+  margin: 0;
+  float: none;
+}
+
+.smplfy-dr-nest-switch .form-check-label {
+  margin: 0;
+  color: var(--smplfy-primitive-neutral-700);
+  font-size: var(--smplfy-field-font-size);
+  font-weight: var(--smplfy-field-label-font-weight);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Parent row: chevron + name lead, slightly stronger weight so a group reads
+   as a header for its children. */
+.smplfy-dr-parent-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-2);
+}
+
+.smplfy-dr-parent-name {
+  font-weight: var(--smplfy-table-cell-font-weight);
+  color: var(--smplfy-primitive-neutral-900);
+}
+
+/* Child rows sit on the lightest grey so an expanded group reads as one block.
+   Hover still wins (the hover rule sets --bs-table-bg-state, this sets -type). */
+.smplfy-dr-table.table > tbody > tr.smplfy-dr-child-row > * {
+  --bs-table-bg-type: var(--smplfy-primitive-neutral-200);
+}
+
+/* Child rows are indented under the parent via extra left padding only. No
+   left border/rail: a per-row border changes that cell's box width in the
+   fixed layout, which shifted the whole table by a pixel or two on expand. */
+.smplfy-dr-table.table > tbody > tr.smplfy-dr-child-row > td.smplfy-dr-child-lead {
+  padding-left: calc(var(--smplfy-table-cell-padding-x) + 24px);
+}
+
+/* One tbody per group drops the per-group last-row border (the base rule
+   `tbody tr:last-child` zeroes it), so collapsed parents lose their divider.
+   Restore a bottom border on every row, then clear it only on the very last
+   row of the whole table so the table's own bottom edge stays clean. */
+.smplfy-dr-table.table > tbody.smplfy-dr-nest-group > tr > td {
+  border-bottom: 1px solid var(--smplfy-table-border);
+}
+
+.smplfy-dr-table.table > tbody.smplfy-dr-nest-group:last-of-type > tr:last-child > td {
+  border-bottom: 0;
+}
+
+/* An expanded group's parent row sticks just below the table header while its
+   children scroll past; bounded by its own tbody, so the next group pushes it
+   out. Only expanded groups stick (a collapsed parent is a lone row). No bottom
+   divider shadow here — the row's own border-bottom already separates it from
+   its first child, so adding the shadow doubled the line. */
+.smplfy-dr-table.table > tbody.smplfy-dr-nest-group.is-expanded > tr.smplfy-dr-parent-row > td {
+  position: sticky;
+  top: calc(var(--smplfy-dr-head-height, 40px) - 1px);
+  z-index: 2;
+  background-color: var(--smplfy-primitive-neutral-100);
+}
+
+/* Keep the stuck parent's own hover/active fill above its default white. */
+.smplfy-dr-table.table-hover > tbody.smplfy-dr-nest-group.is-expanded > tr.smplfy-dr-parent-row[data-super-hover-active] > td {
+  background-color: var(--smplfy-primitive-blue-50);
+}

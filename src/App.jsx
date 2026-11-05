@@ -11,6 +11,11 @@ import CustomFormListingPage from './pages/CustomFormListingPage';
 import DashboardPage from './pages/DashboardPage';
 import DatasheetPage from './pages/DatasheetPage';
 import DesignHandoffPage from './pages/DesignHandoffPage';
+import NewTrPage from './pages/NewTrPage';
+import NablCertificateEditPage from './pages/NablCertificateEditPage';
+import DecisionRulesListingPage from './pages/DecisionRulesListingPage';
+import DecisionRulesListingV2Page from './pages/DecisionRulesListingV2Page';
+import DecisionRuleEditPage from './pages/DecisionRuleEditPage';
 import NewInwardPage from './pages/NewInwardPage';
 import AllInwardsListingPage from './pages/AllInwardsListingPage';
 import AllSamplesTablePage from './pages/AllSamplesTablePage';
@@ -277,6 +282,7 @@ export default function App() {
   const [allSamplesToast, setAllSamplesToast] = useState(null);
   const [inwardDetailsState, setInwardDetailsState] = useState({ inward: null });
   const [newInwardState, setNewInwardState] = useState({ sourcePage: 'design-handoff' });
+  const [decisionRuleEditState, setDecisionRuleEditState] = useState({ rule: null });
   const [testRequestsState, setTestRequestsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
@@ -999,6 +1005,32 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'new-tr-page') {
+      setActivePage('new-tr-page');
+      return;
+    }
+
+    if (nextPage === 'nabl-certificate-edit') {
+      setActivePage('nabl-certificate-edit');
+      return;
+    }
+
+    if (nextPage === 'decision-rules-listing') {
+      setActivePage('decision-rules-listing');
+      return;
+    }
+
+    if (nextPage === 'decision-rules-listing-v2') {
+      setActivePage('decision-rules-listing-v2');
+      return;
+    }
+
+    if (nextPage === 'decision-rule-edit') {
+      setDecisionRuleEditState({ rule: options.rule ?? null });
+      setActivePage('decision-rule-edit');
+      return;
+    }
+
     if (nextPage === 'nested-decision-rules') {
       setActivePage('nested-decision-rules');
       return;
@@ -1638,6 +1670,62 @@ export default function App() {
       <DesignHandoffPage
         onNavigate={handleNavigate}
         onNewSample={openNewSample}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'new-tr-page') {
+    return (
+      <NewTrPage
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'decision-rules-listing') {
+    return (
+      <DecisionRulesListingPage
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'decision-rules-listing-v2') {
+    return (
+      <DecisionRulesListingV2Page
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'decision-rule-edit') {
+    return (
+      <DecisionRuleEditPage
+        rule={decisionRuleEditState.rule}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+
+  if (activePage === 'nabl-certificate-edit') {
+    return (
+      <NablCertificateEditPage
+        onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}
         sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}

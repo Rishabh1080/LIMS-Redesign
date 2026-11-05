@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import AppChrome from '../components/AppChrome/AppChrome';
 import AppIcon from '../components/AppIcon';
 import Checkbox from '../components/Checkbox/Checkbox';
+import DataTable from '../components/DataTable';
 import { FormElement } from '../components/FormControls';
 import Modal from '../components/Modal/Modal';
 import PrimaryButton from '../components/PrimaryButton/PrimaryButton';
@@ -43,6 +44,19 @@ const nodeActionOptions = [
   'Enable Job Card',
 ];
 
+// Columns the listing can be sorted by.
+const HANDOFF_COLUMNS = [
+  { key: 'label', label: 'Name', type: 'text' },
+  { key: 'type', label: 'Type', type: 'text' },
+  { key: 'addedOn', label: 'Added on', type: 'date' },
+];
+
+function parseDisplayDate(value) {
+  const [day, month, year] = String(value ?? '').split('/').map(Number);
+  if (!day || !month || !year) return 0;
+  return new Date(year, month - 1, day).getTime();
+}
+
 function DesignHandoffHeader() {
   return (
     <section className="bg-white border-bottom px-4 py-3">
@@ -54,6 +68,30 @@ function DesignHandoffHeader() {
         </div>
       </div>
     </section>
+  );
+}
+
+function SortableHeader({ column, sortState, onSort }) {
+  const isActive = sortState.key === column.key;
+  const direction = isActive ? sortState.direction : null;
+  const ariaSort = isActive ? (direction === 'asc' ? 'ascending' : 'descending') : 'none';
+
+  return (
+    <th scope="col" aria-sort={ariaSort}>
+      <button
+        type="button"
+        className="smplfy-design-handoff-sort-btn"
+        onClick={() => onSort(column.key)}
+      >
+        <span>{column.label}</span>
+        <AppIcon
+          name={isActive && direction === 'asc' ? 'chevron-up' : 'chevron-down'}
+          size={14}
+          stroke={2}
+          className={isActive ? '' : 'smplfy-design-handoff-sort-icon-idle'}
+        />
+      </button>
+    </th>
   );
 }
 
@@ -326,55 +364,84 @@ export default function DesignHandoffPage({
   const [nodeDetailsModalOpen, setNodeDetailsModalOpen] = useState(false);
   const [taskAccessErrorModalOpen, setTaskAccessErrorModalOpen] = useState(false);
   const [taskCooldownErrorModalOpen, setTaskCooldownErrorModalOpen] = useState(false);
+  const [sortState, setSortState] = useState({ key: 'addedOn', direction: 'desc' });
+
   const handoffItems = [
+    {
+      key: 'decision-rules-listing-v2',
+      label: 'Decision Rules listing',
+      type: 'Page',
+      addedOn: '02/11/2026',
+      onClick: () => onNavigate?.('decision-rules-listing-v2'),
+    },
+    {
+      key: 'nabl-certificate-edit',
+      label: 'Nabl certificate edit',
+      type: 'Page',
+      addedOn: '15/10/2026',
+      onClick: () => onNavigate?.('nabl-certificate-edit'),
+    },
+    {
+      key: 'new-tr-page',
+      label: 'New TR Page',
+      type: 'Page',
+      addedOn: '14/10/2026',
+      onClick: () => onNavigate?.('new-tr-page'),
+    },
     {
       key: 'node-details-modal',
       label: 'Node Details Modal',
+      type: 'Modal',
+      addedOn: '02/09/2026',
       onClick: () => setNodeDetailsModalOpen(true),
     },
-    // {
-    //   key: 'nested-decision-rules',
-    //   label: 'Nested Decision Rules',
-    //   onClick: () => onNavigate?.('nested-decision-rules'),
-    // },
-    // {
-    //   key: 'nested-decision-rules-2',
-    //   label: 'Nested Decision Rules 2',
-    //   onClick: () => onNavigate?.('nested-decision-rules-2'),
-    // },
     {
       key: 'decision-rule',
       label: 'Decision rule',
+      type: 'Page',
+      addedOn: '18/08/2026',
       onClick: () => onNavigate?.('decision-rule'),
     },
     {
       key: 'task-access-error',
       label: 'Error 1',
+      type: 'Modal',
+      addedOn: '11/08/2026',
       onClick: () => setTaskAccessErrorModalOpen(true),
     },
     {
       key: 'task-cooldown-error',
       label: 'Error 2',
+      type: 'Modal',
+      addedOn: '11/08/2026',
       onClick: () => setTaskCooldownErrorModalOpen(true),
     },
     {
       key: 'new-assessment',
       label: 'New Assessment',
+      type: 'Page',
+      addedOn: '24/07/2026',
       onClick: () => onNavigate?.('new-assessment'),
     },
     {
       key: 'new-inward',
       label: 'New Inward (Sample Creation)',
+      type: 'Page',
+      addedOn: '30/06/2026',
       onClick: () => onNavigate?.('new-inward'),
     },
     {
       key: 'template-edit',
       label: 'Template Edit',
+      type: 'Page',
+      addedOn: '12/06/2026',
       onClick: () => onNavigate?.('template-edit'),
     },
     {
       key: 'training-management',
       label: 'Training & Assessment Management',
+      type: 'Page',
+      addedOn: '03/06/2026',
       onClick: () => onNavigate?.('training-management'),
     },
   ];
@@ -382,19 +449,80 @@ export default function DesignHandoffPage({
   // Superseded by the inward-based flow above, kept reachable for reference.
   const deprecatedItems = [
     {
-      // The sample-card listing with the IQC/ILC/PT/Retained/Disposed tabs. The
-      // sidebar's "All samples" now points at the flat samples table, so this is
-      // its entry point.
       key: 'all-samples',
       label: 'All Samples (old listing page)',
+      type: 'Page',
+      addedOn: '20/05/2026',
       onClick: () => onNavigate?.('all-samples'),
     },
     {
       key: 'new-sample-long-form',
       label: 'New Sample (old creation form)',
+      type: 'Page',
+      addedOn: '05/05/2026',
       onClick: () => onNewSample?.({ sourcePage: 'design-handoff' }),
     },
   ];
+
+  const handleSort = (key) => {
+    setSortState((current) => {
+      if (current.key === key) {
+        return { key, direction: current.direction === 'asc' ? 'desc' : 'asc' };
+      }
+      return { key, direction: 'asc' };
+    });
+  };
+
+  const sortItems = (items) => {
+    const column = HANDOFF_COLUMNS.find((item) => item.key === sortState.key) ?? HANDOFF_COLUMNS[0];
+
+    return [...items].sort((first, second) => {
+      const firstValue = column.type === 'date'
+        ? parseDisplayDate(first[column.key])
+        : String(first[column.key] ?? '').toLowerCase();
+      const secondValue = column.type === 'date'
+        ? parseDisplayDate(second[column.key])
+        : String(second[column.key] ?? '').toLowerCase();
+
+      let comparison = 0;
+      if (firstValue < secondValue) comparison = -1;
+      else if (firstValue > secondValue) comparison = 1;
+
+      return sortState.direction === 'asc' ? comparison : -comparison;
+    });
+  };
+
+  const sortedHandoffItems = useMemo(() => sortItems(handoffItems), [sortState]);
+  const sortedDeprecatedItems = useMemo(() => sortItems(deprecatedItems), [sortState]);
+
+  const renderRow = (item) => (
+    <tr
+      key={item.key}
+      className="smplfy-design-handoff-row"
+      tabIndex={0}
+      role="button"
+      onClick={item.onClick}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          item.onClick();
+        }
+      }}
+    >
+      <td className="smplfy-design-handoff-name-cell">
+        <span className="smplfy-link link-primary fw-medium">{item.label}</span>
+      </td>
+      <td>
+        <StatusPill color={item.type === 'Modal' ? 'orange' : 'blue'} styleType="neutral">
+          {item.type}
+        </StatusPill>
+      </td>
+      <td className="text-nowrap text-secondary">{item.addedOn}</td>
+      <td className="smplfy-design-handoff-chevron-cell text-secondary" aria-hidden="true">
+        <AppIcon name="chevron-right" />
+      </td>
+    </tr>
+  );
 
   return (
     <AppChrome
@@ -408,43 +536,45 @@ export default function DesignHandoffPage({
     >
       <main className="smplfy-design-handoff-page bg-body-tertiary p-4 min-vh-100">
         <div className="container-fluid px-0 d-flex flex-column gap-4">
-          <div className="smplfy-design-handoff-list d-flex flex-column gap-2">
-            {handoffItems.map((item) => (
-              <button
-                key={item.key}
-                type="button"
-                className="smplfy-card card btn smplfy-design-handoff-card text-start"
-                onClick={item.onClick}
-              >
-                <span className="smplfy-design-handoff-card-title text-truncate">
-                  {item.label}
-                </span>
-                <span className="smplfy-design-handoff-card-action text-secondary flex-shrink-0" aria-hidden="true">
-                  <AppIcon name="chevron-right" />
-                </span>
-              </button>
-            ))}
-          </div>
+          <DataTable className="smplfy-design-handoff-table">
+            <thead>
+              <tr>
+                {HANDOFF_COLUMNS.map((column) => (
+                  <SortableHeader
+                    key={column.key}
+                    column={column}
+                    sortState={sortState}
+                    onSort={handleSort}
+                  />
+                ))}
+                <th scope="col" aria-label="Open" />
+              </tr>
+            </thead>
+            <tbody>
+              {sortedHandoffItems.map(renderRow)}
+            </tbody>
+          </DataTable>
 
           <section className="d-flex flex-column gap-2">
             <h2 className="smplfy-design-handoff-section-heading mb-0">Deprecated</h2>
-            <div className="smplfy-design-handoff-list d-flex flex-column gap-2">
-              {deprecatedItems.map((item) => (
-                <button
-                  key={item.key}
-                  type="button"
-                  className="smplfy-card card btn smplfy-design-handoff-card smplfy-design-handoff-card-deprecated text-start"
-                  onClick={item.onClick}
-                >
-                  <span className="smplfy-design-handoff-card-title text-truncate">
-                    {item.label}
-                  </span>
-                  <span className="smplfy-design-handoff-card-action text-secondary flex-shrink-0" aria-hidden="true">
-                    <AppIcon name="chevron-right" />
-                  </span>
-                </button>
-              ))}
-            </div>
+            <DataTable className="smplfy-design-handoff-table smplfy-design-handoff-table-deprecated">
+              <thead>
+                <tr>
+                  {HANDOFF_COLUMNS.map((column) => (
+                    <SortableHeader
+                      key={column.key}
+                      column={column}
+                      sortState={sortState}
+                      onSort={handleSort}
+                    />
+                  ))}
+                  <th scope="col" aria-label="Open" />
+                </tr>
+              </thead>
+              <tbody>
+                {sortedDeprecatedItems.map(renderRow)}
+              </tbody>
+            </DataTable>
           </section>
         </div>
       </main>

@@ -3,6 +3,12 @@
   display: inline-flex;
 }
 
+/* Right-aligned menu so a split button at the page's right edge stays on screen. */
+.smplfy-btn-group.btn-group > .smplfy-dropdown-menu.smplfy-dropdown-menu-end {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+
 .smplfy-btn-group.btn-group > .smplfy-btn:has(+ .dropdown-toggle-split),
 .smplfy-btn-group.btn-group > .dropdown-toggle-split.smplfy-btn {
   --bs-btn-border-width: var(--smplfy-button-space-0);

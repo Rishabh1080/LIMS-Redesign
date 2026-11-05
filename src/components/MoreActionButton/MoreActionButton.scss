@@ -33,3 +33,20 @@
   width: max-content;
   min-width: var(--smplfy-dropdown-menu-current-min-width);
 }
+
+/* Compact (medium) square trigger, for use inside table rows. */
+.smplfy-dropdown.dropdown > .smplfy-btn.dropdown-toggle.smplfy-more-action-compact {
+  width: var(--smplfy-semantic-size-control-height-medium);
+  min-width: var(--smplfy-semantic-size-control-height-medium);
+  height: var(--smplfy-semantic-size-control-height-medium);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Right-aligned menu so a trigger at the table's right edge stays on screen. */
+.smplfy-dropdown.dropdown > .smplfy-dropdown-menu.dropdown-menu.smplfy-dropdown-menu-end {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}

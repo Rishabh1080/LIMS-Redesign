@@ -1,0 +1,132 @@
+/* Combobox-style multi-select filter: the trigger IS the search input. Type to
+   filter; the menu opens showing matches (all by default) as a checkbox list. */
+.smplfy-search-select {
+  position: relative;
+}
+
+.smplfy-search-select-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--smplfy-field-height);
+  padding: 0 40px 0 var(--smplfy-field-padding-inline);
+  background: var(--smplfy-primitive-neutral-100);
+  border: 1px solid var(--smplfy-field-border-default);
+  border-radius: var(--smplfy-button-radius);
+  cursor: text;
+}
+
+.smplfy-search-select.is-open .smplfy-search-select-control,
+.smplfy-search-select-control:focus-within {
+  border-color: var(--smplfy-field-border-focused);
+  box-shadow: var(--smplfy-field-shadow-focused);
+}
+
+.smplfy-search-select.is-active .smplfy-search-select-control {
+  border-color: var(--smplfy-primitive-blue-500);
+}
+
+.smplfy-search-select-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-size: var(--smplfy-field-font-size);
+  color: var(--smplfy-field-text);
+}
+
+.smplfy-search-select-input::placeholder {
+  color: var(--smplfy-table-muted-text);
+}
+
+/* Summary overlay (shown when there's a selection and the user isn't typing).
+   It sits over the input, fills the available width, truncates the first name
+   with an ellipsis, and always keeps "+N more" visible. */
+.smplfy-search-select-summary {
+  position: absolute;
+  inset: 0 36px 0 var(--smplfy-field-padding-inline);
+  display: flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-1);
+  pointer-events: none;
+  font-size: var(--smplfy-field-font-size);
+  color: var(--smplfy-field-text);
+}
+
+.smplfy-search-select-summary-first {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.smplfy-search-select-summary-more {
+  flex-shrink: 0;
+  color: var(--smplfy-table-muted-text);
+}
+
+.smplfy-search-select-chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--smplfy-field-padding-inline-compact);
+  transform: translateY(-50%);
+  display: inline-flex;
+  color: var(--smplfy-field-icon-color);
+  pointer-events: none;
+}
+
+/* Menu: portaled, positioned under the trigger. */
+.smplfy-search-select-menu {
+  padding: var(--smplfy-button-space-1) 0;
+  border-radius: var(--smplfy-field-radius);
+  overflow: hidden;
+}
+
+.smplfy-search-select-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--smplfy-button-space-1) + 4px) var(--smplfy-field-padding-inline);
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+}
+
+/* The Bootstrap .btn-link defaults to 1rem; keep these small and quiet. */
+.smplfy-search-select-actions .btn-link {
+  font-size: var(--smplfy-field-label-font-size);
+  font-weight: var(--smplfy-field-label-font-weight);
+  line-height: 16px;
+}
+
+.smplfy-search-select-actions .btn-link:disabled {
+  opacity: 0.4;
+}
+
+.smplfy-search-select-list {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.smplfy-search-select-option {
+  display: flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-2);
+  margin: 0;
+  height: 40px;
+  padding: 0 var(--smplfy-field-padding-inline);
+  font-size: var(--smplfy-field-font-size);
+  color: var(--smplfy-table-text);
+  cursor: pointer;
+}
+
+.smplfy-search-select-option:hover,
+.smplfy-search-select-option.is-active {
+  background: var(--smplfy-primitive-neutral-200);
+}
+
+.smplfy-search-select-empty {
+  padding: var(--smplfy-button-space-2) var(--smplfy-field-padding-inline);
+  font-size: var(--smplfy-field-font-size);
+  color: var(--smplfy-table-muted-text);
+}

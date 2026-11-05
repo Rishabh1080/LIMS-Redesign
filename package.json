@@ -20,7 +20,8 @@
     "echarts": "^6.1.0",
     "posthog-js": "^1.372.10",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "super-hover": "0.2.2"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.1.2",

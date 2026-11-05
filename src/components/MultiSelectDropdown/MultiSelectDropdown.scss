@@ -1,0 +1,73 @@
+/* Multi-select dropdown menu. */
+.smplfy-multiselect-menu {
+  padding: 0;
+}
+
+.smplfy-multiselect-actions {
+  padding: var(--smplfy-button-space-1-5) var(--smplfy-button-space-3);
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+  font-size: var(--smplfy-field-label-font-size);
+  font-weight: var(--smplfy-field-label-font-weight);
+}
+
+.smplfy-multiselect-actions .btn-link:disabled {
+  opacity: 0.4;
+}
+
+.smplfy-multiselect-list {
+  max-height: 220px;
+}
+
+.smplfy-multiselect-option {
+  cursor: pointer;
+  font-size: var(--smplfy-field-font-size);
+  border: 0;
+}
+
+.smplfy-multiselect-option:hover {
+  background: var(--smplfy-primitive-neutral-200);
+}
+
+/* display="chips": removable chips inside the trigger. */
+.smplfy-multiselect-chips {
+  display: flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-1);
+  min-width: 0;
+}
+
+.smplfy-multiselect-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-1);
+  min-width: 0;
+  padding: 2px var(--smplfy-button-space-2);
+  border-radius: var(--smplfy-badge-radius-pill);
+  background: var(--smplfy-primitive-blue-200);
+  color: var(--smplfy-primitive-blue-600);
+  font-size: var(--smplfy-field-label-font-size);
+  font-weight: var(--smplfy-field-label-font-weight);
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.smplfy-multiselect-chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.smplfy-multiselect-chip.is-more {
+  background: var(--smplfy-primitive-neutral-200);
+  color: var(--smplfy-primitive-neutral-700);
+}
+
+.smplfy-multiselect-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: var(--smplfy-badge-radius-pill);
+}
+
+.smplfy-multiselect-chip-remove:hover {
+  color: var(--smplfy-primitive-blue-700);
+}

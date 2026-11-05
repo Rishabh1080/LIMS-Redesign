@@ -12,6 +12,9 @@ export default function SplitSecondaryButton({
   leftIcon,
   className = '',
   menuItems,
+  menuAlign = 'start',
+  toggleLabel = 'More print actions',
+  menuLabel = 'Print actions',
   onPrimaryClick,
   onSecondaryClick,
   ...props
@@ -70,7 +73,7 @@ export default function SplitSecondaryButton({
           onSecondaryClick?.(event);
           setMenuOpen((current) => !current);
         }}
-        aria-label="More print actions"
+        aria-label={toggleLabel}
         aria-expanded={menuOpen}
         aria-haspopup="menu"
       >
@@ -79,9 +82,14 @@ export default function SplitSecondaryButton({
 
       {menuOpen ? (
         <div
-          className="smplfy-dropdown-menu dropdown-menu show"
+          className={joinClasses(
+            'smplfy-dropdown-menu',
+            'dropdown-menu',
+            'show',
+            menuAlign === 'end' && 'dropdown-menu-end smplfy-dropdown-menu-end',
+          )}
           role="menu"
-          aria-label="Print actions"
+          aria-label={menuLabel}
         >
           {resolvedMenuItems.map((item) => (
             <MenuActionItem
