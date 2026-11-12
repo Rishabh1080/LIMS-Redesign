@@ -1,0 +1,408 @@
+/* Lab-type step: tiles + animated illustrations. */
+
+.sgt-onb-question.sgt-onb-question--wide {
+  max-width: 980px;
+}
+
+/* This screen carries a grid, so the header text runs smaller and tighter. */
+.sgt-onb-question--wide .sgt-onb__title {
+  margin-top: 10px;
+  font-size: clamp(28px, 3vw, 38px);
+}
+
+.sgt-onb-question--wide .sgt-onb__lead {
+  max-width: 760px;
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.sgt-onb-question--wide .sgt-onb__actions {
+  margin-top: 22px;
+}
+
+.sgt-onb-question--wide .sgt-onb__back {
+  margin-top: 14px;
+}
+
+.sgt-root .sgt-onb__title:focus {
+  outline: none;
+}
+
+.sgt-domain-fieldset {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.sgt-domain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sgt-domain-tile {
+  --sgt-tile-accent: var(--sgt-brand-navy);
+  position: relative;
+  display: flex;
+  border: 1.5px solid var(--sgt-brand-line-2);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  cursor: pointer;
+  transition:
+    border-color var(--sgt-duration) var(--sgt-ease),
+    box-shadow var(--sgt-duration) var(--sgt-ease),
+    transform var(--sgt-duration) var(--sgt-ease-out);
+}
+
+.sgt-domain-tile {
+  flex-direction: column;
+  overflow: hidden;
+  animation: sgt-rise-in 460ms var(--sgt-ease-out) both;
+}
+
+.sgt-domain-tile:nth-child(2) { animation-delay: 50ms; }
+.sgt-domain-tile:nth-child(3) { animation-delay: 100ms; }
+.sgt-domain-tile:nth-child(4) { animation-delay: 150ms; }
+.sgt-domain-tile:nth-child(5) { animation-delay: 200ms; }
+.sgt-domain-tile:nth-child(6) { animation-delay: 250ms; }
+
+.sgt-domain-tile:hover {
+  border-color: #c9c9d3;
+  box-shadow: 0 14px 32px rgba(2, 21, 39, 0.1);
+  transform: translateY(-2px);
+}
+
+.sgt-domain-tile.is-selected {
+  border-color: var(--sgt-brand-navy);
+  box-shadow: 0 0 0 3px rgba(255, 189, 46, 0.45), 0 14px 32px rgba(2, 21, 39, 0.12);
+}
+
+.sgt-domain-tile:has(input:focus-visible) {
+  outline: 2px solid var(--sgt-blue-500);
+  outline-offset: 3px;
+}
+
+.sgt-domain-tile__art {
+  display: block;
+  height: 132px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--sgt-brand-line);
+  background: var(--sgt-tile-tint, var(--sgt-brand-surface-2));
+}
+
+.sgt-domain-tile--food { --sgt-tile-tint: linear-gradient(160deg, #fff8e8 0%, #f3f8ec 100%); }
+.sgt-domain-tile--pharma { --sgt-tile-tint: linear-gradient(160deg, #f1f8fe 0%, #f7f4ff 100%); }
+.sgt-domain-tile--water { --sgt-tile-tint: linear-gradient(160deg, #eef8fe 0%, #eaf6f4 100%); }
+.sgt-domain-tile--construction { --sgt-tile-tint: linear-gradient(160deg, #f5f6f7 0%, #fbf3ea 100%); }
+.sgt-domain-tile--metals { --sgt-tile-tint: linear-gradient(160deg, #eef1f5 0%, #f6f7f8 100%); }
+.sgt-domain-tile--textiles { --sgt-tile-tint: linear-gradient(160deg, #fff4f0 0%, #f5f1fb 100%); }
+
+.sgt-domain-tile__title {
+  padding: 16px 18px 18px;
+  color: var(--sgt-brand-ink);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.sgt-domain-tile__check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--sgt-brand-navy);
+  color: var(--sgt-brand-amber);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity var(--sgt-duration) var(--sgt-ease), transform 320ms cubic-bezier(0.2, 1.4, 0.3, 1);
+}
+
+.sgt-domain-tile.is-selected .sgt-domain-tile__check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ---- Illustrations: shared paint ------------------------------------------------ */
+.sgt-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.sgt-art-stroke { stroke: var(--sgt-brand-navy); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sgt-art-stroke-thin { stroke: var(--sgt-brand-navy); stroke-width: 1.2; stroke-linecap: round; opacity: 0.55; }
+.sgt-art-axis { stroke: #b8bec7; stroke-width: 1.2; }
+.sgt-art-ground { stroke: #c9cfa8; stroke-width: 2; stroke-linecap: round; }
+.sgt-art-fill-amber { fill: var(--sgt-brand-amber); }
+.sgt-art-fill-green { fill: var(--sgt-green-500); }
+.sgt-art-fill-blue { fill: var(--sgt-blue-500); }
+.sgt-art-fill-navy { fill: var(--sgt-brand-navy); }
+.sgt-art-fill-muted { fill: #9fb4c8; }
+.sgt-art-label,
+.sgt-art-mono {
+  font-family: var(--sgt-font-mono);
+  font-size: 8px;
+  fill: var(--sgt-brand-muted);
+}
+.sgt-art-mono { fill: var(--sgt-brand-amber); letter-spacing: 0.04em; }
+
+/* Movement helpers. transform-box keeps transforms relative to each shape. */
+.sgt-art-sway,
+.sgt-art-float,
+.sgt-art-pop,
+.sgt-art-press,
+.sgt-art-squash,
+.sgt-art-spark,
+.sgt-art-emission,
+.sgt-art-spin,
+.sgt-art-bubble,
+.sgt-art-drop,
+.sgt-art-drift,
+.sgt-art-needle {
+  transform-box: fill-box;
+}
+
+/* ---- Food: swaying wheat + colonies growing on a plate --------------------------- */
+.sgt-art-grain { fill: #e2b048; stroke: #b4690e; stroke-width: 0.8; }
+.sgt-art-sway {
+  transform-origin: 50% 100%;
+  animation: sgt-art-sway 3.6s ease-in-out infinite;
+}
+@keyframes sgt-art-sway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+.sgt-art-dish { fill: #fff; stroke: var(--sgt-brand-navy); stroke-width: 1.6; }
+.sgt-art-agar { fill: var(--sgt-brand-amber-soft); stroke: #f3d293; stroke-width: 1; }
+.sgt-art-pop {
+  transform-origin: 50% 50%;
+  animation: sgt-art-pop 4.2s var(--sgt-ease-out) infinite;
+}
+@keyframes sgt-art-pop {
+  0% { transform: scale(0); opacity: 0; }
+  12% { transform: scale(1.2); opacity: 1; }
+  20%, 80% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+.sgt-art-sparkle { stroke: var(--sgt-brand-amber); stroke-width: 2; stroke-linecap: round; animation: sgt-art-twinkle 2.4s ease-in-out infinite; }
+@keyframes sgt-art-twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+/* ---- Pharma: chromatogram drawing + floating capsule ------------------------------ */
+.sgt-art-trace { stroke: var(--sgt-blue-500); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.sgt-art-area { fill: rgba(19, 121, 240, 0.08); animation: sgt-art-area 4s ease-in-out infinite; }
+.sgt-art-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: sgt-art-draw 4s ease-in-out infinite;
+}
+@keyframes sgt-art-draw {
+  0% { stroke-dashoffset: 1; }
+  55%, 88% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes sgt-art-area {
+  0%, 45% { opacity: 0; }
+  60%, 88% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.sgt-art-peak-dot { animation: sgt-art-area 4s ease-in-out infinite; }
+.sgt-art-capsule-right { fill: #fff; stroke: var(--sgt-brand-navy); stroke-width: 1.6; }
+.sgt-art-tablet { fill: #fff; stroke: var(--sgt-brand-navy); stroke-width: 1.6; }
+.sgt-art-float { animation: sgt-art-float 3.2s ease-in-out infinite; }
+@keyframes sgt-art-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* ---- Water: beaker waves, bubbles, a falling drop, drifting air -------------------- */
+.sgt-art-water { fill: rgba(19, 121, 240, 0.22); }
+.sgt-art-wave { animation: sgt-art-wave 2.6s linear infinite; }
+@keyframes sgt-art-wave {
+  from { transform: translateX(0); }
+  to { transform: translateX(-34px); }
+}
+.sgt-art-bubble {
+  fill: #fff;
+  stroke: var(--sgt-blue-500);
+  stroke-width: 1;
+  animation: sgt-art-bubble 2.4s ease-in infinite;
+}
+@keyframes sgt-art-bubble {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-36px); opacity: 0; }
+}
+.sgt-art-drop {
+  fill: var(--sgt-blue-500);
+  animation: sgt-art-drop 2.4s ease-in infinite;
+}
+@keyframes sgt-art-drop {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 1; }
+  60% { transform: translateY(40px); opacity: 1; }
+  70%, 100% { transform: translateY(44px); opacity: 0; }
+}
+.sgt-art-cloud-shape { fill: #fff; stroke: #9fb4c8; stroke-width: 1.4; }
+.sgt-art-cloud { animation: sgt-art-float 4.4s ease-in-out infinite; }
+.sgt-art-drift { animation: sgt-art-drift 3s ease-in-out infinite; }
+@keyframes sgt-art-drift {
+  0% { transform: translate(0, 0); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translate(18px, -6px); opacity: 0; }
+}
+.sgt-art-strip { opacity: 0.85; }
+
+/* ---- Construction: compression test on a cube ------------------------------------- */
+.sgt-art-frame { fill: #2a3b5c; }
+.sgt-art-rod { fill: #6d737e; }
+.sgt-art-platen { fill: var(--sgt-brand-navy); }
+.sgt-art-cube { fill: #c9ced6; stroke: var(--sgt-brand-navy); stroke-width: 1.4; }
+.sgt-art-aggregate { fill: #8b929c; }
+.sgt-art-crack {
+  stroke: var(--sgt-brand-navy);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  opacity: 0;
+  animation: sgt-art-crack 3.2s ease-in-out infinite;
+}
+.sgt-art-press { animation: sgt-art-press 3.2s ease-in-out infinite; }
+@keyframes sgt-art-press {
+  0%, 100% { transform: translateY(0); }
+  40%, 62% { transform: translateY(8px); }
+}
+.sgt-art-squash {
+  transform-origin: 50% 100%;
+  animation: sgt-art-squash 3.2s ease-in-out infinite;
+}
+@keyframes sgt-art-squash {
+  0%, 38%, 66%, 100% { transform: scaleY(1); }
+  48%, 58% { transform: scaleY(0.97); }
+}
+@keyframes sgt-art-crack {
+  0%, 44% { opacity: 0; }
+  50%, 70% { opacity: 1; }
+  85%, 100% { opacity: 0; }
+}
+.sgt-art-gauge { fill: #fff; stroke: var(--sgt-brand-navy); stroke-width: 1.6; }
+.sgt-art-needle {
+  stroke: #d9382d;
+  stroke-width: 2;
+  stroke-linecap: round;
+  transform-origin: 50% 100%;
+  animation: sgt-art-needle 3.2s ease-in-out infinite;
+}
+@keyframes sgt-art-needle {
+  0%, 100% { transform: rotate(-60deg); }
+  44%, 58% { transform: rotate(55deg); }
+}
+
+/* ---- Metals: OES spark + emission lines -------------------------------------------- */
+.sgt-art-sheen {
+  fill: rgba(255, 255, 255, 0.6);
+  animation: sgt-art-sheen 3.6s ease-in-out infinite;
+}
+@keyframes sgt-art-sheen {
+  0% { transform: translateX(0); opacity: 0; }
+  20% { opacity: 1; }
+  70% { transform: translateX(60px); opacity: 0; }
+  100% { transform: translateX(60px); opacity: 0; }
+}
+.sgt-art-glow { fill: rgba(255, 189, 46, 0.35); }
+.sgt-art-spark {
+  transform-origin: 50% 50%;
+  animation: sgt-art-spark 1.1s steps(2, jump-none) infinite;
+}
+@keyframes sgt-art-spark {
+  0% { transform: scale(0.75); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(0.85); opacity: 0.8; }
+}
+.sgt-art-screen { fill: #0b1a33; }
+.sgt-art-screen-axis { stroke: rgba(255, 255, 255, 0.25); stroke-width: 1; }
+.sgt-art-emission {
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  transform-origin: 50% 100%;
+  animation: sgt-art-emission 1.8s ease-in-out infinite;
+}
+@keyframes sgt-art-emission {
+  0%, 100% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(0.45); opacity: 0.7; }
+}
+
+/* ---- Textiles: weaving thread fed from a spinning bobbin --------------------------- */
+.sgt-art-swatch { fill: #fdf2ec; stroke: var(--sgt-brand-navy); stroke-width: 1.6; }
+.sgt-art-warp { stroke: #d9b9a8; stroke-width: 3; }
+.sgt-art-weft { stroke: #c98f74; stroke-width: 2.4; stroke-linecap: round; }
+.sgt-art-weft-live { stroke: var(--sgt-brand-amber-strong); stroke-width: 3; stroke-linecap: round; }
+.sgt-art-thread { stroke: var(--sgt-brand-amber-strong); stroke-width: 2; stroke-dasharray: 4 3; animation: sgt-art-thread 0.9s linear infinite; }
+@keyframes sgt-art-thread {
+  to { stroke-dashoffset: -7; }
+}
+.sgt-art-bobbin { fill: #fff; stroke: var(--sgt-brand-navy); stroke-width: 1.6; }
+.sgt-art-bobbin-yarn { fill: var(--sgt-brand-amber); }
+.sgt-art-bobbin-mark { stroke: var(--sgt-brand-amber-strong); stroke-width: 1.6; stroke-linecap: round; }
+.sgt-art-bobbin-hole { fill: #fff; stroke: var(--sgt-brand-navy); stroke-width: 1.4; }
+.sgt-art-spin {
+  transform-origin: 50% 50%;
+  animation: sgt-art-spin 3s linear infinite;
+}
+@keyframes sgt-art-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Calm at rest: only the tile being looked at or chosen plays its scene, so
+   six loops never compete. Each scene's static state is the finished picture. */
+.sgt-domain-tile:not(:hover):not(:focus-within):not(.is-selected) .sgt-art,
+.sgt-domain-tile:not(:hover):not(:focus-within):not(.is-selected) .sgt-art * {
+  animation: none !important;
+}
+
+.sgt-domain-tile__art {
+  transition: background-color var(--sgt-duration) var(--sgt-ease);
+}
+
+.sgt-domain-tile .sgt-art {
+  transform-origin: 50% 70%;
+  transition: transform 320ms var(--sgt-ease-out);
+}
+
+.sgt-domain-tile:hover .sgt-art,
+.sgt-domain-tile.is-selected .sgt-art {
+  transform: scale(1.04);
+}
+
+/* Choosing a tile: a quick confirm pulse on the tick. */
+.sgt-domain-tile.is-selected .sgt-domain-tile__check {
+  animation: sgt-pop 380ms var(--sgt-ease-spring) both;
+}
+
+@media (max-width: 900px) {
+  .sgt-domain-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .sgt-domain-grid {
+    gap: 10px;
+  }
+
+  .sgt-domain-tile__art {
+    height: 96px;
+  }
+
+  .sgt-domain-tile__title {
+    padding: 12px 14px 14px;
+    font-size: 15px;
+  }
+}

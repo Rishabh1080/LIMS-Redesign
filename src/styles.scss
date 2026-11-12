@@ -1171,6 +1171,12 @@ button.smplfy-header-breadcrumb-text:active {
     gap: 6px;
   }
 
+  /* The tour needs a laptop-sized screen, and on phones the extra chip wraps the header. */
+  /* Specific enough to beat `.smplfy-btn:has(> svg) { display: inline-flex }`. */
+  .header-actions .header-tour-link.smplfy-btn {
+    display: none;
+  }
+
   .header-icon,
   .status-pill,
   .header-chip {

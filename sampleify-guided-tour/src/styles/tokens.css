@@ -1,0 +1,128 @@
+/*
+ * Design tokens, scoped to .sgt-root so nothing leaks into the host page.
+ * LIMS values mirror the smplfy design system (primitive -> semantic).
+ * Brand values mirror sampleify.in (navy + amber from the logo).
+ */
+.sgt-root {
+  /* --- smplfy primitives --- */
+  --sgt-neutral-100: #ffffff;
+  --sgt-neutral-200: #f5f6f7;
+  --sgt-neutral-300: #e6e8eb;
+  --sgt-neutral-400: #d1d5db;
+  --sgt-neutral-500: #9aa0a6;
+  --sgt-neutral-600: #6d737e;
+  --sgt-neutral-700: #4d5561;
+  --sgt-neutral-800: #1c2126;
+  --sgt-neutral-900: #0b1218;
+
+  --sgt-blue-50: #f1f8fe;
+  --sgt-blue-75: #eef7ff;
+  --sgt-blue-200: #dceffe;
+  --sgt-blue-300: #b9dcfd;
+  --sgt-blue-350: #94ccf9;
+  --sgt-blue-400: #7dbdf8;
+  --sgt-blue-500: #1379f0;
+  --sgt-blue-600: #0e5fbb;
+  --sgt-blue-700: #083c75;
+  --sgt-blue-800: #021527;
+
+  --sgt-red-25: #fef6f5;
+  --sgt-red-100: #ffe4e1;
+  --sgt-red-250: #f5a8a1;
+  --sgt-red-400: #ff6e67;
+  --sgt-red-500: #f44336;
+  --sgt-red-alert: #ff3131;
+  --sgt-red-600: #d9382d;
+
+  --sgt-yellow-50: #fefcf5;
+  --sgt-yellow-150: #fef9ec;
+  --sgt-yellow-225: #f5dfad;
+  --sgt-yellow-250: #ffe599;
+  --sgt-yellow-550: #ebc357;
+  --sgt-yellow-650: #b38632;
+  --sgt-orange-650: #c37538;
+
+  --sgt-green-100: #ebfff2;
+  --sgt-green-150: #e9f6ea;
+  --sgt-green-250: #a9dca9;
+  --sgt-green-400: #63d480;
+  --sgt-green-500: #4db04f;
+  --sgt-green-600: #3f9443;
+  --sgt-green-700: #327735;
+
+  /* --- sampleify.in brand --- */
+  --sgt-brand-navy: #021d49;
+  --sgt-brand-navy-hover: #0a2c66;
+  --sgt-brand-amber: #ffbd2e;
+  --sgt-brand-amber-strong: #b4690e;
+  --sgt-brand-amber-soft: #fff1d6;
+  --sgt-brand-warm-surface: #fff7ea;
+  --sgt-brand-ink: #141416;
+  --sgt-brand-ink-2: #33333a;
+  --sgt-brand-muted: #5c5c66;
+  --sgt-brand-faint: #6f6f7a;
+  --sgt-brand-line: #ededf1;
+  --sgt-brand-line-2: #e2e2e8;
+  --sgt-brand-surface-2: #f6f7f8;
+
+  /* --- semantic --- */
+  --sgt-text: var(--sgt-neutral-800);
+  --sgt-text-muted: var(--sgt-neutral-600);
+  --sgt-text-secondary: var(--sgt-neutral-700);
+  --sgt-page-bg: var(--sgt-neutral-200);
+  --sgt-surface: var(--sgt-neutral-100);
+  --sgt-border: var(--sgt-neutral-300);
+  --sgt-border-strong: var(--sgt-neutral-400);
+  --sgt-primary: var(--sgt-blue-500);
+  --sgt-primary-hover: var(--sgt-blue-600);
+  --sgt-primary-pressed: var(--sgt-blue-700);
+  --sgt-focus: var(--sgt-blue-500);
+  --sgt-sidebar-bg: var(--sgt-blue-800);
+  --sgt-sidebar-border: var(--sgt-neutral-800);
+  --sgt-sidebar-label: #8b97a4;
+
+  /* --- type --- */
+  --sgt-font-sans: var(--font-inter, 'Inter'), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --sgt-font-mono: var(--font-plex, 'IBM Plex Mono'), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* --- shape & elevation --- */
+  --sgt-radius-control: 6px;
+  --sgt-radius-field: 8px;
+  --sgt-radius-card: 12px;
+  --sgt-radius-panel: 6px;
+  --sgt-shadow-card-hover: 0 10px 24px rgba(15, 23, 42, 0.08);
+  --sgt-shadow-pop: 0 18px 48px rgba(15, 23, 42, 0.14), 0 6px 16px rgba(15, 23, 42, 0.08);
+  --sgt-shadow-modal: 0 24px 64px rgba(2, 21, 39, 0.22), 0 8px 20px rgba(2, 21, 39, 0.1);
+  --sgt-shadow-button: 3px 2px 4px rgba(10, 70, 138, 0.08);
+  --sgt-ring-focus: 0 0 0 3px rgba(19, 121, 240, 0.16);
+
+  /* --- motion ---
+     enter: ease-out, exit: ease-in (shorter), change: ease-in-out.
+     Durations by purpose: feedback 120, state 200, panels 320, layout 600. */
+  --sgt-ease: cubic-bezier(0.2, 0, 0, 1);
+  --sgt-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --sgt-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --sgt-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --sgt-ease-spring: cubic-bezier(0.2, 1.4, 0.3, 1);
+  --sgt-duration-fast: 160ms;
+  --sgt-duration: 220ms;
+  --sgt-duration-slow: 420ms;
+  --sgt-duration-exit: 170ms;
+  --sgt-duration-layout: 640ms;
+  --sgt-motion-distance: 24px;
+  --sgt-success: #2f9e6b;
+
+  /* --- layout --- */
+  --sgt-sidebar-width: 256px;
+  --sgt-sidebar-width-collapsed: 72px;
+  --sgt-header-height: 64px;
+
+  /* --- layering (all inside .sgt-root) --- */
+  --sgt-z-drawer: 1150;
+  --sgt-z-modal: 1200;
+  --sgt-z-toast: 1210;
+  --sgt-z-tracker-pop: 1260;
+  --sgt-z-tour: 1300;
+  --sgt-z-tour-card: 1310;
+  --sgt-z-sms: 1400;
+}

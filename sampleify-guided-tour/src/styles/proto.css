@@ -1,0 +1,39 @@
+/* Tutorial-only adjustments around the prototype screens. */
+
+/* The tutorial always shows the "Default" New Inward; its version switcher is a prototype tool. */
+.sgt-proto .smplfy-inward-header .smplfy-dropdown {
+  display: none;
+}
+
+/* The prototype fills the window; inside the tutorial it fills the tour root. */
+.sgt-proto {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+}
+
+/* The tour root sets its own font and colour; give the prototype back the
+   body styles it expects (styles.scss `body`). */
+.sgt-proto {
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: var(--bs-body-font-size);
+  line-height: var(--bs-body-line-height);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Prototype dropdown menus portal to <body>, outside the tour root. Lift them
+   above it (and above the tour layer) so they open where the visitor clicked.
+   The only selectors here that aren't .sgt- scoped: they target the
+   prototype's own portaled menus, which only exist inside the tutorial page. */
+body > .smplfy-rich-dropdown-menu,
+body > .smplfy-search-select-menu {
+  z-index: 10050 !important;
+}
+
+/* The visitor's lab logo sits on the dark sidebar. */
+.sgt-proto .brand-mark {
+  background: #fff;
+  border-radius: 8px;
+  padding: 3px;
+}

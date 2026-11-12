@@ -8,6 +8,10 @@ import { requestSections } from '../../data/requestsForMeData';
 import { allTestRequestBuckets } from '../../data/testRequestsHomeData';
 import '../../styles.scss';
 
+// The guided tour (sampleify-guided-tour/) runs as its own app. Locally that's its
+// dev server; set VITE_GUIDED_TOUR_URL to point the header button elsewhere.
+const GUIDED_TOUR_URL = import.meta.env.VITE_GUIDED_TOUR_URL || 'http://localhost:5310/';
+
 const archivedNavigationItems = [
   { label: 'Document Management', icon: 'file-description', key: 'document-management' },
   { label: 'Document Management 3', icon: 'file-description', key: 'document-management-3' },
@@ -421,6 +425,17 @@ function GlobalHeader({ mobileSidebarOpen, sidebarCollapsed, onToggleSidebar, br
                 <AppIcon name="activity" />
                 <span className="status-pill-label">No Active Alerts</span>
               </div>
+              {/* A link styled like the header chips, so it opens the tour in a new tab. */}
+              <a
+                href={GUIDED_TOUR_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="smplfy-btn btn btn-outline-secondary btn-lg header-chip header-tour-link"
+                aria-label="Guided Tour (opens in a new tab)"
+              >
+                <AppIcon name="guided-tour" />
+                <span className="header-chip-label">Guided Tour</span>
+              </a>
               <SecondaryButton
                 size="large"
                 tone="neutral"

@@ -1,0 +1,641 @@
+/*
+ * Copy of the prototype's src/components/AppChrome/AppChrome.jsx, used by every
+ * prototype page inside the tutorial (vite.config.js aliases AppChrome here).
+ * Differences, all tutorial-only:
+ *  - the sidebar lists only the pages the tutorial uses
+ *  - brand and profile show the visitor's lab and name (TutorialChromeContext)
+ *  - no Admin Hub footer link, no "Guided Tour" header link
+ *  - the profile button opens a menu: Restart guided tour, Start over from the beginning
+ * Everything else is the prototype's markup and classes, unchanged.
+ */
+import { IconFolder } from '@tabler/icons-react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import Badge from '@proto/components/Badge';
+import AppIcon from '@proto/components/AppIcon';
+import SecondaryButton from '@proto/components/SecondaryButton';
+import PrimaryButton from '@proto/components/PrimaryButton/PrimaryButton';
+import MenuActionItem from '@proto/components/MenuActionItem';
+import Modal from '@proto/components/Modal/Modal';
+import { requestSections } from '@proto/data/requestsForMeData';
+import { allTestRequestBuckets } from '@proto/data/testRequestsHomeData';
+import { logoSrc as companyLogo } from '../assets';
+import '@proto/styles.scss';
+
+export const TutorialChromeContext = createContext({
+  labName: 'Your Lab',
+  userName: 'You',
+  supportPhone: '+91-6358273804',
+  onRestartTour: null,
+  onStartOver: null,
+});
+
+/** The header's profile button, with the tutorial's two account actions. Prototype dropdown markup. */
+function ProfileMenu() {
+  const { userName, onRestartTour, onStartOver } = useContext(TutorialChromeContext);
+  const [open, setOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const handlePointerDown = (event) => {
+      if (!rootRef.current?.contains(event.target)) setOpen(false);
+    };
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className={`smplfy-dropdown dropdown${open ? ' show' : ''}`}>
+      <SecondaryButton
+        size="large"
+        tone="neutral"
+        leftIcon="user"
+        rightIcon="chevron-down"
+        className="header-profile"
+        aria-label="User profile"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+      >
+        {userName}
+      </SecondaryButton>
+      {open ? (
+        <div className="smplfy-dropdown-menu dropdown-menu show dropdown-menu-end smplfy-dropdown-menu-end" role="menu" aria-label="Account">
+          <MenuActionItem
+            label="Restart guided tour"
+            leftIcon="refresh"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              onRestartTour?.();
+            }}
+          />
+          <MenuActionItem
+            label="Start over from the beginning"
+            leftIcon="undo"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              setConfirmOpen(true);
+            }}
+          />
+        </div>
+      ) : null}
+      <Modal
+        open={confirmOpen}
+        title="Start over?"
+        titleId="sgt-start-over-title"
+        titleIcon="undo"
+        onClose={() => setConfirmOpen(false)}
+        size="md"
+        actions={(
+          <>
+            <SecondaryButton leftIcon="close" size="large" onClick={() => setConfirmOpen(false)}>
+              Cancel
+            </SecondaryButton>
+            <PrimaryButton
+              leftIcon="undo"
+              onClick={() => {
+                setConfirmOpen(false);
+                onStartOver?.();
+              }}
+            >
+              Start over
+            </PrimaryButton>
+          </>
+        )}
+      >
+        <p className="mb-0">
+          This clears your name, lab, number, tour progress and everything you created in this demo, then takes you back to the welcome screen.
+        </p>
+      </Modal>
+    </div>
+  );
+}
+
+const navigationSections = [
+  {
+    title: 'HOME',
+    items: [
+      { label: 'Dashboard', icon: 'home', key: 'dashboard' },
+    ],
+  },
+  {
+    title: 'LIMS',
+    items: [
+      { label: 'All inwards', icon: 'materials', key: 'all-samples' },
+    ],
+  },
+];
+
+let isDesktopSidebarPointerInside = false;
+const sidebarNavScrollTopByKey = {
+  desktop: 0,
+  mobile: 0,
+};
+
+// Which nav sections the user has collapsed. Persisted so the choice survives a
+// reload. Storage can throw (private mode, disabled cookies), so every access
+// is guarded and falls back to "nothing collapsed".
+const COLLAPSED_SECTIONS_STORAGE_KEY = 'lims.sidebar.collapsedSections';
+
+function readCollapsedSections() {
+  try {
+    const raw = window.localStorage.getItem(COLLAPSED_SECTIONS_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return Array.isArray(parsed) ? parsed.filter((title) => typeof title === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeCollapsedSections(titles) {
+  try {
+    window.localStorage.setItem(COLLAPSED_SECTIONS_STORAGE_KEY, JSON.stringify(titles));
+  } catch {
+    // Preference is a nicety; ignore storage failures.
+  }
+}
+
+function SidebarNavButton({
+  item,
+  activeNav,
+  collapsed = false,
+  onItemClick,
+  onNavigate,
+  onTooltipShow,
+  onTooltipHide,
+  badgeCounts = {},
+  className = '',
+}) {
+  const hasBadge = Boolean(badgeCounts[item.badgeKey]);
+  const showIcon = Boolean(item.icon);
+  const tooltipLabel = item.opensInNewTab ? `${item.label} - opens in a new tab` : item.label;
+
+  return (
+    <button
+      key={item.key}
+      className={`sidebar-link btn text-start ${
+        item.key === activeNav ? 'is-active' : ''
+      } ${hasBadge ? 'smplfy-sidebar-link-with-badge' : ''} ${
+        item.opensInNewTab ? 'smplfy-sidebar-link-with-external' : ''
+      } ${
+        collapsed && hasBadge ? 'smplfy-sidebar-link-with-dot' : ''
+      } ${className}`}
+      aria-label={item.opensInNewTab ? `${item.label} (opens in a new tab)` : item.label}
+      onMouseEnter={(event) => onTooltipShow?.(tooltipLabel, event)}
+      onMouseLeave={onTooltipHide}
+      onFocus={(event) => onTooltipShow?.(tooltipLabel, event)}
+      onBlur={onTooltipHide}
+      onClick={() => {
+        onNavigate?.(item.key, { newTab: item.opensInNewTab });
+        onItemClick?.();
+      }}
+    >
+      {showIcon ? (
+        <span className="smplfy-sidebar-link-icon">
+          <AppIcon name={item.icon} size={20} />
+          {hasBadge ? <span className="smplfy-sidebar-link-dot" aria-hidden="true" /> : null}
+        </span>
+      ) : null}
+      {item.initials ? (
+        <span className="smplfy-sidebar-child-initials" aria-hidden="true">
+          {item.initials}
+        </span>
+      ) : null}
+      <span className="sidebar-link-text">{item.label}</span>
+      {hasBadge ? (
+        <Badge className="smplfy-sidebar-link-badge" tone="danger" size="small" shape="circle">
+          {badgeCounts[item.badgeKey]}
+        </Badge>
+      ) : null}
+      {item.opensInNewTab ? (
+        <span className="smplfy-sidebar-link-external" aria-hidden="true">
+          <AppIcon name="external-link" size={14} stroke={2} />
+        </span>
+      ) : null}
+      <span className="smplfy-sidebar-link-tooltip" role="tooltip">
+        {item.opensInNewTab ? `${item.label} - opens in a new tab` : item.label}
+      </span>
+    </button>
+  );
+}
+
+function SidebarFolderItem({
+  item,
+  activeNav,
+  collapsed = false,
+  onItemClick,
+  onNavigate,
+  onTooltipShow,
+  onTooltipHide,
+  badgeCounts = {},
+}) {
+  const hasActiveChild = item.children?.some((child) => child.key === activeNav) ?? false;
+  const [expanded, setExpanded] = useState(hasActiveChild);
+
+  useEffect(() => {
+    if (hasActiveChild) {
+      setExpanded(true);
+    }
+  }, [hasActiveChild]);
+
+  return (
+    <div className="smplfy-sidebar-folder">
+      <button
+        type="button"
+        className={`sidebar-link btn text-start smplfy-sidebar-folder-toggle ${hasActiveChild ? 'is-child-active' : ''}`}
+        aria-expanded={expanded}
+        aria-controls={`${item.key}-children`}
+        onMouseEnter={(event) => onTooltipShow?.(item.label, event)}
+        onMouseLeave={onTooltipHide}
+        onFocus={(event) => onTooltipShow?.(item.label, event)}
+        onBlur={onTooltipHide}
+        onClick={() => setExpanded((current) => !current)}
+      >
+        <span className="smplfy-sidebar-link-icon">
+          <IconFolder size={20} stroke={1.8} aria-hidden="true" />
+        </span>
+        <span className="sidebar-link-text">{item.label}</span>
+        <span className="smplfy-sidebar-folder-chevron" aria-hidden="true">
+          <AppIcon name={expanded ? 'chevron-down' : 'chevron-right'} size={16} stroke={2} />
+        </span>
+        <span className="smplfy-sidebar-link-tooltip" role="tooltip">
+          {item.label}
+        </span>
+      </button>
+
+      {expanded ? (
+        <div className="smplfy-sidebar-folder-children d-grid gap-1" id={`${item.key}-children`}>
+          {item.children.map((child) => (
+            <SidebarNavButton
+              key={child.key}
+              item={child}
+              activeNav={activeNav}
+              collapsed={collapsed}
+              onItemClick={onItemClick}
+              onNavigate={onNavigate}
+              onTooltipShow={onTooltipShow}
+              onTooltipHide={onTooltipHide}
+              badgeCounts={badgeCounts}
+              className="smplfy-sidebar-folder-child"
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function Sidebar({
+  activeNav,
+  collapsed = false,
+  collapsedTooltipsEnabled = collapsed,
+  onItemClick,
+  onNavigate,
+  badgeCounts = {},
+  scrollPersistenceKey = 'desktop',
+  collapsedSections = [],
+  onToggleSection,
+}) {
+  const { labName } = useContext(TutorialChromeContext);
+  const [floatingTooltip, setFloatingTooltip] = useState(null);
+  const sidebarNavRef = useRef(null);
+  const showFloatingTooltip = (label, event) => {
+    if (!collapsedTooltipsEnabled) {
+      return;
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    setFloatingTooltip({
+      label,
+      top: rect.top + rect.height / 2,
+    });
+  };
+  const hideFloatingTooltip = () => {
+    setFloatingTooltip(null);
+  };
+
+  useLayoutEffect(() => {
+    const navElement = sidebarNavRef.current;
+
+    if (!navElement) {
+      return;
+    }
+
+    navElement.scrollTop = sidebarNavScrollTopByKey[scrollPersistenceKey] ?? 0;
+  }, [scrollPersistenceKey]);
+
+  const handleNavScroll = (event) => {
+    sidebarNavScrollTopByKey[scrollPersistenceKey] = event.currentTarget.scrollTop;
+  };
+
+  return (
+    <aside className={`lims-sidebar d-flex flex-column ${collapsed ? 'is-collapsed' : ''}`}>
+      <div className="sidebar-brand d-flex align-items-center border-bottom">
+        <div className="brand-block d-flex align-items-center">
+          <img className="brand-mark" src={companyLogo} alt="" />
+          <div className="brand-copy">
+            <div>{labName}</div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="sidebar-nav flex-grow-1"
+        ref={sidebarNavRef}
+        onScroll={handleNavScroll}
+      >
+        {navigationSections.map((section) => {
+          const sectionCollapsed = collapsedSections.includes(section.title);
+          const panelId = `sidebar-section-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+          return (
+          <section className="sidebar-section" key={section.title}>
+            {/* Always a toggle, in every sidebar width. In icon-only mode the
+                48px label has no room for the chevron, so it is hidden there,
+                but the row still toggles. */}
+            <button
+              type="button"
+              className={`sidebar-label sidebar-label-toggle${sectionCollapsed ? ' is-collapsed' : ''}`}
+              aria-expanded={!sectionCollapsed}
+              aria-controls={panelId}
+              onClick={() => onToggleSection?.(section.title)}
+            >
+              <span>{section.title}</span>
+              <AppIcon
+                className="sidebar-label-chevron"
+                name={sectionCollapsed ? 'chevron-right' : 'chevron-down'}
+                size={16}
+                stroke={2}
+              />
+            </button>
+            {/* `d-grid` is display:grid !important, which beats the `hidden`
+                attribute, so the collapsed state swaps the class outright
+                rather than relying on `hidden` alone. */}
+            <div
+              className={sectionCollapsed ? 'd-none' : 'd-grid gap-1'}
+              id={panelId}
+              hidden={sectionCollapsed}
+            >
+              {section.items.map((item) =>
+                item.type === 'folder' ? (
+                  <SidebarFolderItem
+                    key={item.key}
+                    item={item}
+                    activeNav={activeNav}
+                    collapsed={collapsed}
+                    onItemClick={onItemClick}
+                    onNavigate={onNavigate}
+                    onTooltipShow={showFloatingTooltip}
+                    onTooltipHide={hideFloatingTooltip}
+                    badgeCounts={badgeCounts}
+                  />
+                ) : (
+                  <SidebarNavButton
+                    key={item.key}
+                    item={item}
+                    activeNav={activeNav}
+                    collapsed={collapsed}
+                    onItemClick={onItemClick}
+                    onNavigate={onNavigate}
+                    onTooltipShow={showFloatingTooltip}
+                    onTooltipHide={hideFloatingTooltip}
+                    badgeCounts={badgeCounts}
+                  />
+                ),
+              )}
+            </div>
+          </section>
+          );
+        })}
+      </div>
+      {collapsedTooltipsEnabled && floatingTooltip ? (
+        <span
+          className="smplfy-sidebar-floating-tooltip"
+          style={{ top: `${floatingTooltip.top}px` }}
+          role="tooltip"
+        >
+          {floatingTooltip.label}
+        </span>
+      ) : null}
+    </aside>
+  );
+}
+
+function GlobalHeader({ mobileSidebarOpen, sidebarCollapsed, onToggleSidebar, breadcrumbs = [], onNavigate }) {
+  const { supportPhone } = useContext(TutorialChromeContext);
+  const navigationExpanded = mobileSidebarOpen || !sidebarCollapsed;
+
+  return (
+    <header className="global-header">
+      <div className="container-fluid h-100">
+        <div className="row h-100 align-items-center justify-content-between gx-0">
+          <div className="col-auto">
+            <div className="header-breadcrumb-shell d-flex align-items-center">
+              <div className="header-nav-toggle-wrap">
+                <button
+                  className="header-nav-toggle btn"
+                  aria-label={navigationExpanded ? 'Collapse navigation' : 'Expand navigation'}
+                  aria-expanded={navigationExpanded}
+                  onClick={onToggleSidebar}
+                >
+                  <AppIcon name={mobileSidebarOpen ? 'close' : 'menu'} />
+                </button>
+              </div>
+
+              <div className="header-breadcrumb d-flex align-items-center">
+                <button
+                  className="header-home btn d-flex align-items-center"
+                  aria-label="Go to Dashboard"
+                  onClick={() => onNavigate?.('dashboard')}
+                >
+                  <AppIcon name="home" />
+                </button>
+
+                {breadcrumbs.length ? <span className="smplfy-header-breadcrumb-divider">{'>'}</span> : null}
+
+                {breadcrumbs.map((crumb, index) => (
+                  <div className="smplfy-header-breadcrumb-item" key={`${crumb.label}-${index}`}>
+                    {crumb.current ? (
+                      <span className="smplfy-header-breadcrumb-text is-current">{crumb.label}</span>
+                    ) : (
+                      <button
+                        className="btn smplfy-header-breadcrumb-text"
+                        onClick={() => onNavigate?.(crumb.key)}
+                      >
+                        {crumb.label}
+                      </button>
+                    )}
+
+                    {index < breadcrumbs.length - 1 ? (
+                      <span className="smplfy-header-breadcrumb-divider">{'>'}</span>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="col-auto">
+            <div className="header-actions d-flex align-items-center">
+              <div className="status-pill">
+                <AppIcon name="activity" />
+                <span className="status-pill-label">No Active Alerts</span>
+              </div>
+              <SecondaryButton
+                size="large"
+                tone="neutral"
+                leftIcon="phone"
+                className="header-chip"
+              >
+                <span className="header-chip-label">{supportPhone}</span>
+              </SecondaryButton>
+              <SecondaryButton size="large" tone="neutral" className="header-icon" aria-label="Notifications">
+                <AppIcon name="bell" />
+              </SecondaryButton>
+              <ProfileMenu />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+export default function AppChrome({
+  activeNav,
+  pageHeader = null,
+  children,
+  onNavigate,
+  breadcrumbs = [],
+  sidebarCollapsed = true,
+  onSidebarCollapsedChange,
+  sidebarBadgeCounts = {},
+}) {
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [sidebarHoverExpanded, setSidebarHoverExpanded] = useState(() => isDesktopSidebarPointerInside);
+  // Held here rather than in Sidebar so the desktop and mobile copies agree.
+  const [collapsedSections, setCollapsedSections] = useState(readCollapsedSections);
+  const handleToggleSection = useCallback((title) => {
+    setCollapsedSections((current) => {
+      const next = current.includes(title)
+        ? current.filter((entry) => entry !== title)
+        : [...current, title];
+
+      writeCollapsedSections(next);
+      return next;
+    });
+  }, []);
+  const desktopSidebarShellRef = useRef(null);
+  const requestsForMeSidebarBadgeCount = requestSections.reduce(
+    (sum, section) => sum + (section.count ?? 0),
+    0,
+  );
+  const testRequestsSidebarBadgeCount = allTestRequestBuckets.length;
+  const resolvedSidebarBadgeCounts = {
+    'requests-for-me': requestsForMeSidebarBadgeCount,
+    'test-requests-home': testRequestsSidebarBadgeCount,
+    ...sidebarBadgeCounts,
+  };
+  const desktopSidebarHoverExpanded = sidebarCollapsed && sidebarHoverExpanded;
+
+  useEffect(() => {
+    if (!sidebarCollapsed) {
+      setSidebarHoverExpanded(false);
+      return undefined;
+    }
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      const shellHovered = desktopSidebarShellRef.current?.matches(':hover') ?? isDesktopSidebarPointerInside;
+      isDesktopSidebarPointerInside = shellHovered;
+      setSidebarHoverExpanded(shellHovered);
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [activeNav, sidebarCollapsed]);
+
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 992) {
+      setMobileSidebarOpen((current) => !current);
+      return;
+    }
+
+    setSidebarHoverExpanded(false);
+    onSidebarCollapsedChange?.(!sidebarCollapsed);
+  };
+
+  const handleDesktopSidebarPointerEnter = () => {
+    isDesktopSidebarPointerInside = true;
+
+    if (sidebarCollapsed) {
+      setSidebarHoverExpanded(true);
+    }
+  };
+
+  const handleDesktopSidebarPointerLeave = () => {
+    isDesktopSidebarPointerInside = false;
+    setSidebarHoverExpanded(false);
+  };
+
+  return (
+    <div className="container-fluid lims-app px-0">
+      <div
+        className={`sidebar-backdrop ${mobileSidebarOpen ? 'is-visible' : ''}`}
+        onClick={() => setMobileSidebarOpen(false)}
+      />
+
+      <div className={`sidebar-shell sidebar-shell-mobile ${mobileSidebarOpen ? 'is-open' : ''}`}>
+        <Sidebar
+          activeNav={activeNav}
+          onNavigate={onNavigate}
+          onItemClick={() => setMobileSidebarOpen(false)}
+          badgeCounts={resolvedSidebarBadgeCounts}
+          scrollPersistenceKey="mobile"
+          collapsedSections={collapsedSections}
+          onToggleSection={handleToggleSection}
+        />
+      </div>
+
+      <div
+        className={`sidebar-shell sidebar-shell-desktop ${sidebarCollapsed ? 'is-collapsed' : ''} ${
+          desktopSidebarHoverExpanded ? 'is-hover-expanded' : ''
+        }`}
+        ref={desktopSidebarShellRef}
+        onMouseEnter={handleDesktopSidebarPointerEnter}
+        onMouseLeave={handleDesktopSidebarPointerLeave}
+      >
+        <Sidebar
+          activeNav={activeNav}
+          collapsed={sidebarCollapsed}
+          collapsedTooltipsEnabled={sidebarCollapsed && !desktopSidebarHoverExpanded}
+          onNavigate={onNavigate}
+          badgeCounts={resolvedSidebarBadgeCounts}
+          scrollPersistenceKey="desktop"
+          collapsedSections={collapsedSections}
+          onToggleSection={handleToggleSection}
+        />
+      </div>
+
+      <div className="lims-main min-vh-100">
+        <GlobalHeader
+          mobileSidebarOpen={mobileSidebarOpen}
+          sidebarCollapsed={sidebarCollapsed}
+          onToggleSidebar={handleToggleSidebar}
+          breadcrumbs={breadcrumbs}
+          onNavigate={onNavigate}
+        />
+        {pageHeader ? <div className="lims-page-header-slot">{pageHeader}</div> : null}
+        <div className="lims-main-content">{children}</div>
+      </div>
+    </div>
+  );
+}
