@@ -1,0 +1,149 @@
+.smplfy-nav-link.nav-link {
+  --bs-nav-link-padding-x: var(--smplfy-nav-link-padding-x);
+  --bs-nav-link-padding-y: var(--smplfy-button-space-0);
+  --bs-nav-link-font-size: var(--smplfy-nav-link-font-size);
+  --bs-nav-link-font-weight: var(--smplfy-nav-link-font-weight);
+  --bs-nav-link-color: var(--smplfy-nav-link-text);
+  --bs-nav-link-hover-color: var(--smplfy-nav-link-hover-text);
+  --smplfy-nav-link-current-height: var(--smplfy-nav-link-height-large);
+  --smplfy-nav-link-current-bg: var(--smplfy-nav-link-bg);
+  --smplfy-nav-link-current-text: var(--smplfy-nav-link-text);
+  --smplfy-nav-link-current-border: var(--smplfy-nav-link-border);
+  --smplfy-nav-link-current-border-width: var(--smplfy-nav-link-border-width);
+
+  position: relative;
+  min-height: var(--smplfy-nav-link-current-height);
+  border: var(--smplfy-button-space-0);
+  border-radius: var(--smplfy-nav-link-radius);
+  background-color: var(--smplfy-nav-link-current-bg);
+  color: var(--smplfy-nav-link-current-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--smplfy-nav-link-gap);
+  line-height: var(--smplfy-nav-link-line-height);
+  letter-spacing: var(--smplfy-nav-link-letter-spacing);
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow: none;
+  transition:
+    background-color var(--smplfy-nav-link-motion-standard),
+    color var(--smplfy-nav-link-motion-standard),
+    box-shadow var(--smplfy-nav-link-motion-standard);
+}
+
+.smplfy-nav-link.nav-link::after {
+  content: '';
+  position: absolute;
+  inset-inline: var(--smplfy-button-space-0);
+  inset-block-end: var(--smplfy-button-space-0);
+  height: var(--smplfy-nav-link-current-border-width);
+  background-color: var(--smplfy-nav-link-current-border);
+  pointer-events: none;
+  transition:
+    background-color var(--smplfy-nav-link-motion-standard),
+    height var(--smplfy-nav-link-motion-standard);
+}
+
+.smplfy-nav-link.nav-link:not(.active):hover {
+  --smplfy-nav-link-current-bg: var(--smplfy-nav-link-hover-bg);
+  --smplfy-nav-link-current-text: var(--smplfy-nav-link-hover-text);
+  --smplfy-nav-link-current-border: var(--smplfy-nav-link-hover-border);
+  --smplfy-nav-link-current-border-width: var(--smplfy-nav-link-border-width);
+
+  box-shadow: none;
+}
+
+.smplfy-nav-link.nav-link:not(.active):focus-visible {
+  --smplfy-nav-link-current-bg: var(--smplfy-nav-link-focus-bg);
+  --smplfy-nav-link-current-text: var(--smplfy-nav-link-focus-text);
+  --smplfy-nav-link-current-border: var(--smplfy-nav-link-focus-border);
+
+  outline: none;
+  box-shadow: none;
+}
+
+.smplfy-nav-link.nav-link.active,
+.smplfy-nav-link.nav-link.active:hover,
+.smplfy-nav-link.nav-link.active:active,
+.smplfy-nav-link.nav-link.active:focus-visible {
+  --smplfy-nav-link-current-bg: var(--smplfy-nav-link-active-bg);
+  --smplfy-nav-link-current-text: var(--smplfy-nav-link-active-text);
+  --smplfy-nav-link-current-border: var(--smplfy-nav-link-active-border);
+  --smplfy-nav-link-current-border-width: var(--smplfy-nav-link-border-width-active);
+
+  box-shadow: none;
+  cursor: default;
+  pointer-events: none;
+}
+
+.smplfy-nav-link.nav-link:not(.active):active {
+  --smplfy-nav-link-current-bg: var(--smplfy-nav-link-pressed-bg);
+  --smplfy-nav-link-current-text: var(--smplfy-nav-link-pressed-text);
+  --smplfy-nav-link-current-border: var(--smplfy-nav-link-pressed-border);
+  --smplfy-nav-link-current-border-width: var(--smplfy-nav-link-border-width);
+
+  box-shadow: none;
+}
+
+.smplfy-nav-link.nav-link > .smplfy-badge.badge {
+  letter-spacing: var(--smplfy-nav-link-badge-letter-spacing);
+}
+
+.smplfy-nav-link.nav-link.smplfy-nav-link-medium {
+  --smplfy-nav-link-current-height: var(--smplfy-nav-link-height-medium);
+}
+
+.nav-tabs > .smplfy-nav-link.nav-link,
+.nav-tabs > .smplfy-nav-link.nav-link:hover,
+.nav-tabs > .smplfy-nav-link.nav-link:focus-visible,
+.nav-tabs > .smplfy-nav-link.nav-link.active,
+.nav-tabs > .smplfy-nav-link.nav-link.active:hover,
+.nav-tabs > .smplfy-nav-link.nav-link.active:active,
+.nav-tabs > .smplfy-nav-link.nav-link.active:focus-visible {
+  border: 0;
+  border-color: transparent;
+  background-color: var(--smplfy-nav-link-current-bg);
+  color: var(--smplfy-nav-link-current-text);
+}
+
+.nav.nav-pills.bg-body-tertiary.border.rounded {
+  border-radius: 8px !important;
+}
+
+.nav-pills > .smplfy-nav-link.nav-link {
+  --bs-nav-pills-link-active-bg: var(--smplfy-primitive-neutral-100);
+  --bs-nav-pills-link-active-color: var(--smplfy-primitive-neutral-800);
+  --smplfy-nav-link-radius: 4px;
+  --smplfy-nav-link-hover-bg: transparent;
+  --smplfy-nav-link-hover-text: var(--smplfy-primitive-neutral-800);
+  --smplfy-nav-link-focus-bg: transparent;
+  --smplfy-nav-link-focus-text: var(--smplfy-primitive-neutral-800);
+  --smplfy-nav-link-active-bg: var(--smplfy-primitive-neutral-100);
+  --smplfy-nav-link-active-text: var(--smplfy-primitive-neutral-800);
+  --smplfy-nav-link-active-border: transparent;
+
+  flex: 0 0 auto;
+}
+
+.nav-pills > .smplfy-nav-link.nav-link.flex-fill {
+  flex: 1 1 0 !important;
+}
+
+.nav-pills > .smplfy-nav-link.nav-link::after {
+  display: none;
+}
+
+.nav-pills > .smplfy-nav-link.nav-link.active,
+.nav-pills > .smplfy-nav-link.nav-link.active:hover,
+.nav-pills > .smplfy-nav-link.nav-link.active:focus-visible {
+  background-color: var(--smplfy-primitive-blue-600, #007bf8);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Count badge stays legible on the solid blue active pill. */
+.nav-pills > .smplfy-nav-link.nav-link.active > .smplfy-badge.badge {
+  background-color: #fff !important;
+  color: var(--smplfy-primitive-blue-600, #007bf8) !important;
+}

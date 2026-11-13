@@ -1,0 +1,29 @@
+.smplfy-stock-report-content {
+  max-width: 1360px;
+}
+
+.smplfy-stock-report-page .smplfy-stock-report-table.smplfy-table.table {
+  --smplfy-table-min-width: 0;
+  --smplfy-table-hover-bg: transparent;
+
+  table-layout: fixed;
+  width: 100%;
+}
+
+.smplfy-stock-report-col-name {
+  width: 52%;
+}
+
+.smplfy-stock-report-col-min,
+.smplfy-stock-report-col-current {
+  width: 24%;
+}
+
+.smplfy-stock-report-page .smplfy-stock-report-table.table-hover > tbody > tr:hover > * {
+  --bs-table-bg-state: transparent;
+  --bs-table-color-state: var(--smplfy-table-text);
+}
+
+.smplfy-stock-report-page .smplfy-stock-report-low-stock > * {
+  background-color: var(--smplfy-primitive-red-100) !important;
+}

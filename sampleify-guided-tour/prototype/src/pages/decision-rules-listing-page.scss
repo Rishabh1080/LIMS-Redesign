@@ -1,0 +1,600 @@
+/* Decision Rules listing — layout mirrors production; every typographic,
+   sizing, radius and colour value comes from design-system tokens. */
+
+/* The split button defaults to an 8px radius while every other button here is
+   6px (--smplfy-button-radius). Match them on this page so the header reads as
+   one set. Both split halves round their outer corners from this token. */
+.smplfy-dr-split.smplfy-btn-group {
+  --smplfy-split-button-radius: var(--smplfy-button-radius);
+}
+
+/* The dropdown's default 16px panel looks too round beside the 6px buttons.
+   Tighten it, keeping corners concentric: panel = item + padding (6 + 6 = 12),
+   and match the item radius to the buttons. */
+.smplfy-dr-split .smplfy-dropdown-menu.dropdown-menu {
+  --smplfy-dropdown-menu-radius: 12px;
+  --smplfy-dropdown-menu-padding: var(--smplfy-button-radius);
+  --smplfy-dropdown-item-radius: var(--smplfy-button-radius);
+}
+
+/* Header version dropdown (shared by V1 and V2). */
+.smplfy-dr-version.dropdown {
+  position: relative;
+}
+
+.smplfy-dr-version-trigger.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-1);
+  height: var(--smplfy-semantic-size-control-height-medium);
+}
+
+.smplfy-dr-version-menu.dropdown-menu {
+  position: absolute;
+  inset-block-start: calc(100% + var(--smplfy-button-space-1));
+  inset-inline-start: 0;
+  min-width: 160px;
+}
+
+/* Plain list: the current item is marked only by the trailing check, no colour
+   or weight change. The label span carries the font explicitly — the shared
+   rule only styles span:last-child, which the check icon displaces on the
+   current item, so without this the two options render at different sizes. */
+.smplfy-dr-version-menu .smplfy-dropdown-item > span:first-child {
+  flex-grow: 1;
+  font-size: var(--smplfy-dropdown-item-font-size);
+  line-height: var(--smplfy-dropdown-item-line-height);
+  font-weight: var(--smplfy-dropdown-item-font-weight);
+}
+
+/* Filter row container: a white card with a soft drop shadow so the filters
+   read as a distinct toolbar above the table. Generous vertical padding. */
+.smplfy-dr-filters {
+  padding-inline: var(--smplfy-button-space-4);
+  padding-block: 28px;
+  background: var(--smplfy-primitive-neutral-100);
+  border: 1px solid var(--smplfy-primitive-neutral-300);
+  border-radius: var(--smplfy-field-radius);
+  box-shadow: 0 1px 2px rgba(11, 18, 24, 0.04), 0 2px 8px rgba(11, 18, 24, 0.06);
+}
+
+/* Column filter row. Wider than the default so values have room to breathe. */
+.smplfy-dr-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
+  flex: 1 1 0;
+  max-width: 280px;
+}
+
+/* The field controls sit on white so they stand out against the tinted panel. */
+.smplfy-dr-filters .smplfy-dr-filter-control.form-control,
+.smplfy-dr-filters .smplfy-dr-filter-control.form-select {
+  background-color: var(--smplfy-primitive-neutral-100);
+}
+
+/* The filter labels read against the tint. */
+.smplfy-dr-filters .smplfy-dr-filter-label {
+  color: var(--smplfy-primitive-neutral-700);
+}
+
+/* The More button is a shared control whose outline uses a darker grey than
+   the fields, and defaults shorter; match its border and height to the fields
+   so the row reads as one set. (The row is bottom-aligned, so the labelled
+   fields' controls line up with the label-less More button.) */
+.smplfy-dr-filters .smplfy-new-tr-filter-btn.btn {
+  --bs-btn-border-color: var(--smplfy-field-border-default);
+  --bs-btn-hover-border-color: var(--smplfy-field-border-hover);
+  min-height: var(--smplfy-field-height);
+  height: var(--smplfy-field-height);
+}
+
+.smplfy-dr-filter-label {
+  font-size: var(--smplfy-field-label-font-size);
+  font-weight: var(--smplfy-field-label-font-weight, 500);
+  line-height: var(--smplfy-field-helper-line-height);
+  color: var(--smplfy-table-muted-text);
+  margin: 0;
+}
+
+.smplfy-dr-filter-control.form-control,
+.smplfy-dr-filter-control.form-select {
+  height: var(--smplfy-field-height);
+  font-size: var(--smplfy-field-font-size);
+  border-color: var(--smplfy-field-border-default);
+  border-radius: var(--smplfy-button-radius);
+  color: var(--smplfy-field-text);
+}
+
+.smplfy-dr-filter-control.form-control::placeholder {
+  color: var(--smplfy-table-muted-text);
+}
+
+.smplfy-dr-filter-control:focus {
+  border-color: var(--smplfy-field-border-focused);
+  box-shadow: var(--smplfy-field-shadow-focused);
+}
+
+/* Active (a value is set): blue border + tinted label so the filter reads as on. */
+.smplfy-dr-filter.is-filled .smplfy-dr-filter-control.form-control,
+.smplfy-dr-filter.is-filled .smplfy-dr-filter-control.form-select {
+  border-color: var(--smplfy-primitive-blue-500);
+  background-color: var(--smplfy-primitive-blue-50);
+}
+
+.smplfy-dr-filter.is-filled .smplfy-dr-filter-label {
+  color: var(--smplfy-primitive-blue-600);
+}
+
+/* The More button sits at the right end of the filter row here, so the panel
+   must open leftward (right-aligned) or it runs off the screen. */
+.smplfy-dr-more-filter .smplfy-new-tr-filter-panel {
+  left: auto;
+  right: 0;
+}
+
+/* Active More button: match the other filter dropdowns (blue border on a white
+   field) instead of the shared solid dark-blue fill. */
+.smplfy-dr-more-filter .smplfy-new-tr-filter-btn.btn.is-active {
+  --bs-btn-color: var(--smplfy-field-text);
+  --bs-btn-bg: var(--smplfy-primitive-neutral-100);
+  --bs-btn-border-color: var(--smplfy-primitive-blue-500);
+  --bs-btn-hover-color: var(--smplfy-field-text);
+  --bs-btn-hover-bg: var(--smplfy-primitive-neutral-100);
+  --bs-btn-hover-border-color: var(--smplfy-primitive-blue-500);
+  --bs-btn-active-color: var(--smplfy-field-text);
+  --bs-btn-active-bg: var(--smplfy-primitive-neutral-100);
+  --bs-btn-active-border-color: var(--smplfy-primitive-blue-500);
+  color: var(--smplfy-field-text);
+  background-color: var(--smplfy-primitive-neutral-100);
+  border-color: var(--smplfy-primitive-blue-500);
+}
+
+/* Values pane: a pinned search box on top, then a scrollable list of All +
+   facet items. Overrides the shared pane's own padding/scroll so only the list
+   below the search scrolls. Scoped to this page's More panel. */
+.smplfy-dr-more-filter .smplfy-new-tr-filter-values {
+  padding: 0;
+  overflow: hidden;
+}
+
+.smplfy-dr-facet-search {
+  position: relative;
+  flex-shrink: 0;
+  padding: var(--smplfy-button-space-2) var(--smplfy-button-space-3);
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+}
+
+.smplfy-dr-facet-search-icon {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--smplfy-button-space-3) + var(--smplfy-field-padding-inline-compact));
+  transform: translateY(-50%);
+  display: inline-flex;
+  color: var(--smplfy-field-icon-color);
+  pointer-events: none;
+}
+
+.smplfy-dr-facet-search-input {
+  width: 100%;
+  height: var(--smplfy-semantic-size-control-height-medium);
+  padding: 0 var(--smplfy-field-padding-inline-compact) 0 36px;
+  font-size: var(--smplfy-field-font-size);
+  color: var(--smplfy-field-text);
+  background: var(--smplfy-primitive-neutral-100);
+  border: 1px solid var(--smplfy-field-border-default);
+  border-radius: var(--smplfy-field-radius);
+  outline: none;
+}
+
+.smplfy-dr-facet-search-input:focus {
+  border-color: var(--smplfy-field-border-focused);
+  box-shadow: var(--smplfy-field-shadow-focused);
+}
+
+.smplfy-dr-facet-search-input::placeholder {
+  color: var(--smplfy-table-muted-text);
+}
+
+.smplfy-dr-facet-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--smplfy-button-space-2) 0;
+}
+
+.smplfy-dr-facet-empty {
+  padding: var(--smplfy-button-space-2) var(--smplfy-field-padding-inline);
+  font-size: var(--smplfy-field-font-size);
+}
+
+/* The "More" facet button aligns with the bottom of the labelled controls. */
+.smplfy-dr-more-filter .smplfy-new-tr-filter-btn.btn {
+  height: var(--smplfy-semantic-size-control-height-medium);
+}
+
+.smplfy-dr-filter-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-1);
+  height: var(--smplfy-semantic-size-control-height-medium);
+  padding: 0 var(--smplfy-button-space-2);
+  border: 0;
+  background: transparent;
+  font-size: var(--smplfy-field-font-size);
+  font-weight: var(--smplfy-table-head-font-weight);
+  color: var(--smplfy-primitive-blue-500);
+  cursor: pointer;
+}
+
+.smplfy-dr-filter-clear:not(:disabled):hover {
+  color: var(--smplfy-primitive-blue-600);
+  text-decoration: underline;
+}
+
+.smplfy-dr-filter-clear:disabled {
+  color: var(--smplfy-primitive-neutral-500);
+  cursor: default;
+}
+
+/* Table: the system DataTable (header, padding, borders, radius come from
+   .smplfy-table). This page only adds fixed column widths and zebra rows. */
+.smplfy-dr-table.table {
+  table-layout: fixed;
+  /* Compact rows: tighten the vertical padding so rows stay short. The 32px
+     Edit / menu buttons in the Actions cell set the practical floor. */
+  --smplfy-table-cell-padding-y: 6px;
+  /* Header one shade darker than the default neutral-200. */
+  --smplfy-table-head-bg: var(--smplfy-primitive-neutral-300);
+  /* Header sits ~4px shorter than the rows (rows ≈ 44px → header ≈ 40px). */
+  --smplfy-table-head-padding-y: 8px;
+}
+
+/* Keep every data cell to a single line — truncate with an ellipsis rather
+   than wrapping to a second line (columns are fixed-width via table-layout).
+   Excludes the last cell (Actions) so the 3-dot menu can overflow, and the
+   group-header row, which carries its own full-width toggle button. */
+.smplfy-dr-table.table > tbody > tr:not(.smplfy-dr-group-row) > td:not(:last-child) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The row menus open downward; let them escape the rounded wrapper instead of
+   being clipped by its scroll container on the last rows. */
+.smplfy-dr-table-wrap > .table-responsive {
+  overflow: visible;
+}
+
+/* With overflow visible the wrapper no longer clips, so round the corner cells
+   to keep the header fill and last row inside the 12px table radius. */
+.smplfy-dr-table.table thead th:first-child {
+  border-top-left-radius: var(--smplfy-table-radius);
+}
+
+.smplfy-dr-table.table thead th:last-child {
+  border-top-right-radius: var(--smplfy-table-radius);
+}
+
+/* While the header is stuck mid-scroll, flatten its top corners so they don't
+   float as rounded nubs over the square rows beneath (toggled from JS). */
+.smplfy-dr-table-wrap.is-head-stuck .smplfy-dr-table.table thead th:first-child {
+  border-top-left-radius: 0;
+}
+
+.smplfy-dr-table-wrap.is-head-stuck .smplfy-dr-table.table thead th:last-child {
+  border-top-right-radius: 0;
+}
+
+/* Grouped views render one tbody per group — only the final one rounds. */
+.smplfy-dr-table.table tbody:last-of-type tr:last-child > td:first-child {
+  border-bottom-left-radius: var(--smplfy-table-radius);
+}
+
+.smplfy-dr-table.table tbody:last-of-type tr:last-child > td:last-child {
+  border-bottom-right-radius: var(--smplfy-table-radius);
+}
+
+/* Sticky table header (pins to the top of the scrolling content area). In a
+   collapsed-border table the real border doesn't travel with a stuck cell, so
+   the divider is drawn as an inset shadow. */
+.smplfy-dr-table.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  /* The collapsed half-pixel border made the header 44.5px tall, so at 1x its
+     edge landed mid-pixel and blended with rows scrolling under it. Drop the
+     real border (the inset shadow draws the divider) to keep a whole-pixel
+     height. */
+  border-bottom-width: 0;
+  box-shadow: inset 0 -1px 0 var(--smplfy-table-border);
+}
+
+/* Every cell has a right edge (the last one sits on the table's own border).
+   Header edges are inset shadows for the same sticky/collapsed-border reason. */
+.smplfy-dr-table.table thead th:not(:last-child) {
+  /* Column divider in the (darker) header is a light hairline so it reads as a
+     subtle separator, not a hard line; the bottom edge keeps the table border. */
+  box-shadow:
+    inset -1px 0 0 var(--smplfy-primitive-neutral-100),
+    inset 0 -1px 0 var(--smplfy-table-border);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.smplfy-dr-table.table > tbody > tr:not(.smplfy-dr-group-row) > td:not(:last-child) {
+  border-right: 1px solid var(--smplfy-table-border);
+}
+
+/* The table overhangs its wrapper's right border by ~1px (fixed-layout
+   rounding), so the wrapper's right edge hides behind the last cell. Draw the
+   right edge on the last cell itself (a border, so it adds no overriding
+   box-shadow — Bootstrap paints the row's hover/zebra fill via an inset
+   box-shadow, and a box-shadow edge here would replace that fill, leaving the
+   Actions cell un-tinted on hover). */
+.smplfy-dr-table.table > tbody > tr > td:last-child {
+  border-right: 1px solid var(--smplfy-table-border);
+}
+
+/* Resize handle: a thin hit area on each header's right edge. */
+.smplfy-dr-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--smplfy-button-space-2);
+  cursor: col-resize;
+  touch-action: none;
+  outline: none;
+}
+
+/* Full-height highlight of the hovered / focused / dragged column edge. It
+   sits over the sticky headers and every row, inside the wrapper's border. */
+.smplfy-dr-table-wrap {
+  position: relative;
+}
+
+.smplfy-dr-edge-line {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 2px;
+  background: var(--smplfy-primitive-blue-500);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* While dragging, keep the resize cursor everywhere and don't select text. */
+body.smplfy-dr-resizing,
+body.smplfy-dr-resizing * {
+  cursor: col-resize !important;
+  user-select: none;
+}
+
+/* Table-settings button: an icon-only square, same height as the filter controls. */
+.smplfy-dr-col-settings.btn {
+  width: var(--smplfy-semantic-size-control-height-medium);
+  min-width: var(--smplfy-semantic-size-control-height-medium);
+  height: var(--smplfy-semantic-size-control-height-medium);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Column visibility modal: rows sit flush, spaced by the list's own gap, so
+   the body padding above the first and below the last row matches other modals. */
+.smplfy-dr-colset-row {
+  display: flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-3);
+  margin: 0;
+  font-size: var(--smplfy-field-font-size);
+  color: var(--smplfy-table-text);
+  cursor: pointer;
+}
+
+/* Sticky group header — pinned directly under the table header, bounded by its
+   own group's tbody so the next group pushes it out. */
+.smplfy-dr-table.table > tbody.smplfy-dr-group > tr.smplfy-dr-group-row > td {
+  position: sticky;
+  /* -1px overlaps the table header's divider so no hairline gap lets
+     scrolling rows show through between the two sticky layers. */
+  top: calc(var(--smplfy-dr-head-height, 44px) - 1px);
+  z-index: 2;
+  background-color: var(--smplfy-table-bg);
+  /* No bottom divider: the header flows straight into its shaded rows. */
+  border-bottom-width: 0;
+  box-shadow: none;
+}
+
+/* The page is a flex child of the scrolling .lims-main-content. With only
+   min-height it shrinks to the viewport and its bottom padding is lost below
+   long content — so don't let it shrink. */
+.smplfy-dr-page {
+  flex-shrink: 0;
+}
+
+/* Row hover is driven by super-hover (data-super-hover-active), not :hover.
+   First switch off DataTable's native .table-hover tint, then paint the
+   active row with the system's lightest grey (neutral-200), kept very subtle.
+   Group header rows are toggles, not data, so they never opt in. */
+.smplfy-dr-table.table-hover > tbody > tr:hover > * {
+  --bs-table-bg-state: transparent;
+}
+
+.smplfy-dr-table.table-hover > tbody > tr[data-super-hover-active] > * {
+  --bs-table-bg-state: var(--smplfy-primitive-blue-50);
+}
+
+/* Group header row (Product wise / Parameter wise). The cell has no padding;
+   the toggle button carries it and fills the whole row, so a click anywhere
+   across the row expands/collapses the group. */
+.smplfy-dr-table.table > tbody > tr.smplfy-dr-group-row > td {
+  padding: 0;
+  border-top: 1px solid var(--smplfy-table-border);
+}
+
+.smplfy-dr-table.table > tbody.smplfy-dr-group:first-of-type > tr.smplfy-dr-group-row > td {
+  border-top: 0;
+}
+
+/* Expanded group: a bottom border on the group header itself, only while it is
+   open. It is an inset shadow because a real border doesn't travel with a
+   stuck cell in a collapsed-border table (and it keeps the row a whole pixel). */
+.smplfy-dr-table.table > tbody.smplfy-dr-group > tr.smplfy-dr-group-row.is-expanded > td {
+  box-shadow: inset 0 -1px 0 var(--smplfy-table-border);
+}
+
+.smplfy-dr-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-2);
+  width: 100%;
+  padding: var(--smplfy-button-space-3) var(--smplfy-table-cell-padding-x);
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  color: var(--smplfy-table-text);
+  cursor: pointer;
+}
+
+.smplfy-dr-group-toggle:focus-visible {
+  outline: 2px solid var(--smplfy-field-border-focused);
+  outline-offset: -2px;
+}
+
+.smplfy-dr-group-name {
+  font-size: var(--smplfy-table-link-font-size);
+  line-height: var(--smplfy-table-link-line-height);
+  font-weight: var(--smplfy-table-link-font-weight);
+}
+
+.smplfy-dr-group-count {
+  min-width: 24px;
+  padding: 2px var(--smplfy-button-space-2);
+  border-radius: var(--smplfy-badge-radius-pill);
+  background: var(--smplfy-primitive-neutral-200);
+  color: var(--smplfy-table-muted-text);
+  font-size: var(--smplfy-badge-font-size);
+  font-weight: var(--smplfy-table-head-font-weight);
+  text-align: center;
+}
+
+.smplfy-dr-table.table td:last-child {
+  white-space: nowrap;
+}
+
+/* Delete is destructive — red label and icon in the row menu. */
+.smplfy-dr-menu-delete.dropdown-item,
+.smplfy-dr-menu-delete.dropdown-item:hover,
+.smplfy-dr-menu-delete.dropdown-item:focus {
+  color: var(--smplfy-primitive-red-500);
+}
+
+.smplfy-dr-table .smplfy-dr-product-link {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  font-size: var(--smplfy-table-cell-font-size);
+  line-height: var(--smplfy-table-cell-line-height);
+  font-weight: var(--smplfy-table-cell-font-weight);
+  color: var(--smplfy-table-text);
+  cursor: pointer;
+}
+
+/* Rows open the rule's edit page on click. */
+.smplfy-dr-table.table > tbody > tr.smplfy-dr-row {
+  cursor: pointer;
+}
+
+/* Row actions stay bordered. Hovering a row only changes Edit's fill, to the
+   primary colour (the hover vars are set too, so hovering the button itself
+   keeps the same fill). */
+.smplfy-dr-table.table > tbody > tr[data-super-hover-active] > td:last-child .smplfy-dr-edit.btn {
+  --bs-btn-bg: var(--smplfy-button-primary-bg);
+  --bs-btn-border-color: var(--smplfy-button-primary-bg);
+  --bs-btn-color: var(--smplfy-button-primary-text);
+  --bs-btn-hover-bg: var(--smplfy-button-primary-hover-bg);
+  --bs-btn-hover-border-color: var(--smplfy-button-primary-hover-bg);
+  --bs-btn-hover-color: var(--smplfy-button-primary-hover-text);
+}
+
+/* Footer: summary · pagination · per page. */
+.smplfy-dr-footer {
+  padding: var(--smplfy-button-space-4) var(--smplfy-table-cell-padding-x) 0;
+  font-size: var(--smplfy-table-cell-font-size);
+  color: var(--smplfy-table-text);
+}
+
+.smplfy-dr-summary {
+  font-size: var(--smplfy-table-cell-font-size);
+  color: var(--smplfy-table-text) !important;
+}
+
+.smplfy-dr-pagination {
+  gap: var(--smplfy-button-space-1) !important;
+}
+
+.smplfy-dr-page-btn {
+  min-width: var(--smplfy-semantic-size-control-height-medium);
+  height: var(--smplfy-semantic-size-control-height-medium);
+  padding: 0 var(--smplfy-button-space-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--smplfy-button-font-size);
+  font-weight: 500;
+  color: var(--smplfy-button-outline-secondary-text);
+  background: var(--smplfy-button-outline-secondary-bg);
+  border: 1px solid var(--smplfy-table-border);
+  border-radius: var(--smplfy-button-radius);
+  cursor: pointer;
+}
+
+.smplfy-dr-page-btn:not(:disabled):not(.is-active):not(.is-ellipsis):hover {
+  background: var(--smplfy-button-outline-secondary-hover-bg);
+}
+
+.smplfy-dr-page-btn:disabled {
+  color: var(--smplfy-button-disabled-text);
+  background: var(--smplfy-button-disabled-bg);
+  border-color: var(--smplfy-button-disabled-border);
+  cursor: default;
+}
+
+.smplfy-dr-page-btn.is-active {
+  color: var(--smplfy-button-primary-text);
+  background: var(--smplfy-button-primary-bg);
+  border-color: var(--smplfy-button-primary-bg);
+}
+
+.smplfy-dr-page-btn.is-ellipsis {
+  cursor: default;
+}
+
+.smplfy-dr-page-size {
+  font-size: var(--smplfy-table-cell-font-size);
+  color: var(--smplfy-table-text);
+}
+
+.smplfy-dr-page-size .text-secondary {
+  color: var(--smplfy-table-text) !important;
+}
+
+.smplfy-dr-page-size .form-select {
+  width: 76px;
+  height: var(--smplfy-semantic-size-control-height-medium);
+  font-size: var(--smplfy-field-font-size);
+  border-color: var(--smplfy-field-border-default);
+  border-radius: var(--smplfy-button-radius);
+}

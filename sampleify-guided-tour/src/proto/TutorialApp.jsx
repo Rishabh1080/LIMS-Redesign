@@ -10,14 +10,13 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DashboardPage from '@proto/pages/DashboardPage';
-import AllSamplesListingPage from '@proto/pages/AllSamplesListingPage';
+import AllInwardsListingPage from './AllInwardsListingPage';
 import NewInwardPage from '@proto/pages/NewInwardPage';
-import TestRequestsListingPage from '@proto/pages/TestRequestsListingPage';
-import TrDetailsPage from '@proto/pages/TrDetailsPage';
-import DatasheetPage from '@proto/pages/DatasheetPage';
+import TestRequestsListingPage from './TestRequestsListingPage';
+import TrDetailsPage from './TrDetailsPage';
+import DatasheetPage from './DatasheetPage';
 import CoaReportSelectionPage from '@proto/pages/CoaReportSelectionPage';
-import FinalisedReportPage from '@proto/pages/FinalisedReportPage';
-import { allSamplesDb } from '@proto/data/samplesDb';
+import FinalisedReportPage from './FinalisedReportPage';
 import { getInwardById } from '@proto/data/inwardsDb';
 import InwardDetailsPage from './InwardDetailsPage';
 import { TutorialChromeContext } from './TutorialChrome';
@@ -38,17 +37,31 @@ function longStamp(date = new Date()) {
 }
 
 
-/** Puts the visitor's inwards at the top of the prototype's card listing. */
-function syncListing(inwards) {
-  const ids = new Set(inwards.map((inward) => inward.card.id));
-  for (let index = allSamplesDb.length - 1; index >= 0; index -= 1) {
-    if (allSamplesDb[index].tutorial && !ids.has(allSamplesDb[index].id)) allSamplesDb.splice(index, 1);
-  }
-  [...inwards].reverse().forEach((inward) => {
-    const existing = allSamplesDb.findIndex((sample) => sample.id === inward.card.id);
-    if (existing >= 0) allSamplesDb.splice(existing, 1);
-    allSamplesDb.unshift(inward.card);
-  });
+const logEntry = (label, tone, person) => ({ label, tone, person, ...activityStamp() });
+
+/** The visitor's inward in the shape the All inwards listing reads. */
+function listingEntry(inward) {
+  const card = inward.card;
+  const details = inward.details ?? {};
+  return {
+    id: inward.id,
+    status: inward.status,
+    representativeName: card.representative,
+    customerReference: card.reference,
+    receivedMode: card.requestMode,
+    createdOn: card.createdOn,
+    dueDate: card.reportingDate.split(',')[0].replaceAll('/', '-'),
+    receivedDate: card.createdOn.split(',')[0],
+    customerName: details.customerName ?? '',
+    categories: [...new Set((details.products ?? []).map((product) => product.category))],
+    products: [
+      {
+        name: details.products?.[0]?.name ?? 'Sample',
+        sampleId: inward.id,
+        parameters: card.parameters.map((status, index) => ({ parameter: `Parameter ${index + 1}`, status })),
+      },
+    ],
+  };
 }
 
 function cardFor(id, status, parameterCount, userName) {
@@ -84,8 +97,7 @@ export function TutorialApp({ state, setState, onEvent, labName, userName, suppo
     if (rootRef.current) rootRef.current.inert = inert;
   }, [inert]);
 
-  // The visitor's inwards live in tutorial state; the prototype listing reads allSamplesDb.
-  syncListing(state.inwards);
+  const listing = useMemo(() => state.inwards.map(listingEntry), [state.inwards]);
 
   useEffect(() => {
     emit('page', { page: state.page });
@@ -132,6 +144,7 @@ export function TutorialApp({ state, setState, onEvent, labName, userName, suppo
             : inward,
         ),
       }));
+      if (approvedResult) setState((s) => ({ ...s, tr: { ...s.tr, log: [logEntry('Test Request Approved', 'success', userName), ...(s.tr.log ?? [])] } }));
       emit(approvedResult ? 'tr-approved' : 'tr-rejected');
     };
     window.addEventListener('sgt:tr-reviewed', onReviewed);
@@ -172,14 +185,14 @@ export function TutorialApp({ state, setState, onEvent, labName, userName, suppo
   const handleInwardCreated = (payload) => {
     const products = payload?.products ?? [];
     const parameterCount = products.reduce((sum, product) => sum + (product.parameters ?? []).filter((row) => String(row?.parameter ?? '').trim()).length, 0) || 3;
-    const number = 1150 + state.inwards.length;
-    const id = `IICT/2025-2026/${number}`;
+    const number = 149 + state.inwards.length;
+    const id = `INW/2026/${String(number).padStart(4, '0')}`;
     const base = getInwardById('INW/2026/0147');
     const inward = {
       id,
       status: 'Pending',
       card: cardFor(id, 'Pending', parameterCount, userName),
-      details: base ? { ...base, id: `INW/2026/${String(number - 1000).padStart(4, '0')}`, receivedBy: userName } : null,
+      details: base ? { ...base, id, receivedBy: userName } : null,
       reviewRequest: null,
       approved: false,
       activity: [{ label: 'Inward Created', tone: 'info', person: userName, ...activityStamp() }],
@@ -207,11 +220,11 @@ export function TutorialApp({ state, setState, onEvent, labName, userName, suppo
     page = <DashboardPage {...common} onNewInward={openNewInward} />;
   } else if (state.page === 'all-samples') {
     page = (
-      <AllSamplesListingPage
+      <AllInwardsListingPage
         {...common}
-        onOpenSample={openInward}
-        onEditSample={() => {}}
-        onNewSample={openNewInward}
+        extraInwards={listing}
+        onOpenInward={(entry) => openInward(entry.id)}
+        onNewInward={openNewInward}
         initialToast={state.listingToast}
         onInitialToastConsumed={() => setState((s) => ({ ...s, listingToast: null }))}
       />
@@ -276,12 +289,24 @@ export function TutorialApp({ state, setState, onEvent, labName, userName, suppo
         sourcePage="all-samples"
         viewMode="standard"
         onBack={() => go('inward-details')}
-        onOpenTrDetails={(requestId, requestStatus) =>
-          setState((s) => ({
-            ...s,
-            page: 'tr-details',
-            tr: { ...s.tr, requestId, requestStatus: s.tr.requestId === requestId ? s.tr.requestStatus : requestStatus, workflowStage: s.tr.requestId === requestId ? s.tr.workflowStage : 'default' },
-          }))
+        onOpenTrDetails={(requestId, requestStatus, row) =>
+          setState((s) => {
+            const same = s.tr.requestId === requestId;
+            const log = same && s.tr.log ? s.tr.log : [logEntry('Test Request Created', 'info', userName)];
+            return {
+              ...s,
+              page: 'tr-details',
+              tr: {
+                ...s.tr,
+                requestId,
+                row: row ?? s.tr.row ?? null,
+                requestStatus: same ? s.tr.requestStatus : requestStatus,
+                workflowStage: same ? s.tr.workflowStage : 'default',
+                results: same ? s.tr.results ?? null : null,
+                log,
+              },
+            };
+          })
         }
       />
     );
@@ -292,14 +317,17 @@ export function TutorialApp({ state, setState, onEvent, labName, userName, suppo
         sampleId={current?.id ?? 'IICT/2025-2026/1101'}
         sourcePage="all-samples"
         requestId={state.tr.requestId}
-        requestStatus={state.tr.workflowStage === 'default' ? state.tr.requestStatus : null}
+        requestStatus={current?.trs.approved ? 'Approved' : state.tr.workflowStage === 'submitted' ? 'Result Under Approval' : 'Result Under Testing'}
         workflowStage={state.tr.workflowStage}
+        row={state.tr.row ?? null}
+        results={state.tr.results ?? null}
+        log={state.tr.log ?? null}
         initialToast={state.tr.initialToast}
         onBack={() => go('test-requests')}
         onOpenDatasheet={() => go('datasheet')}
         onInitialToastConsumed={() => setState((s) => ({ ...s, tr: { ...s.tr, initialToast: null } }))}
         onSubmitForReview={() => {
-          setState((s) => ({ ...s, tr: { ...s.tr, workflowStage: 'submitted', initialToast: 'tr-submitted' } }));
+          setState((s) => ({ ...s, tr: { ...s.tr, workflowStage: 'submitted', initialToast: 'tr-submitted', log: [logEntry('Sent for Review', 'warning', userName), ...(s.tr.log ?? [])] } }));
           if (current) updateInward(current.id, (item) => addActivity({ ...item, trs: { ...item.trs, submitted: true } }, 'Results Sent for Approval', 'warning'));
           emit('tr-submitted');
         }}
@@ -311,12 +339,21 @@ export function TutorialApp({ state, setState, onEvent, labName, userName, suppo
         {...common}
         sampleId={current?.id ?? 'IICT/2025-2026/1101'}
         sourcePage="all-samples"
+        requestId={state.tr.requestId}
+        row={state.tr.row ?? null}
+        values={state.tr.results ?? null}
         onBack={() => go('tr-details')}
-        onSave={() => {
+        onDone={(values) => {
           setState((s) => ({
             ...s,
             page: 'tr-details',
-            tr: { ...s.tr, workflowStage: s.tr.workflowStage === 'submitted' ? 'submitted' : 'in-progress', initialToast: 'datasheet-updated' },
+            tr: {
+              ...s.tr,
+              results: values,
+              workflowStage: s.tr.workflowStage === 'submitted' ? 'submitted' : 'in-progress',
+              initialToast: 'datasheet-updated',
+              log: [logEntry('Results Added', 'info', userName), ...(s.tr.log ?? [])],
+            },
           }));
           if (current) updateInward(current.id, (item) => addActivity({ ...item, trs: { ...item.trs, resultsAdded: true } }, 'Results Added', 'info'));
           emit('results-saved');
@@ -341,7 +378,7 @@ export function TutorialApp({ state, setState, onEvent, labName, userName, suppo
     );
   } else if (state.page === 'finalised-report') {
     page = (
-      <FinalisedReportPage {...common} sampleId={current?.id ?? 'IICT/2025-2026/1101'} sourcePage="all-samples" onBack={() => go('inward-details')} />
+      <FinalisedReportPage {...common} sampleId={current?.id ?? 'IICT/2025-2026/1101'} inward={current} row={state.tr.row ?? null} results={state.tr.results ?? null} onBack={() => go('inward-details')} />
     );
   }
 

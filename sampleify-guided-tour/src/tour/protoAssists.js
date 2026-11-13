@@ -48,6 +48,15 @@ export function emptyCombos(scope) {
   );
 }
 
+/** Closes any dropdown menu that is still open (menus portal to <body>). */
+export function closeOpenMenus() {
+  if (typeof document === 'undefined') return;
+  if (!document.querySelector('body > .smplfy-rich-dropdown-menu, body > .smplfy-search-select-menu, [role="listbox"]')) return;
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+  document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+}
+
 /** Opens a rich dropdown and picks its first available option. */
 export async function pickFirst(api, combo) {
   await click(api, combo, 260);
@@ -63,6 +72,7 @@ export async function pickFirst(api, combo) {
   api.guard();
   option.click();
   await api.sleep(160);
+  if (combo.getAttribute('aria-expanded') === 'true') closeOpenMenus();
   return true;
 }
 
@@ -96,6 +106,7 @@ export async function fillCombos(api, scope) {
     // eslint-disable-next-line no-await-in-loop
     for (const select of selects) await chooseFirst(api, select);
   }
+  closeOpenMenus();
 }
 
 /** Types into a React-controlled input or textarea. */
@@ -129,4 +140,15 @@ export async function tickAll(api, scope) {
 /** Moves the prototype screens to `page` (used when a task starts somewhere else). */
 export function goToProtoPage(api, page) {
   api.dispatch({ type: 'proto/set', payload: { update: (state) => (state.page === page ? state : { ...state, page }) } });
+}
+
+/** Sets a React-controlled input's value at once (dates, numbers). */
+export async function setInputValue(api, input, text) {
+  if (!input) return;
+  await api.point(input, { wait: 260 });
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+  setter.call(input, text);
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+  await api.sleep(200);
 }

@@ -1,0 +1,166 @@
+.smplfy-action-center {
+  --smplfy-action-center-card-height: 282px;
+  --smplfy-action-center-border-color: var(--smplfy-primitive-neutral-300);
+  --smplfy-action-center-danger-bg: linear-gradient(135deg, var(--smplfy-primitive-red-25) 0%, #fff 100%);
+  --smplfy-action-center-success-bg: linear-gradient(135deg, var(--smplfy-primitive-green-150) 0%, #fff 100%);
+}
+
+.smplfy-action-center .smplfy-card.card {
+  --bs-card-border-color: var(--smplfy-action-center-border-color);
+  --bs-card-border-radius: 6px;
+}
+
+.smplfy-action-center .card-header {
+  min-height: 56px;
+  padding: 12px 12px 12px 16px;
+  border-bottom-color: var(--smplfy-action-center-border-color);
+}
+
+.smplfy-action-center .smplfy-btn.btn {
+  letter-spacing: -0.02em;
+}
+
+.smplfy-action-center .min-w-0 {
+  min-width: 0;
+}
+
+.smplfy-action-center-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.smplfy-action-center-span-2 {
+  grid-column: span 2;
+}
+
+.smplfy-action-center-span-4 {
+  grid-column: span 4;
+}
+
+.smplfy-action-center-span-6 {
+  grid-column: span 6;
+}
+
+.smplfy-action-center-span-12 {
+  grid-column: span 12;
+}
+
+.smplfy-action-center-title {
+  font-size: 16px;
+  line-height: 19.2px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-action-center-tile-title {
+  font-size: 16px;
+  line-height: 19.2px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-action-center-label {
+  font-size: 14px;
+  line-height: 16.94px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.smplfy-action-center-control-label {
+  font-size: 14px;
+  line-height: 18.2px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-action-center-count {
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-action-center-health-card,
+.smplfy-action-center-metrics-card,
+.smplfy-action-center-quick-card {
+  min-height: var(--smplfy-action-center-card-height);
+}
+
+.smplfy-action-center-quick-card .card-body > .smplfy-btn.btn-primary {
+  min-height: 40px;
+}
+
+.smplfy-action-center-quick-card .card-body > .smplfy-btn.btn-outline-secondary {
+  min-height: 35px;
+}
+
+.smplfy-action-center-health-tile {
+  min-height: 89px;
+  width: 100%;
+  color: inherit;
+  text-align: left;
+}
+
+.smplfy-action-center-health-tile.border-danger-subtle {
+  background: var(--smplfy-action-center-danger-bg);
+}
+
+.smplfy-action-center-health-tile.border-success-subtle {
+  background: var(--smplfy-action-center-success-bg);
+}
+
+.smplfy-action-center-health-tile .badge {
+  font-size: 12px;
+  line-height: 14.52px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.smplfy-action-center-metric-tile {
+  min-height: 117px;
+}
+
+.smplfy-action-center-metric-tile > .btn {
+  width: 32px;
+  height: 32px;
+}
+
+.smplfy-action-center-summary-card {
+  min-height: 400px;
+}
+
+.smplfy-action-center-bar-chart {
+  width: 100%;
+  height: 300px;
+}
+
+.smplfy-action-center-donut-panel {
+  max-width: 280px;
+}
+
+.smplfy-action-center-donut-chart {
+  width: 100%;
+  height: 160px;
+}
+
+.smplfy-action-center-legend-dot {
+  width: 12px;
+  height: 12px;
+}
+
+@media (max-width: 1199.98px) {
+  .smplfy-action-center-grid {
+    display: block;
+  }
+
+  .smplfy-action-center-grid > * + * {
+    margin-top: 12px;
+  }
+
+  .smplfy-action-center-health-card,
+  .smplfy-action-center-metrics-card,
+  .smplfy-action-center-quick-card {
+    min-height: auto;
+  }
+}

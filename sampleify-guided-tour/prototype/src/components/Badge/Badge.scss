@@ -1,0 +1,27 @@
+.smplfy-badge.badge {
+  --bs-badge-padding-x: var(--smplfy-button-space-0);
+  --bs-badge-padding-y: var(--smplfy-button-space-0);
+  --bs-badge-font-size: var(--smplfy-badge-font-size);
+  --bs-badge-font-weight: var(--smplfy-badge-font-weight);
+  --bs-badge-color: var(--smplfy-badge-danger-text);
+  --bs-badge-border-radius: var(--smplfy-badge-radius-pill);
+  --bs-border-radius-pill: var(--smplfy-badge-radius-pill);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  line-height: var(--smplfy-badge-line-height);
+  text-align: center;
+}
+
+.smplfy-badge.badge.rounded-circle {
+  min-width: var(--smplfy-badge-size-sm);
+  width: var(--smplfy-badge-size-sm);
+  height: var(--smplfy-badge-size-sm);
+}
+
+.smplfy-badge.text-bg-danger {
+  background-color: var(--smplfy-badge-danger-bg) !important;
+  color: var(--smplfy-badge-danger-text) !important;
+}

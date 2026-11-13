@@ -127,8 +127,17 @@ export function TourProvider({ chapters, storageKey, ctx, track, rootRef, suspen
     (chapterId) => {
       const current = tourRef.current;
       const target = chapters.find((entry) => entry.id === chapterId) ?? chapters[0];
-      const resumeIndex =
+      let resumeIndex =
         current.chapterId === target.id && current.status === 'paused' && !current.completed[target.id] ? current.stepIndex : 0;
+      // A paused step can only resume where its screen still is (`protoPage`, and
+      // an open modal via `requires`). Otherwise start the task again from its first step.
+      const resumeStep = target.steps[resumeIndex];
+      if (resumeIndex > 0 && resumeStep) {
+        const limsState = lims.getState();
+        const wrongPage = resumeStep.protoPage && limsState.proto?.page !== resumeStep.protoPage;
+        const lostContext = resumeStep.requires && !resumeStep.requires(limsState, rootRef.current);
+        if (wrongPage || lostContext) resumeIndex = 0;
+      }
       if (!current.startedAt) emit('tour_started', { chapter: target.id });
       emit('chapter_started', { chapter: target.id, resumedAtStep: resumeIndex });
       commit({
@@ -139,7 +148,7 @@ export function TourProvider({ chapters, storageKey, ctx, track, rootRef, suspen
         startedAt: current.startedAt ?? Date.now(),
       });
     },
-    [chapters, commit, emit],
+    [chapters, commit, emit, lims, rootRef],
   );
 
   const pause = useCallback(() => {
@@ -307,7 +316,7 @@ export function TourProvider({ chapters, storageKey, ctx, track, rootRef, suspen
   // also complete on what's on screen (`doneDom`), checked a few times a second.
   const [domTick, setDomTick] = useState(0);
   useEffect(() => {
-    if (!step?.doneDom || doneKey === stepKey) return undefined;
+    if (!(step?.doneDom || step?.requires) || doneKey === stepKey) return undefined;
     const id = window.setInterval(() => setDomTick((value) => value + 1), 300);
     return () => window.clearInterval(id);
   }, [step, doneKey, stepKey]);
@@ -326,13 +335,20 @@ export function TourProvider({ chapters, storageKey, ctx, track, rootRef, suspen
       return undefined;
     }
 
-    if (step.requires && step.backTo && !step.requires(state)) {
+    // The visitor left the screen this step lives on (e.g. Back out of New
+    // Inward mid-form): start the task again from its first step.
+    if (step.protoPage && state.proto && state.proto.page !== step.protoPage && chapter.steps[0]?.id !== step.id) {
+      const id = window.setTimeout(() => goToStep(chapter.steps[0].id, stepKey), 600);
+      return () => window.clearTimeout(id);
+    }
+
+    if (step.requires && step.backTo && !step.requires(state, rootRef.current)) {
       const id = window.setTimeout(() => goToStep(step.backTo, stepKey), 350);
       return () => window.clearTimeout(id);
     }
 
     return undefined;
-  }, [lims.state, entry, step, stepKey, goToStep, domTick, rootRef, doneKey]);
+  }, [lims.state, entry, step, stepKey, goToStep, domTick, rootRef, doneKey, chapter]);
 
   // Show a short "done" beat (green ring + tick) before moving on.
   useEffect(() => {

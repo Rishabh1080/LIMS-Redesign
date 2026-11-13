@@ -1,0 +1,504 @@
+.smplfy-tr-listing-header {
+  min-height: 72px;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.smplfy-tr-listing-header .smplfy-btn.btn[aria-label="Go back"] {
+  width: 32px;
+  padding-inline: 0;
+}
+
+.smplfy-tr-listing-header h1 {
+  color: var(--smplfy-primitive-neutral-800);
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-tr-listing-page {
+  gap: 16px !important;
+  padding: 24px;
+  background: var(--smplfy-primitive-neutral-200);
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card {
+  border-radius: 8px;
+  padding: 0;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card > .card-header {
+  --bs-card-cap-bg: transparent;
+
+  min-height: auto;
+  padding: 24px;
+  margin-bottom: 0;
+  border-bottom-color: var(--smplfy-primitive-neutral-300);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card > .card-header:not(:has(.smplfy-btn)) {
+  padding-block: 18px;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card > .card-header > .smplfy-btn.btn {
+  align-self: center;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card > .card-body {
+  padding: 16px 24px 24px;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card > .card-header + .card-body {
+  padding-top: 0;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card .table-responsive:has(> .smplfy-table.table) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table {
+  --smplfy-table-min-width: 0;
+  --smplfy-table-head-bg: transparent;
+  --smplfy-table-hover-bg: transparent;
+  --smplfy-table-border: transparent;
+  --smplfy-table-cell-padding-y: 0;
+  --smplfy-table-cell-padding-x: 8px;
+  --smplfy-table-head-padding-y: 8px;
+  --smplfy-table-head-font-size: 12px;
+  --smplfy-table-head-line-height: 16px;
+  --smplfy-table-head-font-weight: 500;
+  --smplfy-table-cell-font-size: 14px;
+  --smplfy-table-cell-line-height: 18px;
+  --smplfy-table-cell-font-weight: 500;
+  --smplfy-table-link-font-size: 16px;
+  --smplfy-table-link-font-weight: 600;
+
+  width: 100%;
+  table-layout: fixed;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table th,
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table td {
+  border-bottom-color: transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table thead th {
+  height: 28px;
+  background: transparent;
+  color: var(--smplfy-primitive-neutral-600);
+  letter-spacing: -0.03em;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table tbody td {
+  height: 41px;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table th:first-child,
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table td:first-child {
+  padding-left: 0;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table th:last-child,
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table td:last-child {
+  width: 164px;
+  padding-right: 0;
+  overflow: visible;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card .smplfy-table.table td:last-child > .d-flex {
+  width: 164px;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(1),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(1) {
+  width: 21%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(2),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(2) {
+  width: 180px;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(4),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(4) {
+  width: 15%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(5),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(5) {
+  width: 9%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(6),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(6) {
+  width: 8%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table th:nth-child(7),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child .smplfy-table.table td:nth-child(7) {
+  width: 11%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(1),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(1) {
+  width: 48px;
+  padding-inline: 0;
+  text-align: center;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(2),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(2) {
+  width: 22%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(4),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(4) {
+  width: 16%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(5),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(5) {
+  width: 11%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(6),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(6) {
+  width: 8%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table th:nth-child(7),
+.smplfy-tr-listing-page > .smplfy-card.card:first-child > .card-body:has(> .d-flex:first-child) .smplfy-table.table td:nth-child(7) {
+  width: 14%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(1),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(1) {
+  width: 18%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(2),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(2) {
+  width: 190px;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(3),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(3) {
+  width: 16%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(4),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(4),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table th:nth-child(5),
+.smplfy-tr-listing-page > .smplfy-card.card:nth-child(2) .smplfy-table.table td:nth-child(5) {
+  width: 16%;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child {
+  min-height: 56px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom-color: var(--smplfy-primitive-neutral-300);
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child > .d-flex:first-child {
+  gap: 16px !important;
+}
+
+.smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child > .d-flex:last-child {
+  gap: 8px !important;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog {
+  --smplfy-modal-custom-width: 1392px;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog > .modal-content {
+  height: min(659px, calc(100vh - 40px));
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog > .modal-content .modal-header {
+  min-height: 82px;
+  padding: 20px 24px;
+  flex: 0 0 auto;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog > .modal-content .modal-title {
+  font-size: 22px;
+  line-height: 27px;
+  font-weight: 500;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body {
+  padding: 0 !important;
+  flex: 1 1 auto;
+  overflow: hidden !important;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body > .d-flex {
+  min-height: 0;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section {
+  flex-basis: calc(100% - 360px);
+  min-width: 0;
+  min-height: 0;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section > :first-child {
+  padding: 24px 31px;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section > :first-child dl {
+  gap: 14px;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section > :first-child .row {
+  column-gap: 16px;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body dt,
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body dd {
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.03em;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body dt {
+  width: 104px;
+  color: var(--smplfy-primitive-neutral-600);
+  font-weight: 400;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body dd {
+  color: var(--smplfy-primitive-neutral-800);
+  font-weight: 500;
+  min-width: 0;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section > .border-top {
+  min-height: 0;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .nav-tabs {
+  padding: 0 31px;
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300) !important;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .nav-tabs .smplfy-nav-link.nav-link {
+  min-height: 44px;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section > .border-top > .overflow-auto {
+  min-height: 0;
+  padding: 26px 24px 24px;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section > .border-top > .overflow-auto .table-responsive {
+  border-color: var(--smplfy-primitive-neutral-400);
+  border-radius: 10px;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table {
+  --smplfy-table-min-width: 0;
+  --smplfy-table-head-bg: var(--smplfy-primitive-neutral-100);
+  --smplfy-table-hover-bg: var(--smplfy-primitive-neutral-100);
+  --smplfy-table-head-padding-y: 7px;
+  --smplfy-table-cell-padding-y: 7px;
+  --smplfy-table-cell-padding-x: 8px;
+  --smplfy-table-head-font-size: 12px;
+  --smplfy-table-head-line-height: 16px;
+  --smplfy-table-head-font-weight: 500;
+  --smplfy-table-cell-font-size: 14px;
+  --smplfy-table-cell-line-height: 17px;
+  --smplfy-table-cell-font-weight: 500;
+
+  width: 100%;
+  table-layout: fixed;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table > :not(caption) > * > * {
+  height: 34px;
+  letter-spacing: -0.03em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table thead th {
+  height: 31px;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table th:first-child,
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table td:first-child {
+  width: 44px;
+  text-align: center;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .smplfy-table.table .smplfy-badge.badge {
+  white-space: nowrap;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body aside {
+  width: 360px;
+  min-height: 0;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body aside > :first-child {
+  padding: 38px 24px 0;
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body aside > .modal-footer {
+  min-height: 88px;
+  padding: 24px;
+  border-top: 1px solid var(--smplfy-primitive-neutral-300);
+}
+
+.modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body aside > .modal-footer > .smplfy-btn.btn:first-child {
+  min-width: 88px;
+}
+
+.modal-dialog.smplfy-tr-job-allocation-modal {
+  --smplfy-modal-custom-width: 544px;
+}
+
+.modal-dialog.smplfy-tr-job-allocation-modal > .modal-content {
+  min-height: 328px;
+}
+
+.modal-dialog.smplfy-tr-job-allocation-modal > .modal-content .modal-header {
+  min-height: 82px;
+  padding: 24px;
+}
+
+.modal-dialog.smplfy-tr-job-allocation-modal > .modal-content .modal-title {
+  font-size: 22px;
+  line-height: 27px;
+  font-weight: 500;
+}
+
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-body .d-flex.align-items-center > span {
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.03em;
+}
+
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-body .d-flex.align-items-center > span:first-child {
+  color: var(--smplfy-primitive-neutral-600);
+  font-weight: 400;
+}
+
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-body .d-flex.align-items-center > span:last-child {
+  color: var(--smplfy-primitive-neutral-800);
+  font-weight: 600;
+}
+
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-footer {
+  padding: 24px;
+}
+
+.modal-dialog.smplfy-tr-job-allocation-modal .modal-footer > .smplfy-btn.btn:first-child {
+  min-width: 88px;
+}
+
+@media (max-width: 1200px) {
+  .smplfy-tr-listing-page {
+    padding: 16px;
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section {
+    flex-basis: calc(100% - 320px);
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body aside {
+    width: 320px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .smplfy-tr-listing-header {
+    min-height: auto;
+    padding: 16px;
+  }
+
+  .smplfy-tr-listing-header h1 {
+    font-size: 20px;
+  }
+
+  .smplfy-tr-listing-page {
+    padding: 12px;
+  }
+
+  .smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child {
+    align-items: stretch !important;
+    flex-direction: column;
+  }
+
+  .smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child > .d-flex:first-child {
+    align-items: stretch !important;
+    flex-direction: column;
+  }
+
+  .smplfy-tr-listing-page > .smplfy-card.card > .card-body > .d-flex:first-child > .d-flex:last-child {
+    justify-content: flex-end;
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog > .modal-content {
+    height: calc(100vh - 16px);
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog > .modal-content .modal-header {
+    padding: 16px;
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body > .d-flex {
+    flex-direction: column;
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section {
+    flex-basis: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body aside {
+    width: 100%;
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section > :first-child,
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .nav-tabs,
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section > .border-top > .overflow-auto,
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body aside > :first-child,
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body aside > .modal-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body section > :first-child .row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body dt {
+    width: auto;
+  }
+
+  .modal-dialog.smplfy-tr-allocation-modal-dialog .modal-body .nav-tabs {
+    overflow-x: auto;
+  }
+
+}

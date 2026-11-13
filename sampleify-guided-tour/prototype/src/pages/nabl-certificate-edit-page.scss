@@ -1,0 +1,66 @@
+.smplfy-nabl-edit-page .smplfy-card.card {
+  border: 1px solid var(--smplfy-primitive-neutral-300, #e6e8eb);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(11, 18, 24, 0.04), 0 1px 3px rgba(11, 18, 24, 0.06);
+}
+
+/* Parameters table flows with its content (no fixed height); the header sticks
+   to the top of the viewport as the page scrolls. */
+.smplfy-nabl-edit-page .smplfy-card.card.overflow-visible,
+.smplfy-nabl-edit-table-card {
+  overflow: visible;
+}
+
+.smplfy-nabl-edit-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: var(--smplfy-primitive-neutral-50, #f6f7f8);
+  color: var(--smplfy-primitive-neutral-700, #475059);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  padding: 12px 16px;
+}
+
+/* The card is overflow:visible so the sticky header works; round the header's
+   outer corners so its grey fill doesn't leak past the card's rounded top. */
+.smplfy-nabl-edit-table thead th:first-child {
+  border-top-left-radius: 9px;
+}
+
+.smplfy-nabl-edit-table thead th:last-child {
+  border-top-right-radius: 9px;
+}
+
+/* Likewise round the last row's outer cells to respect the card's bottom. */
+.smplfy-nabl-edit-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 9px;
+}
+
+.smplfy-nabl-edit-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 9px;
+}
+
+.smplfy-nabl-edit-table tbody td {
+  padding: 10px 16px;
+  vertical-align: middle;
+}
+
+/* No row hover highlight. */
+.smplfy-nabl-edit-table.table-hover > tbody > tr:hover > td,
+.smplfy-nabl-edit-table.table-hover > tbody > tr:hover > th {
+  background-color: #fff;
+  --bs-table-bg-state: #fff;
+  --bs-table-accent-bg: #fff;
+}
+
+/* Keep the two dropdown columns a comfortable width. */
+.smplfy-nabl-edit-table th:nth-child(3),
+.smplfy-nabl-edit-table th:nth-child(4),
+.smplfy-nabl-edit-table td:nth-child(3),
+.smplfy-nabl-edit-table td:nth-child(4) {
+  min-width: 240px;
+}

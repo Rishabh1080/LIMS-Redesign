@@ -11,7 +11,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vendor": "sh scripts/vendor.sh"
   },
   "peerDependencies": {
     "react": ">=18.2.0",
@@ -20,7 +21,9 @@
   "dependencies": {
     "@tabler/icons-react": "3.41.1",
     "bootstrap": "5.3.8",
-    "echarts": "6.1.0"
+    "echarts": "6.1.0",
+    "prop-types": "15.8.1",
+    "super-hover": "0.2.2"
   },
   "devDependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",

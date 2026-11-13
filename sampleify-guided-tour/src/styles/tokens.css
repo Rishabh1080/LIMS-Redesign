@@ -99,6 +99,12 @@
   /* --- motion ---
      enter: ease-out, exit: ease-in (shorter), change: ease-in-out.
      Durations by purpose: feedback 120, state 200, panels 320, layout 600. */
+  /* The guided tour (coach card, tracker, dialogs) uses exactly three type sizes.
+     Hierarchy comes from weight, colour and case, not extra sizes. */
+  --sgt-fs-title: 18px;
+  --sgt-fs-body: 14px;
+  --sgt-fs-meta: 12px;
+
   --sgt-ease: cubic-bezier(0.2, 0, 0, 1);
   --sgt-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --sgt-ease-in: cubic-bezier(0.4, 0, 1, 1);

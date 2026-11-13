@@ -1,0 +1,170 @@
+/* Ongoing log card ------------------------------------------------------- */
+.smplfy-equipment-log-ongoing-card {
+  border-radius: 12px;
+}
+
+.smplfy-equipment-log-ongoing-card .card-header {
+  padding: 10px 12px;
+}
+
+.smplfy-equipment-log-ongoing-name {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #000;
+}
+
+.smplfy-equipment-log-runtime {
+  padding: 4px 8px;
+}
+
+.smplfy-equipment-log-runtime-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #00b242;
+  flex-shrink: 0;
+  animation: smplfy-equipment-log-dot-glow 1.8s ease-in-out infinite;
+}
+
+@keyframes smplfy-equipment-log-dot-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 178, 66, 0);
+    opacity: 0.85;
+  }
+  50% {
+    box-shadow: 0 0 3px 1px rgba(0, 178, 66, 0.4);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smplfy-equipment-log-runtime-dot {
+    animation: none;
+  }
+}
+
+.smplfy-equipment-log-runtime-value {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #009636;
+  font-variant-numeric: tabular-nums;
+}
+
+.smplfy-equipment-log-ongoing-card .card-body {
+  padding: 12px;
+}
+
+.smplfy-equipment-log-meta-row {
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: -0.01em;
+}
+
+.smplfy-equipment-log-meta-label {
+  color: #6c737f;
+  flex-shrink: 0;
+  width: 64px;
+}
+
+.smplfy-equipment-log-meta-value {
+  color: #000;
+  font-weight: 500;
+}
+
+.smplfy-equipment-log-ongoing-card .card-footer {
+  padding: 12px;
+}
+
+.smplfy-equipment-log-field-label {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  letter-spacing: -0.01em;
+  color: #6c737f;
+}
+
+/* Sortable column headers (no library component exists for this) ---------- */
+.smplfy-equipment-log-page .smplfy-equipment-log-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.smplfy-equipment-log-page .smplfy-equipment-log-sort-icon-idle {
+  opacity: 0.35;
+}
+
+/* Test Value error shake ------------------------------------------------- */
+.smplfy-equipment-log-shake {
+  animation: smplfy-equipment-log-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes smplfy-equipment-log-shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smplfy-equipment-log-shake {
+    animation: none;
+  }
+}
+
+/* Bulk upload page ------------------------------------------------------- */
+.smplfy-equipment-log-bulk-subtitle {
+  font-size: 13px;
+}
+
+.smplfy-equipment-log-bulk-table {
+  min-width: 1120px;
+}
+
+.smplfy-equipment-log-bulk-index {
+  width: 44px;
+  text-align: center;
+}
+
+.smplfy-equipment-log-bulk-remove {
+  width: 52px;
+  text-align: center;
+}
+
+/* Toast ------------------------------------------------------------------ */
+.smplfy-equipment-log-form-error {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.smplfy-equipment-log-toast-wrap {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1080;
+}

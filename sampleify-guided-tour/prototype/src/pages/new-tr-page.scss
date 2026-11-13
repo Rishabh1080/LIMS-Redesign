@@ -1,0 +1,396 @@
+.smplfy-new-tr-subtitle {
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.smplfy-new-tr-archetype-picker {
+  min-width: 360px;
+}
+
+/* Help popover ----------------------------------------------------------- */
+.smplfy-new-tr-help-btn.btn {
+  width: 40px;
+  min-width: 40px;
+  padding-left: 0;
+  padding-right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.smplfy-new-tr-help-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+}
+
+.smplfy-new-tr-help-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1056;
+  width: 300px;
+  max-width: 80vw;
+  padding: 14px 16px;
+  border: 1px solid var(--smplfy-primitive-neutral-300, #e6e8eb);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  font-size: 14px;
+  cursor: default;
+}
+
+.smplfy-new-tr-help-popover-title {
+  font-size: 15px;
+}
+
+.smplfy-new-tr-help-popover-summary {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.smplfy-new-tr-help-popover-queues {
+  font-size: 13px;
+}
+
+.smplfy-new-tr-help-popover-queues ul {
+  padding-left: 18px;
+  margin-top: 4px;
+  color: var(--smplfy-primitive-neutral-900, #1c2126);
+}
+
+.smplfy-new-tr-help-popover-queues li + li {
+  margin-top: 2px;
+}
+
+/* Sort control ----------------------------------------------------------- */
+.smplfy-new-tr-sort .smplfy-select-field {
+  min-width: 220px;
+}
+
+/* Divider joining the primary tab group to the sub-filter tab group. */
+.smplfy-new-tr-tabs-divider {
+  align-self: stretch;
+  width: 1px;
+  min-height: 24px;
+  margin: 0 -4px;
+  background-color: var(--smplfy-primitive-neutral-300, #d0d5dc);
+}
+
+/* Pending tab count badge: red when the pill is NOT active. When active (solid
+   blue fill) it falls back to the generic active rule (white badge, blue text). */
+.smplfy-new-tr-blue-pills .smplfy-new-tr-tab-pending:not(.active) .smplfy-badge.badge {
+  background-color: var(--smplfy-primitive-red-600, #ff2725) !important;
+  color: #fff !important;
+}
+
+/* Narrower search bar. Border matches the Filters (outline-secondary) button. */
+.smplfy-new-tr-final-search {
+  width: 360px;
+  max-width: 100%;
+}
+
+.smplfy-new-tr-final-search .input-group-text,
+.smplfy-new-tr-final-search .smplfy-form-control.form-control {
+  border-color: var(--smplfy-primitive-neutral-500, #9aa0a6);
+}
+
+/* Filter button matches the search field height exactly. */
+.smplfy-new-tr-final-search .smplfy-form-control.form-control,
+.smplfy-new-tr-final-search .input-group-text,
+.smplfy-new-tr-filter-btn.btn {
+  height: 40px;
+}
+
+.smplfy-new-tr-filter-btn.btn {
+  display: inline-flex;
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Active: filters applied → solid blue to signal the table is filtered. */
+.smplfy-new-tr-filter-btn.btn.is-active {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--smplfy-primitive-blue-600, #007bf8);
+  --bs-btn-border-color: var(--smplfy-primitive-blue-600, #007bf8);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--smplfy-primitive-blue-700, #006ad8);
+  --bs-btn-hover-border-color: var(--smplfy-primitive-blue-700, #006ad8);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--smplfy-primitive-blue-700, #006ad8);
+  color: #fff;
+  background-color: var(--smplfy-primitive-blue-600, #007bf8);
+  border-color: var(--smplfy-primitive-blue-600, #007bf8);
+}
+
+.smplfy-new-tr-filter-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+}
+
+/* Two-pane filter panel (columns on the left, values on the right). */
+.smplfy-new-tr-filter-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 1056;
+  width: 520px;
+  max-width: 92vw;
+  padding: 0;
+  border: 1px solid var(--smplfy-primitive-neutral-300, #e6e8eb);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.smplfy-new-tr-filter-head {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300, #e6e8eb);
+}
+
+.smplfy-new-tr-filter-clear {
+  font-size: 13px;
+}
+
+.smplfy-new-tr-filter-clear:disabled {
+  opacity: 0.4;
+}
+
+.smplfy-new-tr-filter-body {
+  height: 280px;
+}
+
+.smplfy-new-tr-filter-cols {
+  width: 180px;
+  flex-shrink: 0;
+  background: var(--smplfy-primitive-neutral-200, #f5f6f7);
+  border-right: 1px solid var(--smplfy-primitive-neutral-300, #e6e8eb);
+  overflow-y: auto;
+}
+
+.smplfy-new-tr-filter-col {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  background: transparent;
+  border: 0;
+  border-left: 3px solid transparent;
+  text-align: left;
+  font-size: 14px;
+  color: var(--smplfy-primitive-neutral-700, #475059);
+  cursor: pointer;
+}
+
+.smplfy-new-tr-filter-col:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.smplfy-new-tr-filter-col.is-active {
+  background: #fff;
+  border-left-color: var(--smplfy-primitive-blue-600, #007bf8);
+  color: var(--smplfy-primitive-blue-600, #007bf8);
+  font-weight: 600;
+}
+
+.smplfy-new-tr-filter-col-badge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--smplfy-primitive-blue-600, #007bf8);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.smplfy-new-tr-filter-values {
+  flex-grow: 1;
+  padding: 8px 0;
+  overflow-y: auto;
+}
+
+.smplfy-new-tr-filter-opt {
+  padding: 8px 16px;
+  font-size: 14px;
+  color: var(--smplfy-primitive-neutral-800, #2b3238);
+  cursor: pointer;
+  margin: 0;
+}
+
+.smplfy-new-tr-filter-opt:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.smplfy-new-tr-filter-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--smplfy-primitive-neutral-300, #e6e8eb);
+}
+
+/* Sortable column header button ------------------------------------------ */
+.smplfy-new-tr-table thead th:has(.smplfy-new-tr-colsort-btn) {
+  padding: 0;
+}
+
+.smplfy-new-tr-colsort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.smplfy-new-tr-colsort-btn:focus-visible {
+  outline: 2px solid var(--smplfy-primitive-blue-600, #2f6bff);
+  outline-offset: -2px;
+}
+
+.smplfy-new-tr-colsort-idle {
+  opacity: 0.35;
+}
+
+/* Table ------------------------------------------------------------------ */
+.smplfy-new-tr-table thead th {
+  background-color: var(--smplfy-primitive-neutral-50, #f6f7f8);
+  color: var(--smplfy-primitive-neutral-700, #475059);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  padding: 12px 16px;
+}
+
+.smplfy-new-tr-table tbody td {
+  padding: 10px 16px;
+  vertical-align: middle;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.smplfy-new-tr-action-head,
+.smplfy-new-tr-action-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.smplfy-new-tr-table .smplfy-new-tr-select-cell {
+  width: 44px;
+  text-align: center;
+}
+
+/* Row slides out to the right when self-allocated (leaves the Unassigned list). */
+.smplfy-new-tr-final-row.is-sliding-out > td {
+  animation: smplfy-new-tr-row-out 0.3s ease-in forwards;
+}
+
+@keyframes smplfy-new-tr-row-out {
+  to {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smplfy-new-tr-final-row.is-sliding-out > td {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Claim button: spinner overlays the hidden label so size never changes. */
+.smplfy-new-tr-claim-btn.btn {
+  min-width: 128px;
+}
+
+/* Floating bulk action bar — slides up from the bottom edge. */
+.smplfy-new-tr-actionbar {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 1060;
+  width: min(960px, calc(100vw - 48px));
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid var(--smplfy-primitive-neutral-300, #e6e8eb);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(11, 18, 24, 0.18);
+  animation: smplfy-new-tr-actionbar-in 0.22s ease-out both;
+}
+
+@keyframes smplfy-new-tr-actionbar-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 24px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smplfy-new-tr-actionbar {
+    animation: none;
+  }
+}
+
+.smplfy-new-tr-actionbar-sep {
+  width: 1px;
+  align-self: stretch;
+  min-height: 24px;
+  background-color: var(--smplfy-primitive-neutral-300, #e6e8eb);
+}
+
+.smplfy-new-tr-actionbar-count {
+  font-size: 14px;
+}
+
+/* Blue count pills variant: recolor NavSelector's red (danger) count badges. */
+.smplfy-new-tr-blue-pills .smplfy-nav-link .smplfy-badge.badge.text-bg-danger {
+  background-color: var(--smplfy-primitive-blue-600, #007bf8) !important;
+  color: #fff !important;
+}
+
+/* Final: all rows plain white, no status tint, no hover highlight. */
+.smplfy-new-tr-final-table tbody tr > td {
+  background-color: #ffffff;
+}
+
+.smplfy-new-tr-final-table.table-hover > tbody > tr:hover > td,
+.smplfy-new-tr-final-table.table-hover > tbody > tr:hover > th {
+  background-color: #ffffff;
+  --bs-table-bg-state: #ffffff;
+  --bs-table-accent-bg: #ffffff;
+}
+
+@media (max-width: 767.98px) {
+  .smplfy-new-tr-archetype-picker {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .smplfy-new-tr-sort {
+    width: 100%;
+  }
+
+  .smplfy-new-tr-sort .smplfy-select-field {
+    min-width: 0;
+    flex: 1;
+  }
+}

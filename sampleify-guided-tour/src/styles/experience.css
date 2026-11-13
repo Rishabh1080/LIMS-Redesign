@@ -862,7 +862,7 @@
   box-shadow:
     0 0 0 2px var(--sgt-success),
     0 0 0 7px rgba(47, 158, 107, 0.2),
-    0 0 0 200vmax rgba(2, 21, 39, 0.5);
+    0 0 0 200vmax rgba(2, 21, 39, 0.24);
   transition: box-shadow 200ms var(--sgt-ease-out);
 }
 
@@ -875,7 +875,7 @@
   align-items: center;
   gap: 8px;
   color: var(--sgt-success);
-  font-size: 13px;
+  font-size: var(--sgt-fs-body);
   font-weight: 600;
   animation: sgt-rise-in 240ms var(--sgt-ease-out) both;
 }
@@ -1052,7 +1052,7 @@
   border-radius: 999px;
   background: var(--sgt-brand-amber);
   color: var(--sgt-brand-navy);
-  font-size: 11px;
+  font-size: var(--sgt-fs-meta);
   font-weight: 600;
   white-space: nowrap;
   box-shadow: 0 2px 6px rgba(2, 21, 39, 0.2);

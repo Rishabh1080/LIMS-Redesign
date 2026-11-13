@@ -5,6 +5,7 @@ import { usePrefersReducedMotion } from '../lib/hooks';
 import { cx } from '../lib/format';
 import { resolveStepValue, useTour } from './TourProvider';
 import { computeCardPosition, useTargetRect } from './useTargetRect';
+import { closeOpenMenus } from './protoAssists';
 
 const pageLabels = {
   dashboard: 'the Dashboard',
@@ -23,7 +24,12 @@ const HOLD_MS = 90; // spotlight waits this long before it travels
 const MOVE_MS = 240; // matches .sgt-spotlight.is-moving
 const EMERGE_MS = 180;
 const SETTLE_MS = 40;
-const MAX_WAIT_MS = 1500;
+const MAX_WAIT_MS = 6000;
+// Quiet moments: when the screen changes or the page scrolls to the next
+// target, the overlay steps aside so the visitor sees the change, then returns.
+const PAGE_SETTLE_MS = 1500; // after a new screen appears
+const SCROLL_SETTLE_MS = 650; // after a scroll comes to rest
+const TARGET_SETTLE_MS = 200; // after the target stops moving at all
 const EASE_IN = 'cubic-bezier(0.4, 0, 1, 1)';
 const EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
 
@@ -77,13 +83,20 @@ function Blockers({ rect, blockTarget, onBlockedClick, onWheel }) {
   ));
 }
 
+/** Renders **bold** spans: names of things in the LIMS are set in bold. */
+function richText(text) {
+  if (typeof text !== 'string' || !text.includes('**')) return text;
+  return text.split('**').map((part, index) => (index % 2 ? <strong key={index}>{part}</strong> : part));
+}
+
 export function StepSpotlight() {
-  const { step, stepKey, chapter, chapterIndex, chapters, tour, ctx, assisting, stepDone, actions, rootRef } = useTour();
+  const { step, stepKey, chapter, tour, ctx, assisting, stepDone, actions, rootRef } = useTour();
   const { state, actions: limsActions } = useLims();
   const reducedMotion = usePrefersReducedMotion();
   const targetId = resolveStepValue(step.target, state, ctx);
   const preferred = resolveStepValue(step.placement, state, ctx) ?? 'bottom';
-  const { rect, missing } = useTargetRect({ rootRef, targetId, stepKey, active: true, reducedMotion });
+  const { rect, missing, lastMoveRef, scrollActiveRef } = useTargetRect({ rootRef, targetId, stepKey, active: true, reducedMotion });
+  const protoPage = state.proto?.page;
   const cardRef = useRef(null);
   const nextRef = useRef(null);
   const layerRef = useRef(null);
@@ -99,6 +112,10 @@ export function StepSpotlight() {
   const [revealed, setRevealed] = useState(reducedMotion);
   const lastSpotRef = useRef(null);
   const snapshotRef = useRef(null);
+  const [hideSpot, setHideSpot] = useState(false);
+  const lastPageRef = useRef(protoPage);
+  const pageChangedAtRef = useRef(-Infinity);
+  const sawScrollRef = useRef(false);
   if (shownKey !== stepKey) {
     setShownKey(stepKey);
     if (!reducedMotion) {
@@ -148,11 +165,33 @@ export function StepSpotlight() {
 
   // Remember the visible card and spotlight, for the next swallow.
   useLayoutEffect(() => {
-    if (!held) lastSpotRef.current = spotRect;
+    if (revealed && !held) lastSpotRef.current = spotRect;
     if (revealed && !held && cardRef.current && !reducedMotion) {
       snapshotRef.current = { node: cardRef.current.cloneNode(true), rect: cardRef.current.getBoundingClientRect() };
     }
   });
+
+  // A new screen: the overlay leaves at once (the card is swallowed into its
+  // spotlight), and stays away until the screen has had time to be seen.
+  // Declared after the effect above so its clean-up wins.
+  useLayoutEffect(() => {
+    if (lastPageRef.current === protoPage) return;
+    lastPageRef.current = protoPage;
+    pageChangedAtRef.current = performance.now();
+    if (reducedMotion) return;
+    swallow(snapshotRef.current, lastSpotRef.current, layerRef.current);
+    snapshotRef.current = null;
+    lastSpotRef.current = null;
+    setHeld(null);
+    setRevealed(false);
+    setHideSpot(true);
+  }, [protoPage, reducedMotion]);
+
+  // Menus that were open when the step moved on (a dropdown filled by
+  // "Fill for me", say) must not hang around under the next step.
+  useEffect(() => {
+    closeOpenMenus();
+  }, [stepKey]);
 
   // 2. Release the held spotlight so it travels to the new target.
   useEffect(() => {
@@ -161,24 +200,37 @@ export function StepSpotlight() {
     return () => window.clearTimeout(id);
   }, [held]);
 
-  // 3. Reveal the card once the spotlight has stopped moving.
-  const spotChangedAtRef = useRef(0);
-  useLayoutEffect(() => {
-    spotChangedAtRef.current = performance.now();
-  }, [spotRect]);
+  // 3. Bring the overlay (back) once the screen has settled: the right page is
+  // showing for long enough, any scroll has come to rest, and the target is still.
+  const hadSpotRef = useRef(false);
+  useEffect(() => {
+    hadSpotRef.current = Boolean(lastSpotRef.current);
+    sawScrollRef.current = false;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepKey]);
 
   useEffect(() => {
     if (reducedMotion) {
       setRevealed(true);
+      setHideSpot(false);
       return undefined;
     }
     const startedAt = performance.now();
     let frame = 0;
     const wait = () => {
       const now = performance.now();
-      const moved = spotChangedAtRef.current > startedAt + HOLD_MS - 20;
-      const settled = now - spotChangedAtRef.current >= (moved ? MOVE_MS : 0) + SETTLE_MS;
-      if ((now - startedAt >= HOLD_MS + SETTLE_MS && settled) || now - startedAt > MAX_WAIT_MS) {
+      const wrongScreen = Boolean(step.protoPage) && lastPageRef.current !== step.protoPage;
+      const pageQuiet = now - pageChangedAtRef.current < PAGE_SETTLE_MS;
+      const scrolling = scrollActiveRef.current;
+      if (scrolling) sawScrollRef.current = true;
+      const hide = wrongScreen || pageQuiet || scrolling;
+      setHideSpot((current) => (current === hide ? current : hide));
+
+      const settle = sawScrollRef.current ? SCROLL_SETTLE_MS : TARGET_SETTLE_MS;
+      const still = now - lastMoveRef.current >= settle;
+      const travelled = now - startedAt >= HOLD_MS + SETTLE_MS + (hadSpotRef.current ? MOVE_MS : 0);
+      if (!wrongScreen && ((!pageQuiet && !scrolling && still && travelled) || now - startedAt > MAX_WAIT_MS)) {
+        setHideSpot(false);
         setRevealed(true);
         return;
       }
@@ -186,7 +238,8 @@ export function StepSpotlight() {
     };
     frame = window.requestAnimationFrame(wait);
     return () => window.cancelAnimationFrame(frame);
-  }, [stepKey, reducedMotion]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepKey, protoPage, reducedMotion]);
 
   // 4. Grow the new card out of the spotlight.
   useLayoutEffect(() => {
@@ -228,7 +281,8 @@ export function StepSpotlight() {
 
   // Blockers swallow wheel events; forward them so the page still scrolls.
   const forwardWheel = (event) => {
-    const scroller = rootRef.current?.querySelector('.sgt-content');
+    const scrollers = ['.sgt-content', 'main', '.lims-main-content', '.sgt-proto'].map((selector) => rootRef.current?.querySelector(selector));
+    const scroller = scrollers.find((node) => node && node.scrollHeight > node.clientHeight + 1);
     scroller?.scrollBy({ top: event.deltaY, left: 0 });
   };
 
@@ -272,13 +326,6 @@ export function StepSpotlight() {
         {step.doneText ?? 'Done. Nice work.'}
       </p>
     );
-  } else if (isAction && hint) {
-    status = (
-      <p className="sgt-coach__hint">
-        <span className="sgt-coach__pulse" aria-hidden="true" />
-        Your turn: {hint}
-      </p>
-    );
   }
 
   return (
@@ -286,7 +333,7 @@ export function StepSpotlight() {
       <Blockers rect={shownRect} blockTarget={!isAction && !step.interactive} onBlockedClick={nudge} onWheel={forwardWheel} />
       {spotRect ? (
         <div
-          className={cx('sgt-spotlight', isAction && revealed && 'is-action', stepDone && 'is-done', moving && 'is-moving')}
+          className={cx('sgt-spotlight', hideSpot && 'is-hidden', isAction && revealed && 'is-action', stepDone && 'is-done', moving && 'is-moving')}
           style={{ top: spotRect.top, left: spotRect.left, width: spotRect.width, height: spotRect.height }}
           aria-hidden="true"
         />
@@ -309,9 +356,11 @@ export function StepSpotlight() {
         }}
       >
         <div className="sgt-coach__top">
-          <span className="sgt-coach__chapter" title={`Chapter ${chapterIndex + 1} of ${chapters.length}: ${chapter.title}`}>
-            <span className="sgt-sr-only">Chapter </span>
-            {chapterIndex + 1}/{chapters.length} · {chapter.title}
+          <span className="sgt-coach__chapter" title={chapter.title}>
+            {chapter.title}
+          </span>
+          <span className="sgt-coach__step" aria-label={`Step ${tour.stepIndex + 1} of ${chapter.steps.length}`}>
+            {tour.stepIndex + 1}/{chapter.steps.length}
           </span>
           <button type="button" className="sgt-coach__close" aria-label="Pause tour" title="Pause tour" onClick={actions.pause}>
             <IconX size={16} stroke={2} />
@@ -320,7 +369,7 @@ export function StepSpotlight() {
 
         <div className="sgt-coach__content" key={`${stepKey}|${title}`}>
           <h2 className="sgt-coach__title" id="sgt-coach-title">{title}</h2>
-          <p className="sgt-coach__body" id="sgt-coach-body">{body}</p>
+          <p className="sgt-coach__body" id="sgt-coach-body">{richText(body)}</p>
           {why ? (
             <p className="sgt-coach__why">
               <IconBulb size={16} stroke={1.9} aria-hidden="true" />
@@ -333,14 +382,6 @@ export function StepSpotlight() {
         </div>
 
         <div className="sgt-coach__footer">
-          <div className="sgt-coach__progress">
-            <span className="sgt-coach__count">
-              {tour.stepIndex + 1} / {chapter.steps.length}
-            </span>
-            <span className="sgt-coach__bar" aria-hidden="true">
-              <span style={{ width: `${((tour.stepIndex + 1) / chapter.steps.length) * 100}%` }} />
-            </span>
-          </div>
           <div className="sgt-coach__actions">
             <button type="button" className="sgt-coach__text-btn" onClick={actions.pause}>
               <IconPlayerPause size={14} stroke={2} aria-hidden="true" />

@@ -1,0 +1,110 @@
+.smplfy-assessment-flow-shell {
+  background: var(--smplfy-primitive-neutral-100);
+}
+
+.smplfy-assessment-instructions-page {
+  flex: 1 1 auto;
+  background: var(--smplfy-primitive-neutral-100);
+}
+
+.smplfy-assessment-instructions-card.card {
+  width: min(958px, 100%);
+  min-height: 678px;
+}
+
+.smplfy-assessment-instructions-card.card.is-workflow-step {
+  min-height: calc(100vh - 132px);
+}
+
+.smplfy-assessment-instructions-card > .card-header,
+.smplfy-assessment-instructions-card > .card-footer {
+  min-height: 64px;
+}
+
+.smplfy-assessment-instructions-card > .card-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-assessment-instructions-card > .card-body {
+  flex: 1 1 auto;
+  padding: 32px !important;
+}
+
+.smplfy-assessment-instructions-copy {
+  max-width: 542px;
+  color: var(--smplfy-primitive-neutral-900);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-assessment-understand-label {
+  color: var(--smplfy-primitive-neutral-900);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-assessment-timer {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.smplfy-assessment-declarations,
+.smplfy-assessment-question {
+  color: var(--smplfy-primitive-neutral-900);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-assessment-declarations {
+  max-width: 1180px;
+}
+
+.smplfy-assessment-declarations label,
+.smplfy-assessment-question label {
+  cursor: pointer;
+}
+
+.smplfy-assessment-declarations .smplfy-form-check-input,
+.smplfy-assessment-question .smplfy-form-check-input {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.smplfy-assessment-question {
+  max-width: 760px;
+}
+
+@media (max-width: 767.98px) {
+  .smplfy-assessment-instructions-page {
+    padding: 16px !important;
+  }
+
+  .smplfy-assessment-instructions-card.card {
+    min-height: calc(100vh - 220px);
+  }
+
+  .smplfy-assessment-instructions-card.card.is-workflow-step {
+    min-height: calc(100vh - 148px);
+  }
+
+  .smplfy-assessment-instructions-card > .card-body {
+    padding: 24px !important;
+  }
+
+  .smplfy-assessment-declarations,
+  .smplfy-assessment-question {
+    font-size: 14px;
+  }
+}

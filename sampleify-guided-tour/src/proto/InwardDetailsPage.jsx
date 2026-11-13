@@ -7,10 +7,10 @@
  *  - "Under Allocation" is treated like Under Analysis for the header buttons
  * Markup and classes are the prototype's.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import AppIcon from '@proto/components/AppIcon';
-import AppChrome from './TutorialChrome';
-import Checkbox from '@proto/components/Checkbox/Checkbox';
+import AppChrome, { TutorialChromeContext } from './TutorialChrome';
+import SampleApprovalModal from './SampleApprovalModal';
 import Modal from '@proto/components/Modal/Modal';
 import { FormElement, ToastNotification } from '@proto/components/FormControls';
 import MoreActionButton from '@proto/components/MoreActionButton';
@@ -83,18 +83,6 @@ const activityItems = [
     tone: 'info',
   },
 ];
-
-const sampleApprovalChecklist = [
-  { key: 'parametersPresent', label: 'All parameters information is present ?' },
-  { key: 'sampleImagesPresent', label: 'Sample Images are present ?' },
-  { key: 'customerInfoPresent', label: 'Customer information is present ?' },
-  { key: 'nablMarked', label: 'NABL marking is done' },
-];
-
-const initialSampleApprovalChecklistState = sampleApprovalChecklist.reduce((accumulator, item) => {
-  accumulator[item.key] = false;
-  return accumulator;
-}, {});
 
 function joinClasses(...values) {
   return values.filter(Boolean).join(' ');
@@ -474,137 +462,6 @@ function ReviewRequestModal({ open, sendTo, comments, onSendToChange, onComments
   );
 }
 
-function SampleApprovalActionModal({ open, sampleId, onCancel, onSubmit }) {
-  const [comment, setComment] = useState('');
-  const [commentError, setCommentError] = useState('');
-  const [checklistValues, setChecklistValues] = useState(initialSampleApprovalChecklistState);
-  const [checklistError, setChecklistError] = useState('');
-
-  useEffect(() => {
-    if (!open) {
-      setComment('');
-      setCommentError('');
-      setChecklistValues(initialSampleApprovalChecklistState);
-      setChecklistError('');
-    }
-  }, [open]);
-
-  if (!open) {
-    return null;
-  }
-
-  const handleChecklistChange = (key, checked) => {
-    const nextChecklistValues = {
-      ...checklistValues,
-      [key]: checked,
-    };
-
-    setChecklistValues(nextChecklistValues);
-
-    if (sampleApprovalChecklist.every((item) => nextChecklistValues[item.key])) {
-      setChecklistError('');
-    }
-  };
-
-  const handleAction = (actionType) => {
-    let hasError = false;
-
-    if (!comment.trim()) {
-      setCommentError('Please add a comment to respond.');
-      hasError = true;
-    } else {
-      setCommentError('');
-    }
-
-    if (
-      actionType === 'approve'
-      && !sampleApprovalChecklist.every((item) => checklistValues[item.key])
-    ) {
-      setChecklistError('Complete all checks before approving this request.');
-      hasError = true;
-    } else {
-      setChecklistError('');
-    }
-
-    if (hasError) return;
-
-    onSubmit?.({
-      action: actionType,
-      sampleId,
-      comment,
-      checklistValues,
-    });
-  };
-
-  return (
-    <Modal
-      open={open}
-      title="Sample Approval"
-      titleId="sample-approval-action-title"
-      titleIcon="check"
-      onClose={onCancel}
-      size="md"
-      actionsClassName="justify-content-between"
-      actions={
-        <>
-          <PrimaryButton styleVariant="destructive" size="large" onClick={() => handleAction('reject')} leftIcon="close">
-            Reject
-          </PrimaryButton>
-          <PrimaryButton styleVariant="positive" size="large" onClick={() => handleAction('approve')} leftIcon="check">
-            Approve
-          </PrimaryButton>
-        </>
-      }
-    >
-      <div className="d-flex flex-column gap-3">
-        <div className="d-flex align-items-center justify-content-between gap-3">
-          <div className="text-secondary fw-medium">Sample ID</div>
-          <div className="text-dark fw-semibold text-end">{sampleId}</div>
-        </div>
-
-        <div className="d-flex flex-column gap-2">
-          <label className="smplfy-form-label form-label mb-0" htmlFor="sample-approval-comment">
-            Comment <span className="text-danger">*</span>
-          </label>
-          <input
-            id="sample-approval-comment"
-            className={joinClasses('smplfy-form-control', 'form-control', commentError ? 'is-invalid' : '')}
-            value={comment}
-            placeholder="Add a comment to respond"
-            onChange={(event) => {
-              setComment(event.target.value);
-              if (event.target.value.trim()) {
-                setCommentError('');
-              }
-            }}
-          />
-          {commentError ? <div className="smplfy-form-feedback invalid-feedback d-block">{commentError}</div> : null}
-        </div>
-
-        <div className="d-flex flex-column gap-2">
-          {sampleApprovalChecklist.map((item) => {
-            const isInvalid = Boolean(checklistError && !checklistValues[item.key]);
-
-            return (
-              <label className="smplfy-request-checklist-item d-flex align-items-center gap-2" key={item.key}>
-                <Checkbox
-                  checked={checklistValues[item.key]}
-                  invalid={isInvalid}
-                  onChange={(nextChecked) => handleChecklistChange(item.key, nextChecked)}
-                />
-                <span>{item.label}</span>
-              </label>
-            );
-          })}
-          {checklistError ? (
-            <div className="smplfy-form-feedback invalid-feedback d-block">{checklistError}</div>
-          ) : null}
-        </div>
-      </div>
-    </Modal>
-  );
-}
-
 export default function TutorialInwardDetailsPage({
   sampleId = 'IICT/2025-2026/1101',
   initialToast = null,
@@ -636,6 +493,7 @@ export default function TutorialInwardDetailsPage({
   onSendForReview,
   onApprove,
 }) {
+  const { userName } = useContext(TutorialChromeContext);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState(toastMessageByKey['sample-created']);
   const reviewRequested = Boolean(reviewRequest);
@@ -729,7 +587,7 @@ export default function TutorialInwardDetailsPage({
   // listing, and the workspace.
   const sourceLabelByPage = {
     'all-samples-table': 'All samples',
-    'all-samples': 'All Samples',
+    'all-samples': 'All inwards',
     'inward-details': 'Inward Details',
   };
   const sourceLabel = sourceLabelByPage[sourcePage] ?? 'Samples Workspace';
@@ -801,9 +659,11 @@ export default function TutorialInwardDetailsPage({
         onSubmit={handleSubmitReviewRequest}
       />
 
-      <SampleApprovalActionModal
+      <SampleApprovalModal
         open={approvalActionModalOpen}
         sampleId={sampleId}
+        request={reviewRequest}
+        approverName={userName}
         onCancel={() => setApprovalActionModalOpen(false)}
         onSubmit={handleSubmitApprovalAction}
       />

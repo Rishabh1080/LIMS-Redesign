@@ -45,6 +45,16 @@ Every lab type seeds the same history shape (8 inwards, 9 samples, 25 tests: 5 w
 
 Action steps advance on their own when the store reaches the right state, so the visitor never has to click "Next" after doing the thing. Before advancing, the spotlight turns green and the card shows a one-line "done" message (250–900ms depending on the step; shorter when a dialog is about to open), so the visitor sees that their action worked. During action steps only the spotlighted area is clickable, so nobody wanders off by accident. Pause (or Escape) frees the whole app, and the tracker resumes from the same step.
 
+## Type and quiet moments
+
+**Type:** the guide (coach card, tracker, floating button, dialogs) uses three sizes only: 18px for titles, 14px for body text and buttons, 12px for meta (step count, task name, eyebrow, Pause). Hierarchy comes from weight, colour, case and the mono face, not extra sizes. The tokens are `--sgt-fs-title`, `--sgt-fs-body` and `--sgt-fs-meta`.
+
+**Quiet moments:** whenever the screen changes or the page scrolls to the next target, the overlay steps aside so the visitor sees what happened.
+- A new screen: the spotlight and card leave at once, and come back 1.5s after the screen appears. The first card there introduces the page.
+- A scroll: the overlay stays hidden while the page scrolls and returns 650ms after it comes to rest.
+- Open dropdown menus are closed when a step moves on.
+- Under reduced motion the overlay doesn't wait.
+
 ## Motion
 
 Every animation is there to explain something: where you're going, what changed, or that something worked. Research and sources are in `RESEARCH.md`.

@@ -1,0 +1,138 @@
+/* All Products listing. Mirrors the All Samples search bar dimensions so the
+   two listings sit at the same rhythm. */
+
+.smplfy-all-products-search {
+  min-height: 88px;
+  padding: 0;
+}
+
+.smplfy-all-products-search > .container-fluid,
+.smplfy-all-products-search > .container-fluid > .row {
+  min-height: 88px;
+}
+
+.smplfy-all-products-search .input-group {
+  width: 100%;
+  height: var(--smplfy-field-height);
+  border: var(--smplfy-field-border-width) solid var(--smplfy-field-border-default);
+  border-radius: var(--smplfy-field-radius);
+  background: var(--smplfy-primitive-neutral-100);
+  overflow: hidden;
+}
+
+.smplfy-all-products-search .input-group .input-group-text {
+  padding: 0 0 0 var(--smplfy-field-padding-inline-compact);
+  border: 0;
+  background: transparent;
+}
+
+.smplfy-all-products-search .input-group .smplfy-form-control.form-control {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  padding-inline: var(--smplfy-field-padding-inline-compact);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.smplfy-all-products-search .input-group .smplfy-btn.btn {
+  --smplfy-button-current-height: var(--smplfy-field-height);
+
+  width: var(--smplfy-field-height);
+  min-width: var(--smplfy-field-height);
+  border-radius: 0;
+}
+
+.smplfy-all-products-page {
+  min-height: 0;
+}
+
+.smplfy-all-products-page .smplfy-table td {
+  vertical-align: middle;
+}
+
+/* Pagination ------------------------------------------------------------- */
+
+.smplfy-inward-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.smplfy-inward-pagination-summary {
+  color: var(--smplfy-primitive-neutral-600);
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.01em;
+}
+
+.smplfy-inward-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.smplfy-inward-pagination-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--smplfy-primitive-neutral-600);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.smplfy-inward-pagination-size .form-select {
+  width: auto;
+}
+
+.smplfy-inward-pagination .page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  color: var(--smplfy-primitive-neutral-700);
+}
+
+.smplfy-inward-pagination .page-item.active .page-link {
+  border-color: var(--smplfy-primitive-blue-500);
+  background: var(--smplfy-primitive-blue-500);
+  color: var(--smplfy-primitive-neutral-100);
+}
+
+.smplfy-all-products-toast-region {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1080;
+  display: flex;
+  justify-content: flex-end;
+}
+/* Progress cell -------------------------------------------------------------
+   Parameter circles plus the approved count, on one line. The circles keep
+   their own tooltips, so the cell must not clip them. */
+
+.smplfy-sample-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.smplfy-sample-progress .smplfy-parameter-list {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none;
+  margin: 0;
+}
+
+.smplfy-sample-progress-count {
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.01em;
+}

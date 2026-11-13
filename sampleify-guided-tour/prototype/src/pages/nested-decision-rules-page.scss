@@ -1,0 +1,203 @@
+.smplfy-nested-decision-rules-layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(248px, 1fr) minmax(0, 3fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.smplfy-nested-decision-rules-selector-column {
+  width: 100%;
+  min-width: 0;
+  position: sticky;
+  top: 24px;
+}
+
+.smplfy-nested-decision-rules-selector {
+  width: 100%;
+  min-width: 0;
+  --smplfy-list-group-item-width: 100%;
+  --smplfy-list-group-item-min-height: 56px;
+  --smplfy-list-group-item-padding-x: 0;
+  --smplfy-list-group-item-padding-y: 0;
+  --smplfy-list-group-item-radius: 8px;
+  --smplfy-list-group-item-border-width: 0;
+  --smplfy-list-group-item-bg: var(--smplfy-primitive-neutral-100);
+  --smplfy-list-group-item-border: transparent;
+}
+
+.smplfy-nested-decision-rules-add-child.smplfy-btn {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
+}
+
+.smplfy-nested-decision-rules-selector-row {
+  position: relative;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: visible;
+}
+
+.smplfy-nested-decision-rules-selector-row:has(.smplfy-nested-decision-rules-selector-menu.show) {
+  z-index: var(--smplfy-dropdown-menu-z-index);
+}
+
+.smplfy-nested-decision-rules-selector-target {
+  min-width: 0;
+  min-height: 56px;
+  padding: 8px 4px 8px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.smplfy-nested-decision-rules-selector-row.is-child .smplfy-nested-decision-rules-selector-target {
+  padding-inline-start: 28px;
+}
+
+.smplfy-nested-decision-rules-selector-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.smplfy-nested-decision-rules-selector-target:focus-visible {
+  outline: none;
+  box-shadow: var(--smplfy-list-group-item-focus-ring);
+}
+
+.smplfy-nested-decision-rules-selector-menu {
+  margin-inline-end: 4px;
+}
+
+.smplfy-nested-decision-rules-selector-menu > .smplfy-btn.dropdown-toggle {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0;
+  border-color: transparent;
+  background-color: transparent;
+  color: inherit;
+}
+
+.smplfy-nested-decision-rules-selector-menu > .smplfy-btn.dropdown-toggle:hover,
+.smplfy-nested-decision-rules-selector-menu > .smplfy-btn.dropdown-toggle:focus-visible {
+  border-color: transparent;
+  background-color: var(--smplfy-primitive-neutral-200);
+  color: var(--smplfy-primitive-neutral-800);
+}
+
+.smplfy-nested-decision-rules-selector-row.active .smplfy-nested-decision-rules-selector-menu > .smplfy-btn.dropdown-toggle:hover,
+.smplfy-nested-decision-rules-selector-row.active .smplfy-nested-decision-rules-selector-menu > .smplfy-btn.dropdown-toggle:focus-visible,
+.smplfy-nested-decision-rules-selector-row.active .smplfy-nested-decision-rules-selector-menu.show > .smplfy-btn.dropdown-toggle {
+  border-color: transparent;
+  background-color: var(--smplfy-primitive-blue-600);
+  color: var(--smplfy-primitive-neutral-100);
+}
+
+.smplfy-nested-decision-rules-selector-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.smplfy-nested-decision-rules-selector-title {
+  color: inherit;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.smplfy-nested-decision-rules-selector-meta {
+  color: var(--smplfy-primitive-neutral-600);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.smplfy-nested-decision-rules-selector .smplfy-list-group-item.active .smplfy-nested-decision-rules-selector-meta {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.smplfy-nested-decision-rules-form-card {
+  min-width: 0;
+}
+
+.smplfy-nested-decision-rules-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+
+.smplfy-nested-decision-rules-field-full {
+  grid-column: 1 / -1;
+}
+
+.smplfy-nested-decision-rules-checkbox {
+  width: fit-content;
+  min-height: 24px;
+  color: var(--smplfy-primitive-neutral-900);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  cursor: pointer;
+}
+
+.smplfy-nested-decision-rules-checkbox .smplfy-form-check-input {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+@media (max-width: 1199.98px) {
+  .smplfy-nested-decision-rules-layout {
+    grid-template-columns: minmax(224px, 1fr) minmax(0, 2fr);
+  }
+}
+
+@media (max-width: 991.98px) {
+  .smplfy-nested-decision-rules-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .smplfy-nested-decision-rules-selector-column {
+    position: static;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .smplfy-nested-decision-rules-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .smplfy-nested-decision-rules-field-full {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .smplfy-nested-decision-rules-page > .container-fluid {
+    padding-block: 16px !important;
+  }
+
+  .smplfy-nested-decision-rules-header {
+    padding-inline: 16px !important;
+  }
+
+  .smplfy-nested-decision-rules-form-card .card-body {
+    padding: 16px !important;
+  }
+}

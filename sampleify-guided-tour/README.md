@@ -16,6 +16,7 @@ Tutorial-only files, all in `src/proto/`:
 - `TutorialApp.jsx`: routes between the prototype pages the way the prototype's `App.jsx` does, and keeps the state one inward needs from creation to COA.
 - `TutorialChrome.jsx`: copy of `AppChrome` with only Dashboard and All inwards in the sidebar and the visitor's lab and name. Prototype pages get it through an import alias.
 - `InwardDetailsPage.jsx`: copy of `SampleDetailsPage`. Send for Review (next state: Under Allocation), Action Required and the activity trail run on tutorial state.
+- `SampleApprovalModal.jsx`: the two-pane approval modal (same structure as the prototype's request details modal) with the single "All parameters information is present ?" check. `TestRequestsListingPage.jsx`: copy of the prototype page that starts with only unallocated test requests (no Jobs card) and six analysts in the allocation modal.
 - `TestRequestApprovalActionModal.jsx`: wraps the prototype modal so the tour hears about approvals. `analyticsStub.js`: no analytics from the tutorial.
 
 The seven tasks are in `src/tour/chapters/protoTasks.js`. Steps target the prototype's DOM with `css:<selector>` or `text:<selector>|<label>[|<closest>]`, and can complete on what's on screen (`doneDom`). The tracker is a floating button by default; it lists the tasks, what's done, and lets you retry any of them.
@@ -188,3 +189,7 @@ src/
 dev/main.jsx               standalone harness (loads fonts)
 docs/                      DESIGN.md, RESEARCH.md (UX research + decisions), screenshots/
 ```
+
+## Publishing
+
+This folder is published as its own GitHub repo (`rishabhbs/sampleify-guided-tour`). Inside LIMS V3 the screens come from the live `../src`; the published repo uses the vendored copy in `prototype/`. Run `scripts/publish.sh "message"` to vendor, build, commit and push only this folder.

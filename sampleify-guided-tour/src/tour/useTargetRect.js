@@ -44,6 +44,8 @@ export function findTarget(root, targetId) {
 function visibleRect(element, stopAt) {
   const raw = element.getBoundingClientRect();
   let { top, left, bottom, right } = raw;
+  // Fixed-position things (modals) are not clipped by scrolling ancestors.
+  if (window.getComputedStyle(element).position === 'fixed') return { raw, top, left, bottom, right };
   let node = element.parentElement;
   while (node && node !== stopAt && node !== document.body) {
     const style = window.getComputedStyle(node);
@@ -54,6 +56,7 @@ function visibleRect(element, stopAt) {
       bottom = Math.min(bottom, box.bottom);
       right = Math.min(right, box.right);
     }
+    if (style.position === 'fixed') break;
     node = node.parentElement;
   }
   return { raw, top, left, bottom, right };
@@ -85,6 +88,9 @@ export function useTargetRect({ rootRef, targetId, stepKey, active, reducedMotio
   const [rect, setRect] = useState(null);
   const [missing, setMissing] = useState(false);
   const scrolledRef = useRef(null);
+  // For the guide overlay: when the target last moved, and whether we're scrolling it into view.
+  const lastMoveRef = useRef(0);
+  const scrollActiveRef = useRef(false);
 
   useEffect(() => {
     if (!active) {
@@ -94,6 +100,7 @@ export function useTargetRect({ rootRef, targetId, stepKey, active, reducedMotio
     }
 
     let frame = 0;
+    let previousRect = null;
     let lastSeen = Date.now();
     const startedAt = Date.now();
     setMissing(false);
@@ -112,8 +119,12 @@ export function useTargetRect({ rootRef, targetId, stepKey, active, reducedMotio
           if (!isFullyVisible(raw, viewport)) {
             const tall = raw.height > viewport.height * 0.7;
             element.scrollIntoView({ block: tall ? 'start' : 'center', inline: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
+            scrollActiveRef.current = true;
+            lastMoveRef.current = performance.now();
           }
         }
+        // Scrolling is over once the target has sat still for a moment.
+        if (scrollActiveRef.current && performance.now() - lastMoveRef.current > 350) scrollActiveRef.current = false;
 
         const top = Math.max(EDGE, visible.top - PADDING);
         const left = Math.max(EDGE, visible.left - PADDING);
@@ -123,6 +134,10 @@ export function useTargetRect({ rootRef, targetId, stepKey, active, reducedMotio
           bottom > top && right > left
             ? { top, left, width: right - left, height: bottom - top, vw: viewport.width, vh: viewport.height }
             : null;
+        if (!same(previousRect, next)) {
+          previousRect = next;
+          lastMoveRef.current = performance.now();
+        }
         setRect((previous) => (same(previous, next) ? previous : next));
         setMissing((previous) => (previous ? false : previous));
       } else {
@@ -143,7 +158,7 @@ export function useTargetRect({ rootRef, targetId, stepKey, active, reducedMotio
     return () => window.cancelAnimationFrame(frame);
   }, [active, rootRef, targetId, stepKey, reducedMotion]);
 
-  return { rect, missing };
+  return { rect, missing, lastMoveRef, scrollActiveRef };
 }
 
 export function computeCardPosition(rect, card, viewport, preferred = 'bottom') {
@@ -171,7 +186,12 @@ export function computeCardPosition(rect, card, viewport, preferred = 'bottom') 
     if (candidate.fits) return { top: candidate.top, left: candidate.left, placement };
   }
 
-  // Nothing fits beside the target (it fills the screen): float in the
-  // bottom-right corner, over the target's least important area.
-  return { top: viewport.height - height - margin, left: viewport.width - width - margin, placement: 'floating' };
+  // Nothing fits beside the target (it fills the screen, e.g. a big modal): sit
+  // inside it, bottom-left. Primary actions are bottom-right in this design
+  // system, so that corner stays clear for the visitor's click.
+  return {
+    top: clampTop(rect.top + rect.height - height - 16),
+    left: clampLeft(rect.left + 16),
+    placement: 'floating',
+  };
 }
