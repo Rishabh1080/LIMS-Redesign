@@ -887,3 +887,26 @@
   font-weight: 700;
   color: var(--sgt-brand-ink, inherit);
 }
+
+/* Inside a large target the card can be dragged by its top row. */
+.sgt-coach.is-floating .sgt-coach__top {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.sgt-coach.is-dragging,
+.sgt-coach.is-dragging .sgt-coach__top {
+  cursor: grabbing;
+}
+.sgt-coach.is-dragging {
+  user-select: none;
+  box-shadow: 0 30px 70px rgba(2, 21, 39, 0.34), 0 8px 22px rgba(2, 21, 39, 0.16);
+}
+.sgt-coach__grip {
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: var(--sgt-brand-faint);
+}
+.sgt-coach__grip + .sgt-coach__step {
+  margin-left: 0;
+}

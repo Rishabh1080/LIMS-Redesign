@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { IconArrowLeft, IconArrowRight, IconBulb, IconCheck, IconPlayerPause, IconSparkles, IconX } from '@tabler/icons-react';
+import { IconArrowLeft, IconArrowRight, IconBulb, IconCheck, IconGripHorizontal, IconPlayerPause, IconSparkles, IconX } from '@tabler/icons-react';
 import { useLims } from '../store/LimsStore';
 import { usePrefersReducedMotion } from '../lib/hooks';
 import { cx } from '../lib/format';
@@ -103,6 +103,10 @@ export function StepSpotlight() {
   const [cardSize, setCardSize] = useState({ width: 360, height: 220 });
   const [moving, setMoving] = useState(false);
   const [nudged, setNudged] = useState(false);
+  // When the card sits inside a big target it can be dragged out of the way.
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const dragRef = useRef(null);
 
   // When the step changes, keep showing the old spotlight for a beat (the card
   // is being swallowed into it), and keep the new card hidden until the
@@ -118,6 +122,7 @@ export function StepSpotlight() {
   const sawScrollRef = useRef(false);
   if (shownKey !== stepKey) {
     setShownKey(stepKey);
+    setDragOffset({ x: 0, y: 0 });
     if (!reducedMotion) {
       setRevealed(false);
       setHeld(lastSpotRef.current ? { rect: lastSpotRef.current } : null);
@@ -153,7 +158,39 @@ export function StepSpotlight() {
   const shownRect = missing ? null : rect;
   // What the spotlight draws: the old target while the card is swallowed, then the new one.
   const spotRect = held ? held.rect : shownRect;
-  const position = computeCardPosition(shownRect, cardSize, viewport, preferred);
+  const basePosition = computeCardPosition(shownRect, cardSize, viewport, preferred);
+  const draggable = basePosition.placement === 'floating';
+  const clampTo = (value, size, limit) => Math.min(Math.max(12, value), Math.max(12, limit - size - 12));
+  const position = draggable
+    ? {
+        ...basePosition,
+        left: clampTo(basePosition.left + dragOffset.x, cardSize.width, viewport.width),
+        top: clampTo(basePosition.top + dragOffset.y, cardSize.height, viewport.height),
+      }
+    : basePosition;
+
+  const startDrag = (event) => {
+    if (!draggable || event.button !== 0 || event.target.closest('button')) return;
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    dragRef.current = { x: event.clientX, y: event.clientY, from: dragOffset, base: basePosition };
+    setDragging(true);
+  };
+  const moveDrag = (event) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const wantedLeft = drag.base.left + drag.from.x + (event.clientX - drag.x);
+    const wantedTop = drag.base.top + drag.from.y + (event.clientY - drag.y);
+    setDragOffset({
+      x: clampTo(wantedLeft, cardSize.width, viewport.width) - drag.base.left,
+      y: clampTo(wantedTop, cardSize.height, viewport.height) - drag.base.top,
+    });
+  };
+  const endDrag = (event) => {
+    if (!dragRef.current) return;
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+    dragRef.current = null;
+    setDragging(false);
+  };
 
   // 1. Step changed: shrink the outgoing card into the old spotlight.
   useLayoutEffect(() => {
@@ -341,7 +378,7 @@ export function StepSpotlight() {
 
       <div
         ref={cardRef}
-        className={cx('sgt-coach', !revealed && 'is-waiting', nudged && 'is-nudged', stepDone && 'is-done', `is-${position.placement}`, arrowStyle && 'has-arrow')}
+        className={cx('sgt-coach', !revealed && 'is-waiting', nudged && 'is-nudged', stepDone && 'is-done', dragging && 'is-dragging', `is-${position.placement}`, arrowStyle && 'has-arrow')}
         style={{ top: position.top, left: position.left, ...arrowStyle }}
         role="dialog"
         aria-modal="false"
@@ -355,10 +392,18 @@ export function StepSpotlight() {
           }
         }}
       >
-        <div className="sgt-coach__top">
+        <div
+          className="sgt-coach__top"
+          title={draggable ? 'Drag to move this out of the way' : undefined}
+          onPointerDown={startDrag}
+          onPointerMove={moveDrag}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+        >
           <span className="sgt-coach__chapter" title={chapter.title}>
             {chapter.title}
           </span>
+          {draggable ? <IconGripHorizontal className="sgt-coach__grip" size={16} stroke={1.8} aria-hidden="true" /> : null}
           <span className="sgt-coach__step" aria-label={`Step ${tour.stepIndex + 1} of ${chapter.steps.length}`}>
             {tour.stepIndex + 1}/{chapter.steps.length}
           </span>

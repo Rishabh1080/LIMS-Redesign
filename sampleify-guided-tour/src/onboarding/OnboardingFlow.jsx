@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { logoSrc as logo } from '../assets';
 import { sendOtp } from '../services/auth';
+import { markSetupVerified, startSetup } from '../services/setups';
 import { cx } from '../lib/format';
 import { WelcomeStep } from './WelcomeStep';
 import { NameStep } from './NameStep';
@@ -46,6 +47,9 @@ export function OnboardingFlow({ initial, presetDomain, supportPhone, onProgress
   const [sms, setSms] = useState(null);
   const [direction, setDirection] = useState('forward');
   const [verified, setVerified] = useState(false);
+  const [phoneError, setPhoneError] = useState(null);
+  // The server's record of this setup (api/setup/start), once the phone is in.
+  const setupIdRef = useRef(null);
   const smsTimerRef = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
 
@@ -96,11 +100,29 @@ export function OnboardingFlow({ initial, presetDomain, supportPhone, onProgress
 
   const submitPhone = async (value) => {
     setPhone(value);
+    setPhoneError(null);
     setSending(true);
-    const result = await sendOtp(value);
-    setSending(false);
+    // Record the setup and ask whether this number was verified recently.
+    const setup = await startSetup({ name, labName, labTypes: domains, domain, phone: value });
+    if (setup.rateLimited) {
+      setSending(false);
+      setPhoneError('Too many attempts with this number. Please try again in an hour.');
+      return;
+    }
+    setupIdRef.current = setup.setupId;
     onProgress({ name, labName, domain, phone: value, step: 'phone' });
     track('onboarding_step_completed', { step: 'phone' });
+
+    if (!setup.otpRequired) {
+      // Verified on this number within the last few days: no new code.
+      setSending(false);
+      track('onboarding_step_completed', { step: 'otp', skipped: true });
+      onComplete({ name, labName, phone: value, domain });
+      return;
+    }
+
+    const result = await sendOtp(value);
+    setSending(false);
     setDigits(emptyOtp());
     goTo('otp');
     if (result.ok) deliverSms(result.demoCode);
@@ -113,6 +135,7 @@ export function OnboardingFlow({ initial, presetDomain, supportPhone, onProgress
 
   const finishVerification = () => {
     track('onboarding_step_completed', { step: 'otp' });
+    markSetupVerified(setupIdRef.current);
     setSms(null);
     onComplete({ name, labName, phone, domain });
   };
@@ -146,7 +169,17 @@ export function OnboardingFlow({ initial, presetDomain, supportPhone, onProgress
   } else if (step === 'lab') {
     content = <DomainStep name={name} value={domains} onChange={setDomains} onSubmit={submitDomain} onBack={() => goTo('name')} />;
   } else if (step === 'phone') {
-    content = <PhoneStep value={phone} onChange={setPhone} onSubmit={submitPhone} onBack={() => goTo('lab')} sending={sending} />;
+    content = <PhoneStep
+        value={phone}
+        onChange={(next) => {
+          setPhone(next);
+          if (phoneError) setPhoneError(null);
+        }}
+        onSubmit={submitPhone}
+        onBack={() => goTo('lab')}
+        sending={sending}
+        serverError={phoneError}
+      />;
   } else {
     content = (
       <OtpStep

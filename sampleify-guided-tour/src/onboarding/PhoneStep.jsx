@@ -8,8 +8,9 @@ export function validatePhone(digits) {
   return null;
 }
 
-export function PhoneStep({ value, onChange, onSubmit, onBack, sending }) {
-  const [error, setError] = useState(null);
+export function PhoneStep({ value, onChange, onSubmit, onBack, sending, serverError = null }) {
+  const [fieldError, setError] = useState(null);
+  const error = fieldError ?? serverError;
 
   const submit = (event) => {
     event.preventDefault();

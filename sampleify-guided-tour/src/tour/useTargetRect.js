@@ -12,6 +12,10 @@ function escapeAttr(value) {
  * Targets are `data-tour` ids, or for the prototype's screens (which carry no
  * tour markup): `css:<selector>`, or `text:<selector>|<label>` for the first
  * visible match whose text is exactly <label>.
+ *
+ * `below:<selector>` is a region, not an element: everything under the bottom
+ * edge of the first visible match, to the bottom of the screen. It spotlights a
+ * whole page apart from its header.
  */
 export function resolveTarget(root, targetId) {
   if (!root || !targetId) return null;
@@ -107,16 +111,29 @@ export function useTargetRect({ rootRef, targetId, stepKey, active, reducedMotio
 
     const tick = () => {
       const viewport = { width: window.innerWidth, height: window.innerHeight };
-      const element = findTarget(rootRef.current, targetId);
+      const below = Boolean(targetId?.startsWith('below:'));
+      const element = findTarget(rootRef.current, below ? `css:${targetId.slice(6)}` : targetId);
 
       if (element) {
         lastSeen = Date.now();
-        const visible = visibleRect(element, rootRef.current);
+        let visible;
+        if (below) {
+          const edge = Math.max(0, element.getBoundingClientRect().bottom);
+          visible = {
+            raw: { top: edge, left: 0, bottom: viewport.height, right: viewport.width, width: viewport.width, height: viewport.height - edge },
+            top: edge,
+            left: 0,
+            bottom: viewport.height,
+            right: viewport.width,
+          };
+        } else {
+          visible = visibleRect(element, rootRef.current);
+        }
         const { raw } = visible;
         const scrollKey = `${stepKey}|${targetId}`;
         if (scrolledRef.current !== scrollKey) {
           scrolledRef.current = scrollKey;
-          if (!isFullyVisible(raw, viewport)) {
+          if (!below && !isFullyVisible(raw, viewport)) {
             const tall = raw.height > viewport.height * 0.7;
             element.scrollIntoView({ block: tall ? 'start' : 'center', inline: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
             scrollActiveRef.current = true;
@@ -126,7 +143,7 @@ export function useTargetRect({ rootRef, targetId, stepKey, active, reducedMotio
         // Scrolling is over once the target has sat still for a moment.
         if (scrollActiveRef.current && performance.now() - lastMoveRef.current > 350) scrollActiveRef.current = false;
 
-        const top = Math.max(EDGE, visible.top - PADDING);
+        const top = Math.max(EDGE, visible.top - (below ? 0 : PADDING));
         const left = Math.max(EDGE, visible.left - PADDING);
         const bottom = Math.min(viewport.height - EDGE, visible.bottom + PADDING);
         const right = Math.min(viewport.width - EDGE, visible.right + PADDING);

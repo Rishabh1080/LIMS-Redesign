@@ -57,7 +57,7 @@ export const createInward = {
       id: 'page-intro',
       kind: 'info',
       protoPage: 'new-inward',
-      target: 'text:.sgt-proto .smplfy-inward-section-title|Customer Details|.smplfy-card',
+      target: 'below:.sgt-proto .smplfy-inward-page > header',
       placement: 'bottom',
       title: 'This is the New Inward page',
       body: 'Everything about the samples your lab receives is saved here. Let’s start with the most important part: who sent them.',

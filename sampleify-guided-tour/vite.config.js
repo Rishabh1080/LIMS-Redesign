@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -14,12 +14,55 @@ const useLive = !process.env.SGT_VENDORED && fs.existsSync(path.join(liveSrc, 'p
 const prototypeSrc = useLive ? liveSrc : path.resolve(here, 'prototype/src');
 const prototypeAssets = useLive ? path.resolve(here, '../assets') : path.resolve(here, 'prototype/assets');
 
+// Server-side settings for the /api functions (docs/DATABASE.md). Never exposed
+// to the browser: only VITE_-prefixed variables reach client code.
+const API_ENV = ['MONGODB_URI', 'MONGODB_DB', 'OTP_FREE_DAYS', 'ADMIN_PASSWORD'];
+
+/**
+ * Serves api/**.js under `npm run dev`, the way Vercel serves them in
+ * production, so the database flow works locally with .env.local.
+ */
+function devApi() {
+  let mode = 'development';
+  return {
+    name: 'sgt-dev-api',
+    apply: 'serve',
+    configResolved(config) {
+      mode = config.mode;
+    },
+    configureServer(server) {
+      const env = loadEnv(mode, here, '');
+      for (const key of API_ENV) if (env[key] && !process.env[key]) process.env[key] = env[key];
+      server.middlewares.use(async (req, res, next) => {
+        const pathname = (req.url ?? '').split('?')[0];
+        if (!pathname.startsWith('/api/')) return next();
+        const route = pathname.slice(5).replace(/\/$/, '');
+        // Only plain route names; api/_lib is never routable.
+        if (!/^[a-z0-9-]+(\/[a-z0-9-]+)*$/.test(route)) return next();
+        const file = path.join(here, 'api', `${route}.js`);
+        if (!fs.existsSync(file)) return next();
+        try {
+          const module = await server.ssrLoadModule(file);
+          await module.default(req, res);
+        } catch (error) {
+          server.config.logger.error(`[api] ${route}: ${error.message}`);
+          if (!res.headersSent) {
+            res.statusCode = 500;
+            res.end('{"error":"server_error"}');
+          }
+        }
+        return undefined;
+      });
+    },
+  };
+}
+
 // Standalone harness only. The host app never uses this file.
 // `base: './'` keeps every asset URL relative, so `dist/` can be dropped into
 // any static folder (e.g. a Next.js `public/tour/`) and still load.
 export default defineConfig({
   base: './',
-  plugins: [react()],
+  plugins: [react(), devApi()],
   resolve: {
     alias: [
       { find: /^@proto\/analytics\/posthog(\.js)?$/, replacement: path.resolve(here, 'src/proto/analyticsStub.js') },
