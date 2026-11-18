@@ -8,6 +8,7 @@
  * Body: { name, labName, labTypes: string[], domain, phone, client: { referrer, utm } }
  * 200:  { setupId, otpRequired: boolean, otpFreeUntil: string | null }
  */
+import { ObjectId } from 'mongodb';
 import { getDb } from '../_lib/db.js';
 import { badRequest, clean, clientIp, handle, normalisePhone, readJson, sendJson } from '../_lib/http.js';
 
@@ -48,28 +49,36 @@ export default handle('POST', async (req, res) => {
   const events = db.collection('otp_events');
   const now = new Date();
 
+  // Round trip 1: the rate-limit counts and the user upsert run together.
   const since = new Date(now.getTime() - HOUR);
-  const [phoneCount, ipCount] = await Promise.all([
+  const [phoneCount, ipCount, user] = await Promise.all([
     events.countDocuments({ phone, type: 'start', createdAt: { $gte: since } }),
     ip ? events.countDocuments({ ip, type: 'start', createdAt: { $gte: since } }) : 0,
+    users.findOneAndUpdate(
+      { phone },
+      {
+        $setOnInsert: { phone, otpVerifiedAt: null, otpFreeUntil: null, firstSeenAt: now, createdAt: now },
+        $set: { lastSeenAt: now, updatedAt: now },
+        $inc: { setupCount: 1 },
+      },
+      { upsert: true, returnDocument: 'after' },
+    ),
   ]);
   if (phoneCount >= MAX_PER_PHONE_PER_HOUR || ipCount >= MAX_PER_IP_PER_HOUR) {
-    await events.insertOne({ phone, setupId: null, type: 'start', result: 'rate_limited', provider: 'none', ip, createdAt: now });
+    // Rare path: undo the count taken above and log the refusal.
+    await Promise.all([
+      users.updateOne({ _id: user._id }, { $inc: { setupCount: -1 } }),
+      events.insertOne({ phone, setupId: null, type: 'start', result: 'rate_limited', provider: 'none', ip, createdAt: now }),
+    ]);
     throw rateLimited();
   }
 
-  const user = await users.findOneAndUpdate(
-    { phone },
-    {
-      $setOnInsert: { phone, otpVerifiedAt: null, otpFreeUntil: null, firstSeenAt: now, createdAt: now },
-      $set: { lastSeenAt: now, updatedAt: now },
-      $inc: { setupCount: 1 },
-    },
-    { upsert: true, returnDocument: 'after' },
-  );
-
+  // Round trip 2: the setup and its log entry are written together. The id is
+  // made here so the log can point at the setup without waiting for it.
   const otpFree = Boolean(user.otpFreeUntil && user.otpFreeUntil > now);
+  const setupId = new ObjectId();
   const setup = {
+    _id: setupId,
     userId: user._id,
     phone,
     name,
@@ -86,20 +95,21 @@ export default handle('POST', async (req, res) => {
     createdAt: now,
     updatedAt: now,
   };
-  const { insertedId } = await setups.insertOne(setup);
-
-  await events.insertOne({
-    phone,
-    setupId: insertedId,
-    type: 'start',
-    result: otpFree ? 'skipped_within_window' : 'otp_required',
-    provider: 'none',
-    ip,
-    createdAt: now,
-  });
+  await Promise.all([
+    setups.insertOne(setup),
+    events.insertOne({
+      phone,
+      setupId,
+      type: 'start',
+      result: otpFree ? 'skipped_within_window' : 'otp_required',
+      provider: 'none',
+      ip,
+      createdAt: now,
+    }),
+  ]);
 
   return sendJson(res, 200, {
-    setupId: String(insertedId),
+    setupId: String(setupId),
     otpRequired: !otpFree,
     // Only revealed when it applies, so the response says nothing about a number's history.
     otpFreeUntil: otpFree ? user.otpFreeUntil.toISOString() : null,

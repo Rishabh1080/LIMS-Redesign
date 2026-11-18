@@ -18,6 +18,7 @@ try {
   const { insertedId } = await probe.insertOne({ at: new Date() });
   console.log('write to', dbName + ':', 'ok');
   await probe.deleteOne({ _id: insertedId });
+  if ((await probe.countDocuments()) === 0) await probe.drop();
   console.log('cleanup: ok');
 } catch (error) {
   console.error('FAILED:', error.codeName || error.name, '-', String(error.message).replace(/mongodb(\+srv)?:\/\/\S+/g, '[uri]').slice(0, 200));

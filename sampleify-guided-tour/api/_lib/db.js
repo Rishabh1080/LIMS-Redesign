@@ -2,7 +2,8 @@
  * MongoDB connection for the /api functions (see docs/DATABASE.md).
  *
  * Serverless functions are re-used between requests, so the client is cached on
- * globalThis and connects once per instance. Indexes are created on first use.
+ * globalThis and connects once per instance. Indexes are created on first use,
+ * in the background.
  * Files under api/_lib are not deployed as endpoints (leading underscore).
  */
 import { MongoClient } from 'mongodb';
@@ -33,9 +34,15 @@ export async function getDb() {
   }
 
   const db = cache.client.db(name);
+  // Indexes are created once per instance in the background, not awaited: they
+  // already exist after the first run, and creating them is idempotent. A
+  // request shouldn't wait on them.
   if (!cache.indexed) {
-    await ensureIndexes(db);
     cache.indexed = true;
+    ensureIndexes(db).catch((error) => {
+      cache.indexed = false;
+      console.error('[api] ensureIndexes', error.name, error.message);
+    });
   }
   return db;
 }

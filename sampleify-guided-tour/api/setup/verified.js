@@ -34,16 +34,19 @@ export default handle('POST', async (req, res) => {
   if (!setup) throw Object.assign(new Error('setup_not_pending'), { status: 409 });
 
   const otpFreeUntil = new Date(now.getTime() + otpFreeDays() * 24 * 60 * 60 * 1000);
-  await db.collection('users').updateOne({ _id: setup.userId }, { $set: { otpVerifiedAt: now, otpFreeUntil, updatedAt: now } });
-  await db.collection('otp_events').insertOne({
-    phone: setup.phone,
-    setupId,
-    type: 'verify',
-    result: 'verified',
-    provider: 'none',
-    ip: clientIp(req),
-    createdAt: now,
-  });
+  // The user's window and the log entry are independent: write them together.
+  await Promise.all([
+    db.collection('users').updateOne({ _id: setup.userId }, { $set: { otpVerifiedAt: now, otpFreeUntil, updatedAt: now } }),
+    db.collection('otp_events').insertOne({
+      phone: setup.phone,
+      setupId,
+      type: 'verify',
+      result: 'verified',
+      provider: 'none',
+      ip: clientIp(req),
+      createdAt: now,
+    }),
+  ]);
 
   return sendJson(res, 200, { ok: true, otpFreeUntil: otpFreeUntil.toISOString() });
 });
