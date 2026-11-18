@@ -904,9 +904,6 @@
 }
 .sgt-coach__grip {
   flex: 0 0 auto;
-  margin-left: auto;
+  margin-right: -2px;
   color: var(--sgt-brand-faint);
-}
-.sgt-coach__grip + .sgt-coach__step {
-  margin-left: 0;
 }

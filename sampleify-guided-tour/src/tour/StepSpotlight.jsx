@@ -400,10 +400,10 @@ export function StepSpotlight() {
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
         >
+          {draggable ? <IconGripHorizontal className="sgt-coach__grip" size={16} stroke={1.8} aria-hidden="true" /> : null}
           <span className="sgt-coach__chapter" title={chapter.title}>
             {chapter.title}
           </span>
-          {draggable ? <IconGripHorizontal className="sgt-coach__grip" size={16} stroke={1.8} aria-hidden="true" /> : null}
           <span className="sgt-coach__step" aria-label={`Step ${tour.stepIndex + 1} of ${chapter.steps.length}`}>
             {tour.stepIndex + 1}/{chapter.steps.length}
           </span>

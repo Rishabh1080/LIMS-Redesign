@@ -203,12 +203,12 @@ export function computeCardPosition(rect, card, viewport, preferred = 'bottom') 
     if (candidate.fits) return { top: candidate.top, left: candidate.left, placement };
   }
 
-  // Nothing fits beside the target (it fills the screen, e.g. a big modal): sit
-  // inside it, bottom-left. Primary actions are bottom-right in this design
-  // system, so that corner stays clear for the visitor's click.
+  // Nothing fits beside the target (it fills the screen: a whole page, a big
+  // modal): sit at the top centre of the screen, over the global header, where
+  // it covers the least of the page. The visitor can drag it out of the way.
   return {
-    top: clampTop(rect.top + rect.height - height - 16),
-    left: clampLeft(rect.left + 16),
+    top: margin,
+    left: clampLeft(viewport.width / 2 - width / 2),
     placement: 'floating',
   };
 }
