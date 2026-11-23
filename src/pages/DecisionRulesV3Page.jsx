@@ -39,38 +39,14 @@ const COLUMNS = [
   { key: 'sampleCategory', label: 'Category', sortable: true },
   { key: 'discipline', label: 'Discipline', sortable: true },
   { key: 'ruleCount', label: 'Rules', sortable: true, numeric: true },
-  { key: 'limits', label: 'Limits', sortable: true },
   { key: 'updatedOn', label: 'Last updated', sortable: true },
 ];
 
 const compare = (a, b) => (typeof a === 'number' ? a - b : String(a).localeCompare(String(b), undefined, { numeric: true }));
 const sortValue = (row, key) => {
-  if (key === 'limits') return row.ruleCount ? row.withoutLimits / row.ruleCount : -1;
   if (key === 'updatedOn') return new Date(row.updatedOn).getTime();
   return row[key];
 };
-
-/** Rules with limits vs without, as a 2-part bar plus a short label. */
-function LimitsMeter({ row }) {
-  if (!row.ruleCount) {
-    return <span className="smplfy-dr3-limits is-none">No rules yet</span>;
-  }
-  const share = Math.round((row.withLimits / row.ruleCount) * 100);
-  const complete = row.withoutLimits === 0;
-  return (
-    <span className={`smplfy-dr3-limits${complete ? ' is-complete' : ' is-partial'}`}>
-      <span
-        className="smplfy-dr3-meter"
-        role="img"
-        aria-label={`${row.withLimits} of ${row.ruleCount} rules have limits`}
-        style={{ '--smplfy-dr3-share': `${share}%` }}
-      />
-      <span className="smplfy-dr3-limits-text">
-        {complete ? 'All set' : `${row.withoutLimits} without limits`}
-      </span>
-    </span>
-  );
-}
 
 export default function DecisionRulesV3Page({
   onNavigate,
@@ -294,12 +270,11 @@ export default function DecisionRulesV3Page({
           <div className="smplfy-dr-table-wrap smplfy-dr3-table-wrap" ref={superHoverRef}>
             <DataTable className="smplfy-dr-table smplfy-dr3-table">
               <colgroup>
-                <col style={{ width: '34%' }} />
-                <col style={{ width: '14%' }} />
-                <col style={{ width: '13%' }} />
-                <col style={{ width: '9%' }} />
-                <col style={{ width: '17%' }} />
-                <col style={{ width: '13%' }} />
+                <col style={{ width: '38%' }} />
+                <col style={{ width: '16%' }} />
+                <col style={{ width: '16%' }} />
+                <col style={{ width: '10%' }} />
+                <col style={{ width: '20%' }} />
               </colgroup>
               <thead>
                 <tr>
@@ -341,7 +316,6 @@ export default function DecisionRulesV3Page({
                     <td className="text-end">
                       <span className="smplfy-dr3-count">{row.ruleCount}</span>
                     </td>
-                    <td><LimitsMeter row={row} /></td>
                     <td>
                       <div className="smplfy-dr3-updated">
                         <span>{fullDate(row.updatedOn)}</span>

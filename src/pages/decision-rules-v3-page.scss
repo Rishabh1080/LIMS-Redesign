@@ -175,41 +175,6 @@ th.text-end .smplfy-dr3-sort {
   color: var(--smplfy-primitive-neutral-900);
 }
 
-/* Limits: a thin 2-part bar (with limits / without) and a short label. */
-.smplfy-dr3-limits {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--smplfy-button-space-2);
-  max-width: 100%;
-  font-size: var(--smplfy-table-cell-font-size);
-}
-.smplfy-dr3-meter {
-  flex: 0 0 56px;
-  height: 6px;
-  border-radius: 999px;
-  background:
-    linear-gradient(90deg, var(--smplfy-primitive-green-500) var(--smplfy-dr3-share), transparent 0),
-    var(--smplfy-primitive-orange-300);
-}
-.smplfy-dr3-limits.is-complete .smplfy-dr3-meter {
-  background: var(--smplfy-primitive-green-500);
-}
-.smplfy-dr3-limits-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.smplfy-dr3-limits.is-complete .smplfy-dr3-limits-text {
-  color: var(--smplfy-primitive-green-700);
-}
-.smplfy-dr3-limits.is-partial .smplfy-dr3-limits-text {
-  color: var(--smplfy-primitive-orange-700);
-  font-weight: 500;
-}
-.smplfy-dr3-limits.is-none {
-  color: var(--smplfy-table-muted-text);
-}
-
 /* Last updated date, with the row's "opens" chevron on the far right. */
 .smplfy-dr3-table.table td:last-child {
   position: relative;
