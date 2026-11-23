@@ -15,6 +15,9 @@ import NewTrPage from './pages/NewTrPage';
 import NablCertificateEditPage from './pages/NablCertificateEditPage';
 import DecisionRulesListingPage from './pages/DecisionRulesListingPage';
 import DecisionRulesListingV2Page from './pages/DecisionRulesListingV2Page';
+import DecisionRulesV3Page from './pages/DecisionRulesV3Page';
+import DecisionRulesV3ProductPage from './pages/DecisionRulesV3ProductPage';
+import { SHOW_VERSION_SWITCHER } from './pages/decisionRulesV3Shared';
 import DecisionRuleEditPage from './pages/DecisionRuleEditPage';
 import NewInwardPage from './pages/NewInwardPage';
 import AllInwardsListingPage from './pages/AllInwardsListingPage';
@@ -282,7 +285,8 @@ export default function App() {
   const [allSamplesToast, setAllSamplesToast] = useState(null);
   const [inwardDetailsState, setInwardDetailsState] = useState({ inward: null });
   const [newInwardState, setNewInwardState] = useState({ sourcePage: 'design-handoff' });
-  const [decisionRuleEditState, setDecisionRuleEditState] = useState({ rule: null });
+  const [decisionRuleEditState, setDecisionRuleEditState] = useState({ rule: null, returnTo: null });
+  const [decisionRulesV3ProductId, setDecisionRulesV3ProductId] = useState(null);
   const [testRequestsState, setTestRequestsState] = useState({
     sampleId: 'IICT/2025-2026/1101',
     sourcePage: 'all-samples',
@@ -1015,6 +1019,11 @@ export default function App() {
       return;
     }
 
+    // Published builds only carry Version 3 of Decision Rules.
+    if (!SHOW_VERSION_SWITCHER && (nextPage === 'decision-rules-listing' || nextPage === 'decision-rules-listing-v2')) {
+      setActivePage('decision-rules-listing-v3');
+      return;
+    }
     if (nextPage === 'decision-rules-listing') {
       setActivePage('decision-rules-listing');
       return;
@@ -1025,8 +1034,17 @@ export default function App() {
       return;
     }
 
+    if (nextPage === 'decision-rules-listing-v3') {
+      setActivePage('decision-rules-listing-v3');
+      return;
+    }
+    if (nextPage === 'decision-rules-v3-product') {
+      setDecisionRulesV3ProductId(options.productId ?? null);
+      setActivePage('decision-rules-v3-product');
+      return;
+    }
     if (nextPage === 'decision-rule-edit') {
-      setDecisionRuleEditState({ rule: options.rule ?? null });
+      setDecisionRuleEditState({ rule: options.rule ?? null, returnTo: options.returnTo ?? null });
       setActivePage('decision-rule-edit');
       return;
     }
@@ -1710,10 +1728,33 @@ export default function App() {
     );
   }
 
+  if (activePage === 'decision-rules-listing-v3') {
+    return (
+      <DecisionRulesV3Page
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
+  if (activePage === 'decision-rules-v3-product') {
+    return (
+      <DecisionRulesV3ProductPage
+        key={decisionRulesV3ProductId}
+        productId={decisionRulesV3ProductId}
+        onNavigate={handleNavigate}
+        sidebarCollapsed={sidebarCollapsed}
+        onSidebarCollapsedChange={setSidebarCollapsed}
+        sidebarBadgeCounts={{ 'requests-for-me': requestsForMeSidebarBadgeCount }}
+      />
+    );
+  }
   if (activePage === 'decision-rule-edit') {
     return (
       <DecisionRuleEditPage
         rule={decisionRuleEditState.rule}
+        returnTo={decisionRuleEditState.returnTo}
         onNavigate={handleNavigate}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarCollapsedChange={setSidebarCollapsed}

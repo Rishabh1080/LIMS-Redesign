@@ -1,0 +1,482 @@
+/* Decision Rules V3: product index + product rules page. Builds on the shared
+   V1/V2 listing styles (table, filters, footer, nesting) and adds only what V3
+   introduces. Colour roles: blue = interactive, orange = "rule lacks limits"
+   (a gap to fix), green = complete. Everything comes from system tokens. */
+
+/* ---- Product index: toolbar ------------------------------------------------ */
+.smplfy-dr3-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--smplfy-button-space-3);
+}
+
+/* Search is the main way into 100-500 products, so it is the widest control. */
+.smplfy-dr3-search {
+  position: relative;
+  flex: 1 1 360px;
+  max-width: 520px;
+}
+.smplfy-dr3-search-icon {
+  position: absolute;
+  top: 50%;
+  left: var(--smplfy-field-padding-inline);
+  transform: translateY(-50%);
+  color: var(--smplfy-field-icon-color);
+  pointer-events: none;
+}
+.smplfy-dr3-search-input {
+  width: 100%;
+  height: var(--smplfy-field-height);
+  padding: 0 40px 0 calc(var(--smplfy-field-padding-inline) + 26px);
+  border: var(--smplfy-field-border-width) solid var(--smplfy-field-border-default);
+  border-radius: var(--smplfy-field-radius);
+  background: var(--smplfy-field-bg);
+  color: var(--smplfy-field-text);
+  font-family: var(--smplfy-field-font-family);
+  font-size: var(--smplfy-field-font-size);
+  line-height: var(--smplfy-field-line-height);
+  transition: border-color var(--smplfy-field-transition), box-shadow var(--smplfy-field-transition);
+}
+.smplfy-dr3-search-input::placeholder {
+  color: var(--smplfy-field-current-placeholder, var(--smplfy-primitive-neutral-500));
+}
+.smplfy-dr3-search-input:hover {
+  border-color: var(--smplfy-field-border-hover);
+}
+.smplfy-dr3-search-input:focus-visible {
+  outline: none;
+  border-color: var(--smplfy-field-border-focused);
+  box-shadow: var(--smplfy-field-shadow-focused);
+}
+/* The "/" shortcut hint, hidden once there is a query. */
+.smplfy-dr3-kbd {
+  position: absolute;
+  top: 50%;
+  right: var(--smplfy-button-space-3);
+  transform: translateY(-50%);
+  min-width: 22px;
+  padding: 1px 6px;
+  border: 1px solid var(--smplfy-primitive-neutral-300);
+  border-radius: 6px;
+  background: var(--smplfy-primitive-neutral-100);
+  color: var(--smplfy-primitive-neutral-600);
+  font-family: var(--smplfy-field-font-family);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.smplfy-dr3-toolbar-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--smplfy-button-space-3);
+}
+.smplfy-dr3-filter {
+  width: 220px;
+}
+
+.smplfy-dr3-totals {
+  font-size: var(--smplfy-table-cell-font-size);
+}
+
+/* Search match inside product names and codes. */
+.smplfy-dr3-mark {
+  padding: 0;
+  border-radius: 2px;
+  background: var(--smplfy-primitive-yellow-200);
+  color: inherit;
+}
+
+/* ---- Product index: table ---------------------------------------------------- */
+.smplfy-dr3-table.table {
+  /* Two-line product cells need a little more room than the rules table. */
+  --smplfy-table-cell-padding-y: 10px;
+}
+
+/* Sortable headers: the whole label is the button. */
+.smplfy-dr3-sort {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  gap: var(--smplfy-button-space-1);
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.smplfy-dr3-sort svg {
+  color: var(--smplfy-primitive-neutral-500);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.smplfy-dr3-sort:hover svg,
+.smplfy-dr3-sort:focus-visible svg,
+.smplfy-dr3-sort.is-active svg {
+  opacity: 1;
+}
+.smplfy-dr3-sort.is-active,
+.smplfy-dr3-sort.is-active svg {
+  color: var(--smplfy-primitive-neutral-900);
+}
+.smplfy-dr3-sort:focus-visible {
+  outline: 2px solid var(--smplfy-field-border-focused);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+th.text-end .smplfy-dr3-sort {
+  flex-direction: row-reverse;
+}
+
+.smplfy-dr3-product {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.smplfy-dr3-product-name {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--smplfy-primitive-neutral-900);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.smplfy-dr3-row[data-super-hover-active] .smplfy-dr3-product-name,
+.smplfy-dr3-product-name:hover {
+  color: var(--smplfy-primitive-blue-600);
+}
+.smplfy-dr3-product-name:focus-visible {
+  outline: 2px solid var(--smplfy-field-border-focused);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.smplfy-dr3-product-code {
+  color: var(--smplfy-table-muted-text);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.smplfy-dr3-count {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--smplfy-primitive-neutral-900);
+}
+
+/* Limits: a thin 2-part bar (with limits / without) and a short label. */
+.smplfy-dr3-limits {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-2);
+  max-width: 100%;
+  font-size: var(--smplfy-table-cell-font-size);
+}
+.smplfy-dr3-meter {
+  flex: 0 0 56px;
+  height: 6px;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, var(--smplfy-primitive-green-500) var(--smplfy-dr3-share), transparent 0),
+    var(--smplfy-primitive-orange-300);
+}
+.smplfy-dr3-limits.is-complete .smplfy-dr3-meter {
+  background: var(--smplfy-primitive-green-500);
+}
+.smplfy-dr3-limits-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.smplfy-dr3-limits.is-complete .smplfy-dr3-limits-text {
+  color: var(--smplfy-primitive-green-700);
+}
+.smplfy-dr3-limits.is-partial .smplfy-dr3-limits-text {
+  color: var(--smplfy-primitive-orange-700);
+  font-weight: 500;
+}
+.smplfy-dr3-limits.is-none {
+  color: var(--smplfy-table-muted-text);
+}
+
+/* Last updated date, with the row's "opens" chevron on the far right. */
+.smplfy-dr3-table.table td:last-child {
+  position: relative;
+  padding-right: 36px;
+}
+.smplfy-dr3-updated {
+  display: flex;
+  min-width: 0;
+}
+.smplfy-dr3-updated > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.smplfy-dr3-row-chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--smplfy-button-space-3);
+  transform: translateY(-50%);
+  color: var(--smplfy-primitive-neutral-400);
+  transition: color 120ms ease, transform 120ms ease;
+}
+.smplfy-dr3-row[data-super-hover-active] .smplfy-dr3-row-chevron {
+  color: var(--smplfy-primitive-blue-600);
+  transform: translate(2px, -50%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .smplfy-dr3-row[data-super-hover-active] .smplfy-dr3-row-chevron {
+    transform: translateY(-50%);
+  }
+}
+
+/* ---- Product page: header ------------------------------------------------------ */
+.smplfy-dr3-title {
+  text-wrap: balance;
+}
+.smplfy-dr3-meta {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 2px;
+  color: var(--smplfy-table-muted-text);
+  font-size: var(--smplfy-field-font-size);
+}
+.smplfy-dr3-meta > span + span::before {
+  content: '·';
+  margin: 0 var(--smplfy-button-space-2);
+  color: var(--smplfy-primitive-neutral-400);
+}
+
+/* Product switcher: an up/down chevron beside the product name that opens a
+   searchable list of products (replaces the old prev/next pager). */
+.smplfy-prod-switch {
+  position: relative;
+  flex-shrink: 0;
+}
+.smplfy-prod-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--smplfy-button-radius);
+  background: transparent;
+  color: var(--smplfy-primitive-neutral-700);
+  cursor: pointer;
+}
+.smplfy-prod-switch-btn:hover,
+.smplfy-prod-switch-btn.is-open {
+  background: var(--smplfy-primitive-neutral-200);
+  color: var(--smplfy-primitive-neutral-900);
+}
+.smplfy-prod-switch-btn:focus-visible {
+  outline: 2px solid var(--smplfy-field-border-focused);
+  outline-offset: 1px;
+}
+
+.smplfy-prod-switch-menu {
+  position: absolute;
+  top: calc(100% + var(--smplfy-button-space-2));
+  left: 0;
+  z-index: 1060;
+  /* Wide enough for long product names that share a prefix
+     ("Amoxicillin 250 mg Film-coated Tablet" vs "… Chewable Tablet"). */
+  width: 440px;
+  max-width: calc(100vw - 48px);
+  overflow: hidden;
+  background: var(--smplfy-primitive-neutral-100);
+  border: 1px solid var(--smplfy-primitive-neutral-300);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(11, 18, 24, 0.12), 0 2px 6px rgba(11, 18, 24, 0.06);
+}
+
+.smplfy-prod-switch-search {
+  display: flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-2);
+  padding: 0 var(--smplfy-button-space-3);
+  height: 48px;
+  border-bottom: 1px solid var(--smplfy-primitive-neutral-300);
+  color: var(--smplfy-table-muted-text);
+}
+.smplfy-prod-switch-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: var(--smplfy-field-font-size);
+  color: var(--smplfy-field-text);
+}
+.smplfy-prod-switch-search input::placeholder {
+  color: var(--smplfy-table-muted-text);
+}
+.smplfy-prod-switch-esc {
+  padding: 1px var(--smplfy-button-space-2);
+  border: 1px solid var(--smplfy-primitive-neutral-300);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--smplfy-table-muted-text);
+  font-family: inherit;
+  font-size: var(--smplfy-field-label-font-size);
+  line-height: 18px;
+}
+
+.smplfy-prod-switch-list {
+  margin: 0;
+  padding: var(--smplfy-button-space-2);
+  max-height: 320px;
+  overflow-y: auto;
+  list-style: none;
+}
+.smplfy-prod-switch-item {
+  display: flex;
+  align-items: center;
+  gap: var(--smplfy-button-space-3);
+  height: 40px;
+  padding: 0 var(--smplfy-button-space-3);
+  border-radius: 8px;
+  color: var(--smplfy-table-text);
+  font-size: var(--smplfy-field-font-size);
+  cursor: pointer;
+}
+.smplfy-prod-switch-item.is-active {
+  background: var(--smplfy-primitive-neutral-200);
+}
+.smplfy-prod-switch-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.smplfy-prod-switch-code {
+  flex-shrink: 0;
+  color: var(--smplfy-table-muted-text);
+  font-size: var(--smplfy-field-label-font-size);
+  font-variant-numeric: tabular-nums;
+}
+.smplfy-prod-switch-item[aria-selected='true'] .smplfy-prod-switch-name {
+  font-weight: 600;
+}
+.smplfy-prod-switch-item > svg {
+  flex-shrink: 0;
+  color: var(--smplfy-primitive-neutral-900);
+}
+.smplfy-prod-switch-empty {
+  padding: var(--smplfy-button-space-3);
+  color: var(--smplfy-table-muted-text);
+  font-size: var(--smplfy-field-font-size);
+}
+
+/* ---- Product page: stats line ---------------------------------------------- */
+.smplfy-dr3-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--smplfy-button-space-2) var(--smplfy-button-space-4);
+  color: var(--smplfy-primitive-neutral-700);
+  font-size: var(--smplfy-field-font-size);
+}
+.smplfy-dr3-stats strong {
+  color: var(--smplfy-primitive-neutral-900);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+/* The one actionable stat: rules without limits, which filters the table. */
+.smplfy-dr3-stat-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--smplfy-primitive-orange-300);
+  border-radius: 999px;
+  background: var(--smplfy-primitive-orange-100);
+  color: var(--smplfy-primitive-orange-800);
+  font: inherit;
+  cursor: pointer;
+}
+.smplfy-dr3-stat-filter strong {
+  color: inherit;
+}
+.smplfy-dr3-stat-filter:hover {
+  border-color: var(--smplfy-primitive-orange-500);
+}
+.smplfy-dr3-stat-filter.is-on {
+  border-color: var(--smplfy-primitive-orange-600);
+  background: var(--smplfy-primitive-orange-200);
+}
+.smplfy-dr3-stat-filter:focus-visible {
+  outline: 2px solid var(--smplfy-field-border-focused);
+  outline-offset: 2px;
+}
+.smplfy-dr3-stat-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--smplfy-primitive-green-700);
+}
+.smplfy-dr3-stat-muted {
+  color: var(--smplfy-table-muted-text);
+}
+
+/* ---- Product page: rules table ---------------------------------------------- */
+.smplfy-dr3-nested-name {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--smplfy-button-space-2);
+  min-width: 0;
+}
+.smplfy-dr3-nested-count {
+  color: var(--smplfy-table-muted-text);
+  font-size: 12px;
+  font-weight: 400;
+}
+.smplfy-dr3-param {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--smplfy-button-space-2);
+  min-width: 0;
+}
+.smplfy-dr3-inherit {
+  color: var(--smplfy-primitive-neutral-400);
+}
+/* A rule with neither min nor max: the gap is named, not left as two dashes. */
+.smplfy-dr3-unset {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--smplfy-primitive-orange-100);
+  color: var(--smplfy-primitive-orange-800);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Destructive confirm button in the delete dialog. */
+.smplfy-dr3-danger.btn {
+  --bs-btn-bg: var(--smplfy-primitive-red-500);
+  --bs-btn-border-color: var(--smplfy-primitive-red-500);
+  --bs-btn-hover-bg: var(--smplfy-primitive-red-600);
+  --bs-btn-hover-border-color: var(--smplfy-primitive-red-600);
+  --bs-btn-active-bg: var(--smplfy-primitive-red-700);
+  --bs-btn-active-border-color: var(--smplfy-primitive-red-700);
+}

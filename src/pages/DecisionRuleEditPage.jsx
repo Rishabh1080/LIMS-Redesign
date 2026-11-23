@@ -93,6 +93,7 @@ function Card({ title, hint, action, className = '', children }) {
 
 export default function DecisionRuleEditPage({
   rule,
+  returnTo = null,
   onNavigate,
   sidebarCollapsed,
   onSidebarCollapsedChange,
@@ -102,7 +103,8 @@ export default function DecisionRuleEditPage({
   const set = (key) => (value) => setForm((current) => ({ ...current, [key]: value }));
   const setFromEvent = (key) => (event) => set(key)(event.target.value);
 
-  const back = () => onNavigate?.('decision-rules-listing-v2');
+  // Back to wherever the rule was opened from (V3 passes its product page).
+  const back = () => (returnTo ? onNavigate?.(returnTo.page, returnTo.options ?? {}) : onNavigate?.('decision-rules-listing-v2'));
 
   // --- Field builders ------------------------------------------------------
   const dropdown = (key, label, options, placeholder, extra = {}) => (
@@ -362,7 +364,7 @@ export default function DecisionRuleEditPage({
       onNavigate={onNavigate}
       breadcrumbs={[
         { key: 'design-handoff', label: 'Design Handoff' },
-        { key: 'decision-rules-listing-v2', label: 'Decision Rules' },
+        { key: returnTo?.page?.includes('v3') ? 'decision-rules-listing-v3' : 'decision-rules-listing-v2', label: 'Decision Rules' },
         { key: 'decision-rule-edit', label: 'Edit Decision Rule', current: true },
       ]}
       sidebarCollapsed={sidebarCollapsed}

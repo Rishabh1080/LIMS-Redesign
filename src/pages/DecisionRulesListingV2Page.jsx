@@ -141,6 +141,7 @@ function getPageItems(page, pageCount) {
 }
 
 const VERSIONS = [
+  { key: 'v3', label: 'Version 3', page: 'decision-rules-listing-v3' },
   { key: 'v2', label: 'Version 2', page: 'decision-rules-listing-v2' },
   { key: 'v1', label: 'Version 1', page: 'decision-rules-listing' },
 ];
